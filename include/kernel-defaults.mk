@@ -5,8 +5,14 @@
 # See /LICENSE for more information.
 #
 
-KERNEL_MAKEOPTS := -C $(LINUX_DIR) \
-	CROSS_COMPILE="$(KERNEL_CROSS)" \
+ifeq ($(strip $(CONFIG_EXTERNAL_KERNEL_TREE)),"")
+KERNEL_MAKEOPTS := -C $(LINUX_DIR)
+else
+KERNEL_MAKEOPTS := -C $(CONFIG_EXTERNAL_KERNEL_TREE) \
+	O=$(KERNEL_BUILD_DIR)/linux-$(LINUX_VERSION)
+endif
+
+KERNEL_MAKEOPTS += CROSS_COMPILE="$(KERNEL_CROSS)" \
 	ARCH="$(LINUX_KARCH)" \
 	KBUILD_HAVE_NLS=no \
 	CONFIG_SHELL="$(BASH)" \
@@ -47,11 +53,7 @@ define Kernel/Prepare/Default
 endif
 else
   define Kernel/Prepare/Default
-	mkdir -p $(KERNEL_BUILD_DIR)
-	if [ -d $(LINUX_DIR) ]; then \
-		rmdir $(LINUX_DIR); \
-	fi
-	ln -s $(CONFIG_EXTERNAL_KERNEL_TREE) $(LINUX_DIR)
+	mkdir -p $(KERNEL_BUILD_DIR)/linux-$(LINUX_VERSION)
   endef
 endif
 

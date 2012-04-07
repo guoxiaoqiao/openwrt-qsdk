@@ -61,7 +61,11 @@ define BuildKernel
   $(if $(QUILT),$(Build/Quilt))
   $(if $(LINUX_SITE),$(call Download,kernel))
 
+ifeq ($(strip $(CONFIG_EXTERNAL_KERNEL_TREE)),"")
   $(STAMP_PREPARED): $(if $(LINUX_SITE),$(DL_DIR)/$(LINUX_SOURCE))
+else
+  $(STAMP_PREPARED):
+endif
 	-rm -rf $(KERNEL_BUILD_DIR)
 	-mkdir -p $(KERNEL_BUILD_DIR)
 	$(Kernel/Prepare)
@@ -108,7 +112,11 @@ define BuildKernel
   define BuildKernel
   endef
 
+ifeq ($(strip $(CONFIG_EXTERNAL_KERNEL_TREE)),"")
   download: $(DL_DIR)/$(LINUX_SOURCE)
+else
+  download:
+endif
   prepare: $(STAMP_CONFIGURED)
   compile: $(LINUX_DIR)/.modules
 	$(MAKE) -C image compile TARGET_BUILD=

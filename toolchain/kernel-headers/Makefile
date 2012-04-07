@@ -20,9 +20,14 @@ PKG_SOURCE:=$(LINUX_SOURCE)
 PKG_SOURCE_URL:=$(LINUX_SITE)
 HOST_BUILD_DIR:=$(KERNEL_BUILD_DIR)/linux-$(LINUX_VERSION)
 PKG_MD5SUM:=$(LINUX_KERNEL_MD5SUM)
-LINUX_DIR := $(HOST_BUILD_DIR)
 FILES_DIR := 
 PATCH_DIR := ./patches$(if $(wildcard ./patches-$(LINUX_VERSION)),-$(LINUX_VERSION))
+
+ifeq ($(CONFIG_EXTERNAL_KERNEL_TREE),"")
+LINUX_DIR := $(HOST_BUILD_DIR)
+else
+LINUX_DIR := $(CONFIG_EXTERNAL_KERNEL_TREE)
+endif
 
 include $(INCLUDE_DIR)/toolchain-build.mk
 include $(INCLUDE_DIR)/kernel-defaults.mk
@@ -35,8 +40,14 @@ HOST_EXTRACFLAGS=
 
 LINUX_HAS_HEADERS_INSTALL:=y
 
-KMAKE := $(MAKE) -C $(HOST_BUILD_DIR) \
-	ARCH=$(LINUX_KARCH) \
+ifeq ($(CONFIG_EXTERNAL_KERNEL_TREE),"")
+KMAKE := $(MAKE) -C $(HOST_BUILD_DIR)
+else
+KMAKE := $(MAKE) -C $(CONFIG_EXTERNAL_KERNEL_TREE) \
+	O=$(HOST_BUILD_DIR)
+endif
+
+KMAKE +=ARCH=$(LINUX_KARCH) \
 	CC="$(KERNEL_CC)" \
 	CFLAGS="$(TARGET_CFLAGS)" \
 	CROSS_COMPILE=$(TARGET_CROSS) \
@@ -54,15 +65,15 @@ endef
 ifneq ($(CONFIG_mips)$(CONFIG_mipsel),)
   define Host/Configure/lzma
 	$(CP) \
-		$(HOST_BUILD_DIR)/arch/mips/include/asm/asm.h \
-		$(HOST_BUILD_DIR)/arch/mips/include/asm/regdef.h \
+		$(LINUX_DIR)/arch/mips/include/asm/asm.h \
+		$(LINUX_DIR)/arch/mips/include/asm/regdef.h \
 		$(BUILD_DIR_TOOLCHAIN)/linux-dev/include/asm/
   endef
 endif
 
 define Host/Configure/post/cris
 	$(CP) \
-		$(HOST_BUILD_DIR)/include/linux/user.h \
+		$(LINUX_DIR)/include/linux/user.h \
 		$(BUILD_DIR_TOOLCHAIN)/linux-dev/include/linux/
 	ln -snf $(BUILD_DIR_TOOLCHAIN)/linux-dev/include/arch-v10/arch \
 		$(BUILD_DIR_TOOLCHAIN)/linux-dev/include/arch
@@ -71,10 +82,10 @@ endef
 
 define Host/Configure/post/ubicom32
 	$(CP) \
-		$(HOST_BUILD_DIR)/arch/ubicom32/include/asm/elf.h \
-		$(HOST_BUILD_DIR)/arch/ubicom32/include/asm/user.h \
-		$(HOST_BUILD_DIR)/arch/ubicom32/include/asm/page.h \
-		$(HOST_BUILD_DIR)/arch/ubicom32/include/asm/page_offset.h \
+		$(LINUX_DIR)/arch/ubicom32/include/asm/elf.h \
+		$(LINUX_DIR)/arch/ubicom32/include/asm/user.h \
+		$(LINUX_DIR)/arch/ubicom32/include/asm/page.h \
+		$(LINUX_DIR)/arch/ubicom32/include/asm/page_offset.h \
 		$(BUILD_DIR_TOOLCHAIN)/linux-dev/include/asm/
 endef
 
@@ -89,7 +100,6 @@ endef
 define Host/Prepare
 	$(call Kernel/Prepare/Default)
 	ln -sf linux-$(LINUX_VERSION) $(BUILD_DIR_TOOLCHAIN)/linux
-	$(SED) 's/@expr length/@-expr length/' $(HOST_BUILD_DIR)/Makefile
 endef
 
 define Host/Configure
