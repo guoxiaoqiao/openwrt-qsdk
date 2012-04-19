@@ -1,6 +1,6 @@
-src-git packages http://tritium:8081/p/system/feeds/packages.git
-src-git luci http://tritium:8081/p/system/feeds/luci.git
-src-git qca http://tritium:8081/p/system/feeds/qca.git
+src-git packages http://tritium.qca.qualcomm.com:8081/p/system/feeds/packages.git
+src-git luci http://tritium.qca.qualcomm.com:8081/p/system/feeds/luci.git
+src-git qca http://tritium.qca.qualcomm.com:8081/p/system/feeds/qca.git
 #src-svn xwrt http://x-wrt.googlecode.com/svn/trunk/package
 #src-svn luci http://svn.luci.subsignal.org/luci/trunk/contrib/package
 #src-svn phone svn://svn.openwrt.org/openwrt/feeds/phone
