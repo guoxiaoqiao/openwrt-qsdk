@@ -131,6 +131,7 @@ endif
 	+$(MAKE) -C image compile install TARGET_BUILD=
 
   clean: FORCE
+	$(Kernel/Clean)
 	rm -rf $(KERNEL_BUILD_DIR)
 
   image-prereq:
