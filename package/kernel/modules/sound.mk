@@ -194,3 +194,34 @@ define KernelPackage/sound-soc-n810
 endef
 
 $(eval $(call KernelPackage,sound-soc-n810))
+
+
+define KernelPackage/sound-soc-wasp
+  TITLE:=Qualcomm-Atheros Wasp SoC sound support
+  KCONFIG:= \
+	CONFIG_SND_WASP_SOC \
+	CONFIG_SND_WASP_SOC_I2S
+  FILES:= \
+	$(LINUX_DIR)/sound/soc/qca/snd-soc-wasp-i2s.ko \
+	$(LINUX_DIR)/sound/soc/qca/snd-soc-wasp.ko
+  AUTOLOAD:=$(call AutoLoad,60,snd-soc-wasp snd-soc-wasp-i2s)
+  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core
+  $(call AddDepends/sound)
+endef
+
+$(eval $(call KernelPackage,sound-soc-wasp))
+
+
+define KernelPackage/sound-soc-db12x
+  TITLE:=Qualcomm-Atheros DB12x board sound support
+  KCONFIG:= \
+	CONFIG_SND_WASP_SOC_DB120
+  FILES:= \
+	$(LINUX_DIR)/sound/soc/codecs/snd-soc-spdif.ko \
+	$(LINUX_DIR)/sound/soc/qca/snd-soc-db12x.ko
+  AUTOLOAD:=$(call AutoLoad,65,snd-soc-spdif snd-soc-db12x)
+  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-wasp
+  $(call AddDepends/sound)
+endef
+
+$(eval $(call KernelPackage,sound-soc-db12x))

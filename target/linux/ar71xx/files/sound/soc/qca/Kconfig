@@ -1,0 +1,23 @@
+config SND_WASP_SOC
+	tristate "SoC Audio for the QCA Wasp chip"
+	depends on SOC_AR934X
+	help
+	  Say Y or M if you want to add support for Wasp Audio DMA engine
+	  You will also need to select the board and the interface below.
+	  This option enable the platform support
+
+config SND_WASP_SOC_I2S
+	tristate "SoC Audio for the QCA Wasp chip - I2s support"
+	depends on SND_WASP_SOC
+	help
+	  Say Y or M if you want to add support for Wasp Audio I2s interface
+	  This option enables the interface support
+
+config SND_WASP_SOC_DB120
+	tristate "SoC Audio support for QCA Reference design DB120"
+	depends on SND_WASP_SOC
+	select SND_SOC_SPDIF
+	help
+	  Say Y if you want to add support for SoC audio on DB120
+	  Qualcomm-Atheros reference design. This option enables the
+	  DB12x machine support.

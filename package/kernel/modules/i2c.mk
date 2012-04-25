@@ -342,7 +342,7 @@ $(eval $(call KernelPackage,pcf857x))
 define KernelPackage/regmap-i2c
   SUBMENU:=$(I2C_MENU)
   TITLE:=Regmap I2C driver (kernel upstream)
-  DEPENDS:=@LINUX_3_2 || @LINUX_3_3
+  DEPENDS:= @!(LINUX_2_6_30||LINUX_2_6_31||LINUX_2_6_32||LINUX_2_6_33||LINUX_2_6_33||LINUX_2_6_33||LINUX_2_6_36||LINUX_2_6_37||LINUX_2_6_38||LINUX_2_6_39||LINUX_3_0)
   KCONFIG:=CONFIG_REGMAP=y \
 	   CONFIG_REGMAP_I2C=y
   FILES:=$(LINUX_DIR)/drivers/base/regmap/regmap-i2c.ko

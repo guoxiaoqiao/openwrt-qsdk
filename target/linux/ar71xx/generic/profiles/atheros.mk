@@ -94,6 +94,18 @@ endef
 
 $(eval $(call Profile,DB120))
 
+define Profile/DB120TB388
+	NAME:=Atheros DB120 reference board with TB388 extension
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage \
+		  kmod-sound-core kmod-sound-soc-core kmod-sound-soc-wasp kmod-sound-soc-db12x
+endef
+
+define Profile/DB120TB388/Description
+	Package set optimized for the Atheros DB120 reference board with TB388 extension.
+endef
+
+$(eval $(call Profile,DB120TB388))
+
 define Profile/PB42
 	NAME:=Atheros PB42 reference board
 	PACKAGES:=kmod-usb-core kmod-usb-ohci kmod-usb2

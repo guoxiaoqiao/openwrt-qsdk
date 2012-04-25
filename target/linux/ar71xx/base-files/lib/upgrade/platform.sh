@@ -85,6 +85,7 @@ platform_check_image() {
 	ap136 | \
 	ap96 | \
 	db120 | \
+	db120tb388 | \
 	hornet-ub | \
 	zcn-1523h-2 | \
 	zcn-1523h-5)

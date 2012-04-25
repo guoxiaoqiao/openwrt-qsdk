@@ -1,0 +1,46 @@
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -39,6 +39,7 @@ source "sound/soc/omap/Kconfig"
+ source "sound/soc/kirkwood/Kconfig"
+ source "sound/soc/mid-x86/Kconfig"
+ source "sound/soc/mxs/Kconfig"
++source "sound/soc/qca/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/s6000/Kconfig"
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -17,6 +17,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
+ obj-$(CONFIG_SND_SOC)	+= omap/
+ obj-$(CONFIG_SND_SOC)	+= kirkwood/
+ obj-$(CONFIG_SND_SOC)	+= pxa/
++obj-$(CONFIG_SND_SOC)	+= qca/
+ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= s6000/
+ obj-$(CONFIG_SND_SOC)	+= sh/
+--- a/arch/mips/include/asm/mach-ath79/ath79.h
++++ b/arch/mips/include/asm/mach-ath79/ath79.h
+@@ -101,6 +101,8 @@ static inline int soc_is_ar934x(void)
+ extern void __iomem *ath79_ddr_base;
+ extern void __iomem *ath79_pll_base;
+ extern void __iomem *ath79_reset_base;
++extern void __iomem *ath79_dma_base;
++extern void __iomem *ath79_stereo_base;
+ 
+ static inline void ath79_pll_wr(unsigned reg, u32 val)
+ {
+@@ -125,4 +127,14 @@ static inline u32 ath79_reset_rr(unsigne
+ void ath79_device_reset_set(u32 mask);
+ void ath79_device_reset_clear(u32 mask);
+ 
++static inline void ath79_dma_wr(unsigned reg, u32 val)
++{
++	__raw_writel(val, ath79_dma_base + reg);
++}
++
++static inline u32 ath79_dma_rr(unsigned reg)
++{
++	return __raw_readl(ath79_dma_base + reg);
++}
++
+ #endif /* __ASM_MACH_ATH79_H */
