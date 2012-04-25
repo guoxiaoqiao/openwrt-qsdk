@@ -23,6 +23,10 @@ ifdef CONFIG_STRIP_KERNEL_EXPORTS
 	EXTRA_LDSFLAGS="-I$(KERNEL_BUILD_DIR) -include symtab.h"
 endif
 
+# Kernel compiles well in parallel
+# Enable // build if selected in the menuconfig
+KERNEL_JFLAG ?= $(if $(CONFIG_PKG_BUILD_PARALLEL),-j$(CONFIG_PKG_BUILD_JOBS),-j1)
+
 INITRAMFS_EXTRA_FILES ?= $(GENERIC_PLATFORM_DIR)/image/initramfs-base-files.txt
 
 ifneq (,$(KERNEL_CC))
@@ -114,14 +118,14 @@ endef
 
 define Kernel/CompileModules/Default
 	rm -f $(LINUX_DIR)/vmlinux $(LINUX_DIR)/System.map
-	+$(MAKE) $(KERNEL_MAKEOPTS) modules
+	+$(MAKE) $(KERNEL_MAKEOPTS) $(KERNEL_JFLAG) modules
 endef
 
 OBJCOPY_STRIP = -R .reginfo -R .notes -R .note -R .comment -R .mdebug -R .note.gnu.build-id
 
 define Kernel/CompileImage/Default
 	$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),,rm -f $(TARGET_DIR)/init)
-	+$(MAKE) $(KERNEL_MAKEOPTS) $(subst ",,$(KERNELNAME))
+	+$(MAKE) $(KERNEL_MAKEOPTS) $(KERNEL_JFLAG) $(subst ",,$(KERNELNAME))
 	$(KERNEL_CROSS)objcopy -O binary $(OBJCOPY_STRIP) -S $(LINUX_DIR)/vmlinux $(LINUX_KERNEL)
 	$(KERNEL_CROSS)objcopy $(OBJCOPY_STRIP) -S $(LINUX_DIR)/vmlinux $(KERNEL_BUILD_DIR)/vmlinux.elf
 endef
