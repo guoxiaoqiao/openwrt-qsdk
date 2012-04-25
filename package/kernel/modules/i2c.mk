@@ -338,3 +338,15 @@ define KernelPackage/pcf857x/description
 endef
 
 $(eval $(call KernelPackage,pcf857x))
+
+define KernelPackage/regmap-i2c
+  SUBMENU:=$(I2C_MENU)
+  TITLE:=Regmap I2C driver (kernel upstream)
+  DEPENDS:=@LINUX_3_2 || @LINUX_3_3
+  KCONFIG:=CONFIG_REGMAP=y \
+	   CONFIG_REGMAP_I2C=y
+  FILES:=$(LINUX_DIR)/drivers/base/regmap/regmap-i2c.ko
+  AUTOLOAD:=$(call AutoLoad,20,regmap-i2c)
+endef
+
+$(eval $(call KernelPackage,regmap-i2c))

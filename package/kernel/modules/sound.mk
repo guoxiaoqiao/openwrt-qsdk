@@ -50,7 +50,7 @@ SOUNDCORE_FILES ?= \
 define KernelPackage/sound-core
   SUBMENU:=$(SOUND_MENU)
   TITLE:=Sound support
-  DEPENDS:=@AUDIO_SUPPORT
+  DEPENDS:=@AUDIO_SUPPORT +kmod-regmap-spi +kmod-regmap-i2c
   KCONFIG:= \
 	CONFIG_SOUND \
 	CONFIG_SND \

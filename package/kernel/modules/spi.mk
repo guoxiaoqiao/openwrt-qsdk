@@ -103,3 +103,15 @@ define KernelPackage/spi-vsc7385/description
 endef
 
 $(eval $(call KernelPackage,spi-vsc7385))
+
+define KernelPackage/regmap-spi
+  SUBMENU:=$(SPI_MENU)
+  TITLE:=Regmap SPI driver (kernel upstream)
+  DEPENDS:=@LINUX_3_2 || @LINUX_3_3
+  KCONFIG:=CONFIG_REGMAP=y \
+	   CONFIG_REGMAP_SPI
+  FILES:=$(LINUX_DIR)/drivers/base/regmap/regmap-spi.ko
+  AUTOLOAD:=$(call AutoLoad,20,regmap-spi)
+endef
+
+$(eval $(call KernelPackage,regmap-spi))
