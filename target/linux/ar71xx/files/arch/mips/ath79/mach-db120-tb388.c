@@ -43,6 +43,7 @@
 #include <linux/ath9k_platform.h>
 #include <linux/ar8216_platform.h>
 #include <linux/delay.h>
+#include <linux/gpio.h>
 
 #include <asm/mach-ath79/ar71xx_regs.h>
 #include <asm/mach-ath79/ath79.h>
@@ -63,7 +64,7 @@
 #define DB120_GPIO_I2S_SD		11
 #define DB120_GPIO_I2S_WS		12
 #define DB120_GPIO_I2S_CLK		13
-#define DB120_GPIO_LED_STATUS		14
+#define DB120_GPIO_I2S_MIC_SD		14
 #define DB120_GPIO_SPDIF_OUT		15
 
 #define DB120_GPIO_BTN_WPS		16
@@ -75,14 +76,6 @@
 #define DB120_MAC1_OFFSET		6
 #define DB120_WMAC_CALDATA_OFFSET	0x1000
 #define DB120_PCIE_CALDATA_OFFSET	0x5000
-
-static struct gpio_led db120_tb388_leds_gpio[] __initdata = {
-	{
-		.name		= "db120:green:status",
-		.gpio		= DB120_GPIO_LED_STATUS,
-		.active_low	= 1,
-	},
-};
 
 static struct gpio_keys_button db120_tb388_gpio_keys[] __initdata = {
 	{
@@ -153,14 +146,36 @@ static void __init db120_tb388_audio_setup(void)
 	ath79_reset_wr(AR71XX_RESET_REG_RESET_MODULE, t | AR934X_RESET_I2S );
 	udelay(1);
 
-	/* Assign GPIOs 4,11,12,13 to their respective I2S signal */
-	ath79_gpio_output_select(DB120_GPIO_I2S_MCLK,	0xf);
-	ath79_gpio_output_select(DB120_GPIO_I2S_SD, 0xe);
-	ath79_gpio_output_select(DB120_GPIO_I2S_WS, 0xd);
-	ath79_gpio_output_select(DB120_GPIO_I2S_CLK, 0xc);
+	/* GPIO configuration
+	   GPIOs 4,11,12,13 are configured as I2S signal - Output
+	   GPIO 15 is SPDIF - Output
+	   GPIO 14 is MIC - Input
+	   Please note that the value in direction_output doesn't really matter
+	   here as GPIOs are configured to relay internal data signal
+	*/
+	gpio_request(DB120_GPIO_I2S_CLK, "I2S CLK");
+	ath79_gpio_output_select(DB120_GPIO_I2S_CLK, AR934X_GPIO_OUT_MUX_I2S_CLK);
+	gpio_direction_output(DB120_GPIO_I2S_CLK, 0);
 
-	/* Assign GPIOs 15 to SPDIF Out */
-	ath79_gpio_output_select(DB120_GPIO_SPDIF_OUT, 0x19);
+	gpio_request(DB120_GPIO_I2S_WS, "I2S WS");
+	ath79_gpio_output_select(DB120_GPIO_I2S_WS, AR934X_GPIO_OUT_MUX_I2S_WS);
+	gpio_direction_output(DB120_GPIO_I2S_WS, 0);
+
+	gpio_request(DB120_GPIO_I2S_SD, "I2S SD");
+	ath79_gpio_output_select(DB120_GPIO_I2S_SD, AR934X_GPIO_OUT_MUX_I2S_SD);
+	gpio_direction_output(DB120_GPIO_I2S_SD, 0);
+
+	gpio_request(DB120_GPIO_I2S_MCLK, "I2S MCLK");
+	ath79_gpio_output_select(DB120_GPIO_I2S_MCLK, AR934X_GPIO_OUT_MUX_I2S_MCK);
+	gpio_direction_output(DB120_GPIO_I2S_MCLK, 0);
+
+	gpio_request(DB120_GPIO_SPDIF_OUT, "SPDIF OUT");
+	ath79_gpio_output_select(DB120_GPIO_SPDIF_OUT, AR934X_GPIO_OUT_MUX_SPDIF_OUT);
+	gpio_direction_output(DB120_GPIO_SPDIF_OUT, 0);
+
+	gpio_request(DB120_GPIO_I2S_MIC_SD, "I2S MIC_SD");
+	ath79_gpio_input_select(DB120_GPIO_I2S_MIC_SD, AR934X_GPIO_IN_MUX_I2S_MIC_SD);
+	gpio_direction_input(DB120_GPIO_I2S_MIC_SD);
 
 	/* Init stereo block registers in default configuration */
 	ath79_audio_init();
@@ -174,8 +189,6 @@ static void __init db120_tb388_setup(void)
 
 	ath79_register_m25p80(NULL);
 
-	ath79_register_leds_gpio(-1, ARRAY_SIZE(db120_tb388_leds_gpio),
-				 db120_tb388_leds_gpio);
 	ath79_register_gpio_keys_polled(-1, DB120_KEYS_POLL_INTERVAL,
 					ARRAY_SIZE(db120_tb388_gpio_keys),
 					db120_tb388_gpio_keys);

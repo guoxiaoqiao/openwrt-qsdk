@@ -22,24 +22,11 @@
 #include <sound/soc.h>
 #include <linux/module.h>
 
-/* Kernel includes */
-#if 0
-#include "atheros.h"
-#include "934x.h"
-#endif
-
 /* Driver include */
 #include <asm/mach-ath79/ar71xx_regs.h>
 #include <asm/mach-ath79/ath79.h>
 #include "wasp-i2s.h"
 #include "wasp-pcm.h"
-
-/* GPIO Assignation */
-#define DB120_GPIO_I2S_MCLK	4
-#define DB120_GPIO_I2S_SD	11
-#define DB120_GPIO_I2S_WS	12
-#define DB120_GPIO_I2S_CLK	13
-#define DB120_GPIO_SPDIF_OUT	15
 
 static struct platform_device *db12x_snd_device;
 
