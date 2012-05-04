@@ -22,4 +22,14 @@ include $(INCLUDE_DIR)/target.mk
 
 KERNEL_MAKEOPTS += LDFLAGS_BUILD_ID=""
 
+define Kernel/Configure
+	$(MAKE) -C $(PLATFORM_DIR)/image/ultra compile
+	ln -sf $(CONFIG_ULTRA_DIR)/projects/mainexec/build/include/ocm_size.h $(LINUX_DIR)/arch/ubicom32/include/asm/ocm_size.h
+	$(call Kernel/Configure/Default)
+endef
+
+$(eval $(call RequireCommand,ubicom32-elf-gcc, \
+	Kernel and ultra currently require ubicom32-elf-gcc to build. \
+))
+
 $(eval $(call BuildTarget))

@@ -1,0 +1,29 @@
+
+# **********************************************
+# BOARD_x configs are used only internally
+# **********************************************
+
+choice
+	prompt "Board"
+	help
+	  Select your board.
+
+config BOARD_IP8100RGW
+	bool "IP8100RGW.brd"
+	help
+	      'IP8100 RGW Board
+		
+		Same IP8100RGW Rev1.2 board with production chip'.
+
+config BOARD_IP8200RGW
+	bool "IP8200RGW.brd"
+	help
+	      'IP8200 (full package) RGW Board Cost-effective 4-layer PCB design'.
+
+endchoice
+
+config BOARD_NAME
+	string
+	default "IP8100RGW.brd" if BOARD_IP8100RGW
+	default "IP8200RGW.brd" if BOARD_IP8200RGW
+
