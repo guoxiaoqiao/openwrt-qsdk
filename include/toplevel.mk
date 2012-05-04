@@ -139,6 +139,7 @@ prereq:: prepare-tmpinfo .config
 	@+$(NO_TRACE_MAKE) -r -s $@
 
 %::
+ifeq ($(filter package/symlinks,$(MAKECMDGOALS)),)
 	@+$(PREP_MK) $(NO_TRACE_MAKE) -r -s prereq
 	@( \
 		cp .config tmp/.config; \
@@ -147,6 +148,7 @@ prereq:: prepare-tmpinfo .config
 			echo "WARNING: your configuration is out of sync. Please run make menuconfig, oldconfig or defconfig!"; \
 		fi \
 	)
+endif
 	@+$(SUBMAKE) -r $@
 
 help:
