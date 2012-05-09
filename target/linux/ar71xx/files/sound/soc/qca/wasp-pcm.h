@@ -19,6 +19,38 @@
 #ifndef _ATH_PCM_H_
 #define _ATH_PCM_H_
 
+/* Renamed struct ath_mbox_dma_desc */
+struct wasp_pcm_desc {
+	unsigned int OWN		:  1,    /* bit 00 */
+	             EOM		:  1,    /* bit 01 */
+	             rsvd1	    :  6,    /* bit 07-02 */
+	             size	    : 12,    /* bit 19-08 */
+	             length	    : 12,    /* bit 31-20 */
+	             rsvd2	    :  4,    /* bit 00 */
+	             BufPtr	    : 28,    /* bit 00 */
+	             rsvd3	    :  4,    /* bit 00 */
+	             NextPtr	: 28;    /* bit 00 */
+
+    unsigned int Va[6];
+    unsigned int Ua[6];
+    unsigned int Ca[6];
+    unsigned int Vb[6];
+    unsigned int Ub[6];
+    unsigned int Cb[6];
+} wasp_pcm_desc;
+
+/* Replaces struct i2s_dma_buf */
+struct wasp_pcm_data {
+	struct wasp_pcm_desc *dma_desc_array;
+	dma_addr_t dma_desc_array_phys;
+};
+
+/* Replaces struct ath_i2s_softc */
+struct wasp_pcm_priv {
+	struct snd_pcm_substream *playback;
+	struct snd_pcm_substream *capture;
+};
+
 /* platform data */
 extern struct snd_soc_platform_driver wasp_soc_platform;
 

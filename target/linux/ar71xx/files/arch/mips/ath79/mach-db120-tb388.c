@@ -129,7 +129,7 @@ static void __init db120_tb388_gmac_setup(void)
 
 	t = __raw_readl(base + AR934X_GMAC_REG_ETH_CFG);
 	t &= ~(AR934X_ETH_CFG_RGMII_GMAC0 | AR934X_ETH_CFG_MII_GMAC0 |
-	       AR934X_ETH_CFG_MII_GMAC0 | AR934X_ETH_CFG_SW_ONLY_MODE);
+	       AR934X_ETH_CFG_GMII_GMAC0 | AR934X_ETH_CFG_SW_ONLY_MODE);
 	t |= AR934X_ETH_CFG_RGMII_GMAC0 | AR934X_ETH_CFG_SW_ONLY_MODE;
 
 	__raw_writel(t, base + AR934X_GMAC_REG_ETH_CFG);
@@ -179,8 +179,6 @@ static void __init db120_tb388_audio_setup(void)
 
 	/* Init stereo block registers in default configuration */
 	ath79_audio_init();
-	udelay(100);
-	ath79_audio_reset();
 }
 
 static void __init db120_tb388_setup(void)

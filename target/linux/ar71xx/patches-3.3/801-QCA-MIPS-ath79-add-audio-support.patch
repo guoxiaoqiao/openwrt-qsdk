@@ -1,0 +1,37 @@
+--- a/arch/mips/include/asm/mach-ath79/ath79.h
++++ b/arch/mips/include/asm/mach-ath79/ath79.h
+@@ -104,6 +104,7 @@ extern void __iomem *ath79_pll_base;
+ extern void __iomem *ath79_reset_base;
+ extern void __iomem *ath79_dma_base;
+ extern void __iomem *ath79_stereo_base;
++extern void __iomem *ath79_audio_dpll_base;
+ 
+ static inline void ath79_pll_wr(unsigned reg, u32 val)
+ {
+@@ -139,6 +140,26 @@ static inline u32 ath79_dma_rr(unsigned
+ 	return __raw_readl(ath79_dma_base + reg);
+ }
+ 
++static inline void ath79_stereo_wr(unsigned reg, u32 val)
++{
++	__raw_writel(val, ath79_stereo_base + reg);
++}
++
++static inline u32 ath79_stereo_rr(unsigned reg)
++{
++	return __raw_readl(ath79_stereo_base + reg);
++}
++
++static inline void ath79_audio_dpll_wr(unsigned reg, u32 val)
++{
++	__raw_writel(val, ath79_audio_dpll_base + reg);
++}
++
++static inline u32 ath79_audio_dpll_rr(unsigned reg)
++{
++	return __raw_readl(ath79_audio_dpll_base + reg);
++}
++
+ void ath79_flash_acquire(void);
+ void ath79_flash_release(void);
+ 

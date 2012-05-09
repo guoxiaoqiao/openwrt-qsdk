@@ -20,7 +20,6 @@
 #include <sound/soc.h>
 #include <linux/module.h>
 
-#include "wasp-pll.h"
 #include <asm/mach-ath79/ar71xx_regs.h>
 
 static int wasp_i2s_startup(struct snd_pcm_substream *substream,
