@@ -1,7 +1,7 @@
 /*
  * ath-pcm.h -- ALSA PCM interface for the QCA Wasp based audio interface
  *
- * Copyright (c) 2012 Atheros Communications Inc.
+ * Copyright (c) 2012 Qualcomm-Atheros Inc.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -27,7 +27,7 @@
  * Note that a list is appended to this structure so that
  * we can parse descriptors from the CPU using virtual addresses
  */
-struct wasp_pcm_desc {
+struct ath79_pcm_desc {
 	unsigned int	OWN	:  1,    /* bit 00 */
 			EOM	:  1,    /* bit 01 */
 			rsvd1	:  6,    /* bit 07-02 */
@@ -51,18 +51,18 @@ struct wasp_pcm_desc {
 	dma_addr_t phys; /* Physical address of the descriptor */
 };
 
-struct wasp_pcm_rt_priv {
+struct ath79_pcm_rt_priv {
 	struct list_head dma_head;
-	struct wasp_pcm_desc *last_played;
+	struct ath79_pcm_desc *last_played;
 };
 
 /* Replaces struct ath_i2s_softc */
-struct wasp_pcm_pltfm_priv {
+struct ath79_pcm_pltfm_priv {
 	struct snd_pcm_substream *playback;
 	struct snd_pcm_substream *capture;
 };
 
 /* platform data */
-extern struct snd_soc_platform_driver wasp_soc_platform;
+extern struct snd_soc_platform_driver ath79_soc_platform;
 
 #endif

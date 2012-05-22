@@ -1,7 +1,7 @@
 /*
  * qca-db12x.c -- ALSA machine code for DB12x board ref design (and relatives)
  *
- * Copyright (c) 2012 Atheros Communications Inc.
+ * Copyright (c) 2012 Qualcomm-Atheros Inc.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,17 +25,17 @@
 /* Driver include */
 #include <asm/mach-ath79/ar71xx_regs.h>
 #include <asm/mach-ath79/ath79.h>
-#include "wasp-i2s.h"
-#include "wasp-pcm.h"
+#include "ath79-i2s.h"
+#include "ath79-pcm.h"
 
 static struct platform_device *db12x_snd_device;
 
 static struct snd_soc_dai_link db12x_dai = {
 	.name = "DB12x audio",
 	.stream_name = "DB12x audio",
-	.cpu_dai_name = "wasp-i2s",
+	.cpu_dai_name = "ath79-i2s",
 	.codec_dai_name = "dit-hifi",
-	.platform_name = "wasp-pcm-audio",
+	.platform_name = "ath79-pcm-audio",
 	.codec_name = "spdif-dit",
 	/* use ops to check startup state */
 };

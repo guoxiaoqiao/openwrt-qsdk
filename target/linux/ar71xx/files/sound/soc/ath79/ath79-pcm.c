@@ -1,7 +1,7 @@
 /*
  * ath-pcm.c -- ALSA PCM interface for the QCA Wasp based audio interface
  *
- * Copyright (c) 2012 Atheros Communications Inc.
+ * Copyright (c) 2012 Qualcomm-Atheros Inc.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -31,15 +31,15 @@
 #include <sound/soc.h>
 #include <sound/pcm_params.h>
 
-#include "wasp-pcm.h"
+#include "ath79-pcm.h"
 
 #define ATH_I2S_NUM_DESC 160
 #define ATH_I2S_BUFF_SIZE 24
 
-static struct dma_pool *wasp_pcm_cache;
-static spinlock_t wasp_pcm_lock;
+static struct dma_pool *ath79_pcm_cache;
+static spinlock_t ath79_pcm_lock;
 
-static struct snd_pcm_hardware wasp_pcm_hardware = {
+static struct snd_pcm_hardware ath79_pcm_hardware = {
 	.info = SNDRV_PCM_INFO_MMAP |
 		SNDRV_PCM_INFO_MMAP_VALID |
 		SNDRV_PCM_INFO_INTERLEAVED |
@@ -58,53 +58,59 @@ static struct snd_pcm_hardware wasp_pcm_hardware = {
 	.period_bytes_min = 64,
 	.period_bytes_max = 4096,
 	.periods_min = 4,
-	.periods_max = 32,
+	.periods_max = PAGE_SIZE/sizeof(struct ath79_pcm_desc),
 	.fifo_size = 0,
 };
 
-static inline struct wasp_pcm_desc *wasp_pcm_get_last_played(struct wasp_pcm_rt_priv *rtpriv)
+static inline struct ath79_pcm_desc *ath79_pcm_get_last_played(struct ath79_pcm_rt_priv *rtpriv)
 {
-	struct wasp_pcm_desc *desc, *prev;
+	struct ath79_pcm_desc *desc, *prev;
 
-	prev = list_entry(rtpriv->dma_head.prev, struct wasp_pcm_desc, list);
+	spin_lock(&ath79_pcm_lock);
+	prev = list_entry(rtpriv->dma_head.prev, struct ath79_pcm_desc, list);
 	list_for_each_entry(desc, &rtpriv->dma_head, list) {
 		if (desc->OWN == 1 && prev->OWN == 0) {
 			return desc;
 		}
 		prev = desc;
 	}
+	spin_unlock(&ath79_pcm_lock);
 
 	/* If we didn't find the last played buffer, return NULL */
 	return NULL;
 }
 
-static inline void wasp_pcm_set_own_bit(struct wasp_pcm_rt_priv *rtpriv)
+static inline void ath79_pcm_set_own_bit(struct ath79_pcm_rt_priv *rtpriv)
 {
-	struct wasp_pcm_desc *desc;
+	struct ath79_pcm_desc *desc;
 
+	spin_lock(&ath79_pcm_lock);
 	list_for_each_entry(desc, &rtpriv->dma_head, list) {
 		if (desc->OWN == 0) {
 			desc->OWN = 1;
 		}
 	}
+	spin_unlock(&ath79_pcm_lock);
 }
 
-static inline void wasp_pcm_clear_own_bit(struct wasp_pcm_rt_priv *rtpriv)
+static inline void ath79_pcm_clear_own_bit(struct ath79_pcm_rt_priv *rtpriv)
 {
-	struct wasp_pcm_desc *desc;
+	struct ath79_pcm_desc *desc;
 
+	spin_lock(&ath79_pcm_lock);
 	list_for_each_entry(desc, &rtpriv->dma_head, list) {
 		if (desc->OWN == 1) {
 			desc->OWN = 0;
 		}
 	}
+	spin_unlock(&ath79_pcm_lock);
 }
 
-static irqreturn_t wasp_pcm_interrupt(int irq, void *dev_id)
+static irqreturn_t ath79_pcm_interrupt(int irq, void *dev_id)
 {
 	uint32_t status;
-	struct wasp_pcm_pltfm_priv *prdata = dev_id;
-	struct wasp_pcm_rt_priv *rtpriv;
+	struct ath79_pcm_pltfm_priv *prdata = dev_id;
+	struct ath79_pcm_rt_priv *rtpriv;
 
 	status = ath79_dma_rr(AR934X_DMA_REG_MBOX_INT_STATUS);
 
@@ -112,10 +118,10 @@ static irqreturn_t wasp_pcm_interrupt(int irq, void *dev_id)
 	if(status & AR934X_DMA_MBOX_INT_STATUS_RX_DMA_COMPLETE) {
 		rtpriv = prdata->playback->runtime->private_data;
 		/* Store the last played buffer in the runtime priv struct */
-		rtpriv->last_played = wasp_pcm_get_last_played(rtpriv);
-		wasp_pcm_set_own_bit(rtpriv);
+		rtpriv->last_played = ath79_pcm_get_last_played(rtpriv);
+		ath79_pcm_set_own_bit(rtpriv);
 		if (rtpriv->last_played == NULL) {
-			snd_printd(KERN_ERR "BUG: ISR called but no played buf\n");
+			snd_printd("BUG: ISR called but no played buf found\n");
 			goto ack;
 		}
 		snd_pcm_period_elapsed(prdata->playback);
@@ -123,10 +129,10 @@ static irqreturn_t wasp_pcm_interrupt(int irq, void *dev_id)
 	if(status & AR934X_DMA_MBOX_INT_STATUS_TX_DMA_COMPLETE) {
 		rtpriv = prdata->capture->runtime->private_data;
 		/* Store the last played buffer in the runtime priv struct */
-		rtpriv->last_played = wasp_pcm_get_last_played(rtpriv);
-		wasp_pcm_set_own_bit(rtpriv);
+		rtpriv->last_played = ath79_pcm_get_last_played(rtpriv);
+		ath79_pcm_set_own_bit(rtpriv);
 		if (rtpriv->last_played == NULL) {
-			snd_printd(KERN_ERR "BUG: ISR called but no recorded buf\n");
+			snd_printd("BUG: ISR called but no rec buf found\n");
 			goto ack;
 		}
 		snd_pcm_period_elapsed(prdata->capture);
@@ -139,21 +145,21 @@ ack:
 	return IRQ_HANDLED;
 }
 
-static int wasp_pcm_open(struct snd_pcm_substream *ss)
+static int ath79_pcm_open(struct snd_pcm_substream *ss)
 {
 	struct snd_soc_pcm_runtime *runtime = ss->private_data;
 	struct snd_soc_platform *platform = runtime->platform;
-	struct wasp_pcm_pltfm_priv *prdata = snd_soc_platform_get_drvdata(platform);
-	struct wasp_pcm_rt_priv *rtpriv;
+	struct ath79_pcm_pltfm_priv *prdata = snd_soc_platform_get_drvdata(platform);
+	struct ath79_pcm_rt_priv *rtpriv;
 	int err;
 
 	if (prdata == NULL) {
-		prdata = kzalloc(sizeof(struct wasp_pcm_pltfm_priv), GFP_KERNEL);
+		prdata = kzalloc(sizeof(struct ath79_pcm_pltfm_priv), GFP_KERNEL);
 		if (prdata == NULL)
 			return -ENOMEM;
 
-		err = request_irq(ATH79_MISC_IRQ_DMA, wasp_pcm_interrupt, 0,
-				  "wasp-pcm", prdata);
+		err = request_irq(ATH79_MISC_IRQ_DMA, ath79_pcm_interrupt, 0,
+				  "ath79-pcm", prdata);
 		if (err) {
 			kfree(prdata);
 			return -EBUSY;
@@ -173,24 +179,24 @@ static int wasp_pcm_open(struct snd_pcm_substream *ss)
 	if (!rtpriv) {
 		return -ENOMEM;
 	}
-	printk(KERN_NOTICE "%s: 0x%xB allocated at 0x%08x\n",
+	snd_printd("%s: 0x%xB allocated at 0x%08x\n",
 	       __FUNCTION__, sizeof(*rtpriv), (u32) rtpriv);
 
 	ss->runtime->private_data = rtpriv;
 	rtpriv->last_played = NULL;
 	INIT_LIST_HEAD(&rtpriv->dma_head);
 
-	snd_soc_set_runtime_hwparams(ss, &wasp_pcm_hardware);
+	snd_soc_set_runtime_hwparams(ss, &ath79_pcm_hardware);
 
 	return 0;
 }
 
-static int wasp_pcm_close(struct snd_pcm_substream *ss)
+static int ath79_pcm_close(struct snd_pcm_substream *ss)
 {
 	struct snd_soc_pcm_runtime *runtime = ss->private_data;
 	struct snd_soc_platform *platform = runtime->platform;
-	struct wasp_pcm_pltfm_priv *prdata = snd_soc_platform_get_drvdata(platform);
-	struct wasp_pcm_rt_priv *rtpriv;
+	struct ath79_pcm_pltfm_priv *prdata = snd_soc_platform_get_drvdata(platform);
+	struct ath79_pcm_rt_priv *rtpriv;
 
 	if (!prdata)
 		return 0;
@@ -212,25 +218,24 @@ static int wasp_pcm_close(struct snd_pcm_substream *ss)
 	return 0;
 }
 
-static int wasp_pcm_hw_params(struct snd_pcm_substream *ss,
-			      struct snd_pcm_hw_params *hw_params)
+static int ath79_pcm_init_desc(struct list_head *head, dma_addr_t baseaddr,
+			      int period_bytes,int bufsize)
 {
-	struct snd_pcm_runtime *runtime = ss->runtime;
-	struct wasp_pcm_desc *desc, *prev;
-	struct wasp_pcm_rt_priv *rtpriv;
+	struct ath79_pcm_desc *desc, *prev;
 	dma_addr_t desc_p;
 	unsigned int offset = 0;
 
-	rtpriv = runtime->private_data;
-
-	spin_lock(&wasp_pcm_lock);
+	spin_lock(&ath79_pcm_lock);
 
 	/* We loop until we have enough buffers to map the whole DMA area */
 	do {
 		/* Allocate a descriptor and insert it into the DMA ring */
-		desc = dma_pool_alloc(wasp_pcm_cache, GFP_KERNEL, &desc_p);
+		desc = dma_pool_alloc(ath79_pcm_cache, GFP_KERNEL, &desc_p);
+		if(!desc) {
+			return -ENOMEM;
+		}
 		desc->phys = desc_p;
-		list_add_tail(&desc->list, &rtpriv->dma_head);
+		list_add_tail(&desc->list, head);
 		/* OWN=0 --> For now, set ownership to CPU. The ownership will
 		 * be given to DMA controller when ready for xfer */
 		desc->OWN = desc->EOM = 0;
@@ -239,37 +244,51 @@ static int wasp_pcm_hw_params(struct snd_pcm_substream *ss,
 		/* The manual says the buffer size is not necessarily a multiple
 		 * of the period size. We handle this case though I'm not sure
 		 * how often it will happen in real life */
-		if (params_buffer_bytes(hw_params) >=
-		    offset + params_period_bytes(hw_params)) {
-			desc->size = params_period_bytes(hw_params);
+		if (bufsize >= offset + period_bytes) {
+			desc->size = period_bytes;
 		} else {
-			desc->size = params_buffer_bytes(hw_params) - offset;
+			desc->size = bufsize - offset;
 		}
-		desc->BufPtr = ss->dma_buffer.addr + offset;
+		desc->BufPtr = baseaddr + offset;
 
 		/* For now, we assume the buffer is always full
 		 * -->length == size */
 		desc->length = desc->size;
 
 		/* We need to make sure we are not the first descriptor.
-		 * If we are, prev doesn't point to a struct wasp_pcm_desc */
-		if (desc->list.prev != &rtpriv->dma_head) {
+		 * If we are, prev doesn't point to a struct ath79_pcm_desc */
+		if (desc->list.prev != head) {
 			prev =
-			    list_entry(desc->list.prev, struct wasp_pcm_desc,
+			    list_entry(desc->list.prev, struct ath79_pcm_desc,
 				       list);
 			prev->NextPtr = desc->phys;
 		}
 
 		offset += desc->size;
-	} while (offset < params_buffer_bytes(hw_params));
+	} while (offset < bufsize);
 
-	/* Once all the descriptors have been created, we can close the ring
+	/* Once all the descriptors have been created, we can close the loop
 	 * by pointing from the last one to the first one */
-	desc = list_first_entry(&rtpriv->dma_head, struct wasp_pcm_desc, list);
-	prev = list_entry(rtpriv->dma_head.prev, struct wasp_pcm_desc, list);
+	desc = list_first_entry(head, struct ath79_pcm_desc, list);
+	prev = list_entry(head->prev, struct ath79_pcm_desc, list);
 	prev->NextPtr = desc->phys;
 
-	spin_unlock(&wasp_pcm_lock);
+	spin_unlock(&ath79_pcm_lock);
+
+	return 0;
+}
+
+static int ath79_pcm_hw_params(struct snd_pcm_substream *ss,
+			      struct snd_pcm_hw_params *hw_params)
+{
+	struct snd_pcm_runtime *runtime = ss->runtime;
+	struct ath79_pcm_rt_priv *rtpriv;
+	int ret;
+
+	rtpriv = runtime->private_data;
+
+	ret = ath79_pcm_init_desc(&rtpriv->dma_head, ss->dma_buffer.addr,
+		params_period_bytes(hw_params), params_buffer_bytes(hw_params));
 
 	snd_pcm_set_runtime_buffer(ss, &ss->dma_buffer);
 	runtime->dma_bytes = params_buffer_bytes(hw_params);
@@ -277,42 +296,32 @@ static int wasp_pcm_hw_params(struct snd_pcm_substream *ss,
 	return 1;
 }
 
-static int wasp_pcm_hw_free(struct snd_pcm_substream *ss)
+static int ath79_pcm_hw_free(struct snd_pcm_substream *ss)
 {
 	struct snd_pcm_runtime *runtime = ss->runtime;
-	struct wasp_pcm_desc *desc, *n;
-	struct wasp_pcm_rt_priv *rtpriv;
+	struct ath79_pcm_desc *desc, *n;
+	struct ath79_pcm_rt_priv *rtpriv;
 
 	rtpriv = runtime->private_data;
 
-	spin_lock(&wasp_pcm_lock);
+	spin_lock(&ath79_pcm_lock);
 	list_for_each_entry_safe(desc, n, &rtpriv->dma_head, list) {
 		list_del(&desc->list);
-		printk(KERN_NOTICE "Freeing desc at @%08x\n", (u32) desc);
-		dma_pool_free(wasp_pcm_cache, desc, desc->phys);
+		dma_pool_free(ath79_pcm_cache, desc, desc->phys);
 	}
-	spin_unlock(&wasp_pcm_lock);
+	spin_unlock(&ath79_pcm_lock);
 
 	snd_pcm_set_runtime_buffer(ss, NULL);
 	return 0;
 }
 
-static int wasp_pcm_prepare(struct snd_pcm_substream *ss)
+static int ath79_pcm_prepare(struct snd_pcm_substream *ss)
 {
 	struct snd_pcm_runtime *runtime = ss->runtime;
-	struct wasp_pcm_rt_priv *rtpriv;
-	struct wasp_pcm_desc *desc;
+	struct ath79_pcm_rt_priv *rtpriv;
+	struct ath79_pcm_desc *desc;
 
 	rtpriv = runtime->private_data;
-
-	printk(KERN_NOTICE "%s called\n", __FUNCTION__);
-	printk(KERN_NOTICE "%s:Stream parameters\n", __FUNCTION__);
-	printk(KERN_NOTICE "%s:  rate=     %d\n", __FUNCTION__, runtime->rate);
-	printk(KERN_NOTICE "%s:  format=   %d\n", __FUNCTION__, (int)runtime->format);
-	printk(KERN_NOTICE "%s:  channels= %d\n", __FUNCTION__, runtime->channels);
-	printk(KERN_NOTICE "%s:  dma_area= %08x\n", __FUNCTION__, (u32)runtime->dma_area);
-	printk(KERN_NOTICE "%s:  period_size= %08x\n", __FUNCTION__, (u32)runtime->period_size);
-	printk(KERN_NOTICE "%s:  periods= %08x\n", __FUNCTION__, (u32)runtime->periods);
 
 	/* Request the DMA channel to the controller */
 	ath79_dma_wr(AR934X_DMA_REG_MBOX_DMA_POLICY,
@@ -320,15 +329,7 @@ static int wasp_pcm_prepare(struct snd_pcm_substream *ss)
 		     (6 << AR934X_DMA_MBOX_DMA_POLICY_TX_FIFO_THRESH_SHIFT));
 
 	/* Give ownership of the descriptors to the DMA engine */
-	spin_lock(&wasp_pcm_lock);
-	list_for_each_entry(desc, &rtpriv->dma_head, list) {
-		desc->OWN = 1;
-		printk(KERN_NOTICE
-		       "Desc@=%08x OWN=%d EOM=%d Length=%d Size=%d\nBuf=%08x Next=%08x\n",
-		       (u32) desc, (u32) desc->OWN, (u32) desc->EOM, (u32) desc->length, desc->size,
-		       (u32) desc->BufPtr, (u32) desc->NextPtr);
-	}
-	spin_unlock(&wasp_pcm_lock);
+	ath79_pcm_set_own_bit(rtpriv);
 
 	/* Setup the PLLs for the requested frequencies */
 	ath79_audio_set_freq(runtime->rate);
@@ -336,7 +337,7 @@ static int wasp_pcm_prepare(struct snd_pcm_substream *ss)
 	/* The direction is indicated from the DMA engine perspective
 	 * i.e. we'll be using the RX registers for Playback and
 	 * the TX registers for capture */
-	desc = list_first_entry(&rtpriv->dma_head, struct wasp_pcm_desc, list);
+	desc = list_first_entry(&rtpriv->dma_head, struct ath79_pcm_desc, list);
 	ath79_dma_wr(AR934X_DMA_REG_MBOX0_DMA_RX_DESCRIPTOR_BASE,
 		     (u32) desc->phys);
 	ath79_mbox_set_interrupt(AR934X_DMA_MBOX0_INT_RX_COMPLETE);
@@ -347,10 +348,10 @@ static int wasp_pcm_prepare(struct snd_pcm_substream *ss)
 	return 0;
 }
 
-static int wasp_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
+static int ath79_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
 {
-	struct wasp_pcm_rt_priv *rtpriv = ss->runtime->private_data;
-	struct wasp_pcm_desc *desc;
+	struct ath79_pcm_rt_priv *rtpriv = ss->runtime->private_data;
+	struct ath79_pcm_desc *desc;
 
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
@@ -367,7 +368,7 @@ static int wasp_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
 		list_for_each_entry(desc, &rtpriv->dma_head, list) {
 			desc->EOM = 1;
 		}
-		wasp_pcm_clear_own_bit(rtpriv);
+		ath79_pcm_clear_own_bit(rtpriv);
 		ath79_dma_wr(AR934X_DMA_REG_MBOX0_DMA_RX_CONTROL,
 			     AR934X_DMA_MBOX_DMA_CONTROL_STOP);
 		mdelay(100);
@@ -382,10 +383,10 @@ static int wasp_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
 	return 0;
 }
 
-static snd_pcm_uframes_t wasp_pcm_pointer(struct snd_pcm_substream *ss)
+static snd_pcm_uframes_t ath79_pcm_pointer(struct snd_pcm_substream *ss)
 {
 	struct snd_pcm_runtime *runtime = ss->runtime;
-	struct wasp_pcm_rt_priv *rtpriv;
+	struct ath79_pcm_rt_priv *rtpriv;
 	snd_pcm_uframes_t ret = 0;
 
 	rtpriv = runtime->private_data;
@@ -398,31 +399,30 @@ static snd_pcm_uframes_t wasp_pcm_pointer(struct snd_pcm_substream *ss)
 	return bytes_to_frames(runtime, ret);
 }
 
-static int wasp_pcm_mmap(struct snd_pcm_substream *ss, struct vm_area_struct *vma)
+static int ath79_pcm_mmap(struct snd_pcm_substream *ss, struct vm_area_struct *vma)
 {
 	return remap_pfn_range(vma, vma->vm_start,
 			ss->dma_buffer.addr >> PAGE_SHIFT,
 			vma->vm_end - vma->vm_start, vma->vm_page_prot);
 }
 
-static struct snd_pcm_ops wasp_pcm_ops = {
-	.open		= wasp_pcm_open,
-	.close		= wasp_pcm_close,
+static struct snd_pcm_ops ath79_pcm_ops = {
+	.open		= ath79_pcm_open,
+	.close		= ath79_pcm_close,
 	.ioctl		= snd_pcm_lib_ioctl,
-	.hw_params	= wasp_pcm_hw_params,
-	.hw_free	= wasp_pcm_hw_free,
-	.prepare	= wasp_pcm_prepare,
-	.trigger	= wasp_pcm_trigger,
-	.pointer	= wasp_pcm_pointer,
-	.mmap		= wasp_pcm_mmap,
+	.hw_params	= ath79_pcm_hw_params,
+	.hw_free	= ath79_pcm_hw_free,
+	.prepare	= ath79_pcm_prepare,
+	.trigger	= ath79_pcm_trigger,
+	.pointer	= ath79_pcm_pointer,
+	.mmap		= ath79_pcm_mmap,
 };
 
-static void wasp_pcm_free_dma_buffers(struct snd_pcm *pcm)
+static void ath79_pcm_free_dma_buffers(struct snd_pcm *pcm)
 {
 	struct snd_pcm_substream *ss;
 	struct snd_dma_buffer *buf;
 	int stream;
-	int i;
 
 	for (stream = 0; stream < 2; stream++) {
 		ss = pcm->streams[stream].substream;
@@ -436,10 +436,10 @@ static void wasp_pcm_free_dma_buffers(struct snd_pcm *pcm)
 		buf->area = NULL;
 	}
 
-	dma_pool_destroy(wasp_pcm_cache);
+	dma_pool_destroy(ath79_pcm_cache);
 }
 
-static int wasp_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+static int ath79_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
 {
 	struct snd_pcm_substream *ss = pcm->streams[stream].substream;
 	struct snd_dma_buffer *buf = &ss->dma_buffer;
@@ -450,7 +450,7 @@ static int wasp_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
 	buf->dev.type = SNDRV_DMA_TYPE_DEV;
 	buf->dev.dev = pcm->card->dev;
 	buf->private_data = NULL;
-	buf->bytes = wasp_pcm_hardware.buffer_bytes_max;
+	buf->bytes = ath79_pcm_hardware.buffer_bytes_max;
 
 	buf->area = dma_alloc_coherent(NULL, buf->bytes,
 					   &buf->addr, GFP_DMA);
@@ -463,82 +463,82 @@ static int wasp_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
 	return 0;
 }
 
-static u64 wasp_pcm_dmamask = 0xffffffff;
+static u64 ath79_pcm_dmamask = 0xffffffff;
 
-static int wasp_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+static int ath79_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
 	struct snd_pcm *pcm = rtd->pcm;
 	int ret = 0;
 
 	if (!card->dev->dma_mask)
-		card->dev->dma_mask = &wasp_pcm_dmamask;
+		card->dev->dma_mask = &ath79_pcm_dmamask;
 	if (!card->dev->coherent_dma_mask)
 		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
 
 	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
-		ret = wasp_pcm_preallocate_dma_buffer(pcm,
+		ret = ath79_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
 			goto out;
 	}
 
 	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
-		ret = wasp_pcm_preallocate_dma_buffer(pcm,
+		ret = ath79_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_CAPTURE);
 		if (ret)
 			goto out;
 	}
 
 	/* Allocate a DMA pool to store the MBOX descriptor */
-	wasp_pcm_cache = dma_pool_create("wasp_pcm_pool", rtd->platform->dev,
-					 sizeof(struct wasp_pcm_desc), 4, 0);
-	if (!wasp_pcm_cache)
+	ath79_pcm_cache = dma_pool_create("ath79_pcm_pool", rtd->platform->dev,
+					 sizeof(struct ath79_pcm_desc), 4, 0);
+	if (!ath79_pcm_cache)
 		ret = -ENOMEM;
 
 out:
 	return ret;
 }
 
-struct snd_soc_platform_driver wasp_soc_platform = {
-	.ops		= &wasp_pcm_ops,
-	.pcm_new	= wasp_soc_pcm_new,
-	.pcm_free	= wasp_pcm_free_dma_buffers,
+struct snd_soc_platform_driver ath79_soc_platform = {
+	.ops		= &ath79_pcm_ops,
+	.pcm_new	= ath79_soc_pcm_new,
+	.pcm_free	= ath79_pcm_free_dma_buffers,
 };
-EXPORT_SYMBOL_GPL(wasp_soc_platform);
+EXPORT_SYMBOL_GPL(ath79_soc_platform);
 
-static int __devinit wasp_soc_platform_probe(struct platform_device *pdev)
+static int __devinit ath79_soc_platform_probe(struct platform_device *pdev)
 {
-	return snd_soc_register_platform(&pdev->dev, &wasp_soc_platform);
+	return snd_soc_register_platform(&pdev->dev, &ath79_soc_platform);
 }
 
-static int __devexit wasp_soc_platform_remove(struct platform_device *pdev)
+static int __devexit ath79_soc_platform_remove(struct platform_device *pdev)
 {
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
 }
 
-static struct platform_driver wasp_pcm_driver = {
+static struct platform_driver ath79_pcm_driver = {
 	.driver = {
-			.name = "wasp-pcm-audio",
+			.name = "ath79-pcm-audio",
 			.owner = THIS_MODULE,
 	},
 
-	.probe = wasp_soc_platform_probe,
-	.remove = __devexit_p(wasp_soc_platform_remove),
+	.probe = ath79_soc_platform_probe,
+	.remove = __devexit_p(ath79_soc_platform_remove),
 };
 
-static int __init wasp_soc_platform_init(void)
+static int __init ath79_soc_platform_init(void)
 {
-	return platform_driver_register(&wasp_pcm_driver);
+	return platform_driver_register(&ath79_pcm_driver);
 }
-module_init(wasp_soc_platform_init);
+module_init(ath79_soc_platform_init);
 
-static void __exit wasp_soc_platform_exit(void)
+static void __exit ath79_soc_platform_exit(void)
 {
-	platform_driver_unregister(&wasp_pcm_driver);
+	platform_driver_unregister(&ath79_pcm_driver);
 }
-module_exit(wasp_soc_platform_exit);
+module_exit(ath79_soc_platform_exit);
 
 MODULE_AUTHOR("Qualcomm-Atheros");
 MODULE_DESCRIPTION("QCA Audio PCM DMA module");

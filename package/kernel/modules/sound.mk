@@ -196,31 +196,31 @@ endef
 $(eval $(call KernelPackage,sound-soc-n810))
 
 
-define KernelPackage/sound-soc-wasp
-  TITLE:=Qualcomm-Atheros Wasp SoC sound support
+define KernelPackage/sound-soc-ath79
+  TITLE:=Qualcomm-Atheros SoC sound support
   KCONFIG:= \
-	CONFIG_SND_WASP_SOC \
-	CONFIG_SND_WASP_SOC_I2S
+	CONFIG_SND_ATH79_SOC \
+	CONFIG_SND_ATH79_SOC_I2S
   FILES:= \
-	$(LINUX_DIR)/sound/soc/qca/snd-soc-wasp-i2s.ko \
-	$(LINUX_DIR)/sound/soc/qca/snd-soc-wasp.ko
-  AUTOLOAD:=$(call AutoLoad,60,snd-soc-wasp snd-soc-wasp-i2s)
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-i2s.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79.ko
+  AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79 snd-soc-ath79-i2s)
   DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core
   $(call AddDepends/sound)
 endef
 
-$(eval $(call KernelPackage,sound-soc-wasp))
+$(eval $(call KernelPackage,sound-soc-ath79))
 
 
 define KernelPackage/sound-soc-db12x
   TITLE:=Qualcomm-Atheros DB12x board sound support
   KCONFIG:= \
-	CONFIG_SND_WASP_SOC_DB120
+	CONFIG_SND_ATH79_SOC_DB120
   FILES:= \
 	$(LINUX_DIR)/sound/soc/codecs/snd-soc-spdif.ko \
-	$(LINUX_DIR)/sound/soc/qca/snd-soc-db12x.ko
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-db12x.ko
   AUTOLOAD:=$(call AutoLoad,65,snd-soc-spdif snd-soc-db12x)
-  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-wasp
+  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-ath79
   $(call AddDepends/sound)
 endef
 

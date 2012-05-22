@@ -1,7 +1,7 @@
 /*
  * ath-i2s.h -- ALSA DAI (i2s) interface for the QCA Wasp based audio interface
  *
- * Copyright (c) 2012 Atheros Communications Inc.
+ * Copyright (c) 2012 Qualcomm-Atheros Inc.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -19,6 +19,6 @@
 #ifndef _ATH_I2S_H_
 #define _ATH_I2S_H_
 
-extern struct snd_soc_dai_driver wasp_i2s_dai;
+extern struct snd_soc_dai_driver ath79_i2s_dai;
 
 #endif

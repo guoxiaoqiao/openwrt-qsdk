@@ -4,7 +4,7 @@
  source "sound/soc/kirkwood/Kconfig"
  source "sound/soc/mid-x86/Kconfig"
  source "sound/soc/mxs/Kconfig"
-+source "sound/soc/qca/Kconfig"
++source "sound/soc/ath79/Kconfig"
  source "sound/soc/pxa/Kconfig"
  source "sound/soc/samsung/Kconfig"
  source "sound/soc/s6000/Kconfig"
@@ -14,7 +14,7 @@
  obj-$(CONFIG_SND_SOC)	+= omap/
  obj-$(CONFIG_SND_SOC)	+= kirkwood/
  obj-$(CONFIG_SND_SOC)	+= pxa/
-+obj-$(CONFIG_SND_SOC)	+= qca/
++obj-$(CONFIG_SND_SOC)	+= ath79/
  obj-$(CONFIG_SND_SOC)	+= samsung/
  obj-$(CONFIG_SND_SOC)	+= s6000/
  obj-$(CONFIG_SND_SOC)	+= sh/
