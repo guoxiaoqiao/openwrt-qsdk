@@ -31,8 +31,8 @@
 static struct platform_device *db12x_snd_device;
 
 static struct snd_soc_dai_link db12x_dai = {
-	.name = "I2S SPKR Out",
-	.stream_name = "I2S SPKR Out",
+	.name = "DB12x audio",
+	.stream_name = "DB12x audio",
 	.cpu_dai_name = "wasp-i2s",
 	.codec_dai_name = "dit-hifi",
 	.platform_name = "wasp-pcm-audio",

@@ -21,6 +21,7 @@
 #include <linux/module.h>
 
 #include <asm/mach-ath79/ar71xx_regs.h>
+#include <asm/mach-ath79/ath79.h>
 
 static int wasp_i2s_startup(struct snd_pcm_substream *substream,
 			      struct snd_soc_dai *dai)
@@ -70,33 +71,7 @@ static int wasp_i2s_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
 				struct snd_soc_dai *dai)
 {
-	printk(KERN_CRIT "%s called - rate=%d\n", __FUNCTION__, params_rate(params));
-#if 0
-	switch (params_rate(params)) {
-	case 44100:
-		if (ar71xx_ref_freq == 25 *1000 * 1000) {
-			wasp_i2s_clk_set(0x15a2102a, 0x61a1);
-			wasp_i2s_dpll(ATH_AUD_DPLL3_KD_25, ATH_AUD_DPLL3_KI_25);
-		} else {
-			wasp_i2s_clk_set(0x30a9036, 0x61a2);
-			wasp_i2s_dpll(ATH_AUD_DPLL3_KD_40, ATH_AUD_DPLL3_KI_40);
-		}
-		break;
-	case 48000:
-		if (ar71xx_ref_freq == 25 * 1000 * 1000) {
-			wasp_i2s_clk_set(0x127bb02e, 0x61a1);
-			wasp_i2s_dpll(ATH_AUD_DPLL3_KD_25, ATH_AUD_DPLL3_KI_25);
-		} else {
-			wasp_i2s_clk_set(0xfb7e83a, 0x61a2);
-			wasp_i2s_dpll(ATH_AUD_DPLL3_KD_40, ATH_AUD_DPLL3_KI_40);
-		}
-		break;
-	default:
-		printk(KERN_CRIT "Freq %d not supported \n",
-				params_rate(params));
-		return -ENOTSUPP;
-	}
-#endif
+	printk(KERN_CRIT "%s called\n", __FUNCTION__);
 
 	return 0;
 }
@@ -124,23 +99,15 @@ static struct snd_soc_dai_ops wasp_i2s_dai_ops = {
 	.set_sysclk	= wasp_i2s_set_dai_sysclk,
 };
 
-struct snd_soc_dai_driver wasp_i2s_dai = {
+static struct snd_soc_dai_driver wasp_i2s_dai = {
 	.name = "wasp-i2s",
 	.id = 0,
 	.playback = {
 		.channels_min = 2,
 		.channels_max = 2,
-		.rates = SNDRV_PCM_RATE_32000 |
-			 SNDRV_PCM_RATE_44100 |
-			 SNDRV_PCM_RATE_48000 |
-			 SNDRV_PCM_RATE_96000,
-		.formats = SNDRV_PCM_FMTBIT_S8 |
-			   SNDRV_PCM_FMTBIT_S16_LE |
-			   SNDRV_PCM_FMTBIT_S16_BE |
-			   SNDRV_PCM_FMTBIT_S24_LE |
-			   SNDRV_PCM_FMTBIT_S24_BE |
-			   SNDRV_PCM_FMTBIT_S32_LE |
-			   SNDRV_PCM_FMTBIT_S32_BE,
+		.rates = SNDRV_PCM_RATE_44100,
+		.formats = SNDRV_PCM_FMTBIT_S16_LE |
+			   SNDRV_PCM_FMTBIT_S16_BE,
 		},
 	.ops = &wasp_i2s_dai_ops,
 };

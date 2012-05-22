@@ -19,34 +19,45 @@
 #ifndef _ATH_PCM_H_
 #define _ATH_PCM_H_
 
-/* Renamed struct ath_mbox_dma_desc */
+#include <linux/list.h>
+
+/*
+ * Renamed struct ath_mbox_dma_desc
+ * MBOX Hardware descriptor
+ * Note that a list is appended to this structure so that
+ * we can parse descriptors from the CPU using virtual addresses
+ */
 struct wasp_pcm_desc {
-	unsigned int OWN		:  1,    /* bit 00 */
-	             EOM		:  1,    /* bit 01 */
-	             rsvd1	    :  6,    /* bit 07-02 */
-	             size	    : 12,    /* bit 19-08 */
-	             length	    : 12,    /* bit 31-20 */
-	             rsvd2	    :  4,    /* bit 00 */
-	             BufPtr	    : 28,    /* bit 00 */
-	             rsvd3	    :  4,    /* bit 00 */
-	             NextPtr	: 28;    /* bit 00 */
+	unsigned int	OWN	:  1,    /* bit 00 */
+			EOM	:  1,    /* bit 01 */
+			rsvd1	:  6,    /* bit 07-02 */
+			size	: 12,    /* bit 19-08 */
+			length	: 12,    /* bit 31-20 */
+			rsvd2	:  4,    /* bit 00 */
+			BufPtr	: 28,    /* bit 00 */
+			rsvd3	:  4,    /* bit 00 */
+			NextPtr	: 28;    /* bit 00 */
 
-    unsigned int Va[6];
-    unsigned int Ua[6];
-    unsigned int Ca[6];
-    unsigned int Vb[6];
-    unsigned int Ub[6];
-    unsigned int Cb[6];
-} wasp_pcm_desc;
+	unsigned int Va[6];
+	unsigned int Ua[6];
+	unsigned int Ca[6];
+	unsigned int Vb[6];
+	unsigned int Ub[6];
+	unsigned int Cb[6];
 
-/* Replaces struct i2s_dma_buf */
-struct wasp_pcm_data {
-	struct wasp_pcm_desc *dma_desc_array;
-	dma_addr_t dma_desc_array_phys;
+	/* Software specific data
+	 * These data are not taken into account by the HW */
+	struct list_head list; /* List linking all the buffer in virt@ space */
+	dma_addr_t phys; /* Physical address of the descriptor */
+};
+
+struct wasp_pcm_rt_priv {
+	struct list_head dma_head;
+	struct wasp_pcm_desc *last_played;
 };
 
 /* Replaces struct ath_i2s_softc */
-struct wasp_pcm_priv {
+struct wasp_pcm_pltfm_priv {
 	struct snd_pcm_substream *playback;
 	struct snd_pcm_substream *capture;
 };

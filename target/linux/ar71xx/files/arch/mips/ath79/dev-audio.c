@@ -68,7 +68,6 @@ void __init ath79_audio_init(void)
 	ath79_stereo_wr(AR934X_STEREO_REG_CONFIG,
 		AR934X_STEREO_CONFIG_SPDIF_ENABLE |
 		AR934X_STEREO_CONFIG_I2S_ENABLE |
-		AR934X_STEREO_CONFIG_PCM_SWAP |
 		AR934X_STEREO_CONFIG_DATA_WORD_16 << AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT |
 		AR934X_STEREO_CONFIG_SAMPLE_CNT_CLEAR_TYPE |
 		AR934X_STEREO_CONFIG_MASTER |
@@ -77,7 +76,9 @@ void __init ath79_audio_init(void)
 	udelay(100);
 	ath79_stereo_reset_clear();
 
-	ath79_audio_set_freq(44100);
+	ath79_dma_wr(AR934X_DMA_REG_MBOX_DMA_POLICY,
+			0x6 << AR934X_DMA_MBOX_DMA_POLICY_TX_FIFO_THRESH_SHIFT |
+			AR934X_DMA_MBOX_DMA_POLICY_RX_QUANTUM);
 }
 EXPORT_SYMBOL(ath79_audio_init);
 
@@ -349,6 +350,21 @@ void ath79_stereo_reset_clear(void)
 }
 EXPORT_SYMBOL(ath79_stereo_reset_clear);
 
+void ath79_mbox_set_interrupt(u32 mask)
+{
+	unsigned long flags;
+	u32 t;
+
+	spin_lock_irqsave(&ath79_audio_lock, flags);
+
+	t = ath79_dma_rr(AR934X_DMA_REG_MBOX_INT_ENABLE);
+	t |= mask;
+	ath79_dma_wr(AR934X_DMA_REG_MBOX_INT_ENABLE, t);
+
+	spin_unlock_irqrestore(&ath79_audio_lock, flags);
+}
+EXPORT_SYMBOL(ath79_mbox_set_interrupt);
+
 int ath79_audio_set_freq(int freq)
 {
 	struct clk *clk;
@@ -449,4 +465,4 @@ int ath79_audio_set_freq(int freq)
 
 	return 0;
 }
-
+EXPORT_SYMBOL(ath79_audio_set_freq);

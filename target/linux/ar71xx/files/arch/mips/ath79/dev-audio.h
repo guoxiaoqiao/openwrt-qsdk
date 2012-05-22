@@ -18,6 +18,4 @@ void ath79_audio_init(void);
 void ath79_stereo_reset_set(void);
 void ath79_stereo_reset_clear(void);
 
-int ath79_audio_set_freq(int freq);
-
 #endif /* _ATH79_DEV_DSA_H */

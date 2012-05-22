@@ -8,7 +8,7 @@
  
  static inline void ath79_pll_wr(unsigned reg, u32 val)
  {
-@@ -139,6 +140,26 @@ static inline u32 ath79_dma_rr(unsigned
+@@ -139,6 +140,29 @@ static inline u32 ath79_dma_rr(unsigned
  	return __raw_readl(ath79_dma_base + reg);
  }
  
@@ -31,6 +31,9 @@
 +{
 +	return __raw_readl(ath79_audio_dpll_base + reg);
 +}
++
++int ath79_audio_set_freq(int);
++void ath79_mbox_set_interrupt(u32);
 +
  void ath79_flash_acquire(void);
  void ath79_flash_release(void);
