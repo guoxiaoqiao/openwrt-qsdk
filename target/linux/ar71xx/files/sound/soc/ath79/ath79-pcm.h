@@ -19,14 +19,12 @@
 #ifndef _ATH_PCM_H_
 #define _ATH_PCM_H_
 
+#include <linux/sound.h>
 #include <linux/list.h>
+#include <linux/spinlock.h>
 
-/*
- * Renamed struct ath_mbox_dma_desc
- * MBOX Hardware descriptor
- * Note that a list is appended to this structure so that
- * we can parse descriptors from the CPU using virtual addresses
- */
+extern spinlock_t ath79_pcm_lock;
+
 struct ath79_pcm_desc {
 	unsigned int	OWN	:  1,    /* bit 00 */
 			EOM	:  1,    /* bit 01 */
@@ -65,4 +63,56 @@ struct ath79_pcm_pltfm_priv {
 /* platform data */
 extern struct snd_soc_platform_driver ath79_soc_platform;
 
-#endif
+void ath79_mbox_dma_start(struct ath79_pcm_rt_priv *);
+void ath79_mbox_dma_stop(struct ath79_pcm_rt_priv *);
+void ath79_mbox_dma_prepare(struct ath79_pcm_rt_priv *);
+int ath79_mbox_dma_map(struct ath79_pcm_rt_priv *, dma_addr_t, int,int);
+void ath79_mbox_dma_unmap(struct ath79_pcm_rt_priv *);
+int ath79_mbox_dma_init(struct device *);
+void ath79_mbox_dma_exit(void);
+
+static inline void ath79_pcm_set_own_bits(struct ath79_pcm_rt_priv *rtpriv)
+{
+	struct ath79_pcm_desc *desc;
+
+	spin_lock(&ath79_pcm_lock);
+	list_for_each_entry(desc, &rtpriv->dma_head, list) {
+		if (desc->OWN == 0) {
+			desc->OWN = 1;
+		}
+	}
+	spin_unlock(&ath79_pcm_lock);
+}
+
+static inline void ath79_pcm_clear_own_bits(struct ath79_pcm_rt_priv *rtpriv)
+{
+	struct ath79_pcm_desc *desc;
+
+	spin_lock(&ath79_pcm_lock);
+	list_for_each_entry(desc, &rtpriv->dma_head, list) {
+		if (desc->OWN == 1) {
+			desc->OWN = 0;
+		}
+	}
+	spin_unlock(&ath79_pcm_lock);
+}
+
+static inline struct ath79_pcm_desc *ath79_pcm_get_last_played(struct ath79_pcm_rt_priv *rtpriv)
+{
+	struct ath79_pcm_desc *desc, *prev;
+
+	spin_lock(&ath79_pcm_lock);
+	prev = list_entry(rtpriv->dma_head.prev, struct ath79_pcm_desc, list);
+	list_for_each_entry(desc, &rtpriv->dma_head, list) {
+		if (desc->OWN == 1 && prev->OWN == 0) {
+			return desc;
+		}
+		prev = desc;
+	}
+	spin_unlock(&ath79_pcm_lock);
+
+	/* If we didn't find the last played buffer, return NULL */
+	return NULL;
+}
+
+#endif /* _ATH_PCM_H_ */
