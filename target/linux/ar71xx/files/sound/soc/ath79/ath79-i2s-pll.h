@@ -16,8 +16,6 @@
  *  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <linux/types.h>
-
 struct ath79_pll_config {
 	int rate;		/* Stream frequency */
 	int divint;		/* AUDIO_PLL_MODULATION		06:01 */
@@ -32,20 +30,4 @@ struct ath79_pll_config {
 	int shift;		/* AUDIO_DPLL3			29:23 */
 };
 
-extern const struct ath79_pll_config pll_cfg_25MHz[];
-extern const struct ath79_pll_config pll_cfg_40MHz[];
-
-void ath79_pll_powerup(void);
-void ath79_pll_powerdown(void);
-bool ath79_pll_ispowered(void);
-
-void ath79_audiodpll_do_meas_set(void);
-void ath79_audiodpll_do_meas_clear(void);
-bool ath79_audiodpll_meas_done_is_set(void);
-
-void ath79_stereo_reset_set(void);
-void ath79_stereo_reset_clear(void);
-
-u32 ath79_audiodpll_sqsum_dvc_get(void);
-
-void ath79_load_pll_regs(const struct ath79_pll_config *);
+int ath79_audio_set_freq(int);

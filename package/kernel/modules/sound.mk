@@ -204,7 +204,7 @@ define KernelPackage/sound-soc-ath79
   FILES:= \
 	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-i2s.ko \
 	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79.ko
-  AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79 snd-soc-ath79-i2s)
+  AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79-i2s snd-soc-ath79)
   DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core
   $(call AddDepends/sound)
 endef

@@ -26,15 +26,15 @@
 extern spinlock_t ath79_pcm_lock;
 
 struct ath79_pcm_desc {
-	unsigned int	OWN	:  1,    /* bit 00 */
-			EOM	:  1,    /* bit 01 */
-			rsvd1	:  6,    /* bit 07-02 */
-			size	: 12,    /* bit 19-08 */
-			length	: 12,    /* bit 31-20 */
-			rsvd2	:  4,    /* bit 00 */
-			BufPtr	: 28,    /* bit 00 */
-			rsvd3	:  4,    /* bit 00 */
-			NextPtr	: 28;    /* bit 00 */
+	unsigned int	OWN	:  1,    /* bit 31 */
+			EOM	:  1,    /* bit 30 */
+			rsvd1	:  6,    /* bit 29-24 */
+			size	: 12,    /* bit 23-12 */
+			length	: 12,    /* bit 11-00 */
+			rsvd2	:  4,    /* bit 31-28 */
+			BufPtr	: 28,    /* bit 27-00 */
+			rsvd3	:  4,    /* bit 31-28 */
+			NextPtr	: 28;    /* bit 27-00 */
 
 	unsigned int Va[6];
 	unsigned int Ua[6];
@@ -63,6 +63,7 @@ struct ath79_pcm_pltfm_priv {
 /* platform data */
 extern struct snd_soc_platform_driver ath79_soc_platform;
 
+void ath79_mbox_interrupt_ack(u32);
 void ath79_mbox_dma_start(struct ath79_pcm_rt_priv *);
 void ath79_mbox_dma_stop(struct ath79_pcm_rt_priv *);
 void ath79_mbox_dma_prepare(struct ath79_pcm_rt_priv *);

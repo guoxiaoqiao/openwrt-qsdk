@@ -13,6 +13,6 @@
 
 void __init ath79_audio_device_register(void);
 
-void ath79_audio_init(void);
+void ath79_audio_setup(void);
 
 #endif /* _ATH79_DEV_DSA_H */

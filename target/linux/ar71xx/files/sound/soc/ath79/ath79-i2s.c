@@ -16,77 +16,103 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <linux/module.h>
+#include <linux/spinlock.h>
 #include <sound/core.h>
 #include <sound/soc.h>
-#include <linux/module.h>
+#include <sound/soc-dai.h>
+#include <sound/pcm_params.h>
 
 #include <asm/mach-ath79/ar71xx_regs.h>
 #include <asm/mach-ath79/ath79.h>
 
+#include "ath79-i2s.h"
+#include "ath79-i2s-pll.h"
+
+DEFINE_SPINLOCK(ath79_stereo_lock);
+
+void ath79_stereo_reset(void)
+{
+	u32 t;
+
+	spin_lock(&ath79_stereo_lock);
+	t = ath79_stereo_rr(AR934X_STEREO_REG_CONFIG);
+	t |= AR934X_STEREO_CONFIG_RESET;
+	ath79_stereo_wr(AR934X_STEREO_CONFIG_RESET, t);
+	spin_unlock(&ath79_stereo_lock);
+}
+EXPORT_SYMBOL(ath79_stereo_reset);
+
 static int ath79_i2s_startup(struct snd_pcm_substream *substream,
 			      struct snd_soc_dai *dai)
 {
-	printk(KERN_CRIT "%s called\n", __FUNCTION__);
+	/* Enable I2S and SPDIF by default */
+	ath79_stereo_wr(AR934X_STEREO_REG_CONFIG,
+		AR934X_STEREO_CONFIG_SPDIF_ENABLE |
+		AR934X_STEREO_CONFIG_I2S_ENABLE |
+		AR934X_STEREO_CONFIG_SAMPLE_CNT_CLEAR_TYPE |
+		AR934X_STEREO_CONFIG_MASTER);
+
+	ath79_stereo_reset();
 	return 0;
 }
 
 static void ath79_i2s_shutdown(struct snd_pcm_substream *substream,
 				struct snd_soc_dai *dai)
 {
-	printk(KERN_CRIT "%s called\n", __FUNCTION__);
+	ath79_stereo_wr(AR934X_STEREO_REG_CONFIG, 0);
 	return;
 }
 
 static int ath79_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
 			      struct snd_soc_dai *dai)
 {
-	int ret = 0;
-
-	switch (cmd) {
-	case SNDRV_PCM_TRIGGER_START:
-		printk(KERN_CRIT "%s called - cmd=SNDRV_PCM_TRIGGER_START\n", __FUNCTION__);
-		break;
-	case SNDRV_PCM_TRIGGER_RESUME:
-		printk(KERN_CRIT "%s called - cmd=SNDRV_PCM_TRIGGER_RESUME\n", __FUNCTION__);
-		break;
-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-		printk(KERN_CRIT "%s called - cmd=SNDRV_PCM_TRIGGER_PAUSE_RELEASE\n", __FUNCTION__);
-		break;
-	case SNDRV_PCM_TRIGGER_STOP:
-		printk(KERN_CRIT "%s called - cmd=SNDRV_PCM_TRIGGER_STOP\n", __FUNCTION__);
-		break;
-	case SNDRV_PCM_TRIGGER_SUSPEND:
-		printk(KERN_CRIT "%s called - cmd=SNDRV_PCM_TRIGGER_SUSPEND\n", __FUNCTION__);
-		break;
-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-		printk(KERN_CRIT "%s called - cmd=SNDRV_PCM_TRIGGER_PAUSE_PUSH\n", __FUNCTION__);
-		break;
-	default:
-		ret = -EINVAL;
-	}
-	return ret;
+	return 0;
 }
 
 static int ath79_i2s_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
 				struct snd_soc_dai *dai)
 {
-	printk(KERN_CRIT "%s called\n", __FUNCTION__);
+	u32 mask, t;
 
-	return 0;
-}
+	ath79_audio_set_freq(params_rate(params));
 
-static int ath79_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
-		unsigned int fmt)
-{
-	printk(KERN_CRIT "%s called - fmt=%04x\n", __FUNCTION__, fmt);
-	return 0;
-}
+	switch(params_format(params)) {
+	case SNDRV_PCM_FORMAT_S8:
+		mask = AR934X_STEREO_CONFIG_DATA_WORD_8
+			<< AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT;
+		break;
+	case SNDRV_PCM_FORMAT_S16:
+		mask = AR934X_STEREO_CONFIG_DATA_WORD_16
+			<< AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT;
+		break;
+	case SNDRV_PCM_FORMAT_S24:
+		mask = AR934X_STEREO_CONFIG_DATA_WORD_24
+			<< AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT;
+		mask |= AR934X_STEREO_CONFIG_I2S_WORD_SIZE;
+		break;
+	case SNDRV_PCM_FORMAT_S32:
+		mask = AR934X_STEREO_CONFIG_DATA_WORD_32
+			<< AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT;
+		mask |= AR934X_STEREO_CONFIG_I2S_WORD_SIZE;
+		break;
+	default:
+		printk(KERN_ERR "%s: Format %d not supported\n",
+			__FUNCTION__, params_format(params));
+		return -ENOTSUPP;
+	}
 
-static int ath79_i2s_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
-		int clk_id, unsigned int freq, int dir)
-{
-	printk(KERN_CRIT "%s called - freq=%d dir=%d\n", __FUNCTION__, freq, dir);
+	spin_lock(&ath79_stereo_lock);
+	t = ath79_stereo_rr(AR934X_STEREO_REG_CONFIG);
+	t &= ~(AR934X_STEREO_CONFIG_DATA_WORD_SIZE_MASK
+		<< AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT);
+	t &= ~(AR934X_STEREO_CONFIG_I2S_WORD_SIZE);
+	t |= mask;
+	ath79_stereo_wr(AR934X_STEREO_REG_CONFIG, t);
+	spin_unlock(&ath79_stereo_lock);
+
+	ath79_stereo_reset();
 	return 0;
 }
 
@@ -95,8 +121,6 @@ static struct snd_soc_dai_ops ath79_i2s_dai_ops = {
 	.shutdown	= ath79_i2s_shutdown,
 	.trigger	= ath79_i2s_trigger,
 	.hw_params	= ath79_i2s_hw_params,
-	.set_fmt	= ath79_i2s_set_dai_fmt,
-	.set_sysclk	= ath79_i2s_set_dai_sysclk,
 };
 
 static struct snd_soc_dai_driver ath79_i2s_dai = {
@@ -105,22 +129,28 @@ static struct snd_soc_dai_driver ath79_i2s_dai = {
 	.playback = {
 		.channels_min = 2,
 		.channels_max = 2,
-		.rates = SNDRV_PCM_RATE_44100,
-		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-			   SNDRV_PCM_FMTBIT_S16_BE,
+		.rates = SNDRV_PCM_RATE_22050 |
+				SNDRV_PCM_RATE_32000 |
+				SNDRV_PCM_RATE_44100 |
+				SNDRV_PCM_RATE_48000 |
+				SNDRV_PCM_RATE_88200 |
+				SNDRV_PCM_RATE_96000,
+		.formats = SNDRV_PCM_FMTBIT_S8 |
+				SNDRV_PCM_FMTBIT_S16 |
+				SNDRV_PCM_FMTBIT_S24 |
+				SNDRV_PCM_FMTBIT_S32,
 		},
 	.ops = &ath79_i2s_dai_ops,
 };
 
 static int ath79_i2s_drv_probe(struct platform_device *pdev)
 {
-	printk(KERN_CRIT "%s called\n", __FUNCTION__);
+	spin_lock_init(&ath79_stereo_lock);
 	return snd_soc_register_dai(&pdev->dev, &ath79_i2s_dai);
 }
 
 static int __devexit ath79_i2s_drv_remove(struct platform_device *pdev)
 {
-	printk(KERN_CRIT "%s called\n", __FUNCTION__);
 	snd_soc_unregister_dai(&pdev->dev);
 	return 0;
 }
@@ -137,13 +167,11 @@ static struct platform_driver ath79_i2s_driver = {
 
 static int __init ath79_i2s_init(void)
 {
-	printk(KERN_CRIT "%s called\n", __FUNCTION__);
 	return platform_driver_register(&ath79_i2s_driver);
 }
 
 static void __exit ath79_i2s_exit(void)
 {
-	printk(KERN_CRIT "%s called\n", __FUNCTION__);
 	platform_driver_unregister(&ath79_i2s_driver);
 }
 

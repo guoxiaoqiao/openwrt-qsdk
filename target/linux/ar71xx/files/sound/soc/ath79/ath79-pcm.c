@@ -36,13 +36,21 @@ static struct snd_pcm_hardware ath79_pcm_hardware = {
 		SNDRV_PCM_INFO_MMAP_VALID |
 		SNDRV_PCM_INFO_INTERLEAVED |
 		SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
-	.formats = SNDRV_PCM_FMTBIT_S16_LE,
-	.rates = SNDRV_PCM_RATE_44100,
-	.rate_min = 44100,
-	.rate_max = 44100,
+	.formats = SNDRV_PCM_FMTBIT_S8 |
+			SNDRV_PCM_FMTBIT_S16 |
+			SNDRV_PCM_FMTBIT_S24 |
+			SNDRV_PCM_FMTBIT_S32,
+	.rates = SNDRV_PCM_RATE_22050 |
+			SNDRV_PCM_RATE_32000 |
+			SNDRV_PCM_RATE_44100 |
+			SNDRV_PCM_RATE_48000 |
+			SNDRV_PCM_RATE_88200 |
+			SNDRV_PCM_RATE_96000,
+	.rate_min = 22050,
+	.rate_max = 96000,
 	.channels_min = 2,
 	.channels_max = 2,
-	/* These numbers are pretty random. As the DMA engine is descriptor base
+	/* These numbers are empirical. As the DMA engine is descriptor base
 	 * the only real limitation we have is the amount of RAM.
 	 * Ideally, we'd need to find the best tradeoff between number of descs
 	 * and CPU load */
@@ -62,12 +70,13 @@ static irqreturn_t ath79_pcm_interrupt(int irq, void *dev_id)
 
 	status = ath79_dma_rr(AR934X_DMA_REG_MBOX_INT_STATUS);
 
-	/* Notify the corresponding ALSA substream */
 	if(status & AR934X_DMA_MBOX_INT_STATUS_RX_DMA_COMPLETE) {
 		rtpriv = prdata->playback->runtime->private_data;
 		/* Store the last played buffer in the runtime priv struct */
 		rtpriv->last_played = ath79_pcm_get_last_played(rtpriv);
 		ath79_pcm_set_own_bits(rtpriv);
+		ath79_mbox_interrupt_ack(AR934X_DMA_MBOX_INT_STATUS_RX_DMA_COMPLETE);
+
 		if (rtpriv->last_played == NULL) {
 			snd_printd("BUG: ISR called but no played buf found\n");
 			goto ack;
@@ -79,6 +88,8 @@ static irqreturn_t ath79_pcm_interrupt(int irq, void *dev_id)
 		/* Store the last played buffer in the runtime priv struct */
 		rtpriv->last_played = ath79_pcm_get_last_played(rtpriv);
 		ath79_pcm_set_own_bits(rtpriv);
+		ath79_mbox_interrupt_ack(AR934X_DMA_MBOX_INT_STATUS_TX_DMA_COMPLETE);
+
 		if (rtpriv->last_played == NULL) {
 			snd_printd("BUG: ISR called but no rec buf found\n");
 			goto ack;
@@ -87,9 +98,6 @@ static irqreturn_t ath79_pcm_interrupt(int irq, void *dev_id)
 	}
 
 ack:
-	/* Ack the interrupt */
-	ath79_dma_wr(AR934X_DMA_REG_MBOX_INT_STATUS, status);
-
 	return IRQ_HANDLED;
 }
 
@@ -206,8 +214,6 @@ static int ath79_pcm_prepare(struct snd_pcm_substream *ss)
 
 	rtpriv = runtime->private_data;
 
-	/* Setup the PLLs for the requested frequencies */
-	ath79_audio_set_freq(runtime->rate);
 	ath79_mbox_dma_prepare(rtpriv);
 
 	return 0;

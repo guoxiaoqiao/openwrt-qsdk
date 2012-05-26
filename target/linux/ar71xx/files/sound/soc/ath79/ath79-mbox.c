@@ -23,33 +23,86 @@
 #include <sound/core.h>
 #include <asm/mach-ath79/ar71xx_regs.h>
 #include <asm/mach-ath79/ath79.h>
+
 #include "ath79-pcm.h"
+#include "ath79-i2s.h"
 
 spinlock_t ath79_pcm_lock;
 static struct dma_pool *ath79_pcm_cache;
 
+void ath79_mbox_reset(void)
+{
+	u32 t;
+
+	spin_lock(&ath79_pcm_lock);
+
+	t = ath79_reset_rr(AR934X_RESET_REG_RESET_MODULE);
+	t |= AR934X_RESET_MBOX;
+	ath79_reset_wr(AR934X_RESET_REG_RESET_MODULE, t);
+	udelay(50);
+	t &= ~(AR934X_RESET_MBOX);
+	ath79_reset_wr(AR934X_RESET_REG_RESET_MODULE, t);
+
+	spin_unlock(&ath79_pcm_lock);
+}
+
+void ath79_mbox_fifo_reset(u32 mask)
+{
+	ath79_dma_wr(AR934X_DMA_REG_MBOX_FIFO_RESET, mask);
+	udelay(50);
+	/* Datasheet says we should reset the stereo controller whenever
+	 * we reset the MBOX DMA controller */
+	ath79_stereo_reset();
+}
+
+void ath79_mbox_interrupt_enable(u32 mask)
+{
+	u32 t;
+
+	spin_lock(&ath79_pcm_lock);
+
+	t = ath79_dma_rr(AR934X_DMA_REG_MBOX_INT_ENABLE);
+	t |= mask;
+	ath79_dma_wr(AR934X_DMA_REG_MBOX_INT_ENABLE, t);
+
+	spin_unlock(&ath79_pcm_lock);
+}
+
+void ath79_mbox_interrupt_ack(u32 mask)
+{
+	ath79_dma_wr(AR934X_DMA_REG_MBOX_INT_STATUS, mask);
+	ath79_reset_wr(AR71XX_RESET_REG_MISC_INT_STATUS, ~(MISC_INT_DMA));
+	/* Flush these two registers */
+	ath79_dma_rr(AR934X_DMA_REG_MBOX_INT_STATUS);
+	ath79_reset_rr(AR71XX_RESET_REG_MISC_INT_STATUS);
+}
+
 void ath79_mbox_dma_start(struct ath79_pcm_rt_priv *rtpriv)
 {
-	printk(KERN_NOTICE "%s: Starting DMA...\n", __FUNCTION__);
-	ath79_pcm_set_own_bits(rtpriv);
 	ath79_dma_wr(AR934X_DMA_REG_MBOX0_DMA_RX_CONTROL,
 		     AR934X_DMA_MBOX_DMA_CONTROL_START);
+	ath79_dma_rr(AR934X_DMA_REG_MBOX0_DMA_RX_CONTROL);
 }
 
 void ath79_mbox_dma_stop(struct ath79_pcm_rt_priv *rtpriv)
 {
-	printk(KERN_NOTICE "%s: Stopping DMA...\n", __FUNCTION__);
 	ath79_dma_wr(AR934X_DMA_REG_MBOX0_DMA_RX_CONTROL,
 		     AR934X_DMA_MBOX_DMA_CONTROL_STOP);
-	mdelay(100);
-	ath79_pcm_clear_own_bits(rtpriv);
+	ath79_dma_rr(AR934X_DMA_REG_MBOX0_DMA_RX_CONTROL);
+}
+
+void ath79_mbox_dma_reset(struct ath79_pcm_rt_priv *rtpriv)
+{
 }
 
 void ath79_mbox_dma_prepare(struct ath79_pcm_rt_priv *rtpriv)
 {
 	struct ath79_pcm_desc *desc;
 
-	printk(KERN_NOTICE "%s: Prepare DMA transfer...\n", __FUNCTION__);
+	/* Reset the DMA MBOX controller */
+	ath79_mbox_reset();
+	ath79_mbox_fifo_reset(AR934X_DMA_MBOX0_FIFO_RESET_RX);
+
 	/* Request the DMA channel to the controller */
 	ath79_dma_wr(AR934X_DMA_REG_MBOX_DMA_POLICY,
 		     AR934X_DMA_MBOX_DMA_POLICY_RX_QUANTUM |
@@ -61,11 +114,7 @@ void ath79_mbox_dma_prepare(struct ath79_pcm_rt_priv *rtpriv)
 	desc = list_first_entry(&rtpriv->dma_head, struct ath79_pcm_desc, list);
 	ath79_dma_wr(AR934X_DMA_REG_MBOX0_DMA_RX_DESCRIPTOR_BASE,
 		     (u32) desc->phys);
-	ath79_mbox_set_interrupt(AR934X_DMA_MBOX0_INT_RX_COMPLETE);
-
-	/* Reset the DMA MBOX controller */
-	ath79_dma_wr(AR934X_DMA_REG_MBOX_FIFO_RESET,
-			AR934X_DMA_MBOX0_FIFO_RESET_RX);
+	ath79_mbox_interrupt_enable(AR934X_DMA_MBOX0_INT_RX_COMPLETE);
 }
 
 int ath79_mbox_dma_map(struct ath79_pcm_rt_priv *rtpriv, dma_addr_t baseaddr,
@@ -78,13 +127,14 @@ int ath79_mbox_dma_map(struct ath79_pcm_rt_priv *rtpriv, dma_addr_t baseaddr,
 
 	spin_lock(&ath79_pcm_lock);
 
-	/* We loop until we have enough buffers to map the whole DMA area */
+	/* We loop until we have enough buffers to map the requested DMA area */
 	do {
 		/* Allocate a descriptor and insert it into the DMA ring */
 		desc = dma_pool_alloc(ath79_pcm_cache, GFP_KERNEL, &desc_p);
 		if(!desc) {
 			return -ENOMEM;
 		}
+		memset(desc, 0, sizeof(struct ath79_pcm_desc));
 		desc->phys = desc_p;
 		list_add_tail(&desc->list, head);
 
@@ -120,14 +170,6 @@ int ath79_mbox_dma_map(struct ath79_pcm_rt_priv *rtpriv, dma_addr_t baseaddr,
 	desc = list_first_entry(head, struct ath79_pcm_desc, list);
 	prev = list_entry(head->prev, struct ath79_pcm_desc, list);
 	prev->NextPtr = desc->phys;
-
-	printk(KERN_NOTICE "%s - %s:\n", __FILE__, __FUNCTION__);
-	list_for_each_entry(desc, &rtpriv->dma_head, list) {
-	        printk(KERN_NOTICE
-	               "Desc@=%08x OWN=%d EOM=%d Length=%d Size=%d\nBuf=%08x Next=%08x\n",
-	               (u32) desc, (u32) desc->OWN, (u32) desc->EOM, (u32) desc->length, desc->size,
-	               (u32) desc->BufPtr, (u32) desc->NextPtr);
-	}
 
 	spin_unlock(&ath79_pcm_lock);
 

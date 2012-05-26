@@ -178,7 +178,7 @@ static void __init db120_tb388_audio_setup(void)
 	gpio_direction_input(DB120_GPIO_I2S_MIC_SD);
 
 	/* Init stereo block registers in default configuration */
-	ath79_audio_init();
+	ath79_audio_setup();
 }
 
 static void __init db120_tb388_setup(void)

@@ -19,6 +19,12 @@
 #ifndef _ATH_I2S_H_
 #define _ATH_I2S_H_
 
-extern struct snd_soc_dai_driver ath79_i2s_dai;
+#include <linux/spinlock.h>
+#include <sound/core.h>
+#include <sound/soc.h>
+#include <sound/soc-dai.h>
+
+extern spinlock_t ath79_stereo_lock;
+void ath79_stereo_reset(void);
 
 #endif
