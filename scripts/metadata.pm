@@ -67,6 +67,7 @@ sub parse_package_metadata($) {
 			$pkg->{default} = "m if ALL";
 			$pkg->{depends} = [];
 			$pkg->{mdepends} = [];
+			$pkg->{vdepends} = $package{$1}->{vdepends};
 			$pkg->{builddepends} = [];
 			$pkg->{buildtypes} = [];
 			$pkg->{subdir} = $subdir;
@@ -107,7 +108,8 @@ sub parse_package_metadata($) {
 					vdepends => [],
 					src => $src,
 					subdir => $subdir,
-					makefile => $makefile
+					makefile => $makefile,
+					virtual => 1
 				};
 				push @{$package{$vpkg}->{vdepends}}, $pkg->{name};
 			}

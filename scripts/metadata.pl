@@ -458,9 +458,19 @@ sub mconf_depends {
 				}
 			}
 			$depend = $2;
+			if ($condition =~ /PACKAGE_(.+)/) {
+				my $name = $1;
+				my $vdep;
+				if ($vdep = $package{$name}->{vdepends}) {
+					my $providers = join("||", map { "PACKAGE_".$_ } @$vdep);
+					$condition =~ s/(PACKAGE_$name)/(\1||$providers)/;
+				}
+		}
+
+
 		}
 		next if $package{$depend} and $package{$depend}->{buildonly};
-		if ($vdep = $package{$depend}->{vdepends}) {
+		if ($package{$depend}->{virtual} and $vdep = $package{$depend}->{vdepends}) {
 			$depend = join("||", map { "PACKAGE_".$_ } @$vdep);
 		} else {
 			$flags =~ /\+/ and do {
@@ -473,6 +483,14 @@ sub mconf_depends {
 				$m = "select";
 				next if $only_dep;
 			};
+			if ($vdep = $package{$depend}->{vdepends}) {
+				my $vdeps = join("||", map { "PACKAGE_".$_ } @$vdep);
+				if ($condition) {
+					$condition = "$condition && !($vdeps)";
+				} else {
+					$condition = "!($vdeps)";
+				}
+			}
 			$flags =~ /@/ or $depend = "PACKAGE_$depend";
 			if ($condition) {
 				if ($m =~ /select/) {
@@ -642,7 +660,7 @@ sub gen_package_mk() {
 		my $pkg = $package{$name};
 		my @srcdeps;
 
-		next if defined $pkg->{vdepends};
+		next if defined $pkg->{virtual};
 
 		if ($ENV{SDK}) {
 			$conf{$pkg->{src}} or do {
@@ -738,10 +756,12 @@ sub gen_package_mk() {
 			my $pkg_dep = $package{$deps};
 			my @deps;
 
-			if ($pkg_dep->{vdepends}) {
-				@deps = @{$pkg_dep->{vdepends}};
-			} else {
+			if (!defined $pkg_dep->{virtual}) {
 				@deps = ($deps);
+			}
+
+			if ($pkg_dep->{vdepends}) {
+				@deps = (@deps, @{$pkg_dep->{vdepends}});
 			}
 
 			my %subdeplines;
@@ -761,8 +781,10 @@ sub gen_package_mk() {
 					my $depstr;
 
 					if ($pkg_dep->{vdepends}) {
-						$depstr = "\$(if \$(CONFIG_PACKAGE_$dep),\$(curdir)/$idx/compile)";
-						$dep{$pkg->{src}."->($dep)".$idx} = 1;
+						my $dir = $dep;
+						$dir = $idx if defined $pkg_dep->{virtual};
+						$depstr = "\$(if \$(CONFIG_PACKAGE_$dep),\$(curdir)/$dir/compile)";
+						$dep{$pkg->{src}."->($dep)".$dir} = 1;
 					} else {
 						$depstr = "\$(curdir)/$idx/compile";
 						$dep{$pkg->{src}."->".$idx} = 1;
