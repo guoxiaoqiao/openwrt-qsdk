@@ -54,10 +54,9 @@ $(TMP_DIR)/info/.files-$(SCAN_TARGET).mk: $(FILELIST)
 
 -include $(TMP_DIR)/info/.files-$(SCAN_TARGET).mk
 
-$(TARGET_STAMP)::
+$(TARGET_STAMP): $(FILELIST)
 	+( \
-		$(NO_TRACE_MAKE) $(FILELIST); \
-		MD5SUM=$$(cat $(FILELIST) | (md5sum || md5) 2>/dev/null | awk '{print $$1}'); \
+		MD5SUM=$$( (md5sum || md5) < $(FILELIST) 2>/dev/null | awk '{print $$1}'); \
 		[ -f "$@.$$MD5SUM" ] || { \
 			rm -f $@.*; \
 			touch $@.$$MD5SUM; \
