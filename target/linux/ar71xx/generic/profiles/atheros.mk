@@ -97,7 +97,7 @@ $(eval $(call Profile,DB120))
 define Profile/DB120TB388
 	NAME:=Atheros DB120 reference board with TB388 extension
 	PACKAGES:= \
-	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-sound-soc-db12x \
+	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-sound-soc-db120 \
 	  kmod-ext4 kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat kmod-fs-aufs3 \
 	  gmediarender gstreamer gstreamer-utils \
 	  gst-mod-apetag gst-mod-audioconvert gst-mod-audioresample \

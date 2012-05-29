@@ -31,6 +31,8 @@
 
 #include "ath79-pcm.h"
 
+#define  DRV_NAME	"ath79-pcm-audio"
+
 static struct snd_pcm_hardware ath79_pcm_hardware = {
 	.info = SNDRV_PCM_INFO_MMAP |
 		SNDRV_PCM_INFO_MMAP_VALID |
@@ -370,7 +372,7 @@ static int __devexit ath79_soc_platform_remove(struct platform_device *pdev)
 
 static struct platform_driver ath79_pcm_driver = {
 	.driver = {
-			.name = "ath79-pcm-audio",
+			.name = DRV_NAME,
 			.owner = THIS_MODULE,
 	},
 
@@ -378,18 +380,9 @@ static struct platform_driver ath79_pcm_driver = {
 	.remove = __devexit_p(ath79_soc_platform_remove),
 };
 
-static int __init ath79_soc_platform_init(void)
-{
-	return platform_driver_register(&ath79_pcm_driver);
-}
-module_init(ath79_soc_platform_init);
-
-static void __exit ath79_soc_platform_exit(void)
-{
-	platform_driver_unregister(&ath79_pcm_driver);
-}
-module_exit(ath79_soc_platform_exit);
+module_platform_driver(ath79_pcm_driver);
 
 MODULE_AUTHOR("Qualcomm-Atheros");
 MODULE_DESCRIPTION("QCA Audio PCM DMA module");
 MODULE_LICENSE("Dual BSD/GPL");
+MODULE_ALIAS("platform:" DRV_NAME);

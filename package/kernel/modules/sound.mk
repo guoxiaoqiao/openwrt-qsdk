@@ -196,32 +196,22 @@ endef
 $(eval $(call KernelPackage,sound-soc-n810))
 
 
-define KernelPackage/sound-soc-ath79
-  TITLE:=Qualcomm-Atheros SoC sound support
+define KernelPackage/sound-soc-db120
+  TITLE:=Qualcomm-Atheros DB12x board sound support
   KCONFIG:= \
 	CONFIG_SND_ATH79_SOC \
-	CONFIG_SND_ATH79_SOC_I2S
+	CONFIG_SND_ATH79_SOC_I2S \
+	CONFIG_SND_ATH79_SOC_CODEC \
+	CONFIG_SND_ATH79_SOC_DB120
   FILES:= \
 	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-i2s.ko \
-	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79.ko
-  AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79-i2s snd-soc-ath79)
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-pcm.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-codec.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-db120.ko
+  AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79-i2s snd-soc-ath79-pcm \
+				snd-soc-ath79-codec snd-soc-db120)
   DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core
   $(call AddDepends/sound)
 endef
 
-$(eval $(call KernelPackage,sound-soc-ath79))
-
-
-define KernelPackage/sound-soc-db12x
-  TITLE:=Qualcomm-Atheros DB12x board sound support
-  KCONFIG:= \
-	CONFIG_SND_ATH79_SOC_DB120
-  FILES:= \
-	$(LINUX_DIR)/sound/soc/codecs/snd-soc-spdif.ko \
-	$(LINUX_DIR)/sound/soc/ath79/snd-soc-db12x.ko
-  AUTOLOAD:=$(call AutoLoad,65,snd-soc-spdif snd-soc-db12x)
-  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-ath79
-  $(call AddDepends/sound)
-endef
-
-$(eval $(call KernelPackage,sound-soc-db12x))
+$(eval $(call KernelPackage,sound-soc-db120))

@@ -1,5 +1,5 @@
 /*
- * qca-db12x.c -- ALSA machine code for DB12x board ref design (and relatives)
+ * qca-db120.c -- ALSA machine code for DB12x board ref design (and relatives)
  *
  * Copyright (c) 2012 Qualcomm-Atheros Inc.
  *
@@ -28,53 +28,49 @@
 #include "ath79-i2s.h"
 #include "ath79-pcm.h"
 
-static struct platform_device *db12x_snd_device;
+static struct platform_device *db120_snd_device;
 
-static struct snd_soc_dai_link db12x_dai = {
+static struct snd_soc_dai_link db120_dai = {
 	.name = "DB12x audio",
 	.stream_name = "DB12x audio",
 	.cpu_dai_name = "ath79-i2s",
-	.codec_dai_name = "dit-hifi",
+	.codec_dai_name = "ath79-hifi",
 	.platform_name = "ath79-pcm-audio",
-	.codec_name = "spdif-dit",
+	.codec_name = "ath79-internal-codec",
 	/* use ops to check startup state */
 };
 
-static struct snd_soc_card snd_soc_db12x = {
+static struct snd_soc_card snd_soc_db120 = {
 	.name = "Qualcomm-Atheros DB12x ref. design",
-	.dai_link = &db12x_dai,
+	.dai_link = &db120_dai,
 	.num_links = 1,
 };
 
-static int __init db12x_init(void)
+static int __init db120_init(void)
 {
 	int ret;
 
-	printk(KERN_CRIT "%s called\n", __FUNCTION__);
-
-	db12x_snd_device = platform_device_alloc("soc-audio", -1);
-	if(!db12x_snd_device)
+	db120_snd_device = platform_device_alloc("soc-audio", -1);
+	if(!db120_snd_device)
 		return -ENOMEM;
 
-	platform_set_drvdata(db12x_snd_device, &snd_soc_db12x);
-	ret = platform_device_add(db12x_snd_device);
+	platform_set_drvdata(db120_snd_device, &snd_soc_db120);
+	ret = platform_device_add(db120_snd_device);
 
 	if (ret) {
-		platform_device_put(db12x_snd_device);
+		platform_device_put(db120_snd_device);
 	}
 
 	return ret;
 }
 
-static void __exit db12x_exit(void)
+static void __exit db120_exit(void)
 {
-	printk(KERN_CRIT "%s called\n", __FUNCTION__);
-
-	platform_device_unregister(db12x_snd_device);
+	platform_device_unregister(db120_snd_device);
 }
 
-module_init(db12x_init);
-module_exit(db12x_exit);
+module_init(db120_init);
+module_exit(db120_exit);
 
 MODULE_AUTHOR("Qualcomm-Atheros");
 MODULE_DESCRIPTION("QCA Audio Machine module");

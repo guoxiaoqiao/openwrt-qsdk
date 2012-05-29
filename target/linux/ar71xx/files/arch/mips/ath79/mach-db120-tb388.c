@@ -116,7 +116,7 @@ static struct mdio_board_info db120_tb388_mdio0_info[] = {
 };
 
 static struct platform_device db120_tb388_spdif_codec = {
-	.name		= "spdif-dit",
+	.name		= "ath79-internal-codec",
 	.id		= -1,
 };
 

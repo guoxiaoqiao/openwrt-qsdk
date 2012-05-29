@@ -29,6 +29,8 @@
 #include "ath79-i2s.h"
 #include "ath79-i2s-pll.h"
 
+#define DRV_NAME	"ath79-i2s"
+
 DEFINE_SPINLOCK(ath79_stereo_lock);
 
 void ath79_stereo_reset(void)
@@ -135,10 +137,10 @@ static struct snd_soc_dai_driver ath79_i2s_dai = {
 				SNDRV_PCM_RATE_48000 |
 				SNDRV_PCM_RATE_88200 |
 				SNDRV_PCM_RATE_96000,
+/* For now, we'll just support 8 and 16bits as 32 bits is really noisy
+ * for some reason */
 		.formats = SNDRV_PCM_FMTBIT_S8 |
-				SNDRV_PCM_FMTBIT_S16 |
-				SNDRV_PCM_FMTBIT_S24 |
-				SNDRV_PCM_FMTBIT_S32,
+				SNDRV_PCM_FMTBIT_S16,
 		},
 	.ops = &ath79_i2s_dai_ops,
 };
@@ -160,25 +162,14 @@ static struct platform_driver ath79_i2s_driver = {
 	.remove = __devexit_p(ath79_i2s_drv_remove),
 
 	.driver = {
-		.name = "ath79-i2s",
+		.name = DRV_NAME,
 		.owner = THIS_MODULE,
 	},
 };
 
-static int __init ath79_i2s_init(void)
-{
-	return platform_driver_register(&ath79_i2s_driver);
-}
-
-static void __exit ath79_i2s_exit(void)
-{
-	platform_driver_unregister(&ath79_i2s_driver);
-}
-
-module_init(ath79_i2s_init);
-module_exit(ath79_i2s_exit);
+module_platform_driver(ath79_i2s_driver);
 
 MODULE_AUTHOR("Qualcomm-Atheros");
 MODULE_DESCRIPTION("QCA Audio DAI (i2s) module");
 MODULE_LICENSE("Dual BSD/GPL");
-MODULE_ALIAS("platform:ath79-i2s");
+MODULE_ALIAS("platform:" DRV_NAME);
