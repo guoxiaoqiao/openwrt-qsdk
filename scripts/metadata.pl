@@ -744,6 +744,7 @@ sub gen_package_mk() {
 				@deps = ($deps);
 			}
 
+			my %subdeplines;
 			foreach my $dep (@deps) {
 				$pkg_dep = $package{$deps};
 				if (defined $pkg_dep->{src}) {
@@ -754,7 +755,6 @@ sub gen_package_mk() {
 				$idx .= $suffix;
 				undef $idx if $idx =~ /^(kernel)|(base-files)$/;
 				if ($idx) {
-					my $depline;
 					next if $pkg->{src} eq $pkg_dep->{src}.$suffix;
 					next if $dep{$condition.":".$pkg->{src}."->".$idx};
 					next if $dep{$pkg->{src}."->($dep)".$idx} and $pkg_dep->{vdepends};
@@ -767,11 +767,13 @@ sub gen_package_mk() {
 						$depstr = "\$(curdir)/$idx/compile";
 						$dep{$pkg->{src}."->".$idx} = 1;
 					}
-					$depline = get_conditional_dep($condition, $depstr);
-					if ($depline) {
-						$deplines{$depline}++;
-					}
+					$subdeplines{$depstr}++;
 				}
+			}
+			my $depline = join(" ", sort keys %subdeplines);
+			if ($depline) {
+				$depline = get_conditional_dep($condition, $depline);
+				$deplines{$depline}++;
 			}
 		}
 		my $depline = join(" ", sort keys %deplines);
