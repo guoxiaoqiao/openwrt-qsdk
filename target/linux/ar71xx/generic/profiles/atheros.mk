@@ -105,6 +105,7 @@ define Profile/DB120TB388
 	  gst-mod-mad gst-mod-ogg gst-mod-qtdemux gst-mod-souphttpsrc \
 	  gst-mod-typefindfunctions gst-mod-volume gst-mod-vorbis \
 	  gst-mod-wavparse gst-mod-alsa \
+	  luci \
 	  alljoyn
 endef
 
