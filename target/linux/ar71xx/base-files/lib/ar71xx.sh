@@ -180,7 +180,7 @@ ar71xx_board_detect() {
 	*"DB120 reference board")
 		name="db120"
 		;;
-	*"DB120TB388 reference board")
+	*"DB120 reference board with TB388 extension")
 		name="db120tb388"
 		;;
 	*"DIR-600 rev. A1")
