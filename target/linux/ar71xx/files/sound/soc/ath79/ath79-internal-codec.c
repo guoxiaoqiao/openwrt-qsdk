@@ -19,15 +19,11 @@
 #include <linux/module.h>
 #include <sound/soc.h>
 #include <sound/pcm.h>
-#include <sound/tlv.h>
 
 #include <asm/mach-ath79/ar71xx_regs.h>
 #include <asm/mach-ath79/ath79.h>
 
 #define DRV_NAME		"ath79-internal-codec"
-
-/* from -84dB to +42dB in 6dB steps */
-static DECLARE_TLV_DB_SCALE(ath79_volume_tlv, -8400, 600, 0);
 
 static struct snd_soc_dai_driver ath79_codec_dai = {
 	.name = "ath79-hifi",
