@@ -58,7 +58,7 @@ static struct snd_pcm_hardware ath79_pcm_hardware = {
 	 * and CPU load */
 	.buffer_bytes_max = 32768,
 	.period_bytes_min = 64,
-	.period_bytes_max = 4096,
+	.period_bytes_max = 4095,
 	.periods_min = 4,
 	.periods_max = PAGE_SIZE/sizeof(struct ath79_pcm_desc),
 	.fifo_size = 0,
