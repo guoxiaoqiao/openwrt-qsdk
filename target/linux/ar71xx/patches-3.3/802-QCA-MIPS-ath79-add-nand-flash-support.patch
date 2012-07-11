@@ -1,0 +1,35 @@
+--- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
++++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+@@ -34,6 +34,8 @@
+ #define AR71XX_SPI_BASE		0x1f000000
+ #define AR71XX_SPI_SIZE		0x01000000
+
++#define AR71XX_NAND_CTRL_BASE	(AR71XX_EHCI_BASE + 0x00000200)
++#define AR71XX_NAND_CTRL_SIZE	0x0b8
+ #define AR71XX_DDR_CTRL_BASE	(AR71XX_APB_BASE + 0x00000000)
+ #define AR71XX_DDR_CTRL_SIZE	0x100
+ #define AR71XX_UART_BASE	(AR71XX_APB_BASE + 0x00020000)
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -544,4 +544,12 @@ config MTD_NAND_RB750
+	tristate "NAND flash driver for the RouterBoard 750"
+	depends on MTD_NAND && ATH79_MACH_RB750
+
++config MTD_NAND_ATH79
++	tristate "Nand flash support for Qualcomm-Atheros SoCs 71xx & 93xx"
++	default n
++	depends on MTD_NAND && (SOC_AR724X || SOC_AR934X)
++	help
++	  Enables the driver for NAND flash controller on Qualcomm-Atheros System on Chips
++	  This controller is used on families AR71xx and AR9xxx.
++
+ endif # MTD_NAND
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -51,5 +51,6 @@ obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mp
+ obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
+ obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
+ obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
++obj-$(CONFIG_MTD_NAND_ATH79)		+= ath79_nand.o
+
+ nand-objs := nand_base.o nand_bbt.o

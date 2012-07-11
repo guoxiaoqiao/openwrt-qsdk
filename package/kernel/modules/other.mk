@@ -838,6 +838,23 @@ endef
 $(eval $(call KernelPackage,nand))
 
 
+define KernelPackage/nand-ath79
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=NAND flash support
+  DEPENDS:=@TARGET_ar71xx kmod-nand
+  KCONFIG:=CONFIG_MTD_NAND_ATH79
+  FILES:= \
+	$(LINUX_DIR)/drivers/mtd/nand/ath79_nand.ko
+  AUTOLOAD:=$(call AutoLoad,20,ath79_nand)
+endef
+
+define KernelPackage/nand-ath79/description
+ Kernel module for NAND support of Qualcomm Atheros SoC AR72xx & AR93xx
+endef
+
+$(eval $(call KernelPackage,nand-ath79))
+
+
 define KernelPackage/nandsim
   SUBMENU:=$(OTHER_MENU)
   TITLE:=NAND simulator
