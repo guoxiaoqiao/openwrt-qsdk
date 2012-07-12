@@ -63,13 +63,51 @@
 #define CUS227_GPIO_I2S_SD		18
 #define CUS227_GPIO_I2S_WS		20
 #define CUS227_GPIO_I2S_CLK		21
+#define CUS227_GPIO_I2S_MIC_SD		19
 #define CUS227_GPIO_SPDIF_OUT		4
+
+#define CUS227_GPIO_SPI_CS1		11
 
 #define CUS227_MAC0_OFFSET		0
 #define CUS227_WMAC_CALDATA_OFFSET	0x1000
 
+/* Because CUS227 has a different device set on the SPI bus, we cannot
+ * reuse the routines from dev-m25p80.c to instanciate the NOR flash */
+static struct ath79_spi_controller_data ath79_spi0_cdata =
+{
+	.cs_type = ATH79_SPI_CS_TYPE_INTERNAL,
+	.is_flash = true,
+	.cs_line = 0,
+};
+
+static struct ath79_spi_controller_data ath79_spi1_cdata =
+{
+	.cs_type = ATH79_SPI_CS_TYPE_INTERNAL,
+	.is_flash = false,
+	.cs_line = 1,
+};
+
+static struct spi_board_info ath79_spi_info[] = {
+	{
+		.bus_num	= 0,
+		.chip_select	= 0,
+		.max_speed_hz	= 25000000,
+		.modalias	= "m25p80",
+		.controller_data = &ath79_spi0_cdata,
+	},
+	{
+		.bus_num	= 0,
+		.chip_select	= 1,
+		.max_speed_hz   = 25000000,
+		.modalias	= "wm8988",
+		.controller_data = &ath79_spi1_cdata,
+	}
+};
+
+static struct ath79_spi_platform_data ath79_spi_data;
+
 static struct platform_device cus227_codec = {
-	.name		= "ath79-internal-codec",
+	.name		= "wm8988",
 	.id		= -1,
 };
 
@@ -106,15 +144,30 @@ static void __init cus227_audio_setup(void)
 	ath79_gpio_output_select(CUS227_GPIO_SPDIF_OUT, AR934X_GPIO_OUT_MUX_SPDIF_OUT);
 	gpio_direction_output(CUS227_GPIO_SPDIF_OUT, 0);
 
+	gpio_request(CUS227_GPIO_I2S_MIC_SD, "I2S MIC_SD");
+	ath79_gpio_input_select(CUS227_GPIO_I2S_MIC_SD, AR934X_GPIO_IN_MUX_I2S_MIC_SD);
+	gpio_direction_input(CUS227_GPIO_I2S_MIC_SD);
+
 	/* Init stereo block registers in default configuration */
 	ath79_audio_setup();
+}
+
+static void __init cus227_register_spi_devices(void)
+{
+	gpio_request(CUS227_GPIO_SPI_CS1, "SPI CS1");
+	ath79_gpio_output_select(CUS227_GPIO_SPI_CS1, AR934X_GPIO_OUT_MUX_SPI_CS1);
+	gpio_direction_output(CUS227_GPIO_SPI_CS1, 0);
+
+	ath79_spi_data.bus_num = 0;
+	ath79_spi_data.num_chipselect = 2;
+	ath79_register_spi(&ath79_spi_data, ath79_spi_info, 2);
 }
 
 static void __init cus227_bam_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
 
-	ath79_register_m25p80(NULL);
+	cus227_register_spi_devices();
 
 	ath79_register_usb();
 	ath79_register_wmac(art + CUS227_WMAC_CALDATA_OFFSET, NULL);

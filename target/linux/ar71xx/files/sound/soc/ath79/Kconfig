@@ -21,3 +21,14 @@ config SND_ATH79_SOC_DB120
 	  Qualcomm-Atheros reference design. This option enables the
 	  DB12x machine support, ath79 PCM engine, I2S interface and internal
 	  codec.
+
+config SND_ATH79_SOC_CUS227
+	tristate "SoC  Audio support for CUS227 board"
+	depends on SND_ATH79_SOC
+	select SND_ATH79_SOC_I2S
+	select SND_SOC_WM8988
+	help
+	  Say Y if you want to add support for SoC audio on DB120
+	  Qualcomm-Atheros reference design. This option enables the
+	  CUS227 machine support, ath79 PCM engine, I2S interface and internal
+	  codec.

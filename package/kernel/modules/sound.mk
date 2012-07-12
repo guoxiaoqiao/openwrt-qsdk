@@ -196,6 +196,27 @@ endef
 $(eval $(call KernelPackage,sound-soc-n810))
 
 
+define KernelPackage/sound-soc-cus227
+  TITLE:=Qualcomm-Atheros CUS227 board sound support
+  KCONFIG:= \
+	CONFIG_SND_ATH79_SOC \
+	CONFIG_SND_ATH79_SOC_I2S \
+	CONFIG_SND_ATH79_SOC_CODEC \
+	CONFIG_SND_ATH79_SOC_CUS227
+  FILES:= \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-i2s.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-pcm.ko \
+	$(LINUX_DIR)/sound/soc/codecs/snd-soc-wm8988.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-cus227.ko
+  AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79-i2s snd-soc-ath79-pcm \
+				snd-soc-wm8988 snd-soc-cus227)
+  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core
+  $(call AddDepends/sound)
+endef
+
+$(eval $(call KernelPackage,sound-soc-cus227))
+
+
 define KernelPackage/sound-soc-db120
   TITLE:=Qualcomm-Atheros DB12x board sound support
   KCONFIG:= \
