@@ -92,6 +92,8 @@ hostapd_set_bss_options() {
 			config_get acct_secret "$vif" acct_secret
 			[ -n "$acct_secret" ] && append "$var" "acct_server_shared_secret=$acct_secret" "$N"
 			config_get nasid "$vif" nasid
+			config_get wep_key_len_broadcast "$vif" wep_key_len_broadcast
+			config_get wep_key_len_unicast "$vif" wep_key_len_unicast
 			append "$var" "nas_identifier=$nasid" "$N"
 			append "$var" "eapol_key_index_workaround=1" "$N"
 			append "$var" "ieee8021x=1" "$N"
@@ -99,6 +101,9 @@ hostapd_set_bss_options() {
 			[ -n "$wpa_group_rekey"  ] && append "$var" "wpa_group_rekey=$wpa_group_rekey" "$N"
 			[ -n "$wpa_pair_rekey"   ] && append "$var" "wpa_ptk_rekey=$wpa_pair_rekey"    "$N"
 			[ -n "$wpa_master_rekey" ] && append "$var" "wpa_gmk_rekey=$wpa_master_rekey"  "$N"
+			[ -n "$wep_key_len_broadcast" ] && append "$var" "wep_key_len_broadcast=$wep_key_len_broadcast" "$N"
+			[ -n "$wep_key_len_unicast" ] && append "$var" "wep_key_len_unicast=$wep_key_len_unicast" "$N"
+			[ -n "$wep_rekey" ] && append "$var" "wep_rekey_period=$wep_rekey" "$N"
 		;;
 		*wep*)
 			config_get key "$vif" key
