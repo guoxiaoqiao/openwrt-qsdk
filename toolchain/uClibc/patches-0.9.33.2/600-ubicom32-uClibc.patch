@@ -1,8 +1,6 @@
-Index: uClibc-0.9.33.2/Rules.mak
-===================================================================
---- uClibc-0.9.33.2.orig/Rules.mak	2012-05-25 01:42:04.589006169 -0700
-+++ uClibc-0.9.33.2/Rules.mak	2012-05-25 01:42:08.121006093 -0700
-@@ -524,6 +524,19 @@
+--- a/Rules.mak
++++ b/Rules.mak
+@@ -524,6 +524,19 @@ ifeq ($(TARGET_ARCH),i960)
        SYMBOL_PREFIX=_
  endif
  
@@ -22,11 +20,9 @@ Index: uClibc-0.9.33.2/Rules.mak
  ifeq ($(TARGET_ARCH),v850)
        SYMBOL_PREFIX=_
  endif
-Index: uClibc-0.9.33.2/extra/Configs/Config.in
-===================================================================
---- uClibc-0.9.33.2.orig/extra/Configs/Config.in	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/extra/Configs/Config.in	2012-05-25 01:42:04.645006168 -0700
-@@ -105,6 +105,9 @@
+--- a/extra/Configs/Config.in
++++ b/extra/Configs/Config.in
+@@ -105,6 +105,9 @@ config TARGET_sh64
  config TARGET_sparc
  	bool "sparc"
  
@@ -36,7 +32,7 @@ Index: uClibc-0.9.33.2/extra/Configs/Config.in
  config TARGET_v850
  	bool "v850 (BROKEN)"
  
-@@ -206,6 +209,10 @@
+@@ -206,6 +209,10 @@ if TARGET_sparc
  source "extra/Configs/Config.sparc"
  endif
  
@@ -47,10 +43,8 @@ Index: uClibc-0.9.33.2/extra/Configs/Config.in
  if TARGET_v850
  source "extra/Configs/Config.v850"
  endif
-Index: uClibc-0.9.33.2/extra/Configs/Config.in.arch
-===================================================================
---- uClibc-0.9.33.2.orig/extra/Configs/Config.in.arch	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/extra/Configs/Config.in.arch	2012-05-25 01:42:04.645006168 -0700
+--- a/extra/Configs/Config.in.arch
++++ b/extra/Configs/Config.in.arch
 @@ -7,7 +7,6 @@
  #
  # Binary format
@@ -59,7 +53,7 @@ Index: uClibc-0.9.33.2/extra/Configs/Config.in.arch
  choice
  	prompt "Target File Format"
  config UCLIBC_FORMAT_ELF
-@@ -15,7 +14,6 @@
+@@ -15,7 +14,6 @@ config UCLIBC_FORMAT_ELF
  	depends on ARCH_USE_MMU
  config UCLIBC_FORMAT_FDPIC_ELF
  	bool "FDPIC ELF"
@@ -67,7 +61,7 @@ Index: uClibc-0.9.33.2/extra/Configs/Config.in.arch
  	select DOPIC
  config UCLIBC_FORMAT_DSBT_ELF
  	bool "DBST ELF"
-@@ -37,10 +35,6 @@
+@@ -37,10 +35,6 @@ config UCLIBC_FORMAT_SHARED_FLAT
  	  Pick this one if you are using uClinux and wish to build
  	  uClibc as a flat-format shared library.
  endchoice
@@ -78,19 +72,8 @@ Index: uClibc-0.9.33.2/extra/Configs/Config.in.arch
  
  config UCLIBC_SHARED_FLAT_ID
  	int "Shared library ID"
-@@ -152,7 +146,7 @@
- config DO_C99_MATH
- 	bool "Enable full C99 math library support"
- 	depends on UCLIBC_HAS_FLOATS
--	default n
-+	default y
- 	help
- 	  If you want the uClibc math library to contain the full set C99
- 	  math library features, then answer Y.  If you leave this set to
-Index: uClibc-0.9.33.2/extra/Configs/Config.ubicom32
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/extra/Configs/Config.ubicom32	2012-05-25 01:42:04.645006168 -0700
+--- /dev/null
++++ b/extra/Configs/Config.ubicom32
 @@ -0,0 +1,50 @@
 +#
 +# For a description of the syntax of this configuration file,
@@ -142,11 +125,9 @@ Index: uClibc-0.9.33.2/extra/Configs/Config.ubicom32
 +
 +config CROSS
 +	string
-Index: uClibc-0.9.33.2/include/elf.h
-===================================================================
---- uClibc-0.9.33.2.orig/include/elf.h	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/include/elf.h	2012-05-25 01:42:04.645006168 -0700
-@@ -338,6 +338,8 @@
+--- a/include/elf.h
++++ b/include/elf.h
+@@ -338,6 +338,8 @@ typedef struct
  
  #define EM_XSTORMY16		0xad45
  
@@ -155,7 +136,7 @@ Index: uClibc-0.9.33.2/include/elf.h
  /* FRV magic number - no EABI available??.  */
  #define EM_CYGNUS_FRV	0x5441
  
-@@ -3141,6 +3143,54 @@
+@@ -3141,6 +3143,54 @@ typedef Elf32_Addr Elf32_Conflict;
  #define R_MICROBLAZE_COPY 21  /* runtime copy */
  #define R_MICROBLAZE_NUM 22
  
@@ -210,11 +191,9 @@ Index: uClibc-0.9.33.2/include/elf.h
  #ifdef	__cplusplus
  }
  #endif
-Index: uClibc-0.9.33.2/include/features.h
-===================================================================
---- uClibc-0.9.33.2.orig/include/features.h	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/include/features.h	2012-05-25 01:42:04.645006169 -0700
-@@ -448,4 +448,10 @@
+--- a/include/features.h
++++ b/include/features.h
+@@ -448,4 +448,10 @@ uClibc was built without large file supp
  # include <libc-internal.h>
  #endif
  
@@ -225,32 +204,8 @@ Index: uClibc-0.9.33.2/include/features.h
 +#define libm_hidden_proto(name, attrs...)
 +#endif
  #endif	/* features.h  */
-Index: uClibc-0.9.33.2/ldso/ldso/dl-startup.c
-===================================================================
---- uClibc-0.9.33.2.orig/ldso/ldso/dl-startup.c	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/ldso/ldso/dl-startup.c	2012-05-25 01:42:04.645006169 -0700
-@@ -180,13 +180,17 @@
- 	 * We use it if the kernel is not passing a valid address through the auxvt.
- 	 */
- 
-+#  if !defined __FDPIC__
- 	if (!auxvt[AT_BASE].a_un.a_val)
- 		auxvt[AT_BASE].a_un.a_val =  (Elf32_Addr) &_begin;
-+#  endif
- 	/* Note: if the dynamic linker itself is prelinked, the load_addr is 0 */
- 	DL_INIT_LOADADDR_BOOT(load_addr, elf_machine_load_address());
- #else
-+#  if !defined __FDPIC__
- 	if (!auxvt[AT_BASE].a_un.a_val)
- 		auxvt[AT_BASE].a_un.a_val = elf_machine_load_address();
-+#  endif
- 	DL_INIT_LOADADDR_BOOT(load_addr, auxvt[AT_BASE].a_un.a_val);
- #endif
- 	header = (ElfW(Ehdr) *) auxvt[AT_BASE].a_un.a_val;
-Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-debug.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-debug.h	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/ldso/ldso/ubicom32/dl-debug.h
 @@ -0,0 +1,72 @@
 +/* vi: set sw=4 ts=4: */
 +/* Ubicom32 ELF shared library loader suppport
@@ -324,23 +279,17 @@ Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-debug.h
 +	[200] "R_UBICOM32_GNU_VTINHERIT" , "R_UBICOM32_GNU_VTENTRY"
 +#endif
 +};
-Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-inlines.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-inlines.h	2012-05-25 01:42:04.645006169 -0700
-@@ -0,0 +1,156 @@
-+/* Copyright (C) 2003, 2004 Red Hat, Inc.
+--- /dev/null
++++ b/ldso/ldso/ubicom32/dl-inlines.h
+@@ -0,0 +1,39 @@
++/* Copyright (C) 2012, Qualcomm, Inc.
++ * Based on ../bfin/dl-inlines.h
++ * Copyright (C) 2003, 2004 Red Hat, Inc.
 + * Contributed by Alexandre Oliva <aoliva@redhat.com>
 + * Copyright (C) 2006-2011 Analog Devices, Inc.
 + *
 + * Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
 + */
-+
-+//#include <bfin_sram.h>
-+#define SRAM_TEST(x) 0
-+#ifndef _dl_assert
-+# define _dl_assert(expr)
-+#endif
 +
 +#define __dl_loadaddr_unmap __dl_loadaddr_unmap
 +
@@ -357,18 +306,6 @@ Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-inlines.h
 +		ssize_t offs;
 +		segdata = loadaddr.map->segs + i;
 +
-+#if 0 /* SRAM */
-+		/* FIXME:
-+		 * A more cleaner way is to add type for struct elf32_fdpic_loadseg,
-+		 * and release the memory according to the type.
-+		 * Currently, we hardcode the memory address of L1 SRAM.
-+		 */
-+		if ((segdata->addr & 0xff800000) == 0xff800000) {
-+			_dl_sram_free((void *)segdata->addr);
-+			continue;
-+		}
-+#endif
-+
 +		offs = (segdata->p_vaddr & ADDR_ALIGN);
 +		_dl_munmap((void*)segdata->addr - offs,
 +			segdata->p_memsz + offs);
@@ -384,112 +321,8 @@ Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-inlines.h
 +	if (funcdesc_ht)
 +		htab_delete(funcdesc_ht);
 +}
-+
-+#if 0 /* XXX TODO will look at enabling this if we decide to add support for OCM
-+       * code/data */
-+// OLD BLACKFIN CODE
-+static __always_inline int
-+__dl_is_special_segment(Elf32_Ehdr *epnt, Elf32_Phdr *ppnt)
-+{
-+	if (ppnt->p_type != PT_LOAD)
-+		return 0;
-+
-+	/* Allow read-only executable segments to be loaded into L1 inst */
-+	if ((epnt->e_flags & EF_BFIN_CODE_IN_L1) &&
-+	    !(ppnt->p_flags & PF_W) && (ppnt->p_flags & PF_X))
-+		return 1;
-+
-+	/* Allow writable non-executable segments to be loaded into L1 data */
-+	if ((epnt->e_flags & EF_BFIN_DATA_IN_L1) &&
-+	    (ppnt->p_flags & PF_W) && !(ppnt->p_flags & PF_X))
-+		return 1;
-+
-+	/*
-+	 * These L1 memory addresses are also used in GNU ld and linux kernel.
-+	 * They need to be kept synchronized.
-+	 */
-+	switch (ppnt->p_vaddr) {
-+	case 0xff700000:
-+	case 0xff800000:
-+	case 0xff900000:
-+	case 0xffa00000:
-+	case 0xfeb00000:
-+	case 0xfec00000:
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static __always_inline char *
-+__dl_map_segment(Elf32_Ehdr *epnt, Elf32_Phdr *ppnt, int infile, int flags)
-+{
-+	void *addr;
-+	unsigned long sram_flags = 0;
-+
-+	/* Handle L1 inst mappings */
-+	if (((epnt->e_flags & EF_BFIN_CODE_IN_L1) || ppnt->p_vaddr == 0xffa00000) &&
-+	    !(ppnt->p_flags & PF_W) && (ppnt->p_flags & PF_X))
-+	{
-+		size_t size = (ppnt->p_vaddr & ADDR_ALIGN) + ppnt->p_filesz;
-+		void *status = _dl_mmap(NULL, size, LXFLAGS(ppnt->p_flags),
-+			flags | MAP_EXECUTABLE | MAP_DENYWRITE,
-+			infile, ppnt->p_offset & OFFS_ALIGN);
-+		if (_dl_mmap_check_error(status))
-+			return NULL;
-+
-+		addr = _dl_sram_alloc(ppnt->p_filesz, L1_INST_SRAM);
-+		if (addr)
-+			_dl_dma_memcpy(addr, status + (ppnt->p_vaddr & ADDR_ALIGN), ppnt->p_filesz);
-+		else
-+			_dl_dprintf(2, "%s:%s: sram allocation %#x failed\n",
-+				_dl_progname, __func__, ppnt->p_vaddr);
-+
-+		_dl_munmap(status, size);
-+		return addr;
-+	}
-+
-+	/* Handle L1 data mappings */
-+	if (((epnt->e_flags & EF_BFIN_DATA_IN_L1) ||
-+	     ppnt->p_vaddr == 0xff700000 ||
-+	     ppnt->p_vaddr == 0xff800000 ||
-+	     ppnt->p_vaddr == 0xff900000) &&
-+	    (ppnt->p_flags & PF_W) && !(ppnt->p_flags & PF_X))
-+	{
-+		switch (ppnt->p_vaddr) {
-+		case 0xff800000: sram_flags = L1_DATA_A_SRAM; break;
-+		case 0xff900000: sram_flags = L1_DATA_B_SRAM; break;
-+		default:         sram_flags = L1_DATA_SRAM;   break;
-+		}
-+	}
-+
-+	/* Handle L2 mappings */
-+	if (ppnt->p_vaddr == 0xfeb00000 || ppnt->p_vaddr == 0xfec00000)
-+		sram_flags = L2_SRAM;
-+
-+	if (sram_flags) {
-+		addr = _dl_sram_alloc(ppnt->p_memsz, sram_flags);
-+		if (addr) {
-+			if (_DL_PREAD(infile, addr, ppnt->p_filesz, ppnt->p_offset) != ppnt->p_filesz) {
-+				_dl_sram_free(addr);
-+				return NULL;
-+			}
-+			if (ppnt->p_filesz < ppnt->p_memsz)
-+				_dl_memset(addr + ppnt->p_filesz, 0, ppnt->p_memsz - ppnt->p_filesz);
-+		} else
-+			_dl_dprintf(2, "%s:%s: sram allocation %#x failed\n",
-+				_dl_progname, __func__, ppnt->p_vaddr);
-+		return addr;
-+	}
-+
-+	return 0;
-+}
-+#endif
-\ No newline at end of file
-Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-startup.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-startup.h	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/ldso/ldso/ubicom32/dl-startup.h
 @@ -0,0 +1,233 @@
 +/*
 +  Copyright (C) 2009 Ubicom, Inc.
@@ -694,7 +527,7 @@ Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-startup.h
 + * load address.
 + */
 +#define PERFORM_BOOTSTRAP_RELOC(RELP,REL,SYMBOL,LOAD,SYMTAB) \
-+	switch(ELF32_R_TYPE((RELP)->r_info)){				\
++	switch(ELF_R_TYPE((RELP)->r_info)){				\
 +	case R_UBICOM32_32:						\
 +	  *(REL) += (SYMBOL);						\
 +	  break;							\
@@ -724,18 +557,16 @@ Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-startup.h
 +  dl_main_funcdesc->got_value = exec_mod->loadaddr.got_value;		\
 +  return;								\
 +} while (0)
-Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-syscalls.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-syscalls.h	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/ldso/ldso/ubicom32/dl-syscalls.h
 @@ -0,0 +1 @@
 +/* stub for arch-specific syscall issues */
-Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-sysdep.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-sysdep.h	2012-05-25 01:42:04.645006169 -0700
-@@ -0,0 +1,132 @@
-+/* Copyright (C) 2003, 2004 Red Hat, Inc.
+--- /dev/null
++++ b/ldso/ldso/ubicom32/dl-sysdep.h
+@@ -0,0 +1,126 @@
++/* Copyright (C) 2012, Qualcomm, Inc.
++ * Based on ../bfin/dl-sysdep.h
++ * Copyright (C) 2003, 2004 Red Hat, Inc.
 + * Contributed by Alexandre Oliva <aoliva@redhat.com>
 + * Copyright (C) 2006-2011 Analog Devices, Inc.
 + * Based on ../i386/dl-sysdep.h
@@ -836,14 +667,6 @@ Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-sysdep.h
 +} \
 +while (0)
 +
-+#if 0 /* XXX TODO will look at enabling this if we decide to add support for OCM
-+       * code/data */
-+#define DL_IS_SPECIAL_SEGMENT(EPNT, PPNT) \
-+  __dl_is_special_segment(EPNT, PPNT)
-+#define DL_MAP_SEGMENT(EPNT, PPNT, INFILE, FLAGS) \
-+  __dl_map_segment (EPNT, PPNT, INFILE, FLAGS)
-+#endif
-+
 +#include "../fdpic/dl-sysdep.h"
 +
 +static __always_inline Elf32_Addr
@@ -867,12 +690,13 @@ Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/dl-sysdep.h
 +	} while (--relative_count);
 +#endif
 +}
-Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/elfinterp.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/ldso/ldso/ubicom32/elfinterp.c	2012-05-25 01:44:01.033003652 -0700
-@@ -0,0 +1,385 @@
-+/* Blackfin ELF shared library loader suppport
+--- /dev/null
++++ b/ldso/ldso/ubicom32/elfinterp.c
+@@ -0,0 +1,377 @@
++/* Ubicom32 ELF shared library support
++   Copyright (C) 2012 Qualcomm, Inc.
++   Based on ../bfin/elfinterp.c, so:
++   Blackfin ELF shared library loader suppport
 +   Copyright (C) 2003, 2004 Red Hat, Inc.
 +   Contributed by Alexandre Oliva <aoliva@redhat.com>
 +   Lots of code copied from ../i386/elfinterp.c, so:
@@ -1243,24 +1067,11 @@ Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/elfinterp.c
 +  return _dl_parse(rpnt->dyn, scope, rel_addr, rel_size, _dl_do_reloc);
 +}
 +
-+#if 0
-+/* We don't have copy relocs.  */
-+int
-+_dl_parse_copy_information
-+(struct dyn_elf *rpnt __attribute__((unused)),
-+ unsigned long rel_addr __attribute__((unused)),
-+ unsigned long rel_size __attribute__((unused)))
-+{
-+  return 0;
-+}
-+#endif
 +#ifndef IS_IN_libdl
 +# include "../../libc/sysdeps/linux/ubicom32/crtreloc.c"
 +#endif
-Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/resolve.S
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/ldso/ldso/ubicom32/resolve.S	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/ldso/ldso/ubicom32/resolve.S
 @@ -0,0 +1,161 @@
 +     /* Copyright (C) 2003 Red Hat, Inc.
 +	Contributed by Alexandre Oliva <aoliva@redhat.com>
@@ -1423,11 +1234,9 @@ Index: uClibc-0.9.33.2/ldso/ldso/ubicom32/resolve.S
 +	 */
 +	calli	a4, 0(a4)
 +	.size	_dl_ubicom32_resolve_pending, . - _dl_ubicom32_resolve_pending
-Index: uClibc-0.9.33.2/libc/misc/Makefile.in
-===================================================================
---- uClibc-0.9.33.2.orig/libc/misc/Makefile.in	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/libc/misc/Makefile.in	2012-05-25 01:42:04.645006169 -0700
-@@ -12,7 +12,9 @@
+--- a/libc/misc/Makefile.in
++++ b/libc/misc/Makefile.in
+@@ -12,7 +12,9 @@ include $(top_srcdir)libc/misc/assert/Ma
  include $(top_srcdir)libc/misc/ctype/Makefile.in
  include $(top_srcdir)libc/misc/dirent/Makefile.in
  include $(top_srcdir)libc/misc/error/Makefile.in
@@ -1437,10 +1246,8 @@ Index: uClibc-0.9.33.2/libc/misc/Makefile.in
  include $(top_srcdir)libc/misc/file/Makefile.in
  include $(top_srcdir)libc/misc/fnmatch/Makefile.in
  include $(top_srcdir)libc/misc/ftw/Makefile.in
-Index: uClibc-0.9.33.2/libc/misc/elf/dl-iterate-phdr.c
-===================================================================
---- uClibc-0.9.33.2.orig/libc/misc/elf/dl-iterate-phdr.c	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/libc/misc/elf/dl-iterate-phdr.c	2012-05-25 01:42:04.645006169 -0700
+--- a/libc/misc/elf/dl-iterate-phdr.c
++++ b/libc/misc/elf/dl-iterate-phdr.c
 @@ -14,7 +14,7 @@
  
  #include <link.h>
@@ -1450,10 +1257,8 @@ Index: uClibc-0.9.33.2/libc/misc/elf/dl-iterate-phdr.c
  /* we want this in libc but nowhere else */
  #ifdef __USE_GNU
  
-Index: uClibc-0.9.33.2/libc/stdlib/malloc/malloc.c
-===================================================================
---- uClibc-0.9.33.2.orig/libc/stdlib/malloc/malloc.c	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/libc/stdlib/malloc/malloc.c	2012-05-25 01:42:04.645006169 -0700
+--- a/libc/stdlib/malloc/malloc.c
++++ b/libc/stdlib/malloc/malloc.c
 @@ -23,7 +23,7 @@
  
  /* The malloc heap.  We provide a bit of initial static space so that
@@ -1463,10 +1268,8 @@ Index: uClibc-0.9.33.2/libc/stdlib/malloc/malloc.c
  struct heap_free_area *__malloc_heap = HEAP_INIT_WITH_FA (initial_fa);
  #ifdef HEAP_USE_LOCKING
  malloc_mutex_t __malloc_heap_lock = PTHREAD_MUTEX_INITIALIZER;
-Index: uClibc-0.9.33.2/libc/string/ubicom32/Makefile
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/string/ubicom32/Makefile	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/string/ubicom32/Makefile
 @@ -0,0 +1,13 @@
 +# Makefile for uClibc
 +#
@@ -1481,10 +1284,8 @@ Index: uClibc-0.9.33.2/libc/string/ubicom32/Makefile
 +include $(top_builddir)Rules.mak
 +include ../Makefile.in
 +include $(top_srcdir)Makerules
-Index: uClibc-0.9.33.2/libc/string/ubicom32/memcpy.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/string/ubicom32/memcpy.c	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/string/ubicom32/memcpy.c
 @@ -0,0 +1,152 @@
 +/* Copy memory to memory until the specified number of bytes
 +   has been copied.  Overlap is NOT handled correctly.
@@ -1638,10 +1439,8 @@ Index: uClibc-0.9.33.2/libc/string/ubicom32/memcpy.c
 +}
 +libc_hidden_weak(memcpy)
 +
-Index: uClibc-0.9.33.2/libc/string/ubicom32/memset.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/string/ubicom32/memset.c	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/string/ubicom32/memset.c
 @@ -0,0 +1,103 @@
 +/* Copyright (C) 1991, 1997, 2003 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.
@@ -1746,10 +1545,8 @@ Index: uClibc-0.9.33.2/libc/string/ubicom32/memset.c
 +}
 +libc_hidden_weak(memset)
 +
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/Makefile
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/Makefile	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/Makefile
 @@ -0,0 +1,13 @@
 +# Makefile for uClibc
 +#
@@ -1764,10 +1561,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/Makefile
 +include $(top_builddir)Rules.mak
 +include Makefile.arch
 +include $(top_srcdir)Makerules
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/Makefile.arch
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/Makefile.arch	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/Makefile.arch
 @@ -0,0 +1,19 @@
 +# Makefile for uClibc
 +#
@@ -1788,10 +1583,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/Makefile.arch
 +
 +ARCH_CFLAGS := $(CPU_CFLAGS-y)
 +include $(top_srcdir)libc/sysdeps/linux/Makefile.commonarch
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/__syscall_error.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/__syscall_error.c	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/__syscall_error.c
 @@ -0,0 +1,11 @@
 +#include <errno.h>
 +#include <features.h>
@@ -1804,10 +1597,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/__syscall_error.c
 +	__set_errno(err_no);
 +	return -1;
 +}
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/elf-fdpic.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/elf-fdpic.h	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/elf-fdpic.h
 @@ -0,0 +1,115 @@
 +/* Copyright 2003, 2004 Free Software Foundation, Inc.
 +This file is part of the GNU C Library.
@@ -1924,10 +1715,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/elf-fdpic.h
 +		    (loadaddr).map))
 +
 +#endif /* _BITS_ELF_FDPIC_H */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/endian.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/endian.h	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/endian.h
 @@ -0,0 +1,7 @@
 +/* Ubicom32 is big-endian.  */
 +
@@ -1936,10 +1725,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/endian.h
 +#endif
 +
 +#define __BYTE_ORDER __BIG_ENDIAN
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/fcntl.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/fcntl.h	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/fcntl.h
 @@ -0,0 +1,226 @@
 +/* O_*, F_*, FD_* bit values for Linux.
 +   Copyright (C) 2000 Free Software Foundation, Inc.
@@ -2167,10 +1954,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/fcntl.h
 +#endif
 +
 +__END_DECLS
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/kernel_stat.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/kernel_stat.h	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/kernel_stat.h
 @@ -0,0 +1,52 @@
 +#ifndef _BITS_STAT_STRUCT_H
 +#define _BITS_STAT_STRUCT_H
@@ -2224,10 +2009,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/kernel_stat.h
 +};
 +
 +#endif	/*  _BITS_STAT_STRUCT_H */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/kernel_types.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/kernel_types.h	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/kernel_types.h
 @@ -0,0 +1,44 @@
 +/* Note that we use the exact same include guard #define names
 + * as asm/posix_types.h.  This will avoid gratuitous conflicts 
@@ -2273,10 +2056,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/kernel_types.h
 +} __kernel_fsid_t;
 +
 +#endif /* __ARCH_UBICOM32_POSIX_TYPES_H */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/mman.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/mman.h	2012-05-25 01:42:04.645006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/mman.h
 @@ -0,0 +1,104 @@
 +/* Definitions for POSIX memory map interface.  Linux/m68k version.
 +   Copyright (C) 1997, 2000, 2003, 2005 Free Software Foundation, Inc.
@@ -2382,10 +2163,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/mman.h
 +# define POSIX_MADV_WILLNEED	3 /* Will need these pages.  */
 +# define POSIX_MADV_DONTNEED	4 /* Don't need these pages.  */
 +#endif
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/setjmp.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/setjmp.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/setjmp.h
 @@ -0,0 +1,52 @@
 +/* Define the machine-dependent type `jmp_buf'.  Ubicom32 version.
 +   Copyright (C) 1992,93,95,97,2000 Free Software Foundation, Inc.
@@ -2439,10 +2218,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/setjmp.h
 +  ((void *) (address) < (void*)(jmpbuf)->sp)
 +
 +#endif	/* bits/setjmp.h */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/stackinfo.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/stackinfo.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/stackinfo.h
 @@ -0,0 +1,28 @@
 +/* Copyright (C) 1999 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.
@@ -2472,10 +2249,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/stackinfo.h
 +#define _STACK_GROWS_DOWN	1
 +
 +#endif	/* stackinfo.h */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/syscalls.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/syscalls.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/syscalls.h
 @@ -0,0 +1,150 @@
 +#ifndef _BITS_SYSCALLS_H
 +#define _BITS_SYSCALLS_H
@@ -2627,10 +2402,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/syscalls.h
 +
 +#endif /* __ASSEMBLER__ */
 +#endif /* _BITS_SYSCALLS_H */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/uClibc_arch_features.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/uClibc_arch_features.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/uClibc_arch_features.h
 @@ -0,0 +1,45 @@
 +/*
 + * Track misc arch-specific features that aren't config options
@@ -2677,10 +2450,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/uClibc_arch_features.h
 +#define __UCLIBC_HAVE_SIGNED_ZERO__
 +
 +#endif /* _BITS_UCLIBC_ARCH_FEATURES_H */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/wordsize.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/wordsize.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/bits/wordsize.h
 @@ -0,0 +1,19 @@
 +/* Copyright (C) 1999 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.
@@ -2701,10 +2472,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/bits/wordsize.h
 +   02111-1307 USA.  */
 +
 +#define __WORDSIZE	32
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/clone.S
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/clone.S	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/clone.S
 @@ -0,0 +1,80 @@
 +/*
 + * libc/sysdeps/linux/ubicom32/clone.S -- 'clone' syscall for linux/ubicom32
@@ -2786,10 +2555,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/clone.S
 +	.global __GI_clone
 +	.hidden __GI_clone
 +	.set __GI_clone,clone
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crt1.S
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crt1.S	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/crt1.S
 @@ -0,0 +1,193 @@
 +/* Startup code compliant to the default ubicom32 ABI.
 +   Copyright (C) 2009, Ubicom, Inc.
@@ -2984,10 +2751,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crt1.S
 +#endif
 +
 +	bkpt #-1		; Crash if somehow `exit' does return.
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crti.S
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crti.S	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/crti.S
 @@ -0,0 +1,55 @@
 +/*
 +Copyright (C) 2009, Ubicom, Inc.
@@ -3044,10 +2809,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crti.S
 +#ifdef __UBICOM32_FDPIC__
 +	move.4 -4(sp)++, a0
 +#endif
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crtn.S
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crtn.S	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/crtn.S
 @@ -0,0 +1,52 @@
 +/*
 +Copyright (C) 2009, Ubicom, Inc.
@@ -3101,10 +2864,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crtn.S
 +	move.4	a0, (sp)4++
 +#endif
 +	ret	(sp)4++
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crtreloc.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crtreloc.c	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/crtreloc.c
 @@ -0,0 +1,145 @@
 +/* Copyright (C) 2003, 2004 Free Software Foundation, Inc.
 +   written by Alexandre Oliva <aoliva@redhat.com>
@@ -3251,10 +3012,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/crtreloc.c
 +#endif
 +
 +#endif /* __UBICOM32_FDPIC__ */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/setjmp.S
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/setjmp.S	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/setjmp.S
 @@ -0,0 +1,101 @@
 +/*
 + * libc/sysdeps/linux/ubicom32/setjmp.S -- setjmp/sigsetjmp/longjmp for linux/ubicom32
@@ -3357,10 +3116,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/setjmp.S
 +	.global __GI___longjmp
 +	.hidden __GI___longjmp
 +	.set __GI___longjmp,__longjmp
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/sys/procfs.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/sys/procfs.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/sys/procfs.h
 @@ -0,0 +1,122 @@
 +/* Copyright (C) 1996, 1997, 1999, 2000 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.
@@ -3484,10 +3241,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/sys/procfs.h
 +__END_DECLS
 +
 +#endif	/* sys/procfs.h */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/sys/ucontext.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/sys/ucontext.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/sys/ucontext.h
 @@ -0,0 +1,101 @@
 +/* Copyright (C) 1998, 1999 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.
@@ -3590,10 +3345,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/sys/ucontext.h
 +  } ucontext_t;
 +
 +#endif /* sys/ucontext.h */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/syscall.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/syscall.c	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/syscall.c
 @@ -0,0 +1,32 @@
 +/* vi: set sw=4 ts=4: */
 +/* syscall for ubicom32/uClibc
@@ -3627,10 +3380,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/syscall.c
 +	int __NR_syscall_number = sysnum;
 +	return (long) INLINE_SYSCALL(syscall_number, 6, a, b, c, d, e, f);
 +}
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/vfork.S
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/vfork.S	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/vfork.S
 @@ -0,0 +1,43 @@
 +/*
 + * libc/sysdeps/linux/ubicom32/vfork.S -- 'vfork' syscall for linux/ubicom32
@@ -3675,11 +3426,9 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/vfork.S
 +	.global __GI_vfork
 +	.hidden __GI_vfork
 +	.set __GI_vfork,vfork
-Index: uClibc-0.9.33.2/libpthread/linuxthreads.old/pthread.c
-===================================================================
---- uClibc-0.9.33.2.orig/libpthread/linuxthreads.old/pthread.c	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/libpthread/linuxthreads.old/pthread.c	2012-05-25 01:42:04.649006169 -0700
-@@ -391,6 +391,10 @@
+--- a/libpthread/linuxthreads.old/pthread.c
++++ b/libpthread/linuxthreads.old/pthread.c
+@@ -391,6 +391,10 @@ void __pthread_initialize_minimal(void)
  #endif
  
      __libc_multiple_threads_ptr = __libc_pthread_init (ptr_pthread_functions);
@@ -3690,10 +3439,8 @@ Index: uClibc-0.9.33.2/libpthread/linuxthreads.old/pthread.c
  }
  
  
-Index: uClibc-0.9.33.2/libpthread/linuxthreads.old/sysdeps/ubicom32/pt-machine.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libpthread/linuxthreads.old/sysdeps/ubicom32/pt-machine.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libpthread/linuxthreads.old/sysdeps/ubicom32/pt-machine.h
 @@ -0,0 +1,68 @@
 +/* Machine-dependent pthreads configuration and inline functions.
 +
@@ -3763,10 +3510,8 @@ Index: uClibc-0.9.33.2/libpthread/linuxthreads.old/sysdeps/ubicom32/pt-machine.h
 +}
 +#endif
 +#endif /* pt-machine.h */
-Index: uClibc-0.9.33.2/libpthread/linuxthreads.old/sysdeps/ubicom32/tls.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libpthread/linuxthreads.old/sysdeps/ubicom32/tls.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libpthread/linuxthreads.old/sysdeps/ubicom32/tls.h
 @@ -0,0 +1,26 @@
 +/* Definitions for thread-local data handling.  linuxthreads/MIPS version.
 +   Copyright (C) 2005 Free Software Foundation, Inc.
@@ -3794,10 +3539,8 @@ Index: uClibc-0.9.33.2/libpthread/linuxthreads.old/sysdeps/ubicom32/tls.h
 +#undef USE_TLS
 +#endif
 +#endif	/* tls.h */
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/brk.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/brk.c	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/brk.c
 @@ -0,0 +1,43 @@
 +/* brk system call for Linux/HPPA.
 +   Copyright (C) 1995, 1996, 2000, 2001 Free Software Foundation, Inc.
@@ -3842,10 +3585,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/brk.c
 +  return 0;
 +}
 +libc_hidden_def(brk)
-Index: uClibc-0.9.33.2/utils/ldd.c
-===================================================================
---- uClibc-0.9.33.2.orig/utils/ldd.c	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/utils/ldd.c	2012-05-25 01:42:04.649006169 -0700
+--- a/utils/ldd.c
++++ b/utils/ldd.c
 @@ -106,6 +106,11 @@
  #define ELFCLASSM	ELFCLASS32
  #endif
@@ -3858,10 +3599,8 @@ Index: uClibc-0.9.33.2/utils/ldd.c
  #ifndef MATCH_MACHINE
  # ifdef __linux__
  #  include <asm/elf.h>
-Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/sys/user.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/sys/user.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libc/sysdeps/linux/ubicom32/sys/user.h
 @@ -0,0 +1,40 @@
 +/* Copyright (C) 1998 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.
@@ -3903,10 +3642,8 @@ Index: uClibc-0.9.33.2/libc/sysdeps/linux/ubicom32/sys/user.h
 +};
 +
 +#endif /* _SYS_USER_H */
-Index: uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/ubicom32/bits/pthreadtypes.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/ubicom32/bits/pthreadtypes.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libpthread/nptl/sysdeps/unix/sysv/linux/ubicom32/bits/pthreadtypes.h
 @@ -0,0 +1,181 @@
 +/* Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.
@@ -4089,10 +3826,8 @@ Index: uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/ubicom32/bits/pth
 +
 +
 +#endif	/* bits/pthreadtypes.h */
-Index: uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/ubicom32/bits/semaphore.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/ubicom32/bits/semaphore.h	2012-05-25 01:42:04.649006169 -0700
+--- /dev/null
++++ b/libpthread/nptl/sysdeps/unix/sysv/linux/ubicom32/bits/semaphore.h
 @@ -0,0 +1,35 @@
 +/* Copyright (C) 2002, 2005, 2007 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.

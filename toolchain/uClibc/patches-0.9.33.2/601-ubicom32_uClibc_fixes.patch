@@ -1,19 +1,17 @@
-Index: uClibc-0.9.33.2/ldso/include/dl-elf.h
-===================================================================
---- uClibc-0.9.33.2.orig/ldso/include/dl-elf.h	2012-05-15 00:20:09.000000000 -0700
-+++ uClibc-0.9.33.2/ldso/include/dl-elf.h	2012-05-25 09:48:24.759121976 -0700
-@@ -45,6 +45,10 @@
+--- a/ldso/include/dl-elf.h
++++ b/ldso/include/dl-elf.h
+@@ -45,6 +45,10 @@ extern int _dl_linux_resolve(void);
  extern int _dl_fixup(struct dyn_elf *rpnt, struct r_scope_elem *scope, int flag);
  extern void _dl_protect_relro (struct elf_resolve *l);
  
-+#ifndef DL_LOADADDR_ISSET(_loadaddr)
-+#define DL_LOADADDR_ISSET(_loadaddr) ((_loadaddr).map != NULL)
++#ifndef DL_LOADADDR_ISSET
++#define DL_LOADADDR_ISSET(_loadaddr) ((_loadaddr) != 0)
 +#endif
 +
  /*
   * Bitsize related settings for things ElfW()
   * does not handle already
-@@ -205,9 +209,7 @@
+@@ -205,9 +209,7 @@ unsigned int __dl_parse_dynamic_info(Elf
  	/* Don't adjust .dynamic unnecessarily.  For FDPIC targets,
  	   we'd have to walk all the loadsegs to find out if it was
  	   actually unnecessary, so skip this optimization.  */
@@ -24,3 +22,35 @@ Index: uClibc-0.9.33.2/ldso/include/dl-elf.h
  	{
  		ADJUST_DYN_INFO(DT_HASH, load_off);
  		ADJUST_DYN_INFO(DT_PLTGOT, load_off);
+--- a/ldso/ldso/ubicom32/dl-sysdep.h
++++ b/ldso/ldso/ubicom32/dl-sysdep.h
+@@ -108,6 +108,7 @@ while (0)
+ #endif
+ 
+ #include "../fdpic/dl-sysdep.h"
++#define DL_LOADADDR_ISSET(_loadaddr) ((_loadaddr).map != NULL)
+ 
+ static __always_inline Elf32_Addr
+ elf_machine_load_address (void)
+--- a/ldso/ldso/fdpic/dl-sysdep.h
++++ b/ldso/ldso/fdpic/dl-sysdep.h
+@@ -40,7 +40,7 @@ struct funcdesc_ht;
+   ((void(*)(void)) _dl_funcdesc_for ((void*)(ADDR), (LOADADDR).got_value))
+ 
+ #define _dl_stabilize_funcdesc(val) \
+-  ({ __asm__ ("" : "+m" (*(val))); (val); })
++  ({ __asm__ ("" : "+m" (*(val)) :: "memory"); (val); })
+ 
+ #define DL_CALL_FUNC_AT_ADDR(ADDR, LOADADDR, SIGNATURE, ...) \
+   ({ struct funcdesc_value fd = { (void*)(ADDR), (LOADADDR).got_value }; \
+--- a/ldso/ldso/ldso.c
++++ b/ldso/ldso/ldso.c
+@@ -464,7 +464,7 @@ void *_dl_get_ready_to_run(struct elf_re
+ 		_dl_progname = argv[0];
+ 	}
+ 
+-#ifndef __LDSO_STANDALONE_SUPPORT__
++#if !defined(__LDSO_STANDALONE_SUPPORT__) && !defined(__FDPIC__)
+ 	if (_start == (void *) auxvt[AT_ENTRY].a_un.a_val) {
+ 		_dl_dprintf(_dl_debug_file, "Standalone execution is not enabled\n");
+ 		_dl_exit(1);
