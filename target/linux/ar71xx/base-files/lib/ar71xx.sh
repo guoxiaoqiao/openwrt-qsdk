@@ -177,7 +177,7 @@ ar71xx_board_detect() {
 	*AW-NR580)
 		name="aw-nr580"
 		;;
-	*"CUS227 BAM")
+	*"CUS227-BAM")
 		name="cus227-bam"
 		;;
 	*"DB120 reference board")
