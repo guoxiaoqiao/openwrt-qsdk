@@ -59,6 +59,15 @@
 #include "dev-wmac.h"
 #include "machtypes.h"
 
+#define CUS227_GPIO_S1			12
+#define CUS227_GPIO_S2			13
+#define CUS227_GPIO_S3			14
+#define CUS227_GPIO_S4			15
+
+#define CUS227_KEYS_POLL_INTERVAL	20	/* msecs */
+#define CUS227_KEYS_DEBOUNCE_INTERVAL	(3 * CUS227_KEYS_POLL_INTERVAL)
+
+
 #define CUS227_GPIO_I2S_MCLK		22
 #define CUS227_GPIO_I2S_SD		18
 #define CUS227_GPIO_I2S_WS		20
@@ -70,6 +79,35 @@
 
 #define CUS227_MAC0_OFFSET		0
 #define CUS227_WMAC_CALDATA_OFFSET	0x1000
+
+static struct gpio_led cus227_leds_gpio[] __initdata = {
+	{
+		.name		= "cus227:green:s2",
+		.gpio		= CUS227_GPIO_S2,
+		.active_low	= 1,
+	},
+	{
+		.name		= "cus227:green:s3",
+		.gpio		= CUS227_GPIO_S3,
+		.active_low	= 1,
+	},
+	{
+		.name		= "cus227:green:s4",
+		.gpio		= CUS227_GPIO_S4,
+		.active_low	= 1,
+	},
+};
+
+static struct gpio_keys_button cus227_gpio_keys[] __initdata = {
+	{
+		.desc		= "WPS button",
+		.type		= EV_KEY,
+		.code		= KEY_WPS_BUTTON,
+		.debounce_interval = CUS227_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= CUS227_GPIO_S1,
+		.active_low	= 1,
+	},
+};
 
 /* Because CUS227 has a different device set on the SPI bus, we cannot
  * reuse the routines from dev-m25p80.c to instanciate the NOR flash */
@@ -169,6 +207,11 @@ static void __init cus227_bam_setup(void)
 
 	cus227_register_spi_devices();
 
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(cus227_leds_gpio),
+				 cus227_leds_gpio);
+	ath79_register_gpio_keys_polled(-1, CUS227_KEYS_POLL_INTERVAL,
+					ARRAY_SIZE(cus227_gpio_keys),
+					cus227_gpio_keys);
 	ath79_register_usb();
 	ath79_register_wmac(art + CUS227_WMAC_CALDATA_OFFSET, NULL);
 
