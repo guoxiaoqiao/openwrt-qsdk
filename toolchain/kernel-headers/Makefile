@@ -48,6 +48,7 @@ KMAKE := $(MAKE) -C $(CONFIG_EXTERNAL_KERNEL_TREE) \
 endif
 
 KMAKE +=ARCH=$(LINUX_KARCH) \
+	HOSTCFLAGS="$(HOST_CFLAGS) -Wall -Wmissing-prototypes -Wstrict-prototypes" \
 	CC="$(KERNEL_CC)" \
 	CFLAGS="$(TARGET_CFLAGS)" \
 	CROSS_COMPILE=$(TARGET_CROSS) \
