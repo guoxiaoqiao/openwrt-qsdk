@@ -41,7 +41,8 @@ static struct snd_soc_dai_link db120_dai = {
 };
 
 static struct snd_soc_card snd_soc_db120 = {
-	.name = "Qualcomm-Atheros DB12x ref. design",
+	.name = "QCA DB12x",
+	.long_name = "QCA DB12x - ath79-pcm/ath79-i2s/ath79-int-codec",
 	.dai_link = &db120_dai,
 	.num_links = 1,
 };

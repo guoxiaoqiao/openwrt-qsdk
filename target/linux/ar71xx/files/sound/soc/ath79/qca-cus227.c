@@ -93,7 +93,8 @@ static struct snd_soc_dai_link cus227_dai = {
 };
 
 static struct snd_soc_card snd_soc_cus227 = {
-	.name = "Qualcomm-Atheros CUS227 ref. design",
+	.name = "QCA CUS227",
+	.long_name = "CUS227 - ath79-pcm/ath79-i2s/wm8988",
 	.dai_link = &cus227_dai,
 	.num_links = 1,
 
