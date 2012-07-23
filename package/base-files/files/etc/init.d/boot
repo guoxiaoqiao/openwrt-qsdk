@@ -80,6 +80,12 @@ start() {
 	}
 	rm -f /tmp/wireless.tmp
 
+	/sbin/sound detect > /tmp/sound.tmp
+	[ -s /tmp/sound.tmp ] && {
+		cat /tmp/sound.tmp >> /etc/config/sound
+	}
+	rm -f /tmp/sound.tmp
+
 	apply_uci_config
 	config_load system
 	config_foreach system_config system
