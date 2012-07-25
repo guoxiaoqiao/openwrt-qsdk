@@ -125,7 +125,7 @@ static struct ath79_spi_controller_data ath79_spi1_cdata =
 	.cs_line = 1,
 };
 
-static struct spi_board_info ath79_spi_info[] = {
+static struct spi_board_info cus227_bam_spi_info[] = {
 	{
 		.bus_num	= 0,
 		.chip_select	= 0,
@@ -142,7 +142,18 @@ static struct spi_board_info ath79_spi_info[] = {
 	}
 };
 
+static struct spi_board_info cus227_sam_spi_info[] = {
+	{
+		.bus_num	= 0,
+		.chip_select	= 1,
+		.max_speed_hz   = 25000000,
+		.modalias	= "wm8988",
+		.controller_data = &ath79_spi1_cdata,
+	}
+};
+
 static struct ath79_spi_platform_data ath79_spi_data;
+
 
 static struct platform_device cus227_codec = {
 	.name		= "wm8988",
@@ -190,22 +201,23 @@ static void __init cus227_audio_setup(void)
 	ath79_audio_setup();
 }
 
-static void __init cus227_register_spi_devices(void)
+
+static void __init cus227_register_spi_devices(
+			struct spi_board_info const *info, int n)
 {
 	gpio_request(CUS227_GPIO_SPI_CS1, "SPI CS1");
 	ath79_gpio_output_select(CUS227_GPIO_SPI_CS1, AR934X_GPIO_OUT_MUX_SPI_CS1);
 	gpio_direction_output(CUS227_GPIO_SPI_CS1, 0);
 
 	ath79_spi_data.bus_num = 0;
-	ath79_spi_data.num_chipselect = 2;
-	ath79_register_spi(&ath79_spi_data, ath79_spi_info, 2);
+	ath79_spi_data.num_chipselect = n;
+	ath79_register_spi(&ath79_spi_data, info, n);
 }
 
-static void __init cus227_bam_setup(void)
+
+static void __init cus227_common_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
-
-	cus227_register_spi_devices();
 
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(cus227_leds_gpio),
 				 cus227_leds_gpio);
@@ -229,6 +241,22 @@ static void __init cus227_bam_setup(void)
 	ath79_audio_device_register();
 }
 
+
+static void __init cus227_bam_setup(void)
+{
+	cus227_register_spi_devices(cus227_bam_spi_info, 2);
+	cus227_common_setup();
+}
 MIPS_MACHINE(ATH79_MACH_CUS227_BAM, "CUS227-BAM",
 	     "Qualcomm Atheros CUS227-BAM",
 	     cus227_bam_setup);
+
+
+static void __init cus227_sam_setup(void)
+{
+	cus227_register_spi_devices(cus227_sam_spi_info, 1);
+	cus227_common_setup();
+}
+MIPS_MACHINE(ATH79_MACH_CUS227_SAM, "CUS227-SAM",
+	     "Qualcomm Atheros CUS227-SAM",
+	     cus227_sam_setup);

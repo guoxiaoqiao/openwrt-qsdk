@@ -710,9 +710,9 @@ define Image/Build/Profile/CUS227BAM
 endef
 
 cus227sam_cmdline=board=CUS227-SAM console=ttyS0,115200
-cus227sam_mtdlayout=mtdparts=ath-nand:256k(u-boot)ro,256k(u-boot-env)ro,1408k(kernel),14464k(rootfs),128k(nvram),128k(art)ro,15872k@0x60000(firmware)
+cus227sam_mtdlayout=mtdparts=ath-nand:256k(u-boot)ro,256k(u-boot-env)ro,1408k(kernel),128896k(rootfs),128k(nvram),128k(art)ro,130304k@0x80000(firmware)
 define Image/Build/Profile/CUS227SAM
-        $(call Image/Build/Template/$(fs_64k)/$(1),AthLzma,cus227-sam,$(cus227sam_cmdline),$(cus227sam_mtdlayout),1441792,14876672,RKuImage)
+        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227-sam,$(cus227sam_cmdline),$(cus227sam_mtdlayout),1441792,131989504,KRuImage)
 endef
 
 db120_cmdline=board=DB120 console=ttyS0,115200
