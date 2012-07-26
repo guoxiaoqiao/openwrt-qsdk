@@ -155,11 +155,6 @@ static struct spi_board_info cus227_sam_spi_info[] = {
 static struct ath79_spi_platform_data ath79_spi_data;
 
 
-static struct platform_device cus227_codec = {
-	.name		= "wm8988",
-	.id		= -1,
-};
-
 static void __init cus227_audio_setup(void)
 {
 	u32 t;
@@ -210,7 +205,7 @@ static void __init cus227_register_spi_devices(
 	gpio_direction_output(CUS227_GPIO_SPI_CS1, 0);
 
 	ath79_spi_data.bus_num = 0;
-	ath79_spi_data.num_chipselect = n;
+	ath79_spi_data.num_chipselect = 2;
 	ath79_register_spi(&ath79_spi_data, info, n);
 }
 
@@ -237,7 +232,6 @@ static void __init cus227_common_setup(void)
 
 	/* Audio initialization: PCM/I2S and CODEC */
 	cus227_audio_setup();
-	platform_device_register(&cus227_codec);
 	ath79_audio_device_register();
 }
 
