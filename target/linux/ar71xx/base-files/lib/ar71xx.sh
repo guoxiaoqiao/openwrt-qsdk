@@ -180,6 +180,9 @@ ar71xx_board_detect() {
 	*"CUS227-BAM")
 		name="cus227-bam"
 		;;
+       *"CUS227-SAM")
+               name="cus227-sam"
+               ;;
 	*"DB120 reference board")
 		name="db120"
 		;;
