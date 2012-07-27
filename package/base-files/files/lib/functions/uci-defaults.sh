@@ -184,3 +184,14 @@ set network.@switch_vlan[-1].ports='$ports'
 EOF
 }
 
+ucidef_set_snd_ctrl() {
+	local card=$1
+	local name=$2
+	local value=$3
+	uci batch <<EOF
+add sound sound-control
+set sound.@sound-control[-1].card='$card'
+set sound.@sound-control[-1].name='$name'
+set sound.@sound-control[-1].value='$value'
+EOF
+}
