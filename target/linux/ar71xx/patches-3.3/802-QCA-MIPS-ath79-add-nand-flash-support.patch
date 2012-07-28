@@ -1,9 +1,9 @@
 --- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
 +++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
-@@ -34,6 +34,8 @@
+@@ -32,6 +32,8 @@
  #define AR71XX_SPI_BASE		0x1f000000
  #define AR71XX_SPI_SIZE		0x01000000
-
+ 
 +#define AR71XX_NAND_CTRL_BASE	(AR71XX_EHCI_BASE + 0x00000200)
 +#define AR71XX_NAND_CTRL_SIZE	0x0b8
  #define AR71XX_DDR_CTRL_BASE	(AR71XX_APB_BASE + 0x00000000)
@@ -12,9 +12,9 @@
 --- a/drivers/mtd/nand/Kconfig
 +++ b/drivers/mtd/nand/Kconfig
 @@ -544,4 +544,12 @@ config MTD_NAND_RB750
-	tristate "NAND flash driver for the RouterBoard 750"
-	depends on MTD_NAND && ATH79_MACH_RB750
-
+ 	tristate "NAND flash driver for the RouterBoard 750"
+ 	depends on MTD_NAND && ATH79_MACH_RB750
+ 
 +config MTD_NAND_ATH79
 +	tristate "Nand flash support for Qualcomm-Atheros SoCs 71xx & 93xx"
 +	default n
@@ -31,5 +31,53 @@
  obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
  obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
 +obj-$(CONFIG_MTD_NAND_ATH79)		+= ath79_nand.o
-
+ 
  nand-objs := nand_base.o nand_bbt.o
+--- a/arch/mips/ath79/Kconfig
++++ b/arch/mips/ath79/Kconfig
+@@ -111,6 +111,7 @@ config ATH79_MACH_CUS227
+ 	select ATH79_DEV_GPIO_BUTTONS
+ 	select ATH79_DEV_LEDS_GPIO
+ 	select ATH79_DEV_M25P80
++	select ATH79_DEV_NAND
+ 	select ATH79_DEV_USB
+ 	select ATH79_DEV_WMAC
+ 	help
+@@ -674,6 +675,9 @@ config ATH79_DEV_GPIO_BUTTONS
+ config ATH79_DEV_LEDS_GPIO
+ 	def_bool n
+ 
++config ATH79_DEV_NAND
++	def_bool n
++
+ config ATH79_DEV_SPI
+ 	def_bool n
+ 
+--- a/arch/mips/ath79/Makefile
++++ b/arch/mips/ath79/Makefile
+@@ -24,6 +24,7 @@ obj-$(CONFIG_ATH79_DEV_ETH)		+= dev-eth.
+ obj-$(CONFIG_ATH79_DEV_GPIO_BUTTONS)	+= dev-gpio-buttons.o
+ obj-$(CONFIG_ATH79_DEV_LEDS_GPIO)	+= dev-leds-gpio.o
+ obj-$(CONFIG_ATH79_DEV_M25P80)		+= dev-m25p80.o
++obj-$(CONFIG_ATH79_DEV_NAND)		+= dev-nand.o
+ obj-$(CONFIG_ATH79_DEV_SPI)		+= dev-spi.o
+ obj-$(CONFIG_ATH79_DEV_USB)		+= dev-usb.o
+ obj-$(CONFIG_ATH79_DEV_WMAC)		+= dev-wmac.o
+--- a/arch/mips/ath79/mach-cus227.c
++++ b/arch/mips/ath79/mach-cus227.c
+@@ -54,6 +54,7 @@
+ #include "dev-gpio-buttons.h"
+ #include "dev-leds-gpio.h"
+ #include "dev-m25p80.h"
++#include "dev-nand.h"
+ #include "dev-spi.h"
+ #include "dev-usb.h"
+ #include "dev-wmac.h"
+@@ -249,6 +250,7 @@ MIPS_MACHINE(ATH79_MACH_CUS227_BAM, "CUS
+ static void __init cus227_sam_setup(void)
+ {
+ 	cus227_register_spi_devices(cus227_sam_spi_info, 1);
++	ath79_register_nand();
+ 	cus227_common_setup();
+ }
+ MIPS_MACHINE(ATH79_MACH_CUS227_SAM, "CUS227-SAM",
