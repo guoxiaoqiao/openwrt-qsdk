@@ -50,7 +50,7 @@ SOUNDCORE_FILES ?= \
 define KernelPackage/sound-core
   SUBMENU:=$(SOUND_MENU)
   TITLE:=Sound support
-  DEPENDS:=@AUDIO_SUPPORT +kmod-regmap-spi +kmod-regmap-i2c
+  DEPENDS:=@AUDIO_SUPPORT
   KCONFIG:= \
 	CONFIG_SOUND \
 	CONFIG_SND \
@@ -210,7 +210,7 @@ define KernelPackage/sound-soc-cus227
 	$(LINUX_DIR)/sound/soc/ath79/snd-soc-cus227.ko
   AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79-i2s snd-soc-ath79-pcm \
 				snd-soc-wm8988 snd-soc-cus227)
-  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core
+  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core +kmod-regmap-spi +kmod-regmap-i2c
   $(call AddDepends/sound)
 endef
 
@@ -231,7 +231,7 @@ define KernelPackage/sound-soc-db120
 	$(LINUX_DIR)/sound/soc/ath79/snd-soc-db120.ko
   AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79-i2s snd-soc-ath79-pcm \
 				snd-soc-ath79-codec snd-soc-db120)
-  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core
+  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core +kmod-regmap-spi +kmod-regmap-i2c
   $(call AddDepends/sound)
 endef
 
