@@ -54,6 +54,7 @@
 #include "dev-gpio-buttons.h"
 #include "dev-leds-gpio.h"
 #include "dev-m25p80.h"
+#include "dev-nand.h"
 #include "dev-spi.h"
 #include "dev-usb.h"
 #include "dev-wmac.h"
@@ -249,6 +250,7 @@ MIPS_MACHINE(ATH79_MACH_CUS227_BAM, "CUS227-BAM",
 static void __init cus227_sam_setup(void)
 {
 	cus227_register_spi_devices(cus227_sam_spi_info, 1);
+	ath79_register_nand();
 	cus227_common_setup();
 }
 MIPS_MACHINE(ATH79_MACH_CUS227_SAM, "CUS227-SAM",
