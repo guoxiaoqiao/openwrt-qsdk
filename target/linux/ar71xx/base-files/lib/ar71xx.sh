@@ -366,6 +366,9 @@ ar71xx_board_detect() {
 	*WHR-HP-GN)
 		name="whr-hp-gn"
 		;;
+	*WLAE-AG300N)
+		name="wlae-ag300n"
+		;;
 	*WP543)
 		name="wp543"
 		;;
