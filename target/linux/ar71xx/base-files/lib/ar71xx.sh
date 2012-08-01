@@ -411,6 +411,9 @@ ar71xx_board_detect() {
 	*EmbWir-Dorin)
 		name="ew-dorin"
 		;;
+	*EmbWir-Dorin-Router)
+		name="ew-dorin-router"
+		;;
 	esac
 
 	case "$machine" in
