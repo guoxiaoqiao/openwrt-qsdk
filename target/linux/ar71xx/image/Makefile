@@ -727,6 +727,12 @@ define Image/Build/Profile/DB120TB388
 	$(call Image/Build/Template/$(fs_64k)/$(1),AthLzma,db120tb388,$(db120tb388_cmdline),$(db120tb388_mtdlayout),1441792,6488064,RKuImage)
 endef
 
+ap135_cmdline=board=AP135 console=ttyS0,115200
+ap135_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(mib0),64k(art)ro,7744k@0x50000(firmware)
+define Image/Build/Profile/AP135
+	$(call Image/Build/Template/$(fs_64k)/$(1),AthLzma,ap135,$(ap135_cmdline),$(ap135_mtdlayout),1441792,6488064,RKuImage)
+endef
+
 ap136_cmdline=board=AP136 console=ttyS0,115200
 ap136_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(mib0),64k(art)ro,7744k@0x50000(firmware)
 define Image/Build/Profile/AP136
@@ -1095,6 +1101,7 @@ define Image/Build/Profile/Default
 	$(call Image/Build/Profile/AP113,$(1))
 	$(call Image/Build/Profile/AP121,$(1))
 	$(call Image/Build/Profile/AP121MINI,$(1))
+	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP136,$(1))
 	$(call Image/Build/Profile/AP81,$(1))
 	$(call Image/Build/Profile/AP83,$(1))

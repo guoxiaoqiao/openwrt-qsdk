@@ -657,6 +657,15 @@ ar8327_get_pad_cfg(struct ar8327_pad_cfg *cfg)
 
 	case AR8327_PAD_MAC_SGMII:
 		t = AR8327_PAD_SGMII_EN;
+		/* exactly one edge is used for Tx - the other is used for Rx */
+		if (!(cfg->sgmii_txclk_phase_sel^cfg->sgmii_rxclk_phase_sel))
+			printk(KERN_ERR "SGMII is used but phase conf is not valid: tx=%s rx=%s\n",
+				cfg->sgmii_txclk_phase_sel? "DOWN" : "UP",
+				cfg->sgmii_rxclk_phase_sel? "DOWN" : "UP");
+		if (cfg->sgmii_txclk_phase_sel)
+			t |= AR8327_PAD_SGMII_CLK_TX_SEL;
+		if (cfg->sgmii_rxclk_phase_sel)
+			t |= AR8327_PAD_SGMII_CLK_RX_SEL;
 		break;
 
 	case AR8327_PAD_MAC2PHY_MII:

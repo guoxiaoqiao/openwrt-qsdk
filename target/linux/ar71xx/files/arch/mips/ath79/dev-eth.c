@@ -572,12 +572,23 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
 		case ATH79_SOC_AR9341:
 		case ATH79_SOC_AR9342:
 		case ATH79_SOC_AR9344:
+			switch (pdata->phy_if_mode) {
+			case PHY_INTERFACE_MODE_MII:
+			case PHY_INTERFACE_MODE_GMII:
+			case PHY_INTERFACE_MODE_RGMII:
+			case PHY_INTERFACE_MODE_RMII:
+				break;
+			default:
+				return -EINVAL;
+			}
+			break;
 		case ATH79_SOC_QCA9558:
 			switch (pdata->phy_if_mode) {
 			case PHY_INTERFACE_MODE_MII:
 			case PHY_INTERFACE_MODE_GMII:
 			case PHY_INTERFACE_MODE_RGMII:
 			case PHY_INTERFACE_MODE_RMII:
+			case PHY_INTERFACE_MODE_SGMII:
 				break;
 			default:
 				return -EINVAL;
@@ -621,7 +632,6 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
 		case ATH79_SOC_AR9341:
 		case ATH79_SOC_AR9342:
 		case ATH79_SOC_AR9344:
-		case ATH79_SOC_QCA9558:
 			switch (pdata->phy_if_mode) {
 			case PHY_INTERFACE_MODE_MII:
 			case PHY_INTERFACE_MODE_GMII:
@@ -630,6 +640,19 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
 				return -EINVAL;
 			}
 			break;
+		case ATH79_SOC_QCA9558:
+			switch (pdata->phy_if_mode) {
+			case PHY_INTERFACE_MODE_MII:
+			case PHY_INTERFACE_MODE_GMII:
+			case PHY_INTERFACE_MODE_RGMII:
+			case PHY_INTERFACE_MODE_RMII:
+			case PHY_INTERFACE_MODE_SGMII:
+				break;
+			default:
+				return -EINVAL;
+			}
+			break;
+
 
 		default:
 			BUG();
