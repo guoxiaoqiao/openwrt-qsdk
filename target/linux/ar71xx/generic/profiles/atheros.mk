@@ -94,27 +94,16 @@ endef
 
 $(eval $(call Profile,AP96))
 
-define Profile/CUS227BAM
-	NAME:=Qualcomm Atheros CUS227 BAM board
-	PACKAGES:=kmod-sound-soc-db120
+define Profile/CUS227
+       NAME:=Qualcomm Atheros CUS227 board
+       PACKAGES:=kmod-usb-core kmod-usb2 kmod-sound-soc-cus227
 endef
 
-define Profile/CUS227BAM/Description
-	Package set optimized for the Qualcomm Atheros CUS227-BAM reference board.
+define Profile/CUS227/Description
+       Package set optimized for the Qualcomm Atheros CUS227 reference board.
 endef
 
-$(eval $(call Profile,CUS227BAM))
-
-define Profile/CUS227SAM
-       NAME:=Qualcomm Atheros CUS227 SAM board
-       PACKAGES:=kmod-sound-soc-db120
-endef
-
-define Profile/CUS227SAM/Description
-       Package set optimized for the Qualcomm Atheros CUS227-SAM reference board.
-endef
-
-$(eval $(call Profile,CUS227SAM))
+$(eval $(call Profile,CUS227))
 
 define Profile/DB120
 	NAME:=Atheros DB120 reference board

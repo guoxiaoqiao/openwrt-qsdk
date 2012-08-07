@@ -1,6 +1,6 @@
 --- a/arch/mips/ath79/Kconfig
 +++ b/arch/mips/ath79/Kconfig
-@@ -104,6 +104,21 @@ config ATH79_MACH_AP96
+@@ -116,6 +116,19 @@ config ATH79_MACH_AP96
  	select ATH79_DEV_M25P80
  	select ATH79_DEV_USB
  
@@ -10,19 +10,17 @@
 +	select ATH79_DEV_ETH
 +	select ATH79_DEV_GPIO_BUTTONS
 +	select ATH79_DEV_LEDS_GPIO
-+	select ATH79_DEV_M25P80
++	select ATH79_DEV_NAND
 +	select ATH79_DEV_USB
 +	select ATH79_DEV_WMAC
 +	help
 +	  Say 'Y' here if you want your kernel to support the
-+	  Qualcomm Atheros CUS227-BAM board.
-+	  Both CUS227-BAM (NOR flash) and CUS227-SAM (NAND flash) are
-+	  supported with this option.
++	  Qualcomm Atheros CUS227 board.
 +
  config ATH79_MACH_DB120
  	bool "Atheros DB120 reference board"
  	select SOC_AR934X
-@@ -118,6 +133,21 @@ config ATH79_MACH_DB120
+@@ -130,6 +143,21 @@ config ATH79_MACH_DB120
  	  Say 'Y' here if you want your kernel to support the
  	  Atheros DB120 reference board.
  
@@ -46,7 +44,7 @@
  	select SOC_AR71XX
 --- a/arch/mips/ath79/Makefile
 +++ b/arch/mips/ath79/Makefile
-@@ -47,7 +47,9 @@ obj-$(CONFIG_ATH79_MACH_AP81)		+= mach-a
+@@ -48,7 +48,9 @@ obj-$(CONFIG_ATH79_MACH_AP81)		+= mach-a
  obj-$(CONFIG_ATH79_MACH_AP83)		+= mach-ap83.o
  obj-$(CONFIG_ATH79_MACH_AP96)		+= mach-ap96.o
  obj-$(CONFIG_ATH79_MACH_AW_NR580)	+= mach-aw-nr580.o
@@ -58,12 +56,11 @@
  obj-$(CONFIG_ATH79_MACH_DIR_825_B1)	+= mach-dir-825-b1.o
 --- a/arch/mips/ath79/machtypes.h
 +++ b/arch/mips/ath79/machtypes.h
-@@ -27,7 +27,10 @@ enum ath79_mach_type {
+@@ -28,7 +28,9 @@ enum ath79_mach_type {
  	ATH79_MACH_AP83,		/* Atheros AP83 */
  	ATH79_MACH_AP96,		/* Atheros AP96 */
  	ATH79_MACH_AW_NR580,		/* AzureWave AW-NR580 */
-+	ATH79_MACH_CUS227_BAM,		/* Qualcomm Atheros CUS227-BAM board */
-+	ATH79_MACH_CUS227_SAM,		/* Qualcomm Atheros CUS227-SAM board */
++	ATH79_MACH_CUS227,		/* Qualcomm Atheros CUS227 board */
  	ATH79_MACH_DB120,		/* Atheros DB120 reference board */
 +	ATH79_MACH_DB120_TB388,		/* Atheros DB120/TB388 ref board */
  	ATH79_MACH_PB44,		/* Atheros PB44 reference board */

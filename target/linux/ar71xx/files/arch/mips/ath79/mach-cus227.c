@@ -43,6 +43,7 @@
 #include <linux/ar8216_platform.h>
 #include <linux/delay.h>
 #include <linux/gpio.h>
+#include <linux/mtd/mtd.h>
 
 #include <asm/mach-ath79/ar71xx_regs.h>
 #include <asm/mach-ath79/ath79.h>
@@ -80,6 +81,8 @@
 
 #define CUS227_MAC0_OFFSET		0
 #define CUS227_WMAC_CALDATA_OFFSET	0x1000
+#define CUS227_WMAC_CALDATA_MTD		"art"
+#define CUS227_WMAC_CALDATA_SIZE	(sizeof(u16)*ATH9K_PLAT_EEP_MAX_WORDS)
 
 static struct gpio_led cus227_leds_gpio[] __initdata = {
 	{
@@ -110,15 +113,9 @@ static struct gpio_keys_button cus227_gpio_keys[] __initdata = {
 	},
 };
 
-/* Because CUS227 has a different device set on the SPI bus, we cannot
- * reuse the routines from dev-m25p80.c to instanciate the NOR flash */
-static struct ath79_spi_controller_data ath79_spi0_cdata =
-{
-	.cs_type = ATH79_SPI_CS_TYPE_INTERNAL,
-	.is_flash = true,
-	.cs_line = 0,
-};
-
+/* Because CUS227 doesn't have a NOR flash on the SPI bus, we cannot
+ * reuse the routines from dev-m25p80.c to instanciate it.
+ * That's also the reason why the first device on the bus is 1 and not 0 */
 static struct ath79_spi_controller_data ath79_spi1_cdata =
 {
 	.cs_type = ATH79_SPI_CS_TYPE_INTERNAL,
@@ -126,24 +123,7 @@ static struct ath79_spi_controller_data ath79_spi1_cdata =
 	.cs_line = 1,
 };
 
-static struct spi_board_info cus227_bam_spi_info[] = {
-	{
-		.bus_num	= 0,
-		.chip_select	= 0,
-		.max_speed_hz	= 25000000,
-		.modalias	= "m25p80",
-		.controller_data = &ath79_spi0_cdata,
-	},
-	{
-		.bus_num	= 0,
-		.chip_select	= 1,
-		.max_speed_hz   = 25000000,
-		.modalias	= "wm8988",
-		.controller_data = &ath79_spi1_cdata,
-	}
-};
-
-static struct spi_board_info cus227_sam_spi_info[] = {
+static struct spi_board_info cus227_spi_info[] = {
 	{
 		.bus_num	= 0,
 		.chip_select	= 1,
@@ -199,7 +179,7 @@ static void __init cus227_audio_setup(void)
 
 
 static void __init cus227_register_spi_devices(
-			struct spi_board_info const *info, int n)
+			struct spi_board_info const *info)
 {
 	gpio_request(CUS227_GPIO_SPI_CS1, "SPI CS1");
 	ath79_gpio_output_select(CUS227_GPIO_SPI_CS1, AR934X_GPIO_OUT_MUX_SPI_CS1);
@@ -207,11 +187,11 @@ static void __init cus227_register_spi_devices(
 
 	ath79_spi_data.bus_num = 0;
 	ath79_spi_data.num_chipselect = 2;
-	ath79_register_spi(&ath79_spi_data, info, n);
+	ath79_register_spi(&ath79_spi_data, info, 1);
 }
 
 
-static void __init cus227_common_setup(void)
+static void __init cus227_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
 
@@ -221,7 +201,12 @@ static void __init cus227_common_setup(void)
 					ARRAY_SIZE(cus227_gpio_keys),
 					cus227_gpio_keys);
 	ath79_register_usb();
-	ath79_register_wmac(art + CUS227_WMAC_CALDATA_OFFSET, NULL);
+
+	ath79_register_nand();
+
+	cus227_register_spi_devices(cus227_spi_info);
+
+	ath79_register_wmac(NULL, NULL);
 
 	/* GMAC1 is connected to the internal switch */
 	ath79_init_mac(ath79_eth1_data.mac_addr, art + CUS227_MAC0_OFFSET, 0);
@@ -235,24 +220,5 @@ static void __init cus227_common_setup(void)
 	cus227_audio_setup();
 	ath79_audio_device_register();
 }
-
-
-static void __init cus227_bam_setup(void)
-{
-	cus227_register_spi_devices(cus227_bam_spi_info, 2);
-	cus227_common_setup();
-}
-MIPS_MACHINE(ATH79_MACH_CUS227_BAM, "CUS227-BAM",
-	     "Qualcomm Atheros CUS227-BAM",
-	     cus227_bam_setup);
-
-
-static void __init cus227_sam_setup(void)
-{
-	cus227_register_spi_devices(cus227_sam_spi_info, 1);
-	ath79_register_nand();
-	cus227_common_setup();
-}
-MIPS_MACHINE(ATH79_MACH_CUS227_SAM, "CUS227-SAM",
-	     "Qualcomm Atheros CUS227-SAM",
-	     cus227_sam_setup);
+MIPS_MACHINE(ATH79_MACH_CUS227, "CUS227", "Qualcomm Atheros CUS227",
+	     cus227_setup);

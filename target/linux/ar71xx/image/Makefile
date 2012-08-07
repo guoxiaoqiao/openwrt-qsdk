@@ -703,16 +703,10 @@ define Image/Build/Profile/AP96
 	$(call Image/Build/Template/$(fs_64k)/$(1),AthGzip,ap96,$(ap96_cmdline),$(ap96_mtdlayout),1769472,6291456,RKuImage)
 endef
 
-cus227bam_cmdline=board=CUS227-BAM console=ttyS0,115200
-cus227bam_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1408k(kernel),64k(nvram),64k(art)ro,15936k@0x50000(firmware)
-define Image/Build/Profile/CUS227BAM
-	$(call Image/Build/Template/$(fs_64k)/$(1),AthLzma,cus227-bam,$(cus227bam_cmdline),$(cus227bam_mtdlayout),1441792,14876672,RKuImage)
-endef
-
-cus227sam_cmdline=board=CUS227-SAM console=ttyS0,115200
-cus227sam_mtdlayout=mtdparts=ath79-nand:256k(u-boot)ro,256k(u-boot-env)ro,1408k(kernel),128384k(rootfs),128k(nvram),128k(art)ro,129792k@0x80000(firmware)
-define Image/Build/Profile/CUS227SAM
-        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227-sam,$(cus227sam_cmdline),$(cus227sam_mtdlayout),1441792,131989504,KRuImage)
+cus227_cmdline=board=CUS227 console=ttyS0,115200
+cus227_mtdlayout=mtdparts=ath79-nand:256k(u-boot)ro,256k(u-boot-env)ro,1408k(kernel),128384k(rootfs),128k(nvram),128k(art)ro,129792k@0x80000(firmware)
+define Image/Build/Profile/CUS227
+        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227,$(cus227_cmdline),$(cus227_mtdlayout),1441792,131989504,KRuImage)
 endef
 
 db120_cmdline=board=DB120 console=ttyS0,115200
@@ -1106,8 +1100,7 @@ define Image/Build/Profile/Default
 	$(call Image/Build/Profile/AP81,$(1))
 	$(call Image/Build/Profile/AP83,$(1))
 	$(call Image/Build/Profile/A02RBW300N,$(1))
-	$(call Image/Build/Profile/CUS227BAM,$(1))
-	$(call Image/Build/Profile/CUS227SAM,$(1))
+	$(call Image/Build/Profile/CUS227,$(1))
 	$(call Image/Build/Profile/DB120,$(1))
 	$(call Image/Build/Profile/DB120TB388,$(1))
 	$(call Image/Build/Profile/DIR600A1,$(1))
