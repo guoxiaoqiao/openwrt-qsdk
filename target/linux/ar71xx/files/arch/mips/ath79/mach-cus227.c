@@ -60,6 +60,7 @@
 #include "dev-usb.h"
 #include "dev-wmac.h"
 #include "machtypes.h"
+#include "nand-caldata-fixup.h"
 
 #define CUS227_GPIO_S1			12
 #define CUS227_GPIO_S2			13
@@ -81,8 +82,12 @@
 
 #define CUS227_MAC0_OFFSET		0
 #define CUS227_WMAC_CALDATA_OFFSET	0x1000
-#define CUS227_WMAC_CALDATA_MTD		"art"
-#define CUS227_WMAC_CALDATA_SIZE	(sizeof(u16)*ATH9K_PLAT_EEP_MAX_WORDS)
+
+static struct ath79_caldata_fixup cus227_caldata = {
+	.name = "art",
+	.wmac_caldata_addr = CUS227_WMAC_CALDATA_OFFSET,
+	.mac_addr = { CUS227_MAC0_OFFSET },
+};
 
 static struct gpio_led cus227_leds_gpio[] __initdata = {
 	{
@@ -193,8 +198,6 @@ static void __init cus227_register_spi_devices(
 
 static void __init cus227_setup(void)
 {
-	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
-
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(cus227_leds_gpio),
 				 cus227_leds_gpio);
 	ath79_register_gpio_keys_polled(-1, CUS227_KEYS_POLL_INTERVAL,
@@ -203,13 +206,13 @@ static void __init cus227_setup(void)
 	ath79_register_usb();
 
 	ath79_register_nand();
+	ath79_mtd_caldata_fixup(&cus227_caldata);
 
 	cus227_register_spi_devices(cus227_spi_info);
 
 	ath79_register_wmac(NULL, NULL);
 
 	/* GMAC1 is connected to the internal switch */
-	ath79_init_mac(ath79_eth1_data.mac_addr, art + CUS227_MAC0_OFFSET, 0);
 	ath79_eth1_data.phy_if_mode = PHY_INTERFACE_MODE_GMII;
 	ath79_eth1_data.speed = SPEED_1000;
 	ath79_eth1_data.duplex = DUPLEX_FULL;
