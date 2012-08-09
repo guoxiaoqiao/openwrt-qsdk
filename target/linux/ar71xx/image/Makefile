@@ -706,7 +706,7 @@ endef
 cus227_cmdline=board=CUS227 console=ttyS0,115200
 cus227_mtdlayout=mtdparts=ath79-nand:256k(u-boot)ro,256k(u-boot-env)ro,1408k(kernel),128384k(rootfs),128k(nvram),128k(art)ro,129792k@0x80000(firmware)
 define Image/Build/Profile/CUS227
-        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227,$(cus227_cmdline),$(cus227_mtdlayout),1441792,131989504,KRuImage)
+        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227,$(cus227_cmdline),$(cus227_mtdlayout),1441792,131465216,KRuImage)
 endef
 
 db120_cmdline=board=DB120 console=ttyS0,115200

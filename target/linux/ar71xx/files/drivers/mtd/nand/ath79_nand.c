@@ -288,7 +288,7 @@ static int ath79_rw_page(struct mtd_info *mtd, struct nand_chip *chip, int rw,
 	int status = 0;
 	int i, dir, dmastatus, ecc_enable, ecc_status;
 	int dma_ctrl, copy = 0;
-	dma_addr_t pa1, pa2;
+	dma_addr_t pa1, pa2 = 0;
 
 	dir = rw ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
 
@@ -641,8 +641,6 @@ static int ath79_write_page(struct mtd_info *mtd, struct nand_chip *chip,
 static void ath79_erase_cmd(struct mtd_info *mtd, int page)
 {
 	ath79_nand_priv *ath79_priv = mtd->priv;
-	struct nand_chip *chip = mtd->priv;
-	int status = 0;
 
 	dev_dbg(ath79_priv->dev, "%s: page 0x%x\n", __func__, page);
 
@@ -664,7 +662,7 @@ static void ath79_erase_cmd(struct mtd_info *mtd, int page)
 /****************************/
 /****** ath79_nand_remove *****/
 /****************************/
-static void __devexit ath79_nand_remove(struct platform_device *pdev)
+static int __devexit ath79_nand_remove(struct platform_device *pdev)
 {
 	ath79_nand_priv *ath79_priv;
 	struct mtd_info *mtd;
@@ -749,7 +747,7 @@ static int __devinit ath79_nand_probe(struct platform_device *pdev)
 
 	/* ath79_nand chip private functions */
 	ath79_priv->nand.cmdfunc = ath79_cmdfunc;
-	ath79_priv->nand.select_chip = ath79_null;
+	ath79_priv->nand.select_chip = (void *)ath79_null;
 	ath79_priv->nand.dev_ready = ath79_device_ready;
 	ath79_priv->nand.read_byte = ath79_read_byte;
 	ath79_priv->nand.read_buf = ath79_read_buf;
