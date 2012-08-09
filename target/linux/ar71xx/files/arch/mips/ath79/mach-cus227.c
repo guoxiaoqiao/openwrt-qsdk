@@ -86,7 +86,8 @@
 static struct ath79_caldata_fixup cus227_caldata = {
 	.name = "art",
 	.wmac_caldata_addr = CUS227_WMAC_CALDATA_OFFSET,
-	.mac_addr = { CUS227_MAC0_OFFSET },
+	.pcie_caldata_addr = { FIXUP_UNDEFINED, FIXUP_UNDEFINED },
+	.mac_addr = { FIXUP_UNDEFINED, CUS227_MAC0_OFFSET },
 };
 
 static struct gpio_led cus227_leds_gpio[] __initdata = {
