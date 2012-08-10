@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2010 OpenWrt.org
+# Copyright (C) 2006-2012 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -30,6 +30,7 @@ endif
 
 MTD_MAKEOPTS = \
 	CFLAGS="$(CFLAGS)" \
+	LDFLAGS="$(HOST_LDFLAGS) -static" \
 	WITHOUT_LZO=1 WITHOUT_XATTR=1 \
 	LZMA_STATIC_LIB="$(STAGING_DIR_HOST)/lib/liblzma.a" \
 	SUBDIRS="" \
