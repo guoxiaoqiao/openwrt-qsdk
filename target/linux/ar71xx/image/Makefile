@@ -703,10 +703,23 @@ define Image/Build/Profile/AP96
 	$(call Image/Build/Template/$(fs_64k)/$(1),AthGzip,ap96,$(ap96_cmdline),$(ap96_mtdlayout),1769472,6291456,RKuImage)
 endef
 
-cus227_cmdline=board=CUS227 console=ttyS0,115200
-cus227_mtdlayout=mtdparts=ath79-nand:256k(u-boot)ro,256k(u-boot-env)ro,1408k(kernel),128384k(rootfs),128k(nvram),128k(art)ro,129792k@0x80000(firmware)
+cus227_cmdline=
+cus227_mtdlayout=
 define Image/Build/Profile/CUS227
-        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227,$(cus227_cmdline),$(cus227_mtdlayout),1441792,131465216,KRuImage)
+        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227,$(cus227_cmdline),$(cus227_mtdlayout),1441792,1835008,KRuImage)
+	if [ -e "$(call sysupname,squashfs,cus227)" ]; then \
+		dd if=$(call sysupname,squashfs,cus227) \
+			of=image.release.tmp bs=128k conv=sync; \
+		md5sumstr=`dd if=image.release.tmp 2>/dev/null | md5sum - | cut -d ' ' -f 1 | sed -e 's/../\\\\x&/g'`; \
+		printf $$$${md5sumstr} > $(call sysupname,squashfs,cus227).release; \
+		for (( i=0; i<124; i++ )) ; do \
+			printf "\x00\x00\x00\x00" >> $(call sysupname,squashfs,cus227).release; \
+		done; \
+		cat image.release.tmp >> $(call sysupname,squashfs,cus227).release; \
+		rm $(call sysupname,squashfs,cus227); \
+		rm image.release.tmp; \
+		mv $(call sysupname,squashfs,cus227).release $(call sysupname,squashfs,cus227); \
+	fi
 endef
 
 db120_cmdline=board=DB120 console=ttyS0,115200
