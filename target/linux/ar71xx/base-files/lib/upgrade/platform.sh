@@ -208,6 +208,23 @@ platform_check_image() {
 		fi
 		return 0
 		;;
+	cus227)
+		local md5_calculated=$(dd bs=512 skip=1 if="$1" | md5sum - | awk '{print $1}')
+		local md5_orig=$(hexdump -n 16 -e '1/1 "%02x"' < "$1")
+		[ -n $md5_calculated -a -n $md5_orig ] && [ $md5_calculated == $md5_orig ] || {
+			echo "Invalid image. Contents do not match checksum (image:$md5_orig calculated:$md5_calcualted)"
+			return 1
+		}
+
+		local hw_magic="$(ar71xx_get_mtd_offset_size_format firmware 0 2 %02x)"
+		magic=$(dd bs=1 skip=512 count=2 if="$1" | hexdump -n 2 -e '1/1 "%02x"')
+		[ "$magic" != "$hw_magic" ] && {
+			echo "Invalid image, hardware ID mismatch, hw:$hw_magic image:$magic."
+			return 1
+		}
+
+		return 0
+		;;
 	esac
 
 	echo "Sysupgrade is not yet supported on $board."
@@ -234,6 +251,9 @@ platform_do_upgrade() {
 	om2p | \
 	om2p-lc)
 		platform_do_upgrade_om2p "$ARGV"
+		;;
+	cus227)
+		platform_do_upgrade_cus227 "$ARGV"
 		;;
 	*)
 		default_do_upgrade "$ARGV"

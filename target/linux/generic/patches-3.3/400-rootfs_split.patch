@@ -17,7 +17,7 @@
  	---help---
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
-@@ -29,6 +29,8 @@
+@@ -29,10 +29,14 @@
  #include <linux/kmod.h>
  #include <linux/mtd/mtd.h>
  #include <linux/mtd/partitions.h>
@@ -26,7 +26,13 @@
  #include <linux/err.h>
  
  #include "mtdcore.h"
-@@ -50,7 +52,7 @@ struct mtd_part {
+ 
++static bool rootfs_split = 1;
++
+ /* Our partition linked list */
+ static LIST_HEAD(mtd_partitions);
+ static DEFINE_MUTEX(mtd_partitions_mutex);
+@@ -50,7 +54,7 @@ struct mtd_part {
   * the pointer to that structure with this macro.
   */
  #define PART(x)  ((struct mtd_part *)(x))
@@ -35,7 +41,7 @@
  
  /*
   * MTD methods which simply translate the effective address and pass through
-@@ -643,6 +645,155 @@ int mtd_del_partition(struct mtd_info *m
+@@ -643,6 +647,164 @@ int mtd_del_partition(struct mtd_info *m
  }
  EXPORT_SYMBOL_GPL(mtd_del_partition);
  
@@ -188,10 +194,19 @@
 +}
 +#endif /* CONFIG_MTD_ROOTFS_SPLIT */
 +
++static int __init no_rootfs_split(char *str)
++{
++	rootfs_split = 0;
++
++	return 0;
++}
++
++early_param("norootfssplit", no_rootfs_split);
++
  /*
   * This function, given a master MTD object and a partition table, creates
   * and registers slave MTD objects which are bound to the master according to
-@@ -659,6 +810,9 @@ int add_mtd_partitions(struct mtd_info *
+@@ -659,6 +821,9 @@ int add_mtd_partitions(struct mtd_info *
  	struct mtd_part *slave;
  	uint64_t cur_offset = 0;
  	int i;
@@ -201,7 +216,7 @@
  
  	printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", nbparts, master->name);
  
-@@ -673,12 +827,53 @@ int add_mtd_partitions(struct mtd_info *
+@@ -673,12 +838,57 @@ int add_mtd_partitions(struct mtd_info *
  
  		add_mtd_device(&slave->mtd);
  
@@ -214,9 +229,11 @@
 +			}
 +#endif
 +#ifdef CONFIG_MTD_ROOTFS_SPLIT
-+			ret = split_rootfs_data(master, &slave->mtd, &parts[i]);
-+			/* if (ret == 0)
-+			 * 	j++; */
++			if (rootfs_split) {
++				ret = split_rootfs_data(master, &slave->mtd, &parts[i]);
++				/* if (ret == 0)
++				 * 	j++; */
++			}
 +#endif
 +		}
 +
@@ -244,8 +261,10 @@
 +		ret = mtd->refresh_device(mtd);
 +
 +#ifdef CONFIG_MTD_ROOTFS_SPLIT
-+	if (!ret && IS_PART(mtd) && !strcmp(mtd->name, "rootfs"))
-+		refresh_rootfs_split(mtd);
++	if (rootfs_split) {
++		if (!ret && IS_PART(mtd) && !strcmp(mtd->name, "rootfs"))
++			refresh_rootfs_split(mtd);
++	}
 +#endif
 +
 +	return 0;
