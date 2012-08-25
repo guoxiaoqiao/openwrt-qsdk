@@ -88,14 +88,3 @@ endef
 
 $(eval $(call KernelPackage,spi-dev))
 
-define KernelPackage/regmap-spi
-  SUBMENU:=$(SPI_MENU)
-  TITLE:=Regmap SPI driver (kernel upstream)
-  DEPENDS:= @!(LINUX_2_6_30||LINUX_2_6_31||LINUX_2_6_32||LINUX_2_6_33||LINUX_2_6_33||LINUX_2_6_33||LINUX_2_6_36||LINUX_2_6_37||LINUX_2_6_38||LINUX_2_6_39||LINUX_3_0)
-  KCONFIG:=CONFIG_REGMAP=y \
-	   CONFIG_REGMAP_SPI
-  FILES:=$(LINUX_DIR)/drivers/base/regmap/regmap-spi.ko
-  AUTOLOAD:=$(call AutoLoad,20,regmap-spi)
-endef
-
-$(eval $(call KernelPackage,regmap-spi))
