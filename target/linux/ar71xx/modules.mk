@@ -67,3 +67,62 @@ define KernelPackage/wdt-ath79/description
 endef
 
 $(eval $(call KernelPackage,wdt-ath79))
+
+
+define KernelPackage/nand-ath79
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=NAND flash support
+  DEPENDS:=@TARGET_ar71xx kmod-nand
+  KCONFIG:=CONFIG_MTD_NAND_ATH79
+  FILES:= \
+	$(LINUX_DIR)/drivers/mtd/nand/ath79_nand.ko
+  AUTOLOAD:=$(call AutoLoad,20,ath79_nand)
+endef
+
+define KernelPackage/nand-ath79/description
+ Kernel module for NAND support of Qualcomm Atheros SoC AR72xx & AR93xx
+endef
+
+$(eval $(call KernelPackage,nand-ath79))
+
+
+define KernelPackage/sound-soc-cus227
+  TITLE:=Qualcomm-Atheros CUS227 board sound support
+  KCONFIG:= \
+	CONFIG_SND_ATH79_SOC \
+	CONFIG_SND_ATH79_SOC_I2S \
+	CONFIG_SND_ATH79_SOC_CODEC \
+	CONFIG_SND_ATH79_SOC_CUS227
+  FILES:= \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-i2s.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-pcm.ko \
+	$(LINUX_DIR)/sound/soc/codecs/snd-soc-wm8988.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-cus227.ko
+  AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79-i2s snd-soc-ath79-pcm \
+				snd-soc-wm8988 snd-soc-cus227)
+  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core +kmod-regmap
+  $(call AddDepends/sound)
+endef
+
+$(eval $(call KernelPackage,sound-soc-cus227))
+
+
+define KernelPackage/sound-soc-db120
+  TITLE:=Qualcomm-Atheros DB12x board sound support
+  KCONFIG:= \
+	CONFIG_SND_ATH79_SOC \
+	CONFIG_SND_ATH79_SOC_I2S \
+	CONFIG_SND_ATH79_SOC_CODEC \
+	CONFIG_SND_ATH79_SOC_DB120
+  FILES:= \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-i2s.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-pcm.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-ath79-codec.ko \
+	$(LINUX_DIR)/sound/soc/ath79/snd-soc-db120.ko
+  AUTOLOAD:=$(call AutoLoad,60,snd-soc-ath79-i2s snd-soc-ath79-pcm \
+				snd-soc-ath79-codec snd-soc-db120)
+  DEPENDS:=@TARGET_ar71xx +kmod-sound-soc-core +kmod-regmap
+  $(call AddDepends/sound)
+endef
+
+$(eval $(call KernelPackage,sound-soc-db120))
