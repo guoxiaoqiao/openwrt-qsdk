@@ -167,7 +167,8 @@ static struct platform_driver ath79_i2s_driver = {
 
 module_platform_driver(ath79_i2s_driver);
 
-MODULE_AUTHOR("Qualcomm-Atheros");
+MODULE_AUTHOR("Qualcomm-Atheros Inc.");
+MODULE_AUTHOR("Mathieu Olivari <mathieu@qca.qualcomm.com>");
 MODULE_DESCRIPTION("QCA Audio DAI (i2s) module");
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_ALIAS("platform:" DRV_NAME);

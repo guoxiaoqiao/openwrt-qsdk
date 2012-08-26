@@ -127,6 +127,7 @@ static void __exit cus227_exit(void)
 module_init(cus227_init);
 module_exit(cus227_exit);
 
-MODULE_AUTHOR("Qualcomm-Atheros");
+MODULE_AUTHOR("Qualcomm-Atheros Inc.");
+MODULE_AUTHOR("Mathieu Olivari <mathieu@qca.qualcomm.com>");
 MODULE_DESCRIPTION("QCA Audio Machine module");
 MODULE_LICENSE("Dual BSD/GPL");

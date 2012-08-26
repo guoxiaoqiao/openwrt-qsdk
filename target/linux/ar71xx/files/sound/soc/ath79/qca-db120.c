@@ -73,6 +73,7 @@ static void __exit db120_exit(void)
 module_init(db120_init);
 module_exit(db120_exit);
 
-MODULE_AUTHOR("Qualcomm-Atheros");
+MODULE_AUTHOR("Qualcomm-Atheros Inc.");
+MODULE_AUTHOR("Mathieu Olivari <mathieu@qca.qualcomm.com>");
 MODULE_DESCRIPTION("QCA Audio Machine module");
 MODULE_LICENSE("Dual BSD/GPL");

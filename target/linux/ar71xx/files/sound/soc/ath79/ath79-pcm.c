@@ -382,7 +382,8 @@ static struct platform_driver ath79_pcm_driver = {
 
 module_platform_driver(ath79_pcm_driver);
 
-MODULE_AUTHOR("Qualcomm-Atheros");
+MODULE_AUTHOR("Qualcomm-Atheros Inc.");
+MODULE_AUTHOR("Mathieu Olivari <mathieu@qca.qualcomm.com>");
 MODULE_DESCRIPTION("QCA Audio PCM DMA module");
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_ALIAS("platform:" DRV_NAME);

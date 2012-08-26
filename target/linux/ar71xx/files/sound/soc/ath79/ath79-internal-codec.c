@@ -132,7 +132,8 @@ static struct platform_driver ath79_codec_driver = {
 
 module_platform_driver(ath79_codec_driver);
 
-MODULE_AUTHOR("Qualcomm Atheros");
+MODULE_AUTHOR("Qualcomm-Atheros Inc.");
+MODULE_AUTHOR("Mathieu Olivari <mathieu@qca.qualcomm.com>");
 MODULE_DESCRIPTION("ATH79 integrated codec driver");
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_ALIAS("platform:" DRV_NAME);
