@@ -1,9 +1,3 @@
-wpa_supplicant_run_scripts() {
-       for i in /lib/wifi/supplicant.d/*; do
-               [ -x $i ] && $i 2>&1
-       done
-}
-
 wpa_supplicant_setup_vif() {
 	local vif="$1"
 	local driver="$2"
@@ -195,8 +189,6 @@ network={
 	$wep_tx_keyidx
 }
 EOF
-	if [ -n "$proto" -o "$key_mgmt" == "NONE" ]; then
+	[ -z "$proto" -a "$key_mgmt" != "NONE" ] || \
 		wpa_supplicant ${bridge:+ -b $bridge} -B -P "/var/run/wifi-${ifname}.pid" -D ${driver:-wext} -i "$ifname" -c /var/run/wpa_supplicant-$ifname.conf $options
-		wpa_supplicant_run_scripts
-	fi
 }
