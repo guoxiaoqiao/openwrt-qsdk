@@ -8,6 +8,7 @@ ucidef_set_led_netdev() {
 	local name=$2
 	local sysfs=$3
 	local dev=$4
+	local mode=$5
 
 	uci -q get system.$cfg && return 0
 
@@ -17,7 +18,7 @@ set system.$cfg.name='$name'
 set system.$cfg.sysfs='$sysfs'
 set system.$cfg.trigger='netdev'
 set system.$cfg.dev='$dev'
-set system.$cfg.mode='link tx rx'
+set system.$cfg.mode='${mode:-link tx rx}'
 EOF
 	UCIDEF_LEDS_CHANGED=1
 }
