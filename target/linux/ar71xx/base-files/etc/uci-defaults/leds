@@ -18,6 +18,10 @@ ap113)
 	ucidef_set_led_usbdev "usb" "USB" "ap113:green:usb" "1-1"
 	;;
 
+cus227)
+	ucidef_set_led_netdev "s3" "S3" "cus227:green:s4" "wlan0" "link tx"
+	;;
+
 db120)
 	ucidef_set_led_usbdev "usb" "USB" "db120:green:usb" "1-1"
 	;;
