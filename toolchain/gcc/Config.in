@@ -2,15 +2,10 @@
 
 choice
 	prompt "GCC compiler Version" if TOOLCHAINOPTS
-	default GCC_VERSION_4_4_1 if GCC_DEFAULT_VERSION_4_4_1
 	default GCC_VERSION_4_4_7 if GCC_DEFAULT_VERSION_4_4_7
 	default GCC_VERSION_4_6_LINARO
 	help
 	  Select the version of gcc you wish to use.
-
-	config GCC_VERSION_4_4_1
-		bool "gcc 4.4.1"
-		depends ubicom32
 
 	config GCC_VERSION_4_4_7
 		bool "gcc 4.4.7"

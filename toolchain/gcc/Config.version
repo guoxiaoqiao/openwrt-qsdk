@@ -1,14 +1,9 @@
 config GCC_DEFAULT_VERSION
 	bool
 
-config GCC_DEFAULT_VERSION_4_4_1
-	select GCC_DEFAULT_VERSION
-	default y if ubicom32
-	bool
-
 config GCC_DEFAULT_VERSION_4_4_7
 	select GCC_DEFAULT_VERSION
-	default y if avr32
+	default y if (avr32 || ubicom32)
 	bool
 
 config GCC_DEFAULT_VERSION_4_6_LINARO
@@ -18,7 +13,6 @@ config GCC_DEFAULT_VERSION_4_6_LINARO
 
 config GCC_VERSION
 	string
-	default "4.4.1"	    if GCC_VERSION_4_4_1
 	default "4.4.7"	    if GCC_VERSION_4_4_7
 	default "4.6.2"	    if GCC_VERSION_4_6_2
 	default "4.7.0"	    if GCC_VERSION_4_7_0
@@ -30,7 +24,7 @@ config GCC_VERSION
 
 config GCC_VERSION_4_4
 	bool
-	default y	if (GCC_VERSION_4_4_1 || GCC_VERSION_4_4_7)
+	default y	if GCC_VERSION_4_4_7
 
 config GCC_VERSION_4_5
 	bool
@@ -45,9 +39,6 @@ config GCC_VERSION_4_7
 	default y       if (GCC_VERSION_4_7_0 || GCC_VERSION_4_7_LINARO)
 
 if !TOOLCHAINOPTS
-	config GCC_VERSION_4_4_1
-		default y if GCC_DEFAULT_VERSION_4_4_1
-		bool
 
 	config GCC_VERSION_4_4_7
 		default y if GCC_DEFAULT_VERSION_4_4_7
