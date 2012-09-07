@@ -12,7 +12,7 @@ BOARDNAME:=Ubicom IPxx
 SUBTARGETS=IP8100RGW
 FEATURES:=ramdisk
 
-LINUX_VERSION:=3.3.7
+LINUX_VERSION:=2.6.36
 
 define Target/Description
 	Build firmware images for Ubicom based routers and media devices.
