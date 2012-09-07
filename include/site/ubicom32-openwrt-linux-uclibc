@@ -1,4 +1,0 @@
-#!/bin/sh
-
-. $TOPDIR/include/site/ubicom32-linux
-. $TOPDIR/include/site/linux-uclibc

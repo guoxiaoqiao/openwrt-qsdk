@@ -14180,6 +14180,19 @@ Index: gcc-4.4.1/gcc/config/ubicom32/to-do.txt
 +
 +Need to implement conditional move operations - simulated using the merge instruction.
 +
+Index: gcc-4.4.1/gcc/Makefile.in
+===================================================================
+--- gcc-4.4.1.orig/gcc/Makefile.in	2009-05-21 16:17:37.000000000 -0700
++++ gcc-4.4.1/gcc/Makefile.in	2012-05-09 17:17:37.450982504 -0700
+@@ -280,7 +280,7 @@
+ GMPINC = @GMPINC@
+ 
+ # How to find PPL
+-PPLLIBS = @PPLLIBS@
++PPLLIBS = @PPLLIBS@ -lppl_c
+ PPLINC = @PPLINC@
+ 
+ # How to find CLOOG
 Index: gcc-4.4.1/gcc/testsuite/lib/target-supports.exp
 ===================================================================
 --- gcc-4.4.1.orig/gcc/testsuite/lib/target-supports.exp	2009-07-21 00:22:51.000000000 -0700
