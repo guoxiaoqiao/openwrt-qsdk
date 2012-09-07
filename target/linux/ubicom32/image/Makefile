@@ -31,7 +31,6 @@ endef
 
 define Image/BuildKernel
 	$(TARGET_CROSS)objcopy -O binary --gap-fill 0xff \
-		--strip-debug \
 		$(LINUX_DIR)/vmlinux $(KDIR)/vmlinux.bin
 
 	gzip -9 < $(KDIR)/vmlinux.bin > $(KDIR)/vmlinux.gz
@@ -45,7 +44,6 @@ endef
 # Add the GDBLoader so we can push the firmware image via GDB
 define Image/Build/pack
 	$(TARGET_CROSS)objcopy \
-	--only-keep-debug \
 	--add-section .image=$(1) \
 		--change-section-address=.image=0xb0080000 --set-section-flags \
 		.image=contents,load \
