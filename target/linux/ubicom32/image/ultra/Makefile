@@ -24,7 +24,6 @@ prepare:
 
 compile: prepare
 	$(MAKE) -s -C $(MAINEXEC_DIR) default
-	mkdir -p $(BIN_DIR)
 	$(TARGET_CROSS)objcopy -O binary --gap-fill 0xff -R .ocm_stack \
 		$(MAINEXEC_DIR)/ultra.elf $(BIN_DIR)/mainexec.bin
 	gzip -9 < $(BIN_DIR)/mainexec.bin > $(BIN_DIR)/mainexec.gz
