@@ -19,6 +19,7 @@
 #include <linux/etherdevice.h>
 #include <linux/platform_device.h>
 #include <linux/serial_8250.h>
+#include <linux/clk.h>
 
 #include <asm/mach-ath79/ath79.h>
 #include <asm/mach-ath79/ar71xx_regs.h>
@@ -146,6 +147,31 @@ static void ath79_mii_ctrl_set_speed(unsigned int reg, unsigned int speed)
 	iounmap(base);
 }
 
+static unsigned long ar934x_get_mdio_ref_clock(void)
+{
+	void __iomem *base;
+	unsigned long ret;
+	u32 t;
+
+	base = ioremap(AR71XX_PLL_BASE, AR71XX_PLL_SIZE);
+
+	ret = 0;
+	t = __raw_readl(base + AR934X_PLL_SWITCH_CLOCK_CONTROL_REG);
+	if (t & AR934X_PLL_SWITCH_CLOCK_CONTROL_MDIO_CLK_SEL) {
+		ret = 100 * 1000 * 1000;
+	} else {
+		struct clk *clk;
+
+		clk = clk_get(NULL, "ref");
+		if (!IS_ERR(clk))
+			ret = clk_get_rate(clk);
+	}
+
+	iounmap(base);
+
+	return ret;
+}
+
 void __init ath79_register_mdio(unsigned int id, u32 phy_mask)
 {
 	struct platform_device *mdio_dev;
@@ -217,9 +243,16 @@ void __init ath79_register_mdio(unsigned int id, u32 phy_mask)
 	case ATH79_SOC_AR9341:
 	case ATH79_SOC_AR9342:
 	case ATH79_SOC_AR9344:
+		if (id == 1) {
+			mdio_data->builtin_switch = 1;
+			mdio_data->ref_clock = ar934x_get_mdio_ref_clock();
+			mdio_data->mdio_clock = 6250000;
+		}
+		mdio_data->is_ar934x = 1;
+		break;
+	case ATH79_SOC_QCA9558:
 		if (id == 1)
 			mdio_data->builtin_switch = 1;
-	case ATH79_SOC_QCA9558:
 		mdio_data->is_ar934x = 1;
 		break;
 
@@ -653,7 +686,6 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
 			}
 			break;
 
-
 		default:
 			BUG();
 		}
@@ -851,13 +883,6 @@ void __init ath79_register_eth(unsigned int id)
 	case ATH79_SOC_AR9341:
 	case ATH79_SOC_AR9342:
 	case ATH79_SOC_AR9344:
-		if (id == 1) {
-			pdata->switch_data = &ath79_switch_data;
-
-			/* reset the built-in switch */
-			ath79_device_reset_set(AR934X_RESET_ETH_SWITCH);
-			ath79_device_reset_clear(AR934X_RESET_ETH_SWITCH);
-		}
 	case ATH79_SOC_QCA9558:
 		if (id == 0) {
 			pdata->reset_bit = AR934X_RESET_GE0_MAC |
@@ -867,6 +892,12 @@ void __init ath79_register_eth(unsigned int id)
 			pdata->reset_bit = AR934X_RESET_GE1_MAC |
 					   AR934X_RESET_GE1_MDIO;
 			pdata->set_speed = ath79_set_speed_dummy;
+
+			pdata->switch_data = &ath79_switch_data;
+
+			/* reset the built-in switch */
+			ath79_device_reset_set(AR934X_RESET_ETH_SWITCH);
+			ath79_device_reset_clear(AR934X_RESET_ETH_SWITCH);
 		}
 
 		pdata->ddr_flush = ath79_ddr_no_flush;
