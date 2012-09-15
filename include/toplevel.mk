@@ -150,7 +150,7 @@ ifeq ($(filter package/symlinks,$(MAKECMDGOALS)),)
 		fi \
 	)
 endif
-	@+$(SUBMAKE) -r $@ MAKE_JOBSERVER="$(filter --jobserver% -j,$(MAKEFLAGS))"
+	@+$(SUBMAKE) -r $@ MAKE_JOBSERVER="$(filter --jobserver%,$(MAKEFLAGS))"
 
 help:
 	cat README
