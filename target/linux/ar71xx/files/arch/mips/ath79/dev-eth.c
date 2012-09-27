@@ -1014,7 +1014,10 @@ void __init ath79_init_mac(unsigned char *dst, const unsigned char *src,
 {
 	int t;
 
-	if (!is_valid_ether_addr(src)) {
+	if (!dst)
+		return;
+
+	if (!src || !is_valid_ether_addr(src)) {
 		memset(dst, '\0', ETH_ALEN);
 		return;
 	}
@@ -1034,7 +1037,10 @@ void __init ath79_init_local_mac(unsigned char *dst, const unsigned char *src)
 {
 	int i;
 
-	if (!is_valid_ether_addr(src)) {
+	if (!dst)
+		return;
+
+	if (!src || !is_valid_ether_addr(src)) {
 		memset(dst, '\0', ETH_ALEN);
 		return;
 	}
