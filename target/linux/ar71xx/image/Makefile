@@ -706,7 +706,7 @@ endef
 cus227_cmdline=
 cus227_mtdlayout=
 define Image/Build/Profile/CUS227
-        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227,$(cus227_cmdline),$(cus227_mtdlayout),1441792,15335424,KRuImage)
+        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227,$(cus227_cmdline),$(cus227_mtdlayout),1441792,23724032,KRuImage)
 	if [ -e "$(call sysupname,squashfs,cus227)" ]; then \
 		dd if=$(call sysupname,squashfs,cus227) \
 			of=image.release.tmp bs=128k conv=sync; \
