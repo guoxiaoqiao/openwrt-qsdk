@@ -15,6 +15,7 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_PACKAGE_kmod-brcm-wl-mini \
 	CONFIG_PACKAGE_kmod-brcm-wl-mimo \
 	CONFIG_PACKAGE_kmod-madwifi \
+	CONFIG_PACKAGE_kmod-qca-wifi \
 	CONFIG_PACKAGE_kmod-mac80211
 
 include $(INCLUDE_DIR)/package.mk
@@ -75,6 +76,7 @@ IWINFO_BACKENDS := \
 	$(if $(CONFIG_PACKAGE_kmod-brcm-wl-mini),wl) \
 	$(if $(CONFIG_PACKAGE_kmod-brcm-wl-mimo),wl) \
 	$(if $(CONFIG_PACKAGE_kmod-madwifi),madwifi) \
+	$(if $(CONFIG_PACKAGE_kmod-qca-wifi),qcawifi) \
 	$(if $(CONFIG_PACKAGE_kmod-mac80211),nl80211)
 
 TARGET_CFLAGS += \

@@ -38,6 +38,10 @@
 #define IWINFO_MADWIFI_META	"iwinfo.madwifi"
 #endif
 
+#ifdef USE_QCAWIFI
+#define IWINFO_QCAWIFI_META	"iwinfo.qcawifi"
+#endif
+
 #ifdef USE_NL80211
 #define IWINFO_NL80211_META	"iwinfo.nl80211"
 #endif

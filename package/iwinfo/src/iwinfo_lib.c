@@ -385,6 +385,12 @@ const char * iwinfo_type(const char *ifname)
 	else
 #endif
 
+#ifdef USE_QCAWIFI
+	if (qcawifi_probe(ifname))
+		return "qcawifi";
+	else
+#endif
+
 #ifdef USE_WL
 	if (wl_probe(ifname))
 		return "wl";
@@ -418,6 +424,12 @@ const struct iwinfo_ops * iwinfo_backend(const char *ifname)
 	else
 #endif
 
+#ifdef USE_QCAWIFI
+	if (!strcmp(type, "qcawifi"))
+		return &qcawifi_ops;
+	else
+#endif
+
 #ifdef USE_WL
 	if (!strcmp(type, "wl"))
 		return &wl_ops;
@@ -437,6 +449,9 @@ void iwinfo_finish(void)
 #endif
 #ifdef USE_MADWIFI
 	madwifi_close();
+#endif
+#ifdef USE_QCAWIFI
+	qcawifi_close();
 #endif
 #ifdef USE_NL80211
 	nl80211_close();

@@ -24,6 +24,11 @@ ifneq ($(filter madwifi,$(IWINFO_BACKENDS)),)
 	IWINFO_LIB_OBJ += iwinfo_madwifi.o
 endif
 
+ifneq ($(filter qcawifi,$(IWINFO_BACKENDS)),)
+	IWINFO_CFLAGS  += -DUSE_QCAWIFI
+	IWINFO_LIB_OBJ += iwinfo_qcawifi.o
+endif
+
 ifneq ($(filter nl80211,$(IWINFO_BACKENDS)),)
 	IWINFO_CFLAGS      += -DUSE_NL80211
 	IWINFO_CLI_LDFLAGS += -lnl-tiny
