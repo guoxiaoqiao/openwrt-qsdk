@@ -11,6 +11,8 @@ endif
 
 # package specific configuration
 # if includeded the package version can be overwritten within the .config file (instead of changing the package specific Makefile)
+# $(1): package name
+# $(2): list of selected versions. if missing, will use an input string
 define Package/$(PKG_NAME)/override_version
 	menu "overwrite package version"
 		depends on PACKAGE_$(1)
@@ -18,10 +20,24 @@ define Package/$(PKG_NAME)/override_version
 		depends on PACKAGE_$(1)
 		bool "Use custom package version"
 		default n
+$(if $(2),
+	choice
+		prompt "select version"
+		depends on $(PKG_NAME)_USE_CUSTOM_VERSION
+	$(foreach version,$(2),
+		config $(1)_VERSION_$(version)
+			bool "$(version)")
+	endchoice
+	config $(PKG_NAME)_CUSTOM_VERSION
+		string
+	$(foreach version,$(2),
+		default "$(version)" if $(1)_VERSION_$(version))
+,
 	config $(PKG_NAME)_CUSTOM_VERSION
 		depends on $(PKG_NAME)_USE_CUSTOM_VERSION
 		string "$(PKG_NAME) version as string (default version: $(PKG_VERSION_ORGINAL))"
 		default "$(PKG_VERSION_ORGINAL)"
+)
 	endmenu
 endef
 
