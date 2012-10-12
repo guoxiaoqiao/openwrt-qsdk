@@ -18,6 +18,9 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_PACKAGE_kmod-qca-wifi \
 	CONFIG_PACKAGE_kmod-mac80211
 
+PKG_BUILD_DEPENDS := \
+	PACKAGE_kmod-qca-wifi:kmod-qca-wifi
+
 include $(INCLUDE_DIR)/package.mk
 
 
