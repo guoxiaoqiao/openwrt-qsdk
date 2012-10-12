@@ -25,6 +25,9 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_PACKAGE_kmod-madwifi \
 	CONFIG_PACKAGE_kmod-cfg80211
 
+PKG_BUILD_DEPENDS := \
+	PACKAGE_kmod-qca-wifi:kmod-qca-wifi
+
 include $(INCLUDE_DIR)/package.mk
 
 
