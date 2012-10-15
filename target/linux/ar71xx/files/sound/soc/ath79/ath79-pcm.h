@@ -52,6 +52,8 @@ struct ath79_pcm_desc {
 struct ath79_pcm_rt_priv {
 	struct list_head dma_head;
 	struct ath79_pcm_desc *last_played;
+	unsigned int elapsed_size;
+	unsigned int delay_time;
 };
 
 /* Replaces struct ath_i2s_softc */
@@ -72,17 +74,20 @@ void ath79_mbox_dma_unmap(struct ath79_pcm_rt_priv *);
 int ath79_mbox_dma_init(struct device *);
 void ath79_mbox_dma_exit(void);
 
-static inline void ath79_pcm_set_own_bits(struct ath79_pcm_rt_priv *rtpriv)
+static inline unsigned int ath79_pcm_set_own_bits(struct ath79_pcm_rt_priv *rtpriv)
 {
 	struct ath79_pcm_desc *desc;
+	unsigned int size_played = 0;
 
 	spin_lock(&ath79_pcm_lock);
 	list_for_each_entry(desc, &rtpriv->dma_head, list) {
 		if (desc->OWN == 0) {
 			desc->OWN = 1;
+			size_played += desc->size;
 		}
 	}
 	spin_unlock(&ath79_pcm_lock);
+	return size_played;
 }
 
 static inline void ath79_pcm_clear_own_bits(struct ath79_pcm_rt_priv *rtpriv)

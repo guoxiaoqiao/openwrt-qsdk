@@ -89,6 +89,12 @@ void ath79_mbox_dma_stop(struct ath79_pcm_rt_priv *rtpriv)
 	ath79_dma_wr(AR934X_DMA_REG_MBOX0_DMA_RX_CONTROL,
 		     AR934X_DMA_MBOX_DMA_CONTROL_STOP);
 	ath79_dma_rr(AR934X_DMA_REG_MBOX0_DMA_RX_CONTROL);
+
+	/* Delay for the dynamically calculated max time based on
+	sample size, channel, sample rate + margin to ensure that the
+	DMA engine will be truly idle. */
+
+	mdelay(rtpriv->delay_time);
 }
 
 void ath79_mbox_dma_reset(struct ath79_pcm_rt_priv *rtpriv)
@@ -127,6 +133,7 @@ int ath79_mbox_dma_map(struct ath79_pcm_rt_priv *rtpriv, dma_addr_t baseaddr,
 
 	spin_lock(&ath79_pcm_lock);
 
+	rtpriv->elapsed_size = 0;
 	/* We loop until we have enough buffers to map the requested DMA area */
 	do {
 		/* Allocate a descriptor and insert it into the DMA ring */
