@@ -33,15 +33,19 @@
 
 #define  DRV_NAME	"ath79-pcm-audio"
 
+
+#define BUFFER_BYTES_MAX 16 * 4095 * 16
+#define PERIOD_BYTES_MIN 64
+
 static struct snd_pcm_hardware ath79_pcm_hardware = {
 	.info = SNDRV_PCM_INFO_MMAP |
 		SNDRV_PCM_INFO_MMAP_VALID |
 		SNDRV_PCM_INFO_INTERLEAVED |
 		SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
 	.formats = SNDRV_PCM_FMTBIT_S8 |
-			SNDRV_PCM_FMTBIT_S16 |
-			SNDRV_PCM_FMTBIT_S24 |
-			SNDRV_PCM_FMTBIT_S32,
+			SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_LE |
+			SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S24_LE |
+			SNDRV_PCM_FMTBIT_S32_BE | SNDRV_PCM_FMTBIT_S32_LE,
 	.rates = SNDRV_PCM_RATE_22050 |
 			SNDRV_PCM_RATE_32000 |
 			SNDRV_PCM_RATE_44100 |
@@ -56,11 +60,12 @@ static struct snd_pcm_hardware ath79_pcm_hardware = {
 	 * the only real limitation we have is the amount of RAM.
 	 * Ideally, we'd need to find the best tradeoff between number of descs
 	 * and CPU load */
-	.buffer_bytes_max = 32768,
-	.period_bytes_min = 64,
+
+	.buffer_bytes_max = BUFFER_BYTES_MAX,
+	.period_bytes_min = PERIOD_BYTES_MIN,
 	.period_bytes_max = 4095,
-	.periods_min = 4,
-	.periods_max = PAGE_SIZE/sizeof(struct ath79_pcm_desc),
+	.periods_min = 16,
+	.periods_max = 256,
 	.fifo_size = 0,
 };
 
@@ -69,21 +74,34 @@ static irqreturn_t ath79_pcm_interrupt(int irq, void *dev_id)
 	uint32_t status;
 	struct ath79_pcm_pltfm_priv *prdata = dev_id;
 	struct ath79_pcm_rt_priv *rtpriv;
+	unsigned int period_bytes;
 
 	status = ath79_dma_rr(AR934X_DMA_REG_MBOX_INT_STATUS);
 
 	if(status & AR934X_DMA_MBOX_INT_STATUS_RX_DMA_COMPLETE) {
+		unsigned int played_size;
 		rtpriv = prdata->playback->runtime->private_data;
 		/* Store the last played buffer in the runtime priv struct */
 		rtpriv->last_played = ath79_pcm_get_last_played(rtpriv);
-		ath79_pcm_set_own_bits(rtpriv);
+		period_bytes = snd_pcm_lib_period_bytes(prdata->playback);
+
+
+		played_size = ath79_pcm_set_own_bits(rtpriv);
+		if(played_size > period_bytes)
+			snd_printd("Played more than one period  bytes played: %d\n",played_size);
+		rtpriv->elapsed_size += played_size;
 		ath79_mbox_interrupt_ack(AR934X_DMA_MBOX_INT_STATUS_RX_DMA_COMPLETE);
+		if(rtpriv->elapsed_size >= period_bytes)
+		{
+			rtpriv->elapsed_size %= period_bytes;
+			snd_pcm_period_elapsed(prdata->playback);
+		}
 
 		if (rtpriv->last_played == NULL) {
 			snd_printd("BUG: ISR called but no played buf found\n");
 			goto ack;
 		}
-		snd_pcm_period_elapsed(prdata->playback);
+
 	}
 	if(status & AR934X_DMA_MBOX_INT_STATUS_TX_DMA_COMPLETE) {
 		rtpriv = prdata->capture->runtime->private_data;
@@ -182,13 +200,30 @@ static int ath79_pcm_hw_params(struct snd_pcm_substream *ss,
 	struct snd_pcm_runtime *runtime = ss->runtime;
 	struct ath79_pcm_rt_priv *rtpriv;
 	int ret;
+	unsigned int period_size, sample_size, sample_rate, frames, channels;
 
+	// Does this routine need to handle new clock changes in the hw_params?
 	rtpriv = runtime->private_data;
 
 	ret = ath79_mbox_dma_map(rtpriv, ss->dma_buffer.addr,
 		params_period_bytes(hw_params), params_buffer_bytes(hw_params));
+
 	if(ret < 0)
 		return ret;
+
+	period_size = params_period_bytes(hw_params);
+	sample_size = snd_pcm_format_size(params_format(hw_params), 1);
+	sample_rate = params_rate(hw_params);
+	channels = params_channels(hw_params);
+	frames = period_size / (sample_size * channels);
+
+/* 	When we disbale the DMA engine, it could be just at the start of a descriptor.
+	Hence calculate the longest time the DMA engine could be grabbing bytes for to
+	Make sure we do not unmap the memory before the DMA is complete.
+	Add 10 mSec of margin. This value will be used in ath79_mbox_dma_stop */
+
+	rtpriv->delay_time = (frames * 1000)/sample_rate + 10;
+
 
 	snd_pcm_set_runtime_buffer(ss, &ss->dma_buffer);
 	runtime->dma_bytes = params_buffer_bytes(hw_params);
@@ -202,9 +237,7 @@ static int ath79_pcm_hw_free(struct snd_pcm_substream *ss)
 	struct ath79_pcm_rt_priv *rtpriv;
 
 	rtpriv = runtime->private_data;
-
 	ath79_mbox_dma_unmap(rtpriv);
-
 	snd_pcm_set_runtime_buffer(ss, NULL);
 	return 0;
 }
@@ -250,9 +283,10 @@ static snd_pcm_uframes_t ath79_pcm_pointer(struct snd_pcm_substream *ss)
 	if(rtpriv->last_played == NULL)
 		ret = 0;
 	else
-		ret = rtpriv->last_played->BufPtr - runtime->dma_addr;
+		ret = rtpriv->last_played->BufPtr - runtime->dma_addr + rtpriv->last_played->size;
 
-	return bytes_to_frames(runtime, ret);
+	ret = bytes_to_frames(runtime, ret);
+	return ret;
 }
 
 static int ath79_pcm_mmap(struct snd_pcm_substream *ss, struct vm_area_struct *vma)

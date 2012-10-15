@@ -76,26 +76,32 @@ static int ath79_i2s_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
 				struct snd_soc_dai *dai)
 {
-	u32 mask, t;
+	u32 mask = 0, t;
 
 	ath79_audio_set_freq(params_rate(params));
 
 	switch(params_format(params)) {
 	case SNDRV_PCM_FORMAT_S8:
-		mask = AR934X_STEREO_CONFIG_DATA_WORD_8
+		mask |= AR934X_STEREO_CONFIG_DATA_WORD_8
 			<< AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT;
 		break;
-	case SNDRV_PCM_FORMAT_S16:
-		mask = AR934X_STEREO_CONFIG_DATA_WORD_16
+	case SNDRV_PCM_FORMAT_S16_LE:
+		mask |= AR934X_STEREO_CONFIG_PCM_SWAP;
+	case SNDRV_PCM_FORMAT_S16_BE:
+		mask |= AR934X_STEREO_CONFIG_DATA_WORD_16
 			<< AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT;
 		break;
-	case SNDRV_PCM_FORMAT_S24:
-		mask = AR934X_STEREO_CONFIG_DATA_WORD_24
+	case SNDRV_PCM_FORMAT_S24_LE:
+		mask |= AR934X_STEREO_CONFIG_PCM_SWAP;
+	case SNDRV_PCM_FORMAT_S24_BE:
+		mask |= AR934X_STEREO_CONFIG_DATA_WORD_24
 			<< AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT;
 		mask |= AR934X_STEREO_CONFIG_I2S_WORD_SIZE;
 		break;
-	case SNDRV_PCM_FORMAT_S32:
-		mask = AR934X_STEREO_CONFIG_DATA_WORD_32
+	case SNDRV_PCM_FORMAT_S32_LE:
+		mask |= AR934X_STEREO_CONFIG_PCM_SWAP;
+	case SNDRV_PCM_FORMAT_S32_BE:
+		mask |= AR934X_STEREO_CONFIG_DATA_WORD_32
 			<< AR934X_STEREO_CONFIG_DATA_WORD_SIZE_SHIFT;
 		mask |= AR934X_STEREO_CONFIG_I2S_WORD_SIZE;
 		break;
@@ -138,7 +144,7 @@ static struct snd_soc_dai_driver ath79_i2s_dai = {
 /* For now, we'll just support 8 and 16bits as 32 bits is really noisy
  * for some reason */
 		.formats = SNDRV_PCM_FMTBIT_S8 |
-				SNDRV_PCM_FMTBIT_S16,
+			SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_LE,
 		},
 	.ops = &ath79_i2s_dai_ops,
 };
