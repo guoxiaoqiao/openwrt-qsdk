@@ -138,6 +138,7 @@ platform_check_image() {
 		;;
 
 	om2p | \
+	om2p-hs | \
 	om2p-lc)
 		platform_check_image_om2p "$magic_long" "$1" && return 0
 		return 1
@@ -271,6 +272,7 @@ platform_do_upgrade() {
 		platform_do_upgrade_dir825b "$ARGV"
 		;;
 	om2p | \
+	om2p-hs | \
 	om2p-lc)
 		platform_do_upgrade_om2p "$ARGV"
 		;;
