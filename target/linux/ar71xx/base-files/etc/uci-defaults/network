@@ -144,13 +144,9 @@ wzr-hp-g300nh)
 	ucidef_add_switch_vlan "switch0" "1" "0 1 2 3 5t"
 	;;
 
-cus227)
-	ucidef_set_interface_lan "eth0"
-	uci set network.lan.ipaddr="172.19.42.1"
-	;;
-
 aw-nr580 |\
 bullet-m |\
+cus227 |\
 eap7660d |\
 rb-411 |\
 tl-mr11u |\
