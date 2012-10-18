@@ -297,7 +297,7 @@ static char * qcawifi_ifadd(const char *ifname)
 		snprintf(nif, sizeof(nif), "tmp.%s", ifname);
 
 		strncpy(cp.icp_name, nif, IFNAMSIZ);
-		cp.icp_opmode = IEEE80211_M_STA;
+		cp.icp_opmode = IEEE80211_M_HOSTAP;
 		cp.icp_flags  = IEEE80211_CLONE_BSSID;
 
 		strncpy(ifr.ifr_name, wifidev, IFNAMSIZ);
