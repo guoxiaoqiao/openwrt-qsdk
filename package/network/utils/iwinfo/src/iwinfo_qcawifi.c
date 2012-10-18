@@ -989,8 +989,11 @@ int qcawifi_get_hwmodelist(const char *ifname, int *buf)
 		return -1;
 	}
 
-	if(strchr(prot, 'a'))
+	if(strchr(prot, 'a')) {
+		if(strstr(prot, "/ac"))
+			*buf |= IWINFO_80211_AC;
 		*buf |= IWINFO_80211_A;
+	}
 	if(strchr(prot, 'b'))
 		*buf |= IWINFO_80211_B;
 	if(strchr(prot, 'g'))
