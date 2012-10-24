@@ -984,11 +984,13 @@ int qcawifi_get_hwmodelist(const char *ifname, int *buf)
 	if( (fd = open(path, O_RDONLY)) < 0 )
 		return -1;
 
+	memset(prot, 0, sizeof(prot));
 	if( read(fd, prot, sizeof(prot)) < 0) {
 		close(fd);
 		return -1;
 	}
 
+	*buf = 0;
 	if(strchr(prot, 'a')) {
 		if(strstr(prot, "/ac"))
 			*buf |= IWINFO_80211_AC;
