@@ -49,7 +49,6 @@
 #define AP135_MAC0_OFFSET		0
 #define AP135_MAC1_OFFSET		6
 #define AP135_WMAC_CALDATA_OFFSET	0x1000
-#define AP135_PCIE_CALDATA_OFFSET	0x5000
 
 static struct gpio_led ap135_leds_gpio[] __initdata = {
 	{
@@ -168,7 +167,7 @@ static void __init ap135_setup(void)
 
 	ath79_register_usb();
 	ath79_register_wmac(art + AP135_WMAC_CALDATA_OFFSET, NULL);
-	ap91_pci_init(art + AP135_PCIE_CALDATA_OFFSET, NULL);
+	ap91_pci_init(NULL, NULL);
 
 	ap135_gmac_setup();
 

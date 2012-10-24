@@ -735,7 +735,7 @@ define Image/Build/Profile/DB120TB388
 endef
 
 ap135_cmdline=board=AP135 console=ttyS0,115200
-ap135_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(mib0),64k(art)ro,7744k@0x50000(firmware)
+ap135_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1408k(kernel),64k(mib0),64k(art)ro,7744k@0x50000(firmware)
 define Image/Build/Profile/AP135
 	$(call Image/Build/Template/$(fs_64k)/$(1),AthLzma,ap135,$(ap135_cmdline),$(ap135_mtdlayout),1441792,6488064,RKuImage)
 endef
