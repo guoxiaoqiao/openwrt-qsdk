@@ -23,6 +23,7 @@
 #include <asm/mach-ath79/ar71xx_regs.h>
 
 #include "common.h"
+#include "pci.h"
 #include "dev-ap9x-pci.h"
 #include "dev-gpio-buttons.h"
 #include "dev-eth.h"
@@ -167,7 +168,7 @@ static void __init ap135_setup(void)
 
 	ath79_register_usb();
 	ath79_register_wmac(art + AP135_WMAC_CALDATA_OFFSET, NULL);
-	ap91_pci_init(NULL, NULL);
+	ath79_register_pci();
 
 	ap135_gmac_setup();
 
