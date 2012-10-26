@@ -720,6 +720,9 @@ int qcawifi_get_assoclist(const char *ifname, char *buf, int *len)
 	struct ieee80211req_sta_info *si;
 	struct iwinfo_assoclist_entry entry;
 
+	if( qcawifi_iswifi(ifname) )
+		return -1;
+
 	if( (tl = get80211priv(ifname, IEEE80211_IOCTL_STA_INFO, tmp, 24*1024)) > 0 )
 	{
 		cp = tmp;
