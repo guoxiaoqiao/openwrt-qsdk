@@ -25,7 +25,7 @@ PKG_DRIVERS = \
 	rt2500-pci rt2500-usb rt61-pci rt73-usb rt2800-pci rt2800-usb \
 	rtl8180 rtl8187 zd1211rw mac80211-hwsim carl9170 b43 b43legacy \
 	ath9k-common ath9k ath9k-htc ath net-libipw net-ipw2100 net-ipw2200 \
-	mwl8k net-hermes net-hermes-pci net-hermes-plx net-hermes-pcmcia \
+	mwl8k net-hermes net-hermes-pci net-hermes-plx net-hermes-pcmcia ar3k-bt-driver \
 	iwl-legacy iwl3945 iwl4965 iwlagn wl12xx lib80211
 
 PKG_CONFIG_DEPENDS:= \
@@ -44,6 +44,7 @@ CARL9170_FW_VERSION:=1.9.4
 include $(INCLUDE_DIR)/package.mk
 
 WMENU:=Wireless Drivers
+OMENU:=Other modules
 
 define KernelPackage/mac80211/Default
   SUBMENU:=$(WMENU)
@@ -465,6 +466,29 @@ endef
 define KernelPackage/carl9170/install
 	$(INSTALL_DIR) $(1)/lib/firmware
 	$(INSTALL_DATA) $(DL_DIR)/$(CARL9170_FW)-$(CARL9170_FW_VERSION) $(1)/lib/firmware/$(CARL9170_FW)
+endef
+
+define KernelPackage/ar3k-bt-driver
+  SUBMENU:=$(OMENU)
+  TITLE:=ath3k Bluetooth Driver
+  DEPENDS:=+kmod-bluetooth
+  KCONFIG:=CONFIG_BT_ATH3K
+  FILES:= $(LINUX_DIR)/drivers/bluetooth/ath3k.ko
+  AUTOLOAD:=$(call AutoLoad,92,ath3k)
+endef
+
+define KernelPackage/ar3k-bt-driver/description
+  HCI driver for the Qualcomm Atheros AR3k chip
+endef
+
+
+
+define KernelPackage/ar3k-bt-driver/install
+	$(INSTALL_DIR) $(1)/lib/firmware/ar3k
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/$(PKG_LINUX_FIRMWARE_SUBDIR)/ar3k/AthrBT_0x01020200.dfu \
+		$(PKG_BUILD_DIR)/$(PKG_LINUX_FIRMWARE_SUBDIR)/ar3k/ramps_0x01020200_26.dfu \
+		$(1)/lib/firmware/ar3k/
 endef
 
 define KernelPackage/lib80211
@@ -1570,6 +1594,7 @@ define KernelPackage/brcmfmac/install
 endef
 
 $(eval $(call KernelPackage,ath5k))
+$(eval $(call KernelPackage,ar3k-bt-driver))
 $(eval $(call KernelPackage,lib80211))
 $(eval $(call KernelPackage,libertas-usb))
 $(eval $(call KernelPackage,libertas-sd))
