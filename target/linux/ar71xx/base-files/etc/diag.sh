@@ -58,6 +58,9 @@ get_status_led() {
 	bullet-m | rocket-m | nano-m | nanostation-m)
 		status_led="ubnt:green:link4"
 		;;
+	cap4200ag)
+		status_led="senao:green:pwr"
+		;;
 	db120 | \
 	db120tb388)
 		status_led="db120:green:status"

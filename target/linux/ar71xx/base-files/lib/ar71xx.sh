@@ -195,6 +195,9 @@ ar71xx_board_detect() {
 	*AW-NR580)
 		name="aw-nr580"
 		;;
+	*CAP4200AG)
+		name="cap4200ag"
+		;;
 	*"CUS227")
 		name="cus227"
 		;;

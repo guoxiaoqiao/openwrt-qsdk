@@ -32,6 +32,12 @@ ap113)
 	ucidef_set_led_usbdev "usb" "USB" "ap113:green:usb" "1-1"
 	;;
 
+cap4200ag)
+	ucidef_set_led_default "lan_green" "LAN_GREEN" "senao:green:lan" "1"
+	ucidef_set_led_wlan "wlan_amber" "WLAN_AMBER" "senao:amber:wlan" "phy0tpt"
+	ucidef_set_led_wlan "wlan_green" "WLAN_GREEN" "senao:green:wlan" "phy1tpt"
+	;;
+
 cus227)
 	ucidef_set_led_default "s3" "S3" "cus227:green:s3" "0"
 	ucidef_set_led_default "s4" "S4" "cus227:green:s4" "0"
