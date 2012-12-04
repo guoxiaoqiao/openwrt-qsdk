@@ -217,6 +217,19 @@ ar8216_rmw(struct ar8216_priv *priv, int reg, u32 mask, u32 val)
 	return v;
 }
 
+static u32
+ar8216_rmr(struct ar8216_priv *priv, int reg, u32 mask)
+{
+	u32 v;
+
+	lockdep_assert_held(&priv->reg_mutex);
+
+	v = priv->read(priv, reg);
+	v &= mask;
+
+	return v;
+}
+
 static void
 ar8216_read_port_link(struct ar8216_priv *priv, int port,
 		      struct switch_port_link *link)
@@ -1010,6 +1023,45 @@ ar8216_sw_get_vlan(struct switch_dev *dev, const struct switch_attr *attr,
 	return 0;
 }
 
+static int
+ar8216_sw_set_max_frame_size(struct switch_dev *dev, const struct switch_attr *attr,
+		   struct switch_val *val)
+{
+	struct ar8216_priv *priv = to_ar8216(dev);
+	if(chip_is_ar8236(priv))
+		ar8216_rmw(priv, AR8216_REG_GLOBAL_CTRL,
+				AR8236_GCTRL_MTU, val->value.i + 8 + 2);
+	else if(chip_is_ar8316(priv))
+		ar8216_rmw(priv, AR8216_REG_GLOBAL_CTRL,
+				AR8316_GCTRL_MTU, val->value.i + 8 + 2);
+	else if(chip_is_ar8216(priv))
+		ar8216_rmw(priv, AR8216_REG_GLOBAL_CTRL,
+				AR8216_GCTRL_MTU, val->value.i + 8 + 2);
+	else if(chip_is_ar8327(priv))
+		ar8216_rmw(priv, AR8327_REG_MAX_FRAME_SIZE,
+				AR8327_MAX_FRAME_SIZE_MTU, val->value.i + 8 + 2);
+	return 0;
+}
+
+static int
+ar8216_sw_get_max_frame_size(struct switch_dev *dev, const struct switch_attr *attr,
+		   struct switch_val *val)
+{
+
+	u32 v = 0;
+	struct ar8216_priv *priv = to_ar8216(dev);
+	if(chip_is_ar8236(priv))
+		v = ar8216_rmr(priv, AR8216_REG_GLOBAL_CTRL,AR8236_GCTRL_MTU);
+	else if(chip_is_ar8316(priv))
+		v = ar8216_rmr(priv, AR8216_REG_GLOBAL_CTRL,AR8316_GCTRL_MTU);
+	else if(chip_is_ar8216(priv))
+		v = ar8216_rmr(priv, AR8216_REG_GLOBAL_CTRL,AR8216_GCTRL_MTU);
+	else if(chip_is_ar8327(priv))
+		v = ar8216_rmr(priv, AR8327_REG_MAX_FRAME_SIZE,AR8327_MAX_FRAME_SIZE_MTU);
+
+	val->value.i = v;
+	return 0;
+}
 
 static int
 ar8216_sw_set_pvid(struct switch_dev *dev, int port, int vlan)
@@ -1214,6 +1266,13 @@ static struct switch_attr ar8216_globals[] = {
 		.set = ar8216_sw_set_vlan,
 		.get = ar8216_sw_get_vlan,
 		.max = 1
+	},{
+		.type = SWITCH_TYPE_INT,
+		.name = "max_frame_size",
+		.description = "Max frame size can be received and transmitted by mac",
+		.set = ar8216_sw_set_max_frame_size,
+		.get = ar8216_sw_get_max_frame_size,
+		.max = 9018
 	},
 };
 

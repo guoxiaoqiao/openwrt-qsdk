@@ -61,6 +61,8 @@
 #define AG71XX_TX_RING_SIZE_MAX		256
 #define AG71XX_RX_RING_SIZE_MAX		256
 
+#define AG71XX_JUMBO_LEN		9000
+
 #ifdef CONFIG_AG71XX_DEBUG
 #define DBG(fmt, args...)	pr_debug(fmt, ## args)
 #else
@@ -156,6 +158,7 @@ struct ag71xx {
 
 	struct ag71xx_ring	rx_ring;
 	struct ag71xx_ring	tx_ring;
+	unsigned int		rx_buf_size;
 
 	struct mii_bus		*mii_bus;
 	struct phy_device	*phy_dev;

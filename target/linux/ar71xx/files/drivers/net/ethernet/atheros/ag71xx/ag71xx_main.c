@@ -191,7 +191,7 @@ static void ag71xx_ring_rx_clean(struct ag71xx *ag)
 	for (i = 0; i < ring->size; i++)
 		if (ring->buf[i].rx_buf) {
 			dma_unmap_single(&ag->dev->dev, ring->buf[i].dma_addr,
-					 AG71XX_RX_BUF_SIZE, DMA_FROM_DEVICE);
+					 ag->rx_buf_size, DMA_FROM_DEVICE);
 			kfree(ring->buf[i].rx_buf);
 		}
 }
@@ -217,7 +217,7 @@ static bool ag71xx_fill_rx_buf(struct ag71xx *ag, struct ag71xx_buf *buf,
 {
 	void *data;
 
-	data = kmalloc(AG71XX_RX_BUF_SIZE +
+	data = kmalloc(ag->rx_buf_size +
 		       SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
 		       GFP_ATOMIC);
 	if (!data)
@@ -225,7 +225,7 @@ static bool ag71xx_fill_rx_buf(struct ag71xx *ag, struct ag71xx_buf *buf,
 
 	buf->rx_buf = data;
 	buf->dma_addr = dma_map_single(&ag->dev->dev, data,
-				       AG71XX_RX_BUF_SIZE, DMA_FROM_DEVICE);
+				       ag->rx_buf_size, DMA_FROM_DEVICE);
 	buf->desc->data = (u32) buf->dma_addr + offset;
 	return true;
 }
@@ -434,7 +434,10 @@ static void ag71xx_hw_setup(struct ag71xx *ag)
 		  MAC_CFG2_PAD_CRC_EN | MAC_CFG2_LEN_CHECK);
 
 	/* setup max frame length */
-	ag71xx_wr(ag, AG71XX_REG_MAC_MFL, AG71XX_TX_MTU_LEN);
+	if(ag->dev->mtu < AG71XX_TX_MTU_LEN)
+		ag71xx_wr(ag, AG71XX_REG_MAC_MFL, AG71XX_TX_MTU_LEN);
+	else
+		ag71xx_wr(ag, AG71XX_REG_MAC_MFL, ag->dev->mtu);
 
 	/* setup FIFO configuration registers */
 	ag71xx_wr(ag, AG71XX_REG_FIFO_CFG0, FIFO_CFG0_INIT);
@@ -608,6 +611,11 @@ static int ag71xx_open(struct net_device *dev)
 {
 	struct ag71xx *ag = netdev_priv(dev);
 	int ret;
+
+	if (dev->mtu > AG71XX_TX_MTU_LEN)
+		ag->rx_buf_size = dev->mtu + ETH_HLEN + ETH_FCS_LEN + VLAN_HLEN + NET_SKB_PAD + NET_IP_ALIGN;
+	else
+		ag->rx_buf_size = AG71XX_RX_BUF_SIZE;
 
 	ret = ag71xx_rings_init(ag);
 	if (ret)
@@ -885,7 +893,7 @@ static int ag71xx_rx_packets(struct ag71xx *ag, int limit)
 		pktlen -= ETH_FCS_LEN;
 
 		dma_unmap_single(&dev->dev, ring->buf[i].dma_addr,
-				 AG71XX_RX_BUF_SIZE, DMA_FROM_DEVICE);
+				 ag->rx_buf_size, DMA_FROM_DEVICE);
 
 		dev->last_rx = jiffies;
 		dev->stats.rx_packets++;
@@ -1041,6 +1049,29 @@ static void ag71xx_netpoll(struct net_device *dev)
 	enable_irq(dev->irq);
 }
 #endif
+static int ag71xx_change_mtu(struct net_device *dev, int new_mtu)
+{
+	int ret;
+
+	if (new_mtu < 68 || new_mtu > AG71XX_JUMBO_LEN)
+		return -EINVAL;
+
+	if (!netif_running(dev)) {
+		dev->mtu = new_mtu;
+		return 0;
+	}
+
+	ag71xx_stop(dev);
+	printk("%s:%s new_mtu is %d\n",__func__,dev->name,new_mtu);
+
+	dev->mtu = new_mtu;
+
+	ret = ag71xx_open(dev);
+	if (ret)
+		dev_close(dev);
+
+	return ret;
+}
 
 static const struct net_device_ops ag71xx_netdev_ops = {
 	.ndo_open		= ag71xx_open,
@@ -1048,7 +1079,7 @@ static const struct net_device_ops ag71xx_netdev_ops = {
 	.ndo_start_xmit		= ag71xx_hard_start_xmit,
 	.ndo_do_ioctl		= ag71xx_do_ioctl,
 	.ndo_tx_timeout		= ag71xx_tx_timeout,
-	.ndo_change_mtu		= eth_change_mtu,
+	.ndo_change_mtu		= ag71xx_change_mtu,
 	.ndo_set_mac_address	= eth_mac_addr,
 	.ndo_validate_addr	= eth_validate_addr,
 #ifdef CONFIG_NET_POLL_CONTROLLER
