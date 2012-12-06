@@ -70,7 +70,6 @@ ppp_generic_teardown() {
 	case "$ERROR" in
 		11|19)
 			proto_notify_error "$interface" AUTH_FAILED
-			proto_block_restart "$interface"
 		;;
 		2)
 			proto_notify_error "$interface" INVALID_OPTIONS
