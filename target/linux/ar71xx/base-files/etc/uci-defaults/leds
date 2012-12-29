@@ -19,7 +19,8 @@ ap113)
 	;;
 
 cus227)
-	ucidef_set_led_netdev "s3" "S3" "cus227:green:s4" "wlan0" "link tx"
+	ucidef_set_led_default "s2" "S2" "cus227:green:s2" "0"
+	ucidef_set_led_default "s3" "S3" "cus227:green:s3" "0"
 	;;
 
 db120)
