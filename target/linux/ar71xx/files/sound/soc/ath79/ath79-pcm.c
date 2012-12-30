@@ -283,7 +283,7 @@ static snd_pcm_uframes_t ath79_pcm_pointer(struct snd_pcm_substream *ss)
 	if(rtpriv->last_played == NULL)
 		ret = 0;
 	else
-		ret = rtpriv->last_played->BufPtr - runtime->dma_addr + rtpriv->last_played->size;
+		ret = rtpriv->last_played->BufPtr - runtime->dma_addr;
 
 	ret = bytes_to_frames(runtime, ret);
 	return ret;
