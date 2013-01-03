@@ -1,0 +1,17 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+START=11
+
+
+start() {
+	config_get hostname "$cfg" hostname 'OpenWrt'
+	if [ "$hostname" == "Unconfigured-Skifta" ]; then
+		local macaddr="$(cat /sys/class/ieee80211/phy0/macaddress | tr 'A-Z' 'a-z')"
+		local ssidString="Skifta_${macaddr:6:12}"
+		echo "$ssidString" > /proc/sys/kernel/hostname
+	else
+		echo "$hostname" > /proc/sys/kernel/hostname
+	fi
+}
+
