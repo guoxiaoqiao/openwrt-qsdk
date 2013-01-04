@@ -3,9 +3,9 @@
 
 START=11
 
-
 start() {
-	config_get hostname "$cfg" hostname 'OpenWrt'
+
+	local hostname="$(uci_get system.@system[0].hostname)"
 	if [ "$hostname" == "Unconfigured-Skifta" ]; then
 		local macaddr="$(cat /sys/class/ieee80211/phy0/macaddress | tr 'A-Z' 'a-z')"
 		local ssidString="Skifta_${macaddr:6:12}"
@@ -15,3 +15,6 @@ start() {
 	fi
 }
 
+stop() {
+	true
+}
