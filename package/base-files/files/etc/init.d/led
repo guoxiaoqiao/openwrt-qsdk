@@ -28,6 +28,10 @@ load_led() {
 	[ -e /sys/class/leds/${sysfs}/brightness ] && {
 		echo "setting up led ${name}"
 		[ "$default" != nil ] && {
+			# The trigger update resets the led brightness to 0, so
+			# we update it before so it doesn't get reset later
+			[ "$trigger" = "none" ] &&
+				echo $trigger > /sys/class/leds/${sysfs}/trigger
 			[ $default -eq 1 ] &&
 				echo 1 >/sys/class/leds/${sysfs}/brightness
 			[ $default -eq 1 ] ||
