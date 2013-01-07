@@ -95,6 +95,7 @@ set system.$cfg.trigger='timer'
 set system.$cfg.delayon='$delayon'
 set system.$cfg.delayoff='$delayoff'
 EOF
+	UCIDEF_LEDS_CHANGED=1
 }
 
 ucidef_set_led_default() {
