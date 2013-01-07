@@ -21,8 +21,7 @@ config_foreach button_set button
 
 case "$board" in
 cus227)
-	button_add_uci_config "pressed" "BTN_4" "echo 'No handler for BTN 0.'"
-	button_add_range_uci_config "released" "BTN_1" "mtd -r erase rootfs_data" "5" "100"
+	button_add_uci_config "pressed" "BTN_2" "mtd -r erase rootfs_data"
 	;;
 esac
 

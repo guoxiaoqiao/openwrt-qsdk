@@ -92,13 +92,13 @@ static struct ath79_caldata_fixup cus227_caldata = {
 
 static struct gpio_led cus227_leds_gpio[] __initdata = {
 	{
-		.name		= "cus227:green:s2",
-		.gpio		= CUS227_GPIO_S2,
+		.name		= "cus227:green:s3",
+		.gpio		= CUS227_GPIO_S3,
 		.active_low	= 1,
 	},
 	{
-		.name		= "cus227:green:s3",
-		.gpio		= CUS227_GPIO_S3,
+		.name		= "cus227:green:s4",
+		.gpio		= CUS227_GPIO_S4,
 		.active_low	= 1,
 	},
 };
@@ -115,9 +115,9 @@ static struct gpio_keys_button cus227_gpio_keys[] __initdata = {
 	{
 		.desc		= "s2",
 		.type		= EV_KEY,
-		.code		= BTN_4,
+		.code		= BTN_2,
 		.debounce_interval = CUS227_KEYS_DEBOUNCE_INTERVAL,
-		.gpio		= CUS227_GPIO_S4,
+		.gpio		= CUS227_GPIO_S2,
 		.active_low	= 1,
 	},
 };

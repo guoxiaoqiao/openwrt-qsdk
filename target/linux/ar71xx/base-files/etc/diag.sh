@@ -58,9 +58,6 @@ get_status_led() {
 	db120tb388)
 		status_led="db120:green:status"
 		;;
-	cus227)
-		status_led="cus227:green:s2"
-		;;
 	dir-600-a1 |\
 	dir-615-e4)
 		status_led="d-link:green:power"
