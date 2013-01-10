@@ -1222,4 +1222,8 @@ define Image/Build/Profile/QSDK_Open
 	$(call Image/Build/Profile/DB120,$(1))
 endef
 
+define Image/Build/Profile/Skifta
+	$(call Image/Build/Profile/CUS227,$(1))
+endef
+
 $(eval $(call BuildImage))
