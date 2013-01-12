@@ -38,8 +38,8 @@ define Profile/Skifta
 		kmod-usb-core kmod-usb2 kmod-usb-storage kmod-sound-soc-cus227 \
 		kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat avahi-daemon \
 		hostapd wpa-supplicant hostapd-utils \
-		orb-orbplayer orb-cabdirectory \
-		luci-sam alsa skifta rygel qcom-state-mgr-skifta
+		rygel libffmpeg-full orb-orbplayer orb-cabdirectory \
+		luci-sam alsa skifta qcom-state-mgr-skifta
 endef
 
 define Profile/Skifta/Description
