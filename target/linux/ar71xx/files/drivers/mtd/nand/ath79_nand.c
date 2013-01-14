@@ -93,6 +93,35 @@ static struct nand_ecclayout ath79_nand_oob_64 = {
 		    }
 };
 
+typedef struct {
+	uint8_t		vid,
+				did,
+				b3,
+				addrcyc,
+				small,
+				spare;	// for small block;
+	uint16_t	pgsz;	// for small block
+	uint32_t	blk;	// for small block
+} ath_nand_vend_data_t;
+
+ath_nand_vend_data_t ath_nand_arr[] = {
+	{ 0x20, 0xda, 0x10, 5, },	// NU2g3B2D
+	{ 0x20, 0xf1, 0x00, 4, },	// NU1g3B2C
+	{ 0x20, 0xdc, 0x10, 5, },	// NU4g3B2D
+	{ 0x20, 0xd3, 0x10, 5, },	// NU8g3F2A
+	{ 0x20, 0xd3, 0x14, 5, },	// NU8g3C2B
+	{ 0xad, 0xf1, 0x00, 4, },	// HY1g2b
+	{ 0xad, 0xda, 0x10, 5, },	// HY2g2b
+	{ 0xec, 0xf1, 0x00, 4, },	// Samsung 3,3V 8-bit [128MB]
+	{ 0x98, 0xd1, 0x90, 4, },	// Toshiba
+	{ 0xad, 0x76, 0xad, 5, 1, 16, 512, 16 << 10 },	// Hynix 64MB NAND Flash
+	{ 0xad, 0x36, 0xad, 5, 1, 16, 512, 16 << 10 },	// Hynix 64MB NAND Flash
+	{ 0x20, 0x76, 0x20, 5, 1, 16, 512, 16 << 10 },	// ST Micro 64MB NAND Flash
+};
+
+#define NUM_ARRAY_ENTRIES(a)	(sizeof((a)) / sizeof((a)[0]))
+#define NUM_ATH_NAND		NUM_ARRAY_ENTRIES(ath_nand_arr)
+
 /* ath nand controller DMA descriptor */
 typedef struct {
 	uint32_t addr;
@@ -659,6 +688,19 @@ static void ath79_erase_cmd(struct mtd_info *mtd, int page)
 	return;
 }
 
+static ath_nand_vend_data_t *
+ath79_get_entry( int  *nand_id, ath_nand_vend_data_t *tbl, int count)
+{
+	int     i;
+	for (i = 0; i < count; i++, tbl ++) {
+		if ((nand_id[0] == tbl->vid) &&
+		    (nand_id[1] == tbl->did)) {
+			return tbl;
+		}
+	}
+	return NULL;
+}
+
 /****************************/
 /****** ath79_nand_remove *****/
 /****************************/
@@ -694,6 +736,8 @@ static int __devinit ath79_nand_probe(struct platform_device *pdev)
 	struct resource *res;
 	struct mtd_info *mtd = NULL;
 	ath79_nand_priv *ath79_priv = NULL;
+	ath_nand_vend_data_t *entry = NULL;
+	int nandid[2];
 	int err = 0;
 
 	dev_info(&pdev->dev,
@@ -774,7 +818,16 @@ static int __devinit ath79_nand_probe(struct platform_device *pdev)
 		goto out_err_hw_init;
 	}
 
-	ath79_priv->nf_ctrl = AR934X_NAND_CTRL_ADDR_CYCLE0(4);
+	/* Send the command for reading device ID */
+	ath79_priv->nand.cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+	/* Read manufacturer and device IDs */
+	nandid[0] = ath79_priv->nand.read_byte(mtd);
+	nandid[1] = ath79_priv->nand.read_byte(mtd);
+	entry = ath79_get_entry(nandid, ath_nand_arr, NUM_ATH_NAND);
+	if(entry){
+		ath79_priv->nf_ctrl = AR934X_NAND_CTRL_ADDR_CYCLE0(entry->addrcyc);
+	}else
+		ath79_priv->nf_ctrl = AR934X_NAND_CTRL_ADDR_CYCLE0(4);
 
 	/* set nand controller page size */
 	switch (mtd->writesize) {

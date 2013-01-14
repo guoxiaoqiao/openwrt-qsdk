@@ -49,6 +49,19 @@ endef
 
 $(eval $(call Profile,AP135))
 
+define Profile/AP135DUAL
+	NAME:=Atheros AP135 Dual reference board
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+endef
+
+define Profile/AP135DUAL/Description
+	Package set optimized for the Atheros AP135 reference board.
+	This profile differs from the original AP135 profile as it is configured
+	to boot from NOR, but mount the NAND flash as an overlay partition.
+endef
+
+$(eval $(call Profile,AP135DUAL))
+
 define Profile/AP136
 	NAME:=Atheros AP136 reference board
 	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage

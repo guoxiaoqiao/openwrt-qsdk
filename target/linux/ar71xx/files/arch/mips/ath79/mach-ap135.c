@@ -30,6 +30,7 @@
 #include "dev-leds-gpio.h"
 #include "dev-m25p80.h"
 #include "dev-usb.h"
+#include "dev-nand.h"
 #include "dev-wmac.h"
 #include "machtypes.h"
 
@@ -188,5 +189,13 @@ static void __init ap135_setup(void)
 	ath79_register_eth(0);
 }
 
+static void __init ap135_dual_setup(void)
+{
+	ap135_setup();
+	ath79_register_nand();
+}
+
 MIPS_MACHINE(ATH79_MACH_AP135, "AP135", "Atheros AP135 reference board",
 	     ap135_setup);
+MIPS_MACHINE(ATH79_MACH_AP135_DUAL, "AP135-DUAL", "Atheros AP135 Dual flash reference board",
+	     ap135_dual_setup);

@@ -168,6 +168,9 @@ ar71xx_board_detect() {
 	*"AP135 reference board")
 		name="ap135"
 		;;
+	*"AP135 Dual flash reference board")
+		name="ap135-dual"
+		;;
 	*"AP136 reference board")
 		name="ap136"
 		;;

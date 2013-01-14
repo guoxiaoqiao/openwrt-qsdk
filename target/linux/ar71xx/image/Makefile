@@ -740,6 +740,12 @@ define Image/Build/Profile/AP135
 	$(call Image/Build/Template/$(fs_64k)/$(1),AthLzma,ap135,$(ap135_cmdline),$(ap135_mtdlayout),1441792,6488064,RKuImage)
 endef
 
+ap135dual_cmdline=board=AP135-DUAL console=ttyS0,115200 norootfssplit
+ap135dual_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1280k(kernel),64k(mib0),64k(art)ro,15808k@0x50000(firmware);ath79-nand:256m(rootfs_data)
+define Image/Build/Profile/AP135DUAL
+	$(call Image/Build/Template/$(fs_64k)/$(1),AthLzma,ap135-dual,$(ap135dual_cmdline),$(ap135dual_mtdlayout),1441792,14876672,RKuImage)
+endef
+
 ap136_cmdline=board=AP136 console=ttyS0,115200
 ap136_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(mib0),64k(art)ro,7744k@0x50000(firmware)
 define Image/Build/Profile/AP136
@@ -1110,6 +1116,7 @@ define Image/Build/Profile/Default
 	$(call Image/Build/Profile/AP121,$(1))
 	$(call Image/Build/Profile/AP121MINI,$(1))
 	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/AP136,$(1))
 	$(call Image/Build/Profile/AP81,$(1))
 	$(call Image/Build/Profile/AP83,$(1))
@@ -1214,11 +1221,13 @@ endef
 
 define Image/Build/Profile/QSDK_Main
 	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/DB120,$(1))
 endef
 
 define Image/Build/Profile/QSDK_Open
 	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/DB120,$(1))
 endef
 
