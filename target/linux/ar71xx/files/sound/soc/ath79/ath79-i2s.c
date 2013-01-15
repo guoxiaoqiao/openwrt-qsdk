@@ -40,7 +40,7 @@ void ath79_stereo_reset(void)
 	spin_lock(&ath79_stereo_lock);
 	t = ath79_stereo_rr(AR934X_STEREO_REG_CONFIG);
 	t |= AR934X_STEREO_CONFIG_RESET;
-	ath79_stereo_wr(AR934X_STEREO_CONFIG_RESET, t);
+	ath79_stereo_wr(AR934X_STEREO_REG_CONFIG, t);
 	spin_unlock(&ath79_stereo_lock);
 }
 EXPORT_SYMBOL(ath79_stereo_reset);
@@ -49,20 +49,23 @@ static int ath79_i2s_startup(struct snd_pcm_substream *substream,
 			      struct snd_soc_dai *dai)
 {
 	/* Enable I2S and SPDIF by default */
-	ath79_stereo_wr(AR934X_STEREO_REG_CONFIG,
-		AR934X_STEREO_CONFIG_SPDIF_ENABLE |
-		AR934X_STEREO_CONFIG_I2S_ENABLE |
-		AR934X_STEREO_CONFIG_SAMPLE_CNT_CLEAR_TYPE |
-		AR934X_STEREO_CONFIG_MASTER);
-
-	ath79_stereo_reset();
+	if (!dai->active) {
+		ath79_stereo_wr(AR934X_STEREO_REG_CONFIG,
+				AR934X_STEREO_CONFIG_SPDIF_ENABLE |
+				AR934X_STEREO_CONFIG_I2S_ENABLE |
+				AR934X_STEREO_CONFIG_SAMPLE_CNT_CLEAR_TYPE |
+				AR934X_STEREO_CONFIG_MASTER);
+		ath79_stereo_reset();
+	}
 	return 0;
 }
 
 static void ath79_i2s_shutdown(struct snd_pcm_substream *substream,
 				struct snd_soc_dai *dai)
 {
-	ath79_stereo_wr(AR934X_STEREO_REG_CONFIG, 0);
+	if (!dai->active) {
+		ath79_stereo_wr(AR934X_STEREO_REG_CONFIG, 0);
+	}
 	return;
 }
 
@@ -136,6 +139,18 @@ static struct snd_soc_dai_driver ath79_i2s_dai = {
 	.id = 0,
 	.playback = {
 		.channels_min = 2,
+		.channels_max = 2,
+		.rates = SNDRV_PCM_RATE_44100 |
+				SNDRV_PCM_RATE_48000 |
+				SNDRV_PCM_RATE_88200 |
+				SNDRV_PCM_RATE_96000,
+/* For now, we'll just support 8 and 16bits as 32 bits is really noisy
+ * for some reason */
+		.formats = SNDRV_PCM_FMTBIT_S8 |
+			SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_LE,
+		},
+	.capture = {
+		.channels_min = 1,
 		.channels_max = 2,
 		.rates = SNDRV_PCM_RATE_44100 |
 				SNDRV_PCM_RATE_48000 |

@@ -54,6 +54,7 @@ struct ath79_pcm_rt_priv {
 	struct ath79_pcm_desc *last_played;
 	unsigned int elapsed_size;
 	unsigned int delay_time;
+	int direction;
 };
 
 /* Replaces struct ath_i2s_softc */
@@ -73,6 +74,7 @@ int ath79_mbox_dma_map(struct ath79_pcm_rt_priv *, dma_addr_t, int,int);
 void ath79_mbox_dma_unmap(struct ath79_pcm_rt_priv *);
 int ath79_mbox_dma_init(struct device *);
 void ath79_mbox_dma_exit(void);
+void ath79_mbox_dma_reset(void);
 
 static inline unsigned int ath79_pcm_set_own_bits(struct ath79_pcm_rt_priv *rtpriv)
 {

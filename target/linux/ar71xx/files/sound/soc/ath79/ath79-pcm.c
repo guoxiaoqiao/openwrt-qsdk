@@ -161,6 +161,10 @@ static int ath79_pcm_open(struct snd_pcm_substream *ss)
 	ss->runtime->private_data = rtpriv;
 	rtpriv->last_played = NULL;
 	INIT_LIST_HEAD(&rtpriv->dma_head);
+	if(ss->stream == SNDRV_PCM_STREAM_PLAYBACK)
+		rtpriv->direction = SNDRV_PCM_STREAM_PLAYBACK;
+	else
+		rtpriv->direction = SNDRV_PCM_STREAM_CAPTURE;
 
 	snd_soc_set_runtime_hwparams(ss, &ath79_pcm_hardware);
 
@@ -245,9 +249,15 @@ static int ath79_pcm_hw_free(struct snd_pcm_substream *ss)
 static int ath79_pcm_prepare(struct snd_pcm_substream *ss)
 {
 	struct snd_pcm_runtime *runtime = ss->runtime;
+	struct snd_soc_pcm_runtime *rtd = ss->private_data;
+	struct snd_soc_dai *cpu_dai;
 	struct ath79_pcm_rt_priv *rtpriv;
 
 	rtpriv = runtime->private_data;
+	cpu_dai = rtd->cpu_dai;
+	/* When setup the first stream should reset the DMA MBOX controller */
+	if(cpu_dai->active == 1)
+		ath79_mbox_dma_reset();
 
 	ath79_mbox_dma_prepare(rtpriv);
 

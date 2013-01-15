@@ -36,9 +36,10 @@ static int cus227_hifi_hw_params(struct snd_pcm_substream *ss,
 {
 	struct snd_soc_pcm_runtime *rtd = ss->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+	struct snd_soc_codec *codec = rtd->codec;
 	unsigned int clk = 0;
 	int ret;
-
+	u16 vol_reg;
 	switch (params_rate(params)) {
 	case 8000:
 	case 16000:
@@ -61,6 +62,15 @@ static int cus227_hifi_hw_params(struct snd_pcm_substream *ss,
 	if (ret < 0)
 		return ret;
 
+	if (ss->stream == SNDRV_PCM_STREAM_CAPTURE) {
+		/*Disable Left&Right Channel Input Analogue Mute,
+		 * and wm8988 datasheet says we should also set bit8
+		 * for WM8988_LINVOL&WM8988_RINVOL concurrently.*/
+		vol_reg = snd_soc_read(codec, WM8988_LINVOL) & 0x7f;
+		snd_soc_write(codec, WM8988_LINVOL, 0x100 | vol_reg);
+		vol_reg = snd_soc_read(codec, WM8988_RINVOL) & 0x7f;
+		snd_soc_write(codec, WM8988_RINVOL, 0x100 | vol_reg);
+	}
 	return 0;
 }
 
