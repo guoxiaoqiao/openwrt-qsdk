@@ -4,7 +4,8 @@
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
-	PACKAGES:=luci uhttpd kmod-usb-core kmod-usb2 kmod-usb-storage -kmod-ath5k
+	PACKAGES:=luci uhttpd kmod-usb-core kmod-usb2 kmod-usb-storage -kmod-ath5k \
+	  kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat
 endef
 
 define Profile/QSDK_Open/Description
@@ -19,6 +20,7 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Main
 	NAME:=Qualcomm-Atheros SDK Main Profile
 	PACKAGES:=luci uhttpd kmod-usb-core kmod-usb2 kmod-usb-storage kmod-qca-wifi \
+	  kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant qca-legacy-uboot-ap135 \
 	  qca-legacy-uboot-db12x  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
 endef
