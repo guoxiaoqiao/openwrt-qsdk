@@ -6,7 +6,7 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=luci uhttpd kmod-usb-core kmod-usb2 kmod-usb-storage -kmod-ath5k \
 	  kmod-ipt-nathelper-extra luci-app-upnp \
-	  kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat
+	  kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat kmod-nls-cp437 kmod-nls-iso8859-1
 endef
 
 define Profile/QSDK_Open/Description
@@ -22,6 +22,7 @@ define Profile/QSDK_Main
 	NAME:=Qualcomm-Atheros SDK Main Profile
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp \
 	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
+	  kmod-nls-cp437 kmod-nls-iso8859-1 \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-db12x \
 	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
