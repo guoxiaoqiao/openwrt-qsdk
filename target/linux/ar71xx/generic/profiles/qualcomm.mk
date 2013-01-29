@@ -42,6 +42,7 @@ define Profile/Skifta
 	PACKAGES:=-dropbear -firewall -ppp -wpad-mini alsa -luci-theme-openwrt \
 		kmod-usb-core kmod-usb2 kmod-usb-storage kmod-sound-soc-cus227 \
 		kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat avahi-daemon \
+		kmod-nls-cp437 kmod-nls-iso8859-1 \
 		-hostapd -wpa-supplicant -hostapd-utils \
 		kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 		rygel libffmpeg-full orb-orbplayer orb-cabdirectory \
