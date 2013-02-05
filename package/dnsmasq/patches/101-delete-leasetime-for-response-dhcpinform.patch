@@ -1,0 +1,10 @@
+--- a/src/rfc2131.c
++++ b/src/rfc2131.c
+@@ -1391,7 +1391,6 @@
+ 	    time = 0xffffffff;
+ 	  else
+ 	    time = (unsigned int)difftime(lease->expires, now);
+-	  option_put(mess, end, OPTION_LEASE_TIME, 4, time);
+ 	  lease_set_interface(lease, int_index, now);
+ 	}
+ 
