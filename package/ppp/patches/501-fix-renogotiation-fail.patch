@@ -1,0 +1,36 @@
+--- a/pppd/ipcp.c
++++ b/pppd/ipcp.c
+@@ -1951,7 +1951,7 @@
+      */
+     if (ipcp_script_state == s_down && ipcp_script_pid == 0) {
+ 	ipcp_script_state = s_up;
+-	ipcp_script(path_ipup, 0);
++	ipcp_script(path_ipup, 1);
+     }
+ }
+ 
+@@ -2001,7 +2001,7 @@
+     /* Execute the ip-down script */
+     if (ipcp_script_state == s_up && ipcp_script_pid == 0) {
+ 	ipcp_script_state = s_down;
+-	ipcp_script(path_ipdown, 0);
++	ipcp_script(path_ipdown, 1);
+     }
+ }
+ 
+@@ -2064,13 +2064,13 @@
+     case s_up:
+ 	if (ipcp_fsm[0].state != OPENED) {
+ 	    ipcp_script_state = s_down;
+-	    ipcp_script(path_ipdown, 0);
++	    ipcp_script(path_ipdown, 1);
+ 	}
+ 	break;
+     case s_down:
+ 	if (ipcp_fsm[0].state == OPENED) {
+ 	    ipcp_script_state = s_up;
+-	    ipcp_script(path_ipup, 0);
++	    ipcp_script(path_ipup, 1);
+ 	}
+ 	break;
+     }
