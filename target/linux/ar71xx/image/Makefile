@@ -1235,4 +1235,8 @@ define Image/Build/Profile/Skifta
 	$(call Image/Build/Profile/CUS227,$(1))
 endef
 
+define Image/Build/Profile/Factory_Wasp
+	$(call Image/Build/Profile/CUS227,$(1))
+endef
+
 $(eval $(call BuildImage))

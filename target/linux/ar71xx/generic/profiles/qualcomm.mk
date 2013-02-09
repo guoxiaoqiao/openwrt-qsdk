@@ -70,3 +70,31 @@ define Profile/Skifta/Description
 	products & deliverables.
 endef
 $(eval $(call Profile,Skifta))
+
+define Profile/Factory/Default
+	PACKAGES:=-dropbear -firewall -ppp -wpad-mini alsa -luci-theme-openwrt \
+		-kmod-ath9k -kmod-ath5k -kmod-ath -hostapd -wpa-supplicant \
+		-hostapd-utils kmod-usb-core kmod-usb2 kmod-usb-storage \
+		kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa \
+		kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat avahi-daemon
+endef
+
+define Profile/Factory/Description/Default
+	Qualcomm-Atheros Factory package set configuration
+	This profile provides the package set required to run factory focus
+	tools. In supports the following:
+	- ART2 (customized for a certain chip)
+	- USB tools
+endef
+
+define Profile/Factory_Wasp
+	NAME:=Qualcomm-Atheros Factory Profile for Wasp chipset
+	$(call Profile/Factory/Default)
+	PACKAGES+=kmod-art2-wasp qca-romboot-cus227
+endef
+
+define Profile/Factory_Wasp/Description
+	$(call Profile/Factory/Description/Default)
+	This profile contains the ART2 build for Wasp based platform
+endef
+$(eval $(call Profile,Factory_Wasp))
