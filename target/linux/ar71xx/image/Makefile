@@ -720,6 +720,7 @@ define Image/Build/Profile/CUS227
 		rm image.release.tmp; \
 		mv $(call sysupname,squashfs,cus227).release $(call sysupname,squashfs,cus227); \
 	fi
+	$(LINUX_DIR)/scripts/dtc/dtc -O dtb -o $(BIN_DIR)/cus227.dtb -I dts $(PLATFORM_DIR)/cus227.dts
 endef
 
 db120_cmdline=board=DB120 console=ttyS0,115200

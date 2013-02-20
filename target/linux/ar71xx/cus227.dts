@@ -1,0 +1,42 @@
+/dts-v1/;
+
+/ {
+	model = "Qualcomm Atheros CUS227";
+	compatible = "ath79,cus227";
+
+	ssid-prefix = "Skifta_";
+	serial = "XXXXXXXX";
+
+	gpios: ath79-gpio {
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+
+	keys {
+		compatible = "gpio-keys";
+		s1 {
+			label = "s1";
+			gpios = <&gpios 12 1>;
+			linux,code = <12>;
+		};
+		s2 {
+			label = "s2";
+			gpios = <&gpios 13 1>;
+			linux,code = <13>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		s3 {
+			label = "s3";
+			gpios = <&gpios 14 1>;
+			linux,default-trigger = "timer";
+		};
+		s4 {
+			label = "s4";
+			gpios = <&gpios 15 1>;
+			linux,default-trigger = "timer";
+		};
+	};
+};
