@@ -1,0 +1,16 @@
+--- a/gcc/bb-reorder.c
++++ b/gcc/bb-reorder.c
+@@ -2229,7 +2229,12 @@ rest_of_handle_reorder_blocks (void)
+ 	 minimize the combined size of all the jumps.  This would more or less
+ 	 automatically remove extra jumps, but would also try to use more short
+ 	 jumps instead of long jumps.  */
+-      && optimize_function_for_speed_p (cfun))
++      /* XXX - ignore the comment above - if we want to reorder basic blocks when
++         optimizing for size then gcc shouldn't be trying to second guess that
++	 compile flag!  BB reordering can increase code sizes but the combination
++	 of optimizing for size but with BB reordering often leads to a much
++	 better balance between size and speed.  */
++      /* && optimize_function_for_speed_p (cfun) */)
+     {
+       reorder_basic_blocks ();
+       cleanup_cfg (CLEANUP_EXPENSIVE);
