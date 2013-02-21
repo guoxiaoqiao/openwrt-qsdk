@@ -65,7 +65,7 @@ cus227_update_u_boot_env() {
 	get_mtdpart_offset rootfs_addr "r-2"
 	get_mtdpart_size kernel_size "k-2"
 
-	local bootcmd_old=$(fw_pritenv -n bootcmd)
+	local bootcmd_old=$(fw_printenv -n bootcmd)
 	local bootargs_old=$(fw_printenv -n bootargs)
 	local rootfs_addr_old=$(fw_printenv -n rootfs_addr)
 	local rootfs_size_old=$(fw_printenv -n rootfs_size)
