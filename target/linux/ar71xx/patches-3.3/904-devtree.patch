@@ -1,7 +1,5 @@
-Index: linux-3.3.8/arch/mips/kernel/setup.c
-===================================================================
---- linux-3.3.8.orig/arch/mips/kernel/setup.c	2013-02-19 15:43:57.187949415 -0800
-+++ linux-3.3.8/arch/mips/kernel/setup.c	2013-02-19 15:44:00.963949584 -0800
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
 @@ -35,6 +35,8 @@
  #include <asm/system.h>
  #include <asm/prom.h>
@@ -11,7 +9,7 @@ Index: linux-3.3.8/arch/mips/kernel/setup.c
  struct cpuinfo_mips cpu_data[NR_CPUS] __read_mostly;
  
  EXPORT_SYMBOL(cpu_data);
-@@ -467,6 +469,24 @@
+@@ -467,6 +469,24 @@ static int __init early_parse_mem(char *
  }
  early_param("mem", early_parse_mem);
  
@@ -36,10 +34,8 @@ Index: linux-3.3.8/arch/mips/kernel/setup.c
  static void __init arch_mem_init(char **cmdline_p)
  {
  	phys_t init_mem, init_end, init_size;
-Index: linux-3.3.8/arch/mips/ath79/gpio.c
-===================================================================
---- linux-3.3.8.orig/arch/mips/ath79/gpio.c	2013-02-19 15:44:00.451949561 -0800
-+++ linux-3.3.8/arch/mips/ath79/gpio.c	2013-02-19 16:51:16.572128498 -0800
+--- a/arch/mips/ath79/gpio.c
++++ b/arch/mips/ath79/gpio.c
 @@ -20,9 +20,14 @@
  #include <linux/io.h>
  #include <linux/ioport.h>
@@ -55,7 +51,7 @@ Index: linux-3.3.8/arch/mips/ath79/gpio.c
  #include "common.h"
  
  void __iomem *ath79_gpio_base;
-@@ -31,6 +36,13 @@
+@@ -31,6 +36,13 @@ EXPORT_SYMBOL_GPL(ath79_gpio_base);
  static unsigned long ath79_gpio_count;
  static DEFINE_SPINLOCK(ath79_gpio_lock);
  
@@ -69,7 +65,7 @@ Index: linux-3.3.8/arch/mips/ath79/gpio.c
  static void __ath79_gpio_set_value(unsigned gpio, int value)
  {
  	void __iomem *base = ath79_gpio_base;
-@@ -240,6 +252,137 @@
+@@ -240,6 +252,137 @@ void __init ath79_gpio_output_select(uns
  	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
  }
  
@@ -207,7 +203,7 @@ Index: linux-3.3.8/arch/mips/ath79/gpio.c
  void __init ath79_gpio_init(void)
  {
  	int err;
-@@ -266,9 +409,15 @@
+@@ -266,9 +409,15 @@ void __init ath79_gpio_init(void)
  		ath79_gpio_chip.direction_output = ar934x_gpio_direction_output;
  	}
  
@@ -223,7 +219,7 @@ Index: linux-3.3.8/arch/mips/ath79/gpio.c
  }
  
  int gpio_get_value(unsigned gpio)
-@@ -291,14 +440,22 @@
+@@ -291,14 +440,22 @@ EXPORT_SYMBOL(gpio_set_value);
  
  int gpio_to_irq(unsigned gpio)
  {
@@ -250,10 +246,8 @@ Index: linux-3.3.8/arch/mips/ath79/gpio.c
 +	return gpio;
  }
  EXPORT_SYMBOL(irq_to_gpio);
-Index: linux-3.3.8/arch/mips/ath79/mach-cus227.c
-===================================================================
---- linux-3.3.8.orig/arch/mips/ath79/mach-cus227.c	2013-01-23 09:40:05.027620271 -0800
-+++ linux-3.3.8/arch/mips/ath79/mach-cus227.c	2013-02-19 16:47:32.592118568 -0800
+--- a/arch/mips/ath79/mach-cus227.c
++++ b/arch/mips/ath79/mach-cus227.c
 @@ -48,6 +48,8 @@
  #include <asm/mach-ath79/ar71xx_regs.h>
  #include <asm/mach-ath79/ath79.h>
@@ -263,7 +257,7 @@ Index: linux-3.3.8/arch/mips/ath79/mach-cus227.c
  #include "common.h"
  #include "dev-ap9x-pci.h"
  #include "dev-audio.h"
-@@ -90,36 +92,11 @@
+@@ -90,36 +92,11 @@ static struct ath79_caldata_fixup cus227
  	.mac_addr = { FIXUP_UNDEFINED, CUS227_MAC0_OFFSET },
  };
  
@@ -305,7 +299,7 @@ Index: linux-3.3.8/arch/mips/ath79/mach-cus227.c
  };
  
  /* Because CUS227 doesn't have a NOR flash on the SPI bus, we cannot
-@@ -202,11 +179,8 @@
+@@ -202,11 +179,8 @@ static void __init cus227_register_spi_d
  
  static void __init cus227_setup(void)
  {
@@ -319,7 +313,7 @@ Index: linux-3.3.8/arch/mips/ath79/mach-cus227.c
  	ath79_register_usb();
  
  	ath79_register_nand();
-@@ -226,6 +200,7 @@
+@@ -226,6 +200,7 @@ static void __init cus227_setup(void)
  	/* Audio initialization: PCM/I2S and CODEC */
  	cus227_audio_setup();
  	ath79_audio_device_register();
@@ -327,33 +321,31 @@ Index: linux-3.3.8/arch/mips/ath79/mach-cus227.c
  }
  MIPS_MACHINE(ATH79_MACH_CUS227, "CUS227", "Qualcomm Atheros CUS227",
  	     cus227_setup);
-Index: linux-3.3.8/arch/mips/include/asm/mach-ath79/irq.h
-===================================================================
---- linux-3.3.8.orig/arch/mips/include/asm/mach-ath79/irq.h	2013-02-19 15:43:59.707949529 -0800
-+++ linux-3.3.8/arch/mips/include/asm/mach-ath79/irq.h	2013-02-19 15:44:00.963949584 -0800
+--- a/arch/mips/include/asm/mach-ath79/irq.h
++++ b/arch/mips/include/asm/mach-ath79/irq.h
 @@ -10,7 +10,7 @@
  #define __ASM_MACH_ATH79_IRQ_H
  
  #define MIPS_CPU_IRQ_BASE	0
 -#define NR_IRQS			51
-+#define NR_IRQS			64
++#define NR_IRQS			75
  
  #define ATH79_MISC_IRQ_BASE	8
  #define ATH79_MISC_IRQ_COUNT	32
-@@ -48,6 +48,8 @@
- #define ATH79_MISC_IRQ_TIMER4	(ATH79_MISC_IRQ_BASE + 10)
- #define ATH79_MISC_IRQ_ETHSW	(ATH79_MISC_IRQ_BASE + 12)
+@@ -27,6 +27,10 @@
+ #define ATH79_IP3_IRQ_COUNT     3
+ #define ATH79_IP3_IRQ(_x)       (ATH79_IP3_IRQ_BASE + (_x))
  
-+#define ATH79_GPIO_IRQ_BASE	(ATH79_MISC_IRQ_BASE + ATH79_MISC_IRQ_COUNT)
++#define ATH79_GPIO_IRQ_BASE	(ATH79_IP3_IRQ_BASE + ATH79_IP3_IRQ_COUNT)
++#define ATH79_GPIO_IRQ_COUNT	24
++#define ATH79_GPIO_IRQ(_x)	(ATH79_GPIO_IRQ_BASE + (_x))
 +
- #include_next <irq.h>
- 
- #endif /* __ASM_MACH_ATH79_IRQ_H */
-Index: linux-3.3.8/arch/mips/ath79/Kconfig
-===================================================================
---- linux-3.3.8.orig/arch/mips/ath79/Kconfig	2013-02-19 15:44:00.947949584 -0800
-+++ linux-3.3.8/arch/mips/ath79/Kconfig	2013-02-19 16:47:41.676118972 -0800
-@@ -138,6 +138,7 @@
+ #define ATH79_CPU_IRQ_IP2	(MIPS_CPU_IRQ_BASE + 2)
+ #define ATH79_CPU_IRQ_IP3	(MIPS_CPU_IRQ_BASE + 3)
+ #define ATH79_CPU_IRQ_USB	ATH79_CPU_IRQ_IP3
+--- a/arch/mips/ath79/Kconfig
++++ b/arch/mips/ath79/Kconfig
+@@ -138,6 +138,7 @@ config ATH79_MACH_CUS227
  	select ATH79_DEV_NAND
  	select ATH79_DEV_USB
  	select ATH79_DEV_WMAC
