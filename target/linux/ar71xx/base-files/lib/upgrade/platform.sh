@@ -213,7 +213,7 @@ platform_check_image() {
 		local md5_calculated=$(dd bs=512 skip=1 if="$1" | md5sum - | awk '{print $1}')
 		local md5_orig=$(hexdump -n 16 -e '1/1 "%02x"' < "$1")
 		[ -n $md5_calculated -a -n $md5_orig ] && [ $md5_calculated == $md5_orig ] || {
-			echo "Invalid image. Contents do not match checksum (image:$md5_orig calculated:$md5_calcualted)"
+			echo "Invalid image. Contents do not match checksum (image:$md5_orig calculated:$md5_calculated)"
 			return 1
 		}
 

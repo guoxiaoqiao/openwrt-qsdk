@@ -58,7 +58,7 @@ define PatchKernelGzip
 endef
 
 define MkuImage
-	mkimage -A mips -O linux -T kernel -a 0x80060000 -C $(1) $(2) \
+	mkimage -A mips -O linux -T multi -a 0x80060000 -C $(1) $(2) \
 		-e 0x80060000 -n 'MIPS OpenWrt Linux-$(LINUX_VERSION)' \
 		-d $(3) $(4)
 endef
@@ -705,22 +705,23 @@ endef
 
 cus227_cmdline=
 cus227_mtdlayout=
-define Image/Build/Profile/CUS227
-        $(call Image/Build/Template/$(fs_128k)/$(1),AthLzma,cus227,$(cus227_cmdline),$(cus227_mtdlayout),1441792,32112640,KRuImage)
-	if [ -e "$(call sysupname,squashfs,cus227)" ]; then \
-		dd if=$(call sysupname,squashfs,cus227) \
-			of=image.release.tmp bs=128k conv=sync; \
-		md5sumstr=`dd if=image.release.tmp 2>/dev/null | md5sum - | cut -d ' ' -f 1 | sed -e 's/../\\\\x&/g'`; \
-		printf $$$${md5sumstr} > $(call sysupname,squashfs,cus227).release; \
-		for (( i=0; i<124; i++ )) ; do \
-			printf "\x00\x00\x00\x00" >> $(call sysupname,squashfs,cus227).release; \
-		done; \
-		cat image.release.tmp >> $(call sysupname,squashfs,cus227).release; \
-		rm $(call sysupname,squashfs,cus227); \
-		rm image.release.tmp; \
-		mv $(call sysupname,squashfs,cus227).release $(call sysupname,squashfs,cus227); \
-	fi
+define Image/Build/Profile/CUS227/squashfs
+	$(call PatchKernelLzma,cus227,$(cus227_cmdline) $(cus227_mtdlayout))
+	dd if=$(KDIR_TMP)/vmlinux-cus227.bin.lzma of=$(KDIR_TMP)/vmlinux-cus227.bin.lzma.tmp bs=1441716 conv=sync
+	$(call MkuImage,lzma,,$(KDIR_TMP)/vmlinux-cus227.bin.lzma.tmp:$(KDIR)/root.squashfs-raw,image.release.tmp)
+	dd if=image.release.tmp of=$(call imgname,firmware,cus227) bs=128k conv=sync
+	rm image.release.tmp
+	{ \
+		md5sumstr=`dd if=$(call imgname,firmware,cus227) 2>/dev/null | md5sum - | cut -d ' ' -f 1 | sed -e 's/../\\\\x&/g'`; \
+		printf $$$${md5sumstr} | dd bs=512 conv=sync; \
+		cat $(call imgname,firmware,cus227); \
+	} > $(call sysupname,$(1),cus227).release
+	mv $(call sysupname,$(1),cus227).release $(call sysupname,$(1),cus227)
 	$(LINUX_DIR)/scripts/dtc/dtc -O dtb -o $(BIN_DIR)/cus227.dtb -I dts $(PLATFORM_DIR)/cus227.dts
+endef
+
+define Image/Build/Profile/CUS227
+	$(Image/Build/Profile/CUS227/$(1))
 endef
 
 db120_cmdline=board=DB120 console=ttyS0,115200

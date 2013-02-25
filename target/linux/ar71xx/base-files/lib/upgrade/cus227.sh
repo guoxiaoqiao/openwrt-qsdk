@@ -45,9 +45,8 @@ get_mtdpart_offset() {
 cus227_update_u_boot_env() {
 	local file="$1"
 
-	local kernel_addr kernel_size
-	local rootfs_offset
-	local rootfs_addr rootfs_size rootfs_md5sum
+	local kernel_addr
+	local devtree_addr devtree_size
 	local bootargs bootcmd
 
 	# Perform sanity checks to make sure we've got all the tools we need
@@ -62,54 +61,40 @@ cus227_update_u_boot_env() {
 	}
 
 	get_mtdpart_offset kernel_addr "k-2"
-	get_mtdpart_offset rootfs_addr "r-2"
-	get_mtdpart_size kernel_size "k-2"
+	get_mtdpart_offset devtree_addr "devtree"
+	get_mtdpart_size   devtree_size "devtree"
 
-	local bootcmd_old=$(fw_printenv -n bootcmd)
+	local  bootcmd_old=$(fw_printenv -n bootcmd)
 	local bootargs_old=$(fw_printenv -n bootargs)
-	local rootfs_addr_old=$(fw_printenv -n rootfs_addr)
-	local rootfs_size_old=$(fw_printenv -n rootfs_size)
-	local rootfs_md5sum_old=$(fw_printenv -n rootfs_md5sum)
-
-	# We deduce the rootfs offset in the image by reading the kernel
-	# size in /proc/mtd and adding 1. The sysupgrade stores firmware
-	# checksum in the first 512 bytes 
-	local bs=512
-	rootfs_offset=$((0x${kernel_size}/${bs} + 1))
-	rootfs_size=$(dd if="${file}" bs=${bs} skip=${rootfs_offset} 2>/dev/null | wc -c)
-	rootfs_md5sum=$(dd if="${file}" bs=${bs} skip=${rootfs_offset} | \
-		md5sum -b | cut -f1 -d' ')
 
 	v "Updating cus-227 u-boot-env..."
 	bootargs=$(fw_printenv -n bootargs | sed \
 		-e 's/(kernel)/(tmp-k-1)/' \
 		-e 's/(rootfs)/(tmp-r-1)/' \
-		-e 's/(firmware)/(tmp-fw-1)/' \
 		-e 's/(vendor)/(tmp-v-1)/' \
+		-e 's/(firmware)/(tmp-fw-1)/' \
 		\
 		-e 's/(k-2)/(kernel)/' \
 		-e 's/(r-2)/(rootfs)/' \
-		-e 's/(fw-2)/(firmware)/' \
 		-e 's/(v-2)/(vendor)/' \
+		-e 's/(fw-2)/(firmware)/' \
 		\
 		-e 's/(tmp-k-1)/(k-2)/' \
 		-e 's/(tmp-r-1)/(r-2)/' \
-		-e 's/(tmp-fw-1)/(fw-2)/' \
 		-e 's/(tmp-v-1)/(v-2)/' \
+		-e 's/(tmp-fw-1)/(fw-2)/' \
 	)
 	bootcmd="nboot 0x81000000 0 0x${kernel_addr}"
+
+	if [ ! -z "$devtree_addr" ]; then
+		bootcmd="nand read \${devaddr} ${devtree_addr} ${devtree_size}; ${bootcmd}"
+	fi
 
 	fw_setenv -s - << EOF
 	bootargs ${bootargs}
 	bootcmd ${bootcmd}
-	rootfs_addr 0x${rootfs_addr}
-	rootfs_size 0x$(printf '%x' ${rootfs_size})
-	rootfs_md5sum ${rootfs_md5sum}
 	bootargs_old ${bootargs_old}
 	bootcmd_old ${bootcmd_old}
-	rootfs_addr_old ${rootfs_addr_old}
-	rootfs_size_old ${rootfs_size_old}
-	rootfs_md5sum_old ${rootfs_md5sum_old}
 EOF
 	v "done"
 }
