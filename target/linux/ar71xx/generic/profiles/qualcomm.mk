@@ -46,7 +46,7 @@ define Profile/Skifta
 		coreutils-md5sum qca-romboot-cus227 \
 		-hostapd -wpa-supplicant -hostapd-utils \
 		kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-		rygel-playbin rygel-playbin-gst-suggested libffmpeg-full \
+		rygel-orb libffmpeg-full \
 		orb luci-sam alsa skifta qcom-state-mgr-skifta \
 		-kmod-ath9k -kmod-ath5k -kmod-ath
 endef
