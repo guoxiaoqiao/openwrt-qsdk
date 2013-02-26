@@ -21,6 +21,8 @@ PKG_SOURCE:=$(PKG_SOURCE_SUBDIR).tar.gz
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES = autogen.sh aclocal.m4
 
+PKG_MIRROR_MD5SUM:=e15f0cdbd93dff4e30a417f90acbdbcf
+
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 
