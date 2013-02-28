@@ -70,7 +70,7 @@
 #define CUS227_KEYS_POLL_INTERVAL	20	/* msecs */
 #define CUS227_KEYS_DEBOUNCE_INTERVAL	(3 * CUS227_KEYS_POLL_INTERVAL)
 
-
+#define CUS227_GPIO_SPI_MISO		8
 #define CUS227_GPIO_I2S_MCLK		22
 #define CUS227_GPIO_I2S_SD		18
 #define CUS227_GPIO_I2S_WS		20
@@ -194,8 +194,14 @@ static void __init cus227_register_spi_devices(
 	ath79_gpio_output_select(CUS227_GPIO_SPI_CS1, AR934X_GPIO_OUT_MUX_SPI_CS1);
 	gpio_direction_output(CUS227_GPIO_SPI_CS1, 0);
 
+	/* a dedicated GPIO pin is used as SPI MISO since SPI controller doesn't support modes other than mode-0  */
+	gpio_request(CUS227_GPIO_SPI_MISO, "SPI MISO");
+	ath79_gpio_input_select(CUS227_GPIO_SPI_MISO, AR934X_GPIO_IN_MUX_SPI_MISO);
+	gpio_direction_input(CUS227_GPIO_SPI_MISO);
+
 	ath79_spi_data.bus_num = 0;
 	ath79_spi_data.num_chipselect = 2;
+	ath79_spi_data.miso_line = CUS227_GPIO_SPI_MISO;
 	ath79_register_spi(&ath79_spi_data, info, 1);
 }
 
