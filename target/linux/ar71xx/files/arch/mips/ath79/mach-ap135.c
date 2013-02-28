@@ -127,6 +127,13 @@ static struct ar8327_platform_data ap135_ar8327_data = {
 		.duplex = 1,
 		.txpause = 1,
 		.rxpause = 1,
+	},
+	.port6_cfg = {
+		.force_link = 1,
+		.speed = AR8327_PORT_SPEED_1000,
+		.duplex = 1,
+		.txpause = 1,
+		.rxpause = 1,
 	}
 };
 
@@ -148,7 +155,8 @@ static void __init ap135_gmac_setup(void)
 	t = __raw_readl(base + QCA955X_GMAC_REG_ETH_CFG);
 
 	t &= ~(QCA955X_ETH_CFG_RGMII_GMAC0 | QCA955X_ETH_CFG_SGMII_GMAC0);
-	t |= QCA955X_ETH_CFG_SGMII_GMAC0;
+	/* clear bit 6, then GMAC0 is RGMII, and GMAC1 is SGMII */
+	t |= QCA955X_ETH_CFG_RGMII_GMAC0;
 
 	__raw_writel(t, base + QCA955X_GMAC_REG_ETH_CFG);
 
@@ -187,6 +195,11 @@ static void __init ap135_setup(void)
 	ath79_eth0_pll_data.pll_1000 = 0x06000000;
 
 	ath79_register_eth(0);
+	ath79_init_mac(ath79_eth1_data.mac_addr, art + AP135_MAC1_OFFSET, 0);
+	ath79_eth1_data.phy_if_mode = PHY_INTERFACE_MODE_SGMII;
+	ath79_eth1_data.speed = SPEED_1000;
+	ath79_eth1_data.duplex = DUPLEX_FULL;
+	ath79_register_eth(1);
 }
 
 static void __init ap135_dual_setup(void)

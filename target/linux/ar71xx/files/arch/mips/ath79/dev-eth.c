@@ -217,9 +217,9 @@ void __init ath79_register_mdio(unsigned int id, u32 phy_mask)
 	case ATH79_SOC_AR9341:
 	case ATH79_SOC_AR9342:
 	case ATH79_SOC_AR9344:
-	case ATH79_SOC_QCA9558:
 		if (id == 1)
 			mdio_data->builtin_switch = 1;
+	case ATH79_SOC_QCA9558:
 		mdio_data->is_ar934x = 1;
 		break;
 
@@ -851,6 +851,13 @@ void __init ath79_register_eth(unsigned int id)
 	case ATH79_SOC_AR9341:
 	case ATH79_SOC_AR9342:
 	case ATH79_SOC_AR9344:
+		if (id == 1) {
+			pdata->switch_data = &ath79_switch_data;
+
+			/* reset the built-in switch */
+			ath79_device_reset_set(AR934X_RESET_ETH_SWITCH);
+			ath79_device_reset_clear(AR934X_RESET_ETH_SWITCH);
+		}
 	case ATH79_SOC_QCA9558:
 		if (id == 0) {
 			pdata->reset_bit = AR934X_RESET_GE0_MAC |
@@ -860,12 +867,6 @@ void __init ath79_register_eth(unsigned int id)
 			pdata->reset_bit = AR934X_RESET_GE1_MAC |
 					   AR934X_RESET_GE1_MDIO;
 			pdata->set_speed = ath79_set_speed_dummy;
-
-			pdata->switch_data = &ath79_switch_data;
-
-			/* reset the built-in switch */
-			ath79_device_reset_set(AR934X_RESET_ETH_SWITCH);
-			ath79_device_reset_clear(AR934X_RESET_ETH_SWITCH);
 		}
 
 		pdata->ddr_flush = ath79_ddr_no_flush;

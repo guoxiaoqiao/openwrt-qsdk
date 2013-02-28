@@ -65,10 +65,10 @@ routerstation-pro)
 
 ap135 |\
 ap135-dual)
-	ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
+	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	ucidef_add_switch "switch0" "1" "1"
-	ucidef_add_switch_vlan "switch0" "1" "0t 1 2 3 4"
-	ucidef_add_switch_vlan "switch0" "2" "0t 5"
+	ucidef_add_switch_vlan "switch0" "1" "0 1 2 3 4"
+	ucidef_add_switch_vlan "switch0" "2" "5 6"
 	;;
 
 ap136)
