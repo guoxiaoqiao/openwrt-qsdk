@@ -7,6 +7,7 @@ define Profile/QSDK_Open
 	PACKAGES:=luci uhttpd kmod-usb-core kmod-usb2 kmod-usb-storage -kmod-ath5k \
 	  kmod-ipt-nathelper-extra luci-app-upnp tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
 	  kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat kmod-nls-cp437 kmod-nls-iso8859-1 \
+	  luci-app-ddns ddns-scripts \
 	  -wpad-mini hostapd hostapd-utils wpa-supplicant wpa-cli
 endef
 
@@ -25,7 +26,7 @@ define Profile/QSDK_Main
 	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-	  qca-legacy-uboot-ap135 qca-legacy-uboot-db12x \
+	  luci-app-ddns ddns-scripts qca-legacy-uboot-ap135 qca-legacy-uboot-db12x \
 	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
 endef
 
