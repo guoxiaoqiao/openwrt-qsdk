@@ -87,10 +87,13 @@ cus227_update_u_boot_env() {
 	bootcmd="nboot 0x81000000 0 0x${kernel_addr}"
 
 	if [ ! -z "$devtree_addr" ]; then
-		bootcmd="nand read \${devaddr} ${devtree_addr} ${devtree_size}; ${bootcmd}"
+		bootcmd="nand read \${devaddr} ${devtree_addr} ${devtree_size}; ${bootcmd}; run fail"
 	fi
 
 	fw_setenv -s - << EOF
+	swap_root set bootargs_tmp \${bootargs}; set bootargs \${bootargs_old}; set bootargs_old \${bootargs_tmp}
+	swap_kernel set bootcmd_tmp \${bootcmd}; set bootcmd \${bootcmd_old}; set bootcmd_old \${bootcmd_tmp}
+	fail run swap_root; run swap_kernel; save; reset
 	bootargs ${bootargs}
 	bootcmd ${bootcmd}
 	bootargs_old ${bootargs_old}
