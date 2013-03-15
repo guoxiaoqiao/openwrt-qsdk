@@ -1224,13 +1224,11 @@ endef
 define Image/Build/Profile/QSDK_Main
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP135DUAL,$(1))
-	$(call Image/Build/Profile/DB120,$(1))
 endef
 
 define Image/Build/Profile/QSDK_Open
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP135DUAL,$(1))
-	$(call Image/Build/Profile/DB120,$(1))
 endef
 
 define Image/Build/Profile/Skifta
