@@ -29,12 +29,12 @@
 	leds {
 		compatible = "gpio-leds";
 		s3 {
-			label = "s3";
+			label = "cus227:green:s3";
 			gpios = <&gpios 14 1>;
 			linux,default-trigger = "timer";
 		};
 		s4 {
-			label = "s4";
+			label = "cus227:green:s4";
 			gpios = <&gpios 15 1>;
 			linux,default-trigger = "timer";
 		};
