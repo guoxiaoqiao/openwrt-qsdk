@@ -20,7 +20,7 @@ include $(INCLUDE_DIR)/target.mk
 DEFAULT_PACKAGES += \
 	kmod-leds-gpio kmod-gpio-button-hotplug kmod-wdt-ath79 swconfig \
 	kmod-ledtrig-default-on kmod-ledtrig-timer kmod-ledtrig-netdev \
-	kmod-ath9k wpad-mini uboot-envtools
+	kmod-button-hotplug kmod-ath9k wpad-mini uboot-envtools
 
 define Target/Description
 	Build firmware images for Atheros AR7xxx/AR9xxx based boards.
