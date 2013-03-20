@@ -17,12 +17,12 @@
 		s1 {
 			label = "s1";
 			gpios = <&gpios 12 1>;
-			linux,code = <12>;
+			linux,code = <529>; /* KEY_WPS_BUTTON */
 		};
 		s2 {
 			label = "s2";
 			gpios = <&gpios 13 1>;
-			linux,code = <13>;
+			linux,code = <258>; /* BTN_1 */
 		};
 	};
 
