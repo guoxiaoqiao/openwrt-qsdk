@@ -39,8 +39,7 @@ define Profile/QSDK_Main/Description
 endef
 $(eval $(call Profile,QSDK_Main))
 
-define Profile/Skifta
-	NAME:=Qualcomm-Atheros Skifta Profile
+define Profile/Skifta/Default
 	PACKAGES:=-dropbear -firewall -ppp -wpad-mini alsa -luci-theme-openwrt \
 		kmod-usb-core kmod-usb2 kmod-usb-storage kmod-sound-soc-cus227 \
 		kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat avahi-daemon \
@@ -48,12 +47,12 @@ define Profile/Skifta
 		coreutils-md5sum qca-romboot-cus227 \
 		-hostapd -wpa-supplicant -hostapd-utils \
 		kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-		rygel-orb libffmpeg-full \
+		libffmpeg-full \
 		orb luci-skifta alsa skifta qcom-state-mgr-skifta \
 		-kmod-ath9k -kmod-ath5k -kmod-ath
 endef
 
-define Profile/Skifta/Description
+define Profile/Skifta/Description/Default
 	Qualcomm-Atheros Skifta package set configuration
 	This profile provides all the skifta features in the firmware for the
 	Skifta supported boards. It includes
@@ -70,7 +69,30 @@ define Profile/Skifta/Description
 	the Qualcomm-Atheros sales team for more information on the Skifta
 	products & deliverables.
 endef
+
+define Profile/Skifta
+	$(call Profile/Skifta/Default)
+	NAME:=Qualcomm-Atheros Skifta Profile
+	PACKAGES+=rygel-orb
+endef
+
+define Profile/Skifta/Description
+	$(call Profile/Skifta/Description/Default)
+	This profile contains the DLNA Rygel open source stack
+endef
 $(eval $(call Profile,Skifta))
+
+define Profile/Skifta-access
+	NAME:=Qualcomm-Atheros Skifta Profile with NFLC DLNA stack
+	$(call Profile/Skifta/Default)
+	PACKAGES+=nflc
+endef
+
+define Profile/Skifta-access/Description
+	$(call Profile/Skifta/Description/Default)
+	This profile contains the DLNA Access stack
+endef
+$(eval $(call Profile,Skifta-access))
 
 define Profile/Factory/Default
 	PACKAGES:=-dropbear -firewall -ppp -wpad-mini alsa -luci-theme-openwrt \
