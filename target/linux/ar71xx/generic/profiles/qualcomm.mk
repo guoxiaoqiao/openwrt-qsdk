@@ -82,17 +82,17 @@ define Profile/Skifta/Description
 endef
 $(eval $(call Profile,Skifta))
 
-define Profile/Skifta-access
+define Profile/Skifta_Access
 	NAME:=Qualcomm-Atheros Skifta Profile with NFLC DLNA stack
 	$(call Profile/Skifta/Default)
 	PACKAGES+=nflc
 endef
 
-define Profile/Skifta-access/Description
+define Profile/Skifta_Access/Description
 	$(call Profile/Skifta/Description/Default)
 	This profile contains the DLNA Access stack
 endef
-$(eval $(call Profile,Skifta-access))
+$(eval $(call Profile,Skifta_Access))
 
 define Profile/Factory/Default
 	PACKAGES:=-dropbear -firewall -ppp -wpad-mini alsa -luci-theme-openwrt \

@@ -1235,9 +1235,10 @@ define Image/Build/Profile/Skifta
 	$(call Image/Build/Profile/CUS227,$(1))
 endef
 
-define Image/Build/Profile/Skifta-access
+define Image/Build/Profile/Skifta_Access
 	$(call Image/Build/Profile/CUS227,$(1))
 endef
+
 define Image/Build/Profile/Factory_Wasp
 	$(call Image/Build/Profile/CUS227,$(1))
 endef
