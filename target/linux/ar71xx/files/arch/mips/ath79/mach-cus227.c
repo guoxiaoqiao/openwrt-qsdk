@@ -70,6 +70,8 @@
 #define CUS227_KEYS_POLL_INTERVAL	20	/* msecs */
 #define CUS227_KEYS_DEBOUNCE_INTERVAL	(3 * CUS227_KEYS_POLL_INTERVAL)
 
+#define CUS227_GPIO_SPI_CLK		6
+#define CUS227_GPIO_SPI_MOSI		7
 #define CUS227_GPIO_SPI_MISO		8
 #define CUS227_GPIO_I2S_MCLK		22
 #define CUS227_GPIO_I2S_SD		18
@@ -190,6 +192,14 @@ static void __init cus227_audio_setup(void)
 static void __init cus227_register_spi_devices(
 			struct spi_board_info const *info)
 {
+	gpio_request(CUS227_GPIO_SPI_CLK, "SPI CLK");
+	ath79_gpio_output_select(CUS227_GPIO_SPI_CLK, AR934X_GPIO_OUT_MUX_SPI_CLK);
+	gpio_direction_output(CUS227_GPIO_SPI_CLK, 0);
+
+	gpio_request(CUS227_GPIO_SPI_MOSI, "SPI MOSI");
+	ath79_gpio_output_select(CUS227_GPIO_SPI_MOSI, AR934X_GPIO_OUT_MUX_SPI_MOSI);
+	gpio_direction_output(CUS227_GPIO_SPI_MOSI, 0);
+
 	gpio_request(CUS227_GPIO_SPI_CS1, "SPI CS1");
 	ath79_gpio_output_select(CUS227_GPIO_SPI_CS1, AR934X_GPIO_OUT_MUX_SPI_CS1);
 	gpio_direction_output(CUS227_GPIO_SPI_CS1, 0);
