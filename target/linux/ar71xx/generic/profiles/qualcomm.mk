@@ -98,7 +98,7 @@ define Profile/Factory/Default
 	PACKAGES:=-dropbear -firewall -ppp -wpad-mini alsa -luci-theme-openwrt \
 		-kmod-ath9k -kmod-ath5k -kmod-ath -hostapd -wpa-supplicant \
 		-hostapd-utils kmod-usb-core kmod-usb2 kmod-usb-storage \
-		kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa \
+		kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa dumpregs \
 		kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat avahi-daemon
 endef
 
