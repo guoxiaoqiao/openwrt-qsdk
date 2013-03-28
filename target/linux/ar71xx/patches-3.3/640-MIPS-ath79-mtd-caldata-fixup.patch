@@ -1,7 +1,7 @@
 --- a/arch/mips/ath79/dev-wmac.c
 +++ b/arch/mips/ath79/dev-wmac.c
-@@ -270,6 +270,11 @@ bool __init ar93xx_wmac_read_mac_address
- 	return ret;
+@@ -280,6 +280,11 @@ void __init ath79_wmac_disable_5ghz(void
+ 	ath79_wmac_data.disable_5ghz = true;
  }
  
 +__init struct ath9k_platform_data *ath79_get_wmac_data(void)
@@ -14,13 +14,16 @@
  	if (soc_is_ar913x())
 --- a/arch/mips/ath79/dev-wmac.h
 +++ b/arch/mips/ath79/dev-wmac.h
-@@ -12,7 +12,10 @@
+@@ -12,10 +12,13 @@
  #ifndef _ATH79_DEV_WMAC_H
  #define _ATH79_DEV_WMAC_H
  
 +#include <linux/ath9k_platform.h>
 +
  void ath79_register_wmac(u8 *cal_data, u8 *mac_addr);
+ void ath79_wmac_disable_2ghz(void);
+ void ath79_wmac_disable_5ghz(void);
+ 
  bool ar93xx_wmac_read_mac_address(u8 *dest);
 +struct ath9k_platform_data *ath79_get_wmac_data(void);
  
@@ -191,7 +194,7 @@
 +void __init ath79_mtd_caldata_fixup(struct ath79_caldata_fixup *);
 --- a/arch/mips/ath79/Kconfig
 +++ b/arch/mips/ath79/Kconfig
-@@ -685,6 +685,7 @@ config ATH79_DEV_LEDS_GPIO
+@@ -757,6 +757,7 @@ config ATH79_DEV_NFC
  	def_bool n
  
  config ATH79_DEV_NAND
@@ -199,7 +202,7 @@
  	def_bool n
  
  config ATH79_DEV_SPI
-@@ -697,6 +698,9 @@ config ATH79_DEV_WMAC
+@@ -769,6 +770,9 @@ config ATH79_DEV_WMAC
  	depends on (SOC_AR913X || SOC_AR933X || SOC_AR934X || SOC_QCA955X)
  	def_bool n
  
@@ -211,11 +214,11 @@
  
 --- a/arch/mips/ath79/Makefile
 +++ b/arch/mips/ath79/Makefile
-@@ -32,6 +32,7 @@ obj-$(CONFIG_ATH79_DEV_WMAC)		+= dev-wma
+@@ -33,6 +33,7 @@ obj-$(CONFIG_ATH79_DEV_WMAC)		+= dev-wma
  #
  # Miscellaneous objects
  #
 +obj-$(CONFIG_ATH79_NAND_CALDATA_FIXUP)	+= nand-caldata-fixup.o
  obj-$(CONFIG_ATH79_NVRAM)		+= nvram.o
  obj-$(CONFIG_ATH79_PCI_ATH9K_FIXUP)	+= pci-ath9k-fixup.o
- 
+ obj-$(CONFIG_ATH79_ROUTERBOOT)		+= routerboot.o
