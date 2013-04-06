@@ -24,6 +24,11 @@ ifdef CONFIG_STRIP_KERNEL_EXPORTS
 	EXTRA_LDSFLAGS="-I$(KERNEL_BUILD_DIR) -include symtab.h"
 endif
 
+ifdef CONFIG_KERNEL_SPARSE
+  KERNEL_MAKEOPTS += \
+	C=1
+endif
+
 # Kernel compiles well in parallel
 # Enable // build if selected in the menuconfig
 KERNEL_JFLAG ?= $(if $(CONFIG_PKG_BUILD_JOBS),-j$(CONFIG_PKG_BUILD_JOBS),-j1)
