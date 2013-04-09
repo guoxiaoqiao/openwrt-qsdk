@@ -1,6 +1,9 @@
 src-link packages ../qca/feeds/packages
 src-link luci ../qca/feeds/luci
 src-link qca ../qca/feeds/qca
+src-link skifta ../qca/feeds/skifta
+src-link streamboost ../qca/feeds/streamboost
+src-link hyfi ../qca/feeds/hyfi
 #src-svn packages svn://svn.openwrt.org/openwrt/branches/packages_12.09
 #src-svn xwrt http://x-wrt.googlecode.com/svn/trunk/package
 #src-svn luci http://svn.luci.subsignal.org/luci/tags/0.11.1/contrib/package
