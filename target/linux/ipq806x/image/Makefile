@@ -10,7 +10,7 @@ E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
 define Image/BuildKernel
 	mkimage -A arm -O linux -T kernel -C none \
-		-a 80208000 -e 80208000 \
+		-a 40808000 -e 40808000 \
 		-n "OpenWRT Kernel Image" \
 		-d $(KDIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-$(KERNEL)-uImage
 
