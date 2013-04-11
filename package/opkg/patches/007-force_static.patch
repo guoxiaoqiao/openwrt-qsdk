@@ -19,7 +19,7 @@
 -
 -
 -
-+libopkg_a_LIBADD = $(top_builddir)/libbb/libbb.a $(CURL_LIBS) $(GPGME_LIBS) $(OPENSSL_LIBS) $(PATHFINDER_LIBS)
++libopkg_a_LIBADD = $(top_builddir)/libbb/libbb.a
 --- a/libbb/Makefile.am
 +++ b/libbb/Makefile.am
 @@ -2,9 +2,9 @@ HOST_CPU=@host_cpu@
@@ -55,7 +55,7 @@
  #opkg_active_list_test_CFLAGS = $(ALL_CFLAGS) -I$(top_srcdir)
  
 -libopkg_test_LDADD = $(top_builddir)/libopkg/libopkg.la
-+libopkg_test_LDADD = $(top_builddir)/libopkg/libopkg.a $(top_builddir)/libbb/libbb.a
++libopkg_test_LDADD = $(top_builddir)/libopkg/libopkg.a $(top_builddir)/libbb/libbb.a $(CURL_LIBS) $(OPENSSL_LIBS) $(GPGME_LIBS) $(PATHFINDER_LIBS)
  libopkg_test_SOURCE = libopkg_test.c
  libopkg_test_LDFLAGS = -static
  
@@ -68,4 +68,4 @@
 -opkg_cl_LDADD = $(top_builddir)/libopkg/libopkg.la \
 -                $(top_builddir)/libbb/libbb.la 
 +opkg_cl_LDADD = $(top_builddir)/libopkg/libopkg.a \
-+                $(top_builddir)/libbb/libbb.a
++                $(top_builddir)/libbb/libbb.a $(CURL_LIBS) $(OPENSSL_LIBS) $(GPGME_LIBS) $(PATHFINDER_LIBS)

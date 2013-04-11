@@ -12,7 +12,7 @@ include $(INCLUDE_DIR)/version.mk
 PKG_NAME:=opkg
 PKG_REV:=618
 PKG_VERSION:=$(PKG_REV)
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE_PROTO:=svn
 PKG_SOURCE_VERSION:=$(PKG_REV)
@@ -23,6 +23,8 @@ PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES = autogen.sh aclocal.m4
 
 PKG_MIRROR_MD5SUM:=e15f0cdbd93dff4e30a417f90acbdbcf
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
+HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_BUILD_PARALLEL:=1
 HOST_BUILD_PARALLEL:=1
@@ -31,12 +33,24 @@ PKG_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 
-define Package/opkg
+define Package/opkg/Default
   SECTION:=base
   CATEGORY:=Base system
   TITLE:=opkg package management system
   MAINTAINER:=Jo-Philipp Wich <xm@subsignal.org>
   URL:=http://wiki.openmoko.org/wiki/Opkg
+endef
+
+define Package/opkg
+$(call Package/opkg/Default)
+  VARIANT:=nocurl
+endef
+
+define Package/opkg-curl
+$(call Package/opkg/Default)
+  TITLE += (with curl support)
+  DEPENDS:=+libcurl
+  VARIANT:=curl
 endef
 
 define Package/opkg/description
@@ -49,6 +63,12 @@ define Package/opkg/description
   opkg knows how to install both .ipk and .deb packages.
 endef
 
+define Package/opkg-curl/description
+$(call Package/opkg/description)
+
+This is a variant with curl support
+endef
+
 define Package/opkg/conffiles
 /etc/opkg.conf
 endef
@@ -58,10 +78,13 @@ TARGET_CFLAGS += -ffunction-sections -fdata-sections
 EXTRA_CFLAGS += $(TARGET_CPPFLAGS)
 
 CONFIGURE_ARGS += \
-	--disable-curl \
 	--disable-gpg \
 	--with-opkgetcdir=/etc \
 	--with-opkglockfile=/var/lock/opkg.lock
+
+ifeq ($(BUILD_VARIANT),nocurl)
+	CONFIGURE_ARGS += --disable-curl
+endif
 
 MAKE_FLAGS = \
 		CC="$(TARGET_CC)" \
@@ -77,6 +100,8 @@ define Package/opkg/install
 	$(VERSION_SED) $(1)/etc/opkg.conf
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/opkg-cl $(1)/bin/opkg
 endef
+
+Package/opkg-curl/install = $(Package/opkg/install)
 
 define Build/InstallDev
 	mkdir -p $(1)/usr/include
@@ -99,4 +124,5 @@ define Host/Install
 endef
 
 $(eval $(call BuildPackage,opkg))
+$(eval $(call BuildPackage,opkg-curl))
 $(eval $(call HostBuild))
