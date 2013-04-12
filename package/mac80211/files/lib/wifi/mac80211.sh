@@ -43,6 +43,8 @@ mac80211_hostapd_setup_base() {
 				ht_capab="$ht_capab[$cap]"
 			done
 			[ -n "$ht_capab" ] && append base_cfg "ht_capab=$ht_capab" "$N"
+			config_get require_ht "$device" require_ht
+			[ -n "$require_ht" ] && append base_cfg "require_ht=$require_ht" "$N"
 		}
 	}
 
