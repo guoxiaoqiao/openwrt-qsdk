@@ -88,7 +88,8 @@ define DownloadMethod/git
 		rm -rf $(SUBDIR) && \
 		[ \! -d $(SUBDIR) ] && \
 		git clone $(URL) $(SUBDIR) --recursive && \
-		(cd $(SUBDIR) && git checkout $(VERSION)) && \
+		(cd $(SUBDIR) && git checkout $(VERSION) || \
+			(git fetch origin $(VERSION) && git checkout FETCH_HEAD)) && \
 		echo "Packing checkout..." && \
 		rm -rf $(SUBDIR)/.git && \
 		$(call dl_pack,$(TMP_DIR)/dl/$(FILE),$(SUBDIR)) && \
