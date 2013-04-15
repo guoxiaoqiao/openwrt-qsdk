@@ -1087,7 +1087,7 @@ ar8327_init_globals(struct ar8216_priv *priv)
 }
 
 static void
-ar8327_init_cpuport(struct ar8216_priv *priv)
+ar8327_init_cpuport(struct ar8216_priv *priv, int port)
 {
 	struct ar8327_platform_data *pdata;
 	struct ar8327_port_cfg *cfg;
@@ -1097,9 +1097,20 @@ ar8327_init_cpuport(struct ar8216_priv *priv)
 	if (!pdata)
 		return;
 
-	cfg = &pdata->cpuport_cfg;
+	switch (port) {
+	case 0:
+		cfg = &pdata->cpuport_cfg;
+		break;
+	case 5:
+		cfg = &pdata->port5_cfg;
+		break;
+	case 6:
+		cfg = &pdata->port6_cfg;
+		break;
+	}
+
 	if (!cfg->force_link) {
-		priv->write(priv, AR8327_REG_PORT_STATUS(AR8216_PORT_CPU),
+		priv->write(priv, AR8327_REG_PORT_STATUS(port),
 			    AR8216_PORT_STATUS_LINK_AUTO);
 		return;
 	}
@@ -1120,16 +1131,24 @@ ar8327_init_cpuport(struct ar8216_priv *priv)
 		break;
 	}
 
-	priv->write(priv, AR8327_REG_PORT_STATUS(AR8216_PORT_CPU), t);
+	priv->write(priv, AR8327_REG_PORT_STATUS(port), t);
 }
 
 static void
 ar8327_init_port(struct ar8216_priv *priv, int port)
 {
+	struct ar8327_platform_data *pdata;
+	struct ar8327_port_cfg *cfg;
 	u32 t;
 
-	if (port == AR8216_PORT_CPU) {
-		ar8327_init_cpuport(priv);
+	pdata = priv->phy->dev.platform_data;
+	if (!pdata)
+		return;
+
+	if (((port == 0) && pdata->pad0_cfg) ||
+	    ((port == 5) && pdata->pad5_cfg) ||
+	    ((port == 6) && pdata->pad6_cfg)) {
+	        ar8327_init_cpuport(priv, port);
 	} else {
 		t = AR8216_PORT_STATUS_LINK_AUTO;
 		priv->write(priv, AR8327_REG_PORT_STATUS(port), t);
