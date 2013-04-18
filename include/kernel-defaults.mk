@@ -26,7 +26,7 @@ endif
 
 ifdef CONFIG_KERNEL_SPARSE
   KERNEL_MAKEOPTS += \
-	C=1
+	C=1 CHECK=$(STAGING_DIR_HOST)/bin/sparse
 endif
 
 # Kernel compiles well in parallel

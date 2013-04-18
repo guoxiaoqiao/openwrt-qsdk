@@ -26,6 +26,7 @@ tools-y += lzma-old squashfs
 endif
 tools-y += lzma squashfs4
 tools-y += makefun
+tools-$(CONFIG_KERNEL_SPARSE) += sparse
 
 ifneq ($(CONFIG_PACKAGE_firmwarehotplug),)
 tools-y += sdcc
