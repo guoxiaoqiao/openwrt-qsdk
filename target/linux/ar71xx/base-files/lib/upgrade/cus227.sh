@@ -105,12 +105,10 @@ EOF
 platform_do_upgrade_cus227() {
 	local file=$1
 	sync
+	dd bs=512 skip=1 if="${file}" | mtd write - fw-2
 	if [ "$SAVE_CONFIG" -eq 1 -a -z "$USE_REFRESH" ]; then
-		dd bs=512 skip=1 if="${file}" | mtd -j "$CONF_TAR" write - fw-2
-	else
-		dd bs=512 skip=1 if="${file}" | mtd write - fw-2
+		mtd -e rootfs_data jffs2write "$CONF_TAR" rootfs_data
 	fi
 	cus227_update_u_boot_env "${file}"
-	mtd erase rootfs_data
 }
 
