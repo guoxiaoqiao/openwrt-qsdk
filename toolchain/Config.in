@@ -76,6 +76,13 @@ menuconfig EXTERNAL_TOOLCHAIN
 		help
 		  Specify additional directories searched for libraries (override LDFLAGS)
 		  Use ./DIR for directories relative to the root above
+	config INSTALL_LIBSTDCPP
+		bool
+		prompt "Does external toolchain have working C++ compiler?" if DEVEL
+		depends EXTERNAL_TOOLCHAIN && !NATIVE_TOOLCHAIN
+		default y
+		help
+		    Build/install c++ compiler and libstdc++?
 
 config NEED_TOOLCHAIN
 	bool
