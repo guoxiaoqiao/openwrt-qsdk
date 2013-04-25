@@ -158,7 +158,6 @@ set_wifi_down() {
 	config_get vifs "$cfg" vifs
 	for vif in $vifs; do
 		uci_revert_state wireless "$vif"
-		config_unset "$vif" ifname
 	done
 }
 
