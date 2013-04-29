@@ -88,7 +88,6 @@ platform_check_image() {
 	ap113 | \
 	ap121 | \
 	ap121-mini | \
-	ap135 | \
 	ap135-dual | \
 	ap136 | \
 	ap96 | \
@@ -102,6 +101,10 @@ platform_check_image() {
 			return 1
 		}
 		return 0
+		;;
+	ap135)
+		platform_check_image_ap135 "$1" && return 0
+		return 1
 		;;
 	ap81 | \
 	ap83 | \
@@ -298,6 +301,9 @@ platform_do_upgrade() {
 		;;
 	cus227)
 		platform_do_upgrade_cus227 "$ARGV"
+		;;
+	ap135)
+		platform_do_upgrade_ap135 "0x9f050000" "$ARGV"
 		;;
 	*)
 		default_do_upgrade "$ARGV"
