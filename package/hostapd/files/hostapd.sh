@@ -104,6 +104,8 @@ hostapd_set_bss_options() {
 			[ -n "$acct_port" ] && append "$var" "acct_server_port=$acct_port" "$N"
 			config_get acct_secret "$vif" acct_secret
 			[ -n "$acct_secret" ] && append "$var" "acct_server_shared_secret=$acct_secret" "$N"
+			config_get eap_reauth_period "$vif" eap_reauth_period
+			[ -n "$eap_reauth_period" ] && append "$var" "eap_reauth_period=$eap_reauth_period" "$N"
 			config_get nasid "$vif" nasid
 			config_get wep_key_len_broadcast "$vif" wep_key_len_broadcast
 			config_get wep_key_len_unicast "$vif" wep_key_len_unicast
