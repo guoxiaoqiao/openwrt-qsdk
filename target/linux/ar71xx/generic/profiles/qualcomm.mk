@@ -7,7 +7,7 @@ define Profile/QSDK_Open
 	PACKAGES:=luci uhttpd kmod-usb-core kmod-usb2 kmod-usb-storage -kmod-ath5k \
 	  kmod-ipt-nathelper-extra luci-app-upnp tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
 	  kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat kmod-nls-cp437 kmod-nls-iso8859-1 \
-	  luci-app-ddns ddns-scripts kmod-ipv6 \
+	  luci-app-ddns ddns-scripts kmod-ipv6 iwinfo \
 	  -wpad-mini hostapd hostapd-utils wpa-supplicant wpa-cli
 endef
 
