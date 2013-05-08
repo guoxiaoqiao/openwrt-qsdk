@@ -77,6 +77,22 @@ static void ag71xx_ethtool_get_ringparam(struct net_device *dev,
 	er->rx_jumbo_pending = 0;
 }
 
+/*
+ * Return the next largest power of 2.
+ */
+static int ag71xx_next_power_of_2(unsigned int i)
+{
+	i--;
+	i = (i >> 1) | i;
+	i = (i >> 2) | i;
+	i = (i >> 4) | i;
+	i = (i >> 8) | i;
+	i = (i >> 16) | i;
+	i++;
+
+	return i;
+}
+
 static int ag71xx_ethtool_set_ringparam(struct net_device *dev,
 					struct ethtool_ringparam *er)
 {
@@ -93,9 +109,11 @@ static int ag71xx_ethtool_set_ringparam(struct net_device *dev,
 
 	tx_size = er->tx_pending < AG71XX_TX_RING_SIZE_MAX ?
 		  er->tx_pending : AG71XX_TX_RING_SIZE_MAX;
+	tx_size = ag71xx_next_power_of_2(tx_size);
 
 	rx_size = er->rx_pending < AG71XX_RX_RING_SIZE_MAX ?
 		  er->rx_pending : AG71XX_RX_RING_SIZE_MAX;
+	rx_size = ag71xx_next_power_of_2(rx_size);
 
 	if (netif_running(dev)) {
 		err = dev->netdev_ops->ndo_stop(dev);
@@ -104,7 +122,9 @@ static int ag71xx_ethtool_set_ringparam(struct net_device *dev,
 	}
 
 	ag->tx_ring.size = tx_size;
+	ag->tx_ring.mask = tx_size - 1;
 	ag->rx_ring.size = rx_size;
+	ag->rx_ring.mask = rx_size - 1;
 
 	if (netif_running(dev))
 		err = dev->netdev_ops->ndo_open(dev);

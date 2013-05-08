@@ -30,6 +30,7 @@
 #include <linux/skbuff.h>
 #include <linux/dma-mapping.h>
 #include <linux/workqueue.h>
+#include <linux/prefetch.h>
 
 #include <linux/bitops.h>
 
@@ -78,20 +79,17 @@ do {									\
 } while (0)
 
 struct ag71xx_desc {
-	u32	data;
-	u32	ctrl;
+	volatile u32	data;
+	volatile u32	ctrl;
 #define DESC_EMPTY	BIT(31)
 #define DESC_MORE	BIT(24)
 #define DESC_PKTLEN_M	0xfff
-	u32	next;
-	u32	pad;
+	volatile u32	next;
+	volatile u32	pad;
 } __attribute__((aligned(4)));
 
 struct ag71xx_buf {
-	union {
-		struct sk_buff	*skb;
-		void		*rx_buf;
-	};
+	struct sk_buff		*skb;
 	struct ag71xx_desc	*desc;
 	dma_addr_t		dma_addr;
 	unsigned long		timestamp;
@@ -105,6 +103,8 @@ struct ag71xx_ring {
 	unsigned int		curr;
 	unsigned int		dirty;
 	unsigned int		size;
+	unsigned int		mask;
+	unsigned int		used;
 };
 
 struct ag71xx_mdio {
@@ -156,8 +156,11 @@ struct ag71xx {
 	struct ag71xx_desc	*stop_desc;
 	dma_addr_t		stop_desc_dma;
 
+	bool			tx_stopped;
+
 	struct ag71xx_ring	rx_ring;
 	struct ag71xx_ring	tx_ring;
+	unsigned int		rx_buf_offset;
 	unsigned int		rx_buf_size;
 
 	struct mii_bus		*mii_bus;
@@ -191,16 +194,6 @@ void ag71xx_phy_stop(struct ag71xx *ag);
 static inline struct ag71xx_platform_data *ag71xx_get_pdata(struct ag71xx *ag)
 {
 	return ag->pdev->dev.platform_data;
-}
-
-static inline int ag71xx_desc_empty(struct ag71xx_desc *desc)
-{
-	return (desc->ctrl & DESC_EMPTY) != 0;
-}
-
-static inline int ag71xx_desc_pktlen(struct ag71xx_desc *desc)
-{
-	return desc->ctrl & DESC_PKTLEN_M;
 }
 
 /* Register offsets */
@@ -372,18 +365,24 @@ static inline void ag71xx_check_reg_offset(struct ag71xx *ag, unsigned reg)
 
 static inline void ag71xx_wr(struct ag71xx *ag, unsigned reg, u32 value)
 {
+	void __iomem *r;
+
 	ag71xx_check_reg_offset(ag, reg);
 
-	__raw_writel(value, ag->mac_base + reg);
+	r = ag->mac_base + reg;
+	__raw_writel(value, r);
 	/* flush write */
-	(void) __raw_readl(ag->mac_base + reg);
+	(void) __raw_readl(r);
 }
 
 static inline u32 ag71xx_rr(struct ag71xx *ag, unsigned reg)
 {
+	void __iomem *r;
+
 	ag71xx_check_reg_offset(ag, reg);
 
-	return __raw_readl(ag->mac_base + reg);
+	r = ag->mac_base + reg;
+	return __raw_readl(r);
 }
 
 static inline void ag71xx_sb(struct ag71xx *ag, unsigned reg, u32 mask)
