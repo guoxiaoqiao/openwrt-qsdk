@@ -25,7 +25,7 @@ define Profile/QSDK_Main
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp \
 	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
-	  kmod-ipv6 luci-app-qos \
+	  kmod-ipv6 luci-app-qos kmod-art2-4.9-scorpion \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 	  luci-app-ddns ddns-scripts qca-legacy-uboot-ap135 qca-legacy-uboot-db12x \
 	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
