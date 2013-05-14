@@ -184,6 +184,17 @@ hostapd_set_bss_options() {
 	config_get config_methods "$vif" wps_config
 	[ "$wps_pbc" -gt 0 ] && append config_methods push_button
 
+	# WPS 2.0 test case 4.1.7:
+	# if we're configured to enable WPS and we hide our SSID, then
+	# we have to require an "explicit user operation to continue"
+	config_get_bool hidden "$vif" hidden 0
+	[ -n "$wps_possible" -a -n "$config_methods" -a "$hidden" -gt 0 ] && {
+		echo "Hidden SSID is enabled on \"$ifname\", WPS will be automatically disabled"
+		echo "Please press any key to continue."
+		read -s -n 1
+		wps_possible=
+	}
+
 	[ -n "$wps_possible" -a -n "$config_methods" ] && {
 		config_get device_type "$vif" wps_device_type "6-0050F204-1"
 		config_get device_name "$vif" wps_device_name "OpenWrt AP"
