@@ -16,6 +16,8 @@ ifeq ($(DUMP),)
       IPKG_$(1):=$(PACKAGE_DIR)/$$(PKG_$(1))
       INFO_$(1):=$(IPKG_STATE_DIR)/info/$(1).list
 
+      Build/InstallDev:=
+
       ifeq ($(if $(VARIANT),$(BUILD_VARIANT)),$(VARIANT))
         ifdef Package/$(1)/install
           ifneq ($(CONFIG_PACKAGE_$(1))$(SDK)$(DEVELOPER),)
