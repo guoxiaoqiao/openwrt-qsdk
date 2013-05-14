@@ -1,0 +1,30 @@
+diff -uNr a/src/forward.c b/src/forward.c
+--- a/src/forward.c	2012-06-05 04:40:11.000000000 +0800
++++ b/src/forward.c	2013-05-13 16:49:41.009238292 +0800
+@@ -562,7 +562,7 @@
+    
+   server = forward->sentto;
+   
+-  if ((RCODE(header) == SERVFAIL || RCODE(header) == REFUSED) &&
++  if ((RCODE(header) == SERVFAIL || RCODE(header) == REFUSED || RCODE(header) == NOTIMP) &&
+       !option_bool(OPT_ORDER) &&
+       forward->forwardall == 0)
+     /* for broken servers, attempt to send to another one. */
+@@ -589,7 +589,7 @@
+   
+   if ((forward->sentto->flags & SERV_TYPE) == 0)
+     {
+-      if (RCODE(header) == SERVFAIL || RCODE(header) == REFUSED)
++      if (RCODE(header) == SERVFAIL || RCODE(header) == REFUSED || RCODE(header) == NOTIMP)
+ 	server = NULL;
+       else
+ 	{
+@@ -613,7 +613,7 @@
+      had replies from all to avoid filling the forwarding table when
+      everything is broken */
+   if (forward->forwardall == 0 || --forward->forwardall == 1 || 
+-      (RCODE(header) != REFUSED && RCODE(header) != SERVFAIL))
++      (RCODE(header) != REFUSED && RCODE(header) != SERVFAIL && RCODE(header) != NOTIMP))
+     {
+       int check_rebind = !(forward->flags & FREC_NOREBIND);
+ 
