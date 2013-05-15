@@ -22,12 +22,6 @@ mac80211_hostapd_setup_base() {
 
 	[ -n "$channel" -a -z "$hwmode" ] && wifi_fixup_hwmode "$device"
 
-	[ "$channel" = auto ] && {
-		channel=$(iw phy "$phy" info | \
-			sed -ne '/MHz/ { /disabled\|passive\|radar/d; s/.*\[//; s/\].*//; p; q }')
-		config_set "$device" channel "$channel"
-	}
-
 	[ -n "$hwmode" ] && {
 		config_get hwmode_11n "$device" hwmode_11n
 		[ -n "$hwmode_11n" ] && {
@@ -46,6 +40,20 @@ mac80211_hostapd_setup_base() {
 			config_get require_ht "$device" require_ht
 			[ -n "$require_ht" ] && append base_cfg "require_ht=$require_ht" "$N"
 		}
+	}
+
+	[ "$channel" = auto ] && {
+		case "$hwmode" in
+		b|g)
+			channel=$(iw phy "$phy" info | \
+			    sed -ne '/MHz/ { /^.*5.*\|disabled\|passive\|radar/d; s/.*\[//; s/\].*//; p; q }')
+			;;
+		a)
+			channel=$(iw phy "$phy" info | \
+			    sed -ne '/MHz/ { /^.*2.*\|disabled\|passive\|radar/d; s/.*\[//; s/\].*//; p; q }')
+			;;
+		esac
+		config_set "$device" channel "$channel"
 	}
 
 	local country_ie=0
