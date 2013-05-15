@@ -8,6 +8,7 @@ define Profile/QSDK_Open
 	  kmod-ipt-nathelper-extra luci-app-upnp tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
 	  kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat kmod-nls-cp437 kmod-nls-iso8859-1 \
 	  luci-app-ddns ddns-scripts kmod-ipv6 iwinfo luci-app-qos \
+	  quagga quagga-ripd quagga-zebra quagga-watchquagga \
 	  -wpad-mini hostapd hostapd-utils wpa-supplicant wpa-cli
 endef
 
@@ -26,6 +27,7 @@ define Profile/QSDK_Main
 	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
 	  kmod-ipv6 luci-app-qos kmod-art2-4.9-scorpion \
+	  quagga quagga-ripd quagga-zebra quagga-watchquagga \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 	  luci-app-ddns ddns-scripts qca-legacy-uboot-ap135 qca-legacy-uboot-db12x \
 	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
