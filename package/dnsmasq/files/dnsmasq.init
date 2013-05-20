@@ -77,6 +77,16 @@ append_bogusnxdomain() {
        xappend "--bogus-nxdomain=$1"
 }
 
+get_current_domain() {
+	local update_domain=$1
+
+	. /lib/functions/network.sh
+
+	local domain
+	[ -n "${update_domain}" ] && network_get_dnssearch domain "${update_domain}"
+	echo "${domain}"
+}
+
 dnsmasq() {
 	local cfg="$1"
 	append_bool "$cfg" authoritative "--dhcp-authoritative"
@@ -104,8 +114,17 @@ dnsmasq() {
 	append_parm "$cfg" ednspacket_max "--edns-packet-max"
 	append_parm "$cfg" dhcpleasemax "--dhcp-lease-max"
 	append_parm "$cfg" "queryport" "--query-port"
-	append_parm "$cfg" "domain" "--domain"
-	append_parm "$cfg" "local" "--server"
+
+	config_get update_domain "$cfg" update_domain
+	if [ -n "${update_domain}" -a -n "$(get_current_domain ${update_domain})" ]; then
+		domain=$(get_current_domain ${update_domain})
+		xappend "domain=${domain}"
+		xappend "server=/${domain}/"
+	else
+		append_parm "$cfg" "domain" "--domain"
+		append_parm "$cfg" "local" "--server"
+	fi
+
 	config_list_foreach "$cfg" "server" append_server
 	config_list_foreach "$cfg" "address" append_address
 	config_list_foreach "$cfg" "interface" append_interface
