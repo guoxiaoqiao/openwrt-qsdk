@@ -193,6 +193,10 @@ menu "Global build settings"
 
 	comment "Kernel build options"
 
+	config KERNEL_MODVERSIONS
+		bool "Compile the kernel with modversions enabled"
+		default n
+
 	config KERNEL_DEBUG_FS
 		bool "Compile the kernel with Debug FileSystem enabled"
 		default y
