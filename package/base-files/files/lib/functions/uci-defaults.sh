@@ -1,4 +1,5 @@
 #!/bin/sh
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 # Copyright (C) 2011 OpenWrt.org
 
 UCIDEF_LEDS_CHANGED=0

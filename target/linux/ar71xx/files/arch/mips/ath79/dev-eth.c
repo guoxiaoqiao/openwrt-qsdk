@@ -1,6 +1,7 @@
 /*
  *  Atheros AR71xx SoC platform devices
  *
+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
  *  Copyright (C) 2010-2011 Jaiganesh Narayanan <jnarayanan@atheros.com>
  *  Copyright (C) 2008-2012 Gabor Juhos <juhosg@openwrt.org>
  *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>

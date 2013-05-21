@@ -1,7 +1,7 @@
 /*
- *  Atheros AR71xx Audio device support
+ *  Atheros AR71xx Audio driver code
  *
- *  Copyright (C) 2012 Qualcomm-Atheros Inc.
+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License version 2 as published

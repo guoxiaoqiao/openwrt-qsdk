@@ -1,4 +1,5 @@
 #!/bin/sh /etc/rc.common
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 # (C) 2008 openwrt.org
 
 START=96

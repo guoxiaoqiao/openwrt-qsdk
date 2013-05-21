@@ -1,6 +1,25 @@
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -29,6 +29,7 @@
+@@ -1,6 +1,7 @@
+ /*
+  * linux/sound/soc/codecs/tlv320aic32x4.c
+  *
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
+  * Copyright 2011 Vista Silicon S.L.
+  *
+  * Author: Javier Martin <javier.martin@vista-silicon.com>
+@@ -29,6 +30,7 @@
  #include <linux/delay.h>
  #include <linux/pm.h>
  #include <linux/i2c.h>
@@ -8,7 +27,7 @@
  #include <linux/cdev.h>
  #include <linux/slab.h>
  
-@@ -62,6 +63,7 @@ struct aic32x4_priv {
+@@ -62,6 +64,7 @@ struct aic32x4_priv {
  	u32 sysclk;
  	u8 page_no;
  	void *control_data;
@@ -16,7 +35,7 @@
  	u32 power_cfg;
  	u32 micpga_routing;
  	bool swapdacs;
-@@ -120,29 +122,43 @@ static const struct snd_kcontrol_new aic
+@@ -120,29 +123,43 @@ static const struct snd_kcontrol_new aic
  
  static const struct aic32x4_rate_divs aic32x4_divs[] = {
  	/* 8k rate */
@@ -60,7 +79,7 @@
  	{AIC32X4_FREQ_24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4},
  	{AIC32X4_FREQ_25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4}
  };
-@@ -271,11 +287,20 @@ static inline int aic32x4_change_page(st
+@@ -271,11 +288,20 @@ static inline int aic32x4_change_page(st
  	data[1] = new_page & 0xff;
  
  	ret = codec->hw_write(codec->control_data, data, 2);
@@ -85,7 +104,7 @@
  	}
  }
  
-@@ -298,7 +323,10 @@ static int aic32x4_write(struct snd_soc_
+@@ -298,7 +324,10 @@ static int aic32x4_write(struct snd_soc_
  			return ret;
  	}
  
@@ -97,7 +116,7 @@
  	data[1] = val & 0xff;
  
  	if (codec->hw_write(codec->control_data, data, 2) == 2)
-@@ -313,13 +341,24 @@ static unsigned int aic32x4_read(struct
+@@ -313,13 +342,24 @@ static unsigned int aic32x4_read(struct
  	unsigned int page = reg / 128;
  	unsigned int fixed_reg = reg % 128;
  	int ret;
@@ -123,7 +142,7 @@
  }
  
  static inline int aic32x4_get_divs(int mclk, int rate)
-@@ -355,7 +394,9 @@ static int aic32x4_set_dai_sysclk(struct
+@@ -355,7 +395,9 @@ static int aic32x4_set_dai_sysclk(struct
  	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
  
  	switch (freq) {
@@ -133,7 +152,7 @@
  	case AIC32X4_FREQ_24000000:
  	case AIC32X4_FREQ_25000000:
  		aic32x4->sysclk = freq;
-@@ -547,6 +588,7 @@ static int aic32x4_set_bias_level(struct
+@@ -547,6 +589,7 @@ static int aic32x4_set_bias_level(struct
  		/* Switch on BCLK_N Divider */
  		snd_soc_update_bits(codec, AIC32X4_BCLKN,
  				    AIC32X4_BCLKEN, AIC32X4_BCLKEN);
@@ -141,7 +160,7 @@
  		break;
  	case SND_SOC_BIAS_PREPARE:
  		break;
-@@ -628,7 +670,10 @@ static int aic32x4_probe(struct snd_soc_
+@@ -628,7 +671,10 @@ static int aic32x4_probe(struct snd_soc_
  	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
  	u32 tmp_reg;
  
@@ -153,7 +172,7 @@
  	codec->control_data = aic32x4->control_data;
  
  	snd_soc_write(codec, AIC32X4_RESET, 0x01);
-@@ -641,11 +686,9 @@ static int aic32x4_probe(struct snd_soc_
+@@ -641,11 +687,9 @@ static int aic32x4_probe(struct snd_soc_
  	if (aic32x4->power_cfg & AIC32X4_PWR_AVDD_DVDD_WEAK_DISABLE) {
  		snd_soc_write(codec, AIC32X4_PWRCFG, AIC32X4_AVDDWEAKDISABLE);
  	}
@@ -165,7 +184,7 @@
  	tmp_reg = snd_soc_read(codec, AIC32X4_CMMODE);
  	if (aic32x4->power_cfg & AIC32X4_PWR_CMMODE_LDOIN_RANGE_18_36) {
  		tmp_reg |= AIC32X4_LDOIN_18_36;
-@@ -694,6 +737,7 @@ static struct snd_soc_codec_driver soc_c
+@@ -694,6 +738,7 @@ static struct snd_soc_codec_driver soc_c
  	.set_bias_level = aic32x4_set_bias_level,
  };
  
@@ -173,7 +192,7 @@
  static __devinit int aic32x4_i2c_probe(struct i2c_client *i2c,
  				      const struct i2c_device_id *id)
  {
-@@ -707,6 +751,7 @@ static __devinit int aic32x4_i2c_probe(s
+@@ -707,6 +752,7 @@ static __devinit int aic32x4_i2c_probe(s
  		return -ENOMEM;
  
  	aic32x4->control_data = i2c;
@@ -181,7 +200,7 @@
  	i2c_set_clientdata(i2c, aic32x4);
  
  	if (pdata) {
-@@ -745,23 +790,91 @@ static struct i2c_driver aic32x4_i2c_dri
+@@ -745,23 +791,91 @@ static struct i2c_driver aic32x4_i2c_dri
  	.remove =   __devexit_p(aic32x4_i2c_remove),
  	.id_table = aic32x4_i2c_id,
  };
@@ -275,7 +294,16 @@
  
 --- a/sound/soc/codecs/tlv320aic32x4.h
 +++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -85,7 +85,9 @@
+@@ -1,6 +1,8 @@
+ /*
+  * tlv320aic32x4.h
+  *
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+@@ -85,7 +87,9 @@
  #define AIC32X4_LMICPGAVOL	(AIC32X4_PAGE1 + 59)
  #define AIC32X4_RMICPGAVOL	(AIC32X4_PAGE1 + 60)
  

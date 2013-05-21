@@ -1,3 +1,4 @@
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 # allow for local directory containing source to be used
 
 LOCAL_SRC ?= $(TOPDIR)/qca/src/$(PKG_NAME)

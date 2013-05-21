@@ -1,3 +1,4 @@
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 IWINFO_BACKENDS    = $(BACKENDS)
 IWINFO_CFLAGS      = $(CFLAGS) -std=gnu99 -fstrict-aliasing -Iinclude
 

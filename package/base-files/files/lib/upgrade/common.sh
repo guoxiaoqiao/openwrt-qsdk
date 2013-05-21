@@ -1,4 +1,5 @@
 #!/bin/sh
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 
 RAM_ROOT=/tmp/root
 

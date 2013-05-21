@@ -1,3 +1,4 @@
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 # remember the provided package version
 PKG_VERSION_ORGINAL:=$(PKG_VERSION)
 

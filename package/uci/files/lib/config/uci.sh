@@ -1,6 +1,7 @@
 #!/bin/sh
 # Shell script compatibility wrappers for /sbin/uci
 #
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 # Copyright (C) 2008-2010  OpenWrt.org
 # Copyright (C) 2008  Felix Fietkau <nbd@openwrt.org>
 #

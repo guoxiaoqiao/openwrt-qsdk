@@ -1,3 +1,4 @@
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 package metadata;
 use base 'Exporter';
 use strict;

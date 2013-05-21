@@ -1,6 +1,7 @@
 /*
  * AR8216 switch driver platform data
  *
+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
  * Copyright (C) 2012 Gabor Juhos <juhosg@openwrt.org>
  *
  * This program is free software; you can redistribute it and/or

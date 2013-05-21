@@ -1,4 +1,5 @@
 #
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 # Copyright (C) 2010-2012 Jo-Philipp Wich <xm@subsignal.org>
 #
 # This is free software, licensed under the GPL 2 license.

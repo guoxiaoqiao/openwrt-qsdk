@@ -1,6 +1,25 @@
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 --- a/arch/mips/kernel/setup.c
 +++ b/arch/mips/kernel/setup.c
-@@ -35,6 +35,8 @@
+@@ -9,6 +9,7 @@
+  * Copyright (C) 1996 Stoned Elipot
+  * Copyright (C) 1999 Silicon Graphics, Inc.
+  * Copyright (C) 2000, 2001, 2002, 2007  Maciej W. Rozycki
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
+  */
+ #include <linux/init.h>
+ #include <linux/ioport.h>
+@@ -35,6 +36,8 @@
  #include <asm/system.h>
  #include <asm/prom.h>
  
@@ -9,7 +28,7 @@
  struct cpuinfo_mips cpu_data[NR_CPUS] __read_mostly;
  
  EXPORT_SYMBOL(cpu_data);
-@@ -467,6 +469,24 @@ static int __init early_parse_mem(char *
+@@ -467,6 +470,24 @@ static int __init early_parse_mem(char *
  }
  early_param("mem", early_parse_mem);
  
@@ -36,7 +55,7 @@
  	phys_t init_mem, init_end, init_size;
 --- a/arch/mips/ath79/gpio.c
 +++ b/arch/mips/ath79/gpio.c
-@@ -20,9 +20,14 @@
+@@ -21,9 +21,14 @@
  #include <linux/io.h>
  #include <linux/ioport.h>
  #include <linux/gpio.h>
@@ -51,7 +70,7 @@
  #include "common.h"
  
  void __iomem *ath79_gpio_base;
-@@ -31,6 +36,13 @@ EXPORT_SYMBOL_GPL(ath79_gpio_base);
+@@ -32,6 +37,13 @@ EXPORT_SYMBOL_GPL(ath79_gpio_base);
  static unsigned long ath79_gpio_count;
  static DEFINE_SPINLOCK(ath79_gpio_lock);
  
@@ -65,7 +84,7 @@
  static void __ath79_gpio_set_value(unsigned gpio, int value)
  {
  	void __iomem *base = ath79_gpio_base;
-@@ -240,6 +252,137 @@ void __init ath79_gpio_output_select(uns
+@@ -255,6 +267,137 @@ void __init ath79_gpio_output_select(uns
  	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
  }
  
@@ -203,7 +222,7 @@
  void __init ath79_gpio_init(void)
  {
  	int err;
-@@ -266,9 +409,15 @@ void __init ath79_gpio_init(void)
+@@ -281,9 +424,15 @@ void __init ath79_gpio_init(void)
  		ath79_gpio_chip.direction_output = ar934x_gpio_direction_output;
  	}
  
@@ -219,7 +238,7 @@
  }
  
  int gpio_get_value(unsigned gpio)
-@@ -291,14 +440,22 @@ EXPORT_SYMBOL(gpio_set_value);
+@@ -306,14 +455,22 @@ EXPORT_SYMBOL(gpio_set_value);
  
  int gpio_to_irq(unsigned gpio)
  {
@@ -248,7 +267,7 @@
  EXPORT_SYMBOL(irq_to_gpio);
 --- a/arch/mips/ath79/mach-cus227.c
 +++ b/arch/mips/ath79/mach-cus227.c
-@@ -48,6 +48,8 @@
+@@ -22,6 +22,8 @@
  #include <asm/mach-ath79/ar71xx_regs.h>
  #include <asm/mach-ath79/ath79.h>
  
@@ -257,7 +276,7 @@
  #include "common.h"
  #include "dev-ap9x-pci.h"
  #include "dev-audio.h"
-@@ -90,36 +92,11 @@ static struct ath79_caldata_fixup cus227
+@@ -69,36 +71,11 @@ static struct ath79_caldata_fixup cus227
  	.mac_addr = { FIXUP_UNDEFINED, CUS227_MAC0_OFFSET },
  };
  
@@ -298,8 +317,8 @@
 +	{},
  };
  
- /* Because CUS227 doesn't have a NOR flash on the SPI bus, we cannot
-@@ -202,11 +179,8 @@ static void __init cus227_register_spi_d
+ /* There is no H/W I2C controller in ATH79 SoCs, so use GPIO based S/W I2C master */
+@@ -207,11 +184,8 @@ static void __init cus227_register_spi_d
  
  static void __init cus227_setup(void)
  {
@@ -313,7 +332,7 @@
  	ath79_register_usb();
  
  	ath79_register_nand();
-@@ -226,6 +200,7 @@ static void __init cus227_setup(void)
+@@ -235,6 +209,7 @@ static void __init cus227_setup(void)
  	/* Audio initialization: PCM/I2S and CODEC */
  	cus227_audio_setup();
  	ath79_audio_device_register();
@@ -323,7 +342,13 @@
  	     cus227_setup);
 --- a/arch/mips/include/asm/mach-ath79/irq.h
 +++ b/arch/mips/include/asm/mach-ath79/irq.h
-@@ -10,7 +10,7 @@
+@@ -1,4 +1,5 @@
+ /*
++ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
+  *  Copyright (C) 2008-2010 Gabor Juhos <juhosg@openwrt.org>
+  *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
+  *
+@@ -10,7 +11,7 @@
  #define __ASM_MACH_ATH79_IRQ_H
  
  #define MIPS_CPU_IRQ_BASE	0
@@ -332,7 +357,7 @@
  
  #define ATH79_MISC_IRQ_BASE	8
  #define ATH79_MISC_IRQ_COUNT	32
-@@ -27,6 +27,10 @@
+@@ -28,6 +29,10 @@
  #define ATH79_IP3_IRQ_COUNT     3
  #define ATH79_IP3_IRQ(_x)       (ATH79_IP3_IRQ_BASE + (_x))
  
@@ -345,11 +370,11 @@
  #define ATH79_CPU_IRQ_USB	ATH79_CPU_IRQ_IP3
 --- a/arch/mips/ath79/Kconfig
 +++ b/arch/mips/ath79/Kconfig
-@@ -138,6 +138,7 @@ config ATH79_MACH_CUS227
- 	select ATH79_DEV_NAND
+@@ -117,6 +117,7 @@ config ATH79_MACH_AP81
+ 	select ATH79_DEV_M25P80
  	select ATH79_DEV_USB
  	select ATH79_DEV_WMAC
 +	select USE_OF
  	help
  	  Say 'Y' here if you want your kernel to support the
- 	  Qualcomm Atheros CUS227 board.
+ 	  Atheros AP81 reference board.

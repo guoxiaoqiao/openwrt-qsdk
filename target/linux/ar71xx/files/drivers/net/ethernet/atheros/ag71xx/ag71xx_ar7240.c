@@ -1,5 +1,6 @@
 /*
  *  Driver for the built-in ethernet switch of the Atheros AR7240 SoC
+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
  *  Copyright (c) 2010 Gabor Juhos <juhosg@openwrt.org>
  *  Copyright (c) 2010 Felix Fietkau <nbd@openwrt.org>
  *

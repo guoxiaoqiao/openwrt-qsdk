@@ -1,3 +1,4 @@
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 USE_REFRESH=
 
 # make sure we got the tools we need during the fw upgrade process

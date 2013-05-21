@@ -1,8 +1,8 @@
 /*
  * iwinfo - Wireless Information Library - QCAWifi Headers
  *
+ *   Copyright (c) 2013 Qualcomm Atheros, Inc.
  *   Copyright (C) 2009 Jo-Philipp Wich <xm@subsignal.org>
- *   Copyright (C) 2012 Mathieu Olivari < mathieu@qca.qualcomm.com>
  *
  * The iwinfo library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -15,6 +15,8 @@
  *
  * You should have received a copy of the GNU General Public License along
  * with the iwinfo library. If not, see http://www.gnu.org/licenses/.
+ *
+ * This file is based on: src/include/iwinfo/madwifi.h
  */
 
 #ifndef __IWINFO_QCAWIFI_H_

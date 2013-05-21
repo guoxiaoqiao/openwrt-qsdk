@@ -1,8 +1,8 @@
 /*
  * iwinfo - Wireless Information Library - QCAWifi Backend
  *
+ *   Copyright (c) 2013 Qualcomm Atheros, Inc.
  *   Copyright (C) 2009-2010 Jo-Philipp Wich <xm@subsignal.org>
- *   Copyright (C) 2012 Mathieu Olivari < mathieu@qca.qualcomm.com>
  *
  * The iwinfo library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU General Public License along
  * with the iwinfo library. If not, see http://www.gnu.org/licenses/.
  *
- * The signal handling code is derived from the official madwifi tools,
- * wlanconfig.c in particular. The encryption property handling was
- * inspired by the hostapd madwifi driver.
+ * This file is based on: src/iwinfo_madwifi.c
  */
 
 #include "iwinfo/qcawifi.h"

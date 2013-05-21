@@ -1,8 +1,5 @@
 #
-# Copyright (C) 2012 Qualcomm Atheros
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 #
 
 include $(TOPDIR)/rules.mk

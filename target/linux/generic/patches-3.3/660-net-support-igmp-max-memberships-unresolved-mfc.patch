@@ -1,7 +1,25 @@
-diff -uNr a/net/ipv4/ipmr.c b/net/ipv4/ipmr.c
---- a/net/ipv4/ipmr.c	2012-06-01 15:16:13.000000000 +0800
-+++ b/net/ipv4/ipmr.c	2013-04-28 10:52:05.000000000 +0800
-@@ -982,7 +982,7 @@
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+--- a/net/ipv4/ipmr.c
++++ b/net/ipv4/ipmr.c
+@@ -2,6 +2,7 @@
+  *	IP multicast routing support for mrouted 3.6/3.8
+  *
+  *		(c) 1995 Alan Cox, <alan@lxorguk.ukuu.org.uk>
++ *              Copyright (c) 2013 Qualcomm Atheros, Inc.
+  *	  Linux Consultancy and Custom Driver Development
+  *
+  *	This program is free software; you can redistribute it and/or
+@@ -982,7 +983,7 @@ ipmr_cache_unresolved(struct mr_table *m
  	if (!found) {
  		/* Create a new entry if allowable */
  

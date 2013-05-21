@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
+ */
 #ifndef __IWINFO_H_
 #define __IWINFO_H_
 

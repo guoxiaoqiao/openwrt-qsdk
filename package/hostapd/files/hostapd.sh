@@ -1,3 +1,4 @@
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 hostapd_set_bss_options() {
 	local var="$1"
 	local vif="$2"

@@ -1,3 +1,4 @@
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 include $(TOPDIR)/include/verbose.mk
 TMP_DIR:=$(TOPDIR)/tmp
 

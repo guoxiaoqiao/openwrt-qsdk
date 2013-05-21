@@ -16,11 +16,26 @@ today.
  net/sched/sch_hfsc.c |   82 ++++++++++++++++++++++++++++++++++++--------------
  1 file changed, 60 insertions(+), 22 deletions(-)
 
-diff --git a/net/sched/sch_hfsc.c b/net/sched/sch_hfsc.c
-index 9facea0..b524325 100644
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 --- a/net/sched/sch_hfsc.c
 +++ b/net/sched/sch_hfsc.c
-@@ -975,6 +975,7 @@ hfsc_change_class(struct Qdisc *sch, u32 classid, u32 parentid,
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
+  * Copyright (c) 2003 Patrick McHardy, <kaber@trash.net>
+  *
+  * This program is free software; you can redistribute it and/or
+@@ -975,6 +976,7 @@ hfsc_change_class(struct Qdisc *sch, u32
  	struct nlattr *opt = tca[TCA_OPTIONS];
  	struct nlattr *tb[TCA_HFSC_MAX + 1];
  	struct tc_service_curve *rsc = NULL, *fsc = NULL, *usc = NULL;
@@ -28,7 +43,7 @@ index 9facea0..b524325 100644
  	u64 cur_time;
  	int err;
  
-@@ -985,23 +986,14 @@ hfsc_change_class(struct Qdisc *sch, u32 classid, u32 parentid,
+@@ -985,23 +987,14 @@ hfsc_change_class(struct Qdisc *sch, u32
  	if (err < 0)
  		return err;
  
@@ -55,7 +70,7 @@ index 9facea0..b524325 100644
  
  	if (cl != NULL) {
  		if (parentid) {
-@@ -1022,24 +1014,70 @@ hfsc_change_class(struct Qdisc *sch, u32 classid, u32 parentid,
+@@ -1022,24 +1015,70 @@ hfsc_change_class(struct Qdisc *sch, u32
  		}
  
  		sch_tree_lock(sch);
@@ -136,6 +151,3 @@ index 9facea0..b524325 100644
  	if (parentid == TC_H_ROOT)
  		return -EEXIST;
  
--- 
-1.7.9.5
-

@@ -1,6 +1,7 @@
 /*
  * iwinfo - Wireless Information Library - Lua Bindings
  *
+ *   Copyright (c) 2013 Qualcomm Atheros, Inc.
  *   Copyright (C) 2009 Jo-Philipp Wich <xm@subsignal.org>
  *
  * The iwinfo library is free software: you can redistribute it and/or

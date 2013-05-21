@@ -1,6 +1,17 @@
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 --- a/arch/mips/ath79/Kconfig
 +++ b/arch/mips/ath79/Kconfig
-@@ -61,6 +61,18 @@ config ATH79_MACH_AP121
+@@ -71,6 +71,18 @@ config ATH79_MACH_AP121
  	  Say 'Y' here if you want your kernel to support the
  	  Atheros AP121 reference board.
  
@@ -19,7 +30,7 @@
  config ATH79_MACH_AP136
  	bool "Atheros AP136 reference board"
  	select SOC_QCA955X
-@@ -104,6 +116,19 @@ config ATH79_MACH_AP96
+@@ -114,6 +126,19 @@ config ATH79_MACH_AP96
  	select ATH79_DEV_M25P80
  	select ATH79_DEV_USB
  
@@ -39,7 +50,7 @@
  config ATH79_MACH_DB120
  	bool "Atheros DB120 reference board"
  	select SOC_AR934X
-@@ -118,6 +143,21 @@ config ATH79_MACH_DB120
+@@ -129,6 +154,21 @@ config ATH79_MACH_DB120
  	  Say 'Y' here if you want your kernel to support the
  	  Atheros DB120 reference board.
  
@@ -63,8 +74,8 @@
  	select SOC_AR71XX
 --- a/arch/mips/ath79/Makefile
 +++ b/arch/mips/ath79/Makefile
-@@ -43,12 +43,15 @@ obj-$(CONFIG_ATH79_MACH_ALFA_NX)	+= mach
- obj-$(CONFIG_ATH79_MACH_ALL0258N)	+= mach-all0258n.o
+@@ -47,12 +47,15 @@ obj-$(CONFIG_ATH79_MACH_ALL0258N)	+= mac
+ obj-$(CONFIG_ATH79_MACH_ALL0315N)	+= mach-all0315n.o
  obj-$(CONFIG_ATH79_MACH_AP113)		+= mach-ap113.o
  obj-$(CONFIG_ATH79_MACH_AP121)		+= mach-ap121.o
 +obj-$(CONFIG_ATH79_MACH_AP135)		+= mach-ap135.o
@@ -81,7 +92,15 @@
  obj-$(CONFIG_ATH79_MACH_DIR_825_B1)	+= mach-dir-825-b1.o
 --- a/arch/mips/ath79/machtypes.h
 +++ b/arch/mips/ath79/machtypes.h
-@@ -22,12 +22,15 @@ enum ath79_mach_type {
+@@ -1,6 +1,7 @@
+ /*
+  *  Atheros AR71XX/AR724X/AR913X machine type definitions
+  *
++ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
+  *  Copyright (C) 2008-2010 Gabor Juhos <juhosg@openwrt.org>
+  *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
+  *
+@@ -24,12 +25,15 @@ enum ath79_mach_type {
  	ATH79_MACH_AP113,		/* Atheros AP113 reference board */
  	ATH79_MACH_AP121,		/* Atheros AP121 reference board */
  	ATH79_MACH_AP121_MINI,		/* Atheros AP121-MINI reference board */

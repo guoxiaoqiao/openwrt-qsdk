@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (C) 2012 Qualcomm-Atheros
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 #
 
 button_add_uci_config() {

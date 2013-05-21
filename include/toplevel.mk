@@ -1,5 +1,6 @@
 # Makefile for OpenWrt
 #
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 # Copyright (C) 2007-2011 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
