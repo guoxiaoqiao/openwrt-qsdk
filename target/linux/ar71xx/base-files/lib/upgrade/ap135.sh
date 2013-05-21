@@ -1,4 +1,3 @@
-# Copyright (c) 2013 Qualcomm Atheros, Inc.
 # copied from allnet.sh
 
 # make sure we got uboot-envtools and fw_env.config copied over to the ramfs

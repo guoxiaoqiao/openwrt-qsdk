@@ -1,5 +1,4 @@
 #!/usr/bin/env perl
-# Copyright (c) 2013 Qualcomm Atheros, Inc.
 use FindBin;
 use lib "$FindBin::Bin";
 use strict;

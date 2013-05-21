@@ -1,4 +1,3 @@
-# Copyright (c) 2013 Qualcomm Atheros, Inc.
 . /etc/functions.sh
 do_button () {
 	local button
