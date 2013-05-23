@@ -12,7 +12,7 @@ KERNELNAME:="uImage"
 
 # Kernel clone path and local repository reference can be done through menu config, else we we
 # can hardcode it as below, this is just for a reference
-CONFIG_KERNEL_GIT_CLONE_URI:="ssh://$(USER)@qca-git01.qualcomm.com:29418/kernel/linux-nbu"
+CONFIG_EXTERNAL_KERNEL_TREE=$(TOPDIR)/qca/src/linux
 
 CFLAGS:=-Os -pipe -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp
 
