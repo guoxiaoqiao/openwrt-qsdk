@@ -53,6 +53,9 @@ get_status_led() {
 	ap96)
 		status_led="ap96:green:led2"
 		;;
+	aph131)
+		status_led="aph131:green:status"
+		;;
 	aw-nr580)
 		status_led="aw-nr580:green:ready"
 		;;
@@ -113,6 +116,9 @@ get_status_led() {
        rb-750)
                status_led="rb750:green:act"
                ;;
+	reh132)
+		status_led="reh132:green:status"
+		;;
 	routerstation | routerstation-pro)
 		status_led="ubnt:green:rf"
 		;;

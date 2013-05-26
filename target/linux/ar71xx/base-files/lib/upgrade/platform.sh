@@ -92,9 +92,11 @@ platform_check_image() {
 	ap135-dual | \
 	ap136 | \
 	ap96 | \
+	aph131 |\
 	db120 | \
 	db120tb388 | \
 	hornet-ub | \
+	reh132 |\
 	zcn-1523h-2 | \
 	zcn-1523h-5)
 		[ "$magic_long" != "68737173" -a "$magic_long" != "19852003" ] && {

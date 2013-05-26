@@ -193,6 +193,9 @@ ar71xx_board_detect() {
 	*"Atheros AP96")
 		name="ap96"
 		;;
+	*"APH131 reference board")
+		name="aph131"
+		;;
 	*AW-NR580)
 		name="aw-nr580"
 		;;
@@ -270,6 +273,9 @@ ar71xx_board_detect() {
 		;;
 	*PB92)
 		name="pb92"
+		;;
+	*"REH132 reference board")
+		name="reh132"
 		;;
 	*"RouterBOARD 411/A/AH")
 		name="rb-411"

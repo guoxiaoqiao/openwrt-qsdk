@@ -180,6 +180,11 @@ wp543)
 	ucidef_set_interface_lan "eth0"
 	;;
 
+aph131 |\
+reh132)
+	ucidef_set_interfaces_lan_wan "eth0" "eth1"
+	;;
+
 alfa-ap96 |\
 alfa-nx |\
 ap83 |\
