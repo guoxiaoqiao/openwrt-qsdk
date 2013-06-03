@@ -242,7 +242,7 @@ endif
     $(Dumpinfo/Package), \
     $(foreach target, \
       $(if $(Package/$(1)/targets),$(Package/$(1)/targets), \
-        $(if $(PKG_TARGETS),$(PKG_TARGETS), ipkg) \
+        $(if $(PKG_TARGETS),$(PKG_TARGETS), ipkg-prebuilt) \
       ), $(BuildTarget/$(target)) \
     ) \
   )
