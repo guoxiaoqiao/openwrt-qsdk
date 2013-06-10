@@ -19,7 +19,8 @@ define Image/BuildKernel
 		-n 'uImage boot cmd' \
 		-d ../files/boot.cmd $(BIN_DIR)/boot.scr
 
-	$(CP) $(KDIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-$(KERNEL)-Image
+	$(CP) $(LINUX_DIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
+	$(CP) $(LINUX_DIR)/arch/arm/boot/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
 endef
 
 define Image/Build
