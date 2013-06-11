@@ -991,9 +991,17 @@ define Image/Build/Profile/CUS227
 endef
 SINGLE_PROFILES += CUS227
 
-define Image/Build/Profile/QSDK_Main
+define Image/Build/Profile/QSDK_Retail
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP135DUAL,$(1))
+endef
+
+define Image/Build/Profile/QSDK_Carrier
+	$(Image/Build/Profile/QSDK_Retail)
+endef
+
+define Image/Build/Profile/QSDK_Enterprise
+	$(Image/Build/Profile/QSDK_Retail)
 endef
 
 define Image/Build/Profile/QSDK_Open

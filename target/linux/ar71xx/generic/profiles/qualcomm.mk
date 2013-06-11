@@ -21,8 +21,8 @@ define Profile/QSDK_Open/Description
 endef
 $(eval $(call Profile,QSDK_Open))
 
-define Profile/QSDK_Main
-	NAME:=Qualcomm-Atheros SDK Main Profile
+define Profile/QSDK_Retail
+	NAME:=Qualcomm-Atheros SDK Retail Profile
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp \
 	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
@@ -33,14 +33,39 @@ define Profile/QSDK_Main
 	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
 endef
 
-define Profile/QSDK_Main/Description
-	QSDK Main package set configuration.
+define Profile/QSDK_Retail/Description
+	QSDK Retail package set configuration.
 	This profile provides basic Wi-Fi router features using the QCA proprietary Wi-Fi driver. It supports:
 	-Bridging and routing networking
 	-LuCI web configuration interface
 	-Integrated 11abgn/ac support using the proprietary qca-wifi driver
 endef
-$(eval $(call Profile,QSDK_Main))
+$(eval $(call Profile,QSDK_Retail))
+
+define Profile/QSDK_Carrier
+	# based on retail profile
+	$(Profile/QSDK_Retail)
+	NAME:=Qualcomm-Atheros SDK Carrier Profile
+	PACKAGES+=
+endef
+
+define Profile/QSDK_Carrier/Description
+	QSDK Enterprise package set configuration.
+endef
+$(eval $(call Profile,QSDK_Carrier))
+
+define Profile/QSDK_Enterprise
+	# based on carrier profile
+	$(Profile/QSDK_Carrier)
+	NAME:=Qualcomm-Atheros SDK Enterprise Profile
+	PACKAGES+=kmod-ipsec kmod-ipsec4 kmod-ipsec6 ipsec-tools
+endef
+
+define Profile/QSDK_Enterprise/Description
+	QSDK Enterprise package set configuration.
+endef
+$(eval $(call Profile,QSDK_Enterprise))
+
 
 define Profile/Skifta/Default
 	PACKAGES:=-dropbear -firewall -ppp -wpad-mini alsa -luci-theme-openwrt \
