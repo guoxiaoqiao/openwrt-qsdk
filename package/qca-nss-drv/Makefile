@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2013 Qualcomm Atheros, Inc..
+#
+
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
