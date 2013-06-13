@@ -9,18 +9,17 @@ PKG_NAME:=qca-nss-drv
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=ssh://qca-git01.qualcomm.com:29418/lklm/nss-drv
 PKG_BRANCH:=master
+PKG_RELEASE:=1
 
 include $(INCLUDE_DIR)/local-development.mk
-include $(INCLUDE_DIR)/package.mk
-
 ifeq ($(DUMP)$(PKG_VERSION),)
   PKG_VERSION:=$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
 endif
-PKG_RELEASE:=1
-
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_VERSION)
+
+include $(INCLUDE_DIR)/package.mk
 
 define KernelPackage/qca-nss-drv
   SECTION:=kernel
