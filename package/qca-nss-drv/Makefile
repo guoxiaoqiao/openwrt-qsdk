@@ -13,12 +13,14 @@ PKG_BRANCH:=master
 include $(INCLUDE_DIR)/local-development.mk
 include $(INCLUDE_DIR)/package.mk
 
-PKG_VERSION?=g$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
+ifeq ($(DUMP)$(PKG_VERSION),)
+  PKG_VERSION:=$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
+endif
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=$(PKG_REV)
+PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
 define KernelPackage/qca-nss-drv
   SECTION:=kernel
