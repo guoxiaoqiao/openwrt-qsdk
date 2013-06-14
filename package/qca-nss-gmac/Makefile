@@ -25,7 +25,7 @@ define KernelPackage/qca-nss-gmac
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
-  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv
+  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +kmod-libphy
   TITLE:=Kernel driver for NSS gmac
   FILES:=$(PKG_BUILD_DIR)/ipq806x/qca-nss-gmac.ko
 endef
