@@ -7,7 +7,7 @@ BOARD:=ipq806x
 BOARDNAME:=QCA IPQ806X
 FEATURES:=ext4 jffs2 targz squashfs
 
-LINUX_VERSION:=3.4
+LINUX_VERSION:=3.4.0
 KERNELNAME:="uImage"
 
 # Kernel clone path and local repository reference can be done through menu config, else we we
