@@ -27,21 +27,29 @@ define KernelPackage/qca-nss-crypto
   SUBMENU:=Network Devices
   DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv
   TITLE:=Kernel driver for NSS crypto
-  FILES:=$(PKG_BUILD_DIR)/ipq806x/qca-nss-crypto.ko qca-nss-crypto-tool.ko
+  FILES:=$(PKG_BUILD_DIR)/src/qca-nss-crypto.ko \
+	$(PKG_BUILD_DIR)/tool/qca-nss-crypto-tool.ko
 endef
 
 define KernelPackage/qca-nss-crypto/Description
 This package contains a NSS crypto driver for QCA chipset
 endef
 
+define Build/InstallDev
+	mkdir -p $(1)/usr/include/qca-nss-crypto
+	$(CP) $(PKG_BUILD_DIR)/include/nss_crypto_if.h $(1)/usr/include/qca-nss-crypto/
+endef
+
 EXTRA_CFLAGS+= \
 	-DCONFIG_NSS_DEBUG_LEVEL=4 \
+	-I$(STAGING_DIR)/usr/include/qca-nss-crypto \
 	-I$(STAGING_DIR)/usr/include/qca-nss-drv \
-	-I$(PKG_BUILD_DIR)/nss_hal/include \
-	-I$(PKG_BUILD_DIR)/nss_hal/$(BOARD)
+	-I$(PKG_BUILD_DIR)/include \
+	-I$(PKG_BUILD_DIR)/src
 
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
+		CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
 		ARCH="$(LINUX_KARCH)" \
 		SUBDIRS="$(PKG_BUILD_DIR)" \
