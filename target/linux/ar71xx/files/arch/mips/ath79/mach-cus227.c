@@ -116,8 +116,6 @@ static struct spi_board_info cus227_spi_info[] = {
 	}
 };
 
-static struct ath79_spi_platform_data ath79_spi_data;
-
 
 static void __init cus227_audio_setup(void)
 {

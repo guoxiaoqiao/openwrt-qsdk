@@ -40,7 +40,7 @@ static struct resource ath79_mdio0_resources[] = {
 	}
 };
 
-static struct ag71xx_mdio_platform_data ath79_mdio0_data;
+struct ag71xx_mdio_platform_data ath79_mdio0_data;
 
 struct platform_device ath79_mdio0_device = {
 	.name		= "ag71xx-mdio",
@@ -61,7 +61,7 @@ static struct resource ath79_mdio1_resources[] = {
 	}
 };
 
-static struct ag71xx_mdio_platform_data ath79_mdio1_data;
+struct ag71xx_mdio_platform_data ath79_mdio1_data;
 
 struct platform_device ath79_mdio1_device = {
 	.name		= "ag71xx-mdio",
@@ -173,7 +173,7 @@ static unsigned long ar934x_get_mdio_ref_clock(void)
 	return ret;
 }
 
-void __init ath79_register_mdio(unsigned int id, u32 phy_mask)
+void ath79_init_mdio_pdata(unsigned int id, u32 phy_mask)
 {
 	struct platform_device *mdio_dev;
 	struct ag71xx_mdio_platform_data *mdio_data;
@@ -258,8 +258,12 @@ void __init ath79_register_mdio(unsigned int id, u32 phy_mask)
 	default:
 		break;
 	}
+}
 
-	platform_device_register(mdio_dev);
+void __init ath79_register_mdio(unsigned int id, u32 phy_mask)
+{
+	ath79_init_mdio_pdata(id, phy_mask);
+	platform_device_register(id ? &ath79_mdio1_device : &ath79_mdio0_device);
 }
 
 struct ath79_eth_pll_data ath79_eth0_pll_data;
@@ -737,7 +741,7 @@ void __init ath79_setup_ar934x_eth_cfg(u32 mask)
 }
 
 static int ath79_eth_instance __initdata;
-void __init ath79_register_eth(unsigned int id)
+void ath79_init_eth_pdata(unsigned int id)
 {
 	struct platform_device *pdev;
 	struct ag71xx_platform_data *pdata;
@@ -991,8 +995,13 @@ void __init ath79_register_eth(unsigned int id)
 	ath79_device_reset_clear(pdata->reset_bit);
 	mdelay(100);
 
-	platform_device_register(pdev);
 	ath79_eth_instance++;
+}
+
+void __init ath79_register_eth(unsigned int id)
+{
+	ath79_init_eth_pdata(id);
+	platform_device_register(id ? &ath79_eth1_device : &ath79_eth0_device);
 }
 
 void __init ath79_set_mac_base(unsigned char *mac)

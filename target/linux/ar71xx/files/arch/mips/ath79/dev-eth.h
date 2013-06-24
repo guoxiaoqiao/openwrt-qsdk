@@ -36,12 +36,16 @@ extern struct ag71xx_platform_data ath79_eth1_data;
 extern struct platform_device ath79_eth0_device;
 extern struct platform_device ath79_eth1_device;
 void ath79_register_eth(unsigned int id);
+void ath79_init_eth_pdata(unsigned int id);
 
 extern struct ag71xx_switch_platform_data ath79_switch_data;
 
 extern struct platform_device ath79_mdio0_device;
 extern struct platform_device ath79_mdio1_device;
+extern struct ag71xx_mdio_platform_data ath79_mdio0_data;
+extern struct ag71xx_mdio_platform_data ath79_mdio1_data;
 void ath79_register_mdio(unsigned int id, u32 phy_mask);
+void ath79_init_mdio_pdata(unsigned int id, u32 phy_mask);
 
 void ath79_setup_ar933x_phy4_switch(bool mac, bool mdio);
 void ath79_setup_ar934x_eth_cfg(u32 mask);

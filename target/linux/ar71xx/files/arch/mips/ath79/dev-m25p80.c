@@ -45,14 +45,19 @@ static struct spi_board_info ath79_spi_info[] = {
 	}
 };
 
-static struct ath79_spi_platform_data ath79_spi_data;
+struct ath79_spi_platform_data ath79_spi_data;
 
-void __init ath79_register_m25p80(struct flash_platform_data *pdata)
+void ath79_init_m25p80_pdata(struct flash_platform_data *pdata)
 {
 	ath79_spi_data.bus_num = 0;
 	ath79_spi_data.num_chipselect = 1;
 	ath79_spi0_cdata.is_flash = true;
 	ath79_spi_info[0].platform_data = pdata;
+}
+
+void __init ath79_register_m25p80(struct flash_platform_data *pdata)
+{
+	ath79_init_m25p80_pdata(pdata);
 	ath79_register_spi(&ath79_spi_data, ath79_spi_info, 1);
 }
 
