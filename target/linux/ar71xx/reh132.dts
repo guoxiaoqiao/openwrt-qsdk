@@ -1,0 +1,129 @@
+/*
+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
+ */
+
+/dts-v1/;
+
+/ {
+	model = "Qualcomm Atheros REH132";
+	compatible = "ath79,reh132";
+	#address-cells = <1>;
+	#size-cells = <1>;
+	interrupt-parent = <&vic>;
+
+	gpios: ath79-gpio {
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+
+	ahb {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		vic: intc {
+			compatible = "interrupt-controller";
+			interrupt-controller;
+			#interrupt-cells = <1>;
+		};
+
+		spi@1f000000 {
+			compatible = "qcom,reh132-spi";	 /* master */
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x1f000000 0x01000000>;
+
+			flash: m25p80@0 {
+				compatible = "st,m25p80";	/* modalias */
+				spi-max-frequency = <25000000>; /* max_speed_hz */
+				reg = <0>;			/* chip_select */
+				spi-controller-data = <1 0 0>;  /* is_flash cs_type cs_line */
+			};
+		};
+
+		wmac@18100000 {
+			compatible = "qcom,reh132-wmac";
+			reg = <0x18100000 0x20000>;
+			interrupts = <47>;
+			interrupt-parent = <&vic>;
+		};
+
+		MDIO: mdio@1a000000 {
+			compatible = "qcom,reh132-mdio";
+			reg = <0x1a000000 0x200>;
+			reg-names = "mdio_base";
+		};
+
+		ETH0: ethernet@19000000 {
+			compatible = "qcom,ag71xx-eth";
+			reg = <0x19000000 0x200>;
+			reg-names = "mac_base";
+			interrupts = <4>;
+			interrupt-names = "mac_irq";
+			interrupt-parent = <&vic>;
+			mdio-handle = <&MDIO>;
+		};
+
+		ETH1: ethernet@1a000000 {
+			compatible = "qcom,ag71xx-eth";
+			reg = <0x1a000000 0x200>;
+			reg-names = "mac_base";
+			interrupts = <5>;
+			interrupt-names = "mac_irq";
+			interrupt-parent = <&vic>;
+			mdio-handle = <&MDIO>;
+		};
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		wps {
+			label = "wps";
+			gpios = <&gpios 16 1>;
+			linux,code = <529>;
+			debounce-interval = <60>;
+		};
+	};
+
+	gpio-leds {
+		compatible = "gpio-leds";
+
+		status {
+			label = "reh132:green:status";
+			gpios = <&gpios 14 1>;
+			linux,default-trigger = "timer";
+		};
+
+		wps {
+			label = "reh132:green:wps";
+			gpios = <&gpios 15 1>;
+			linux,default-trigger = "timer";
+		};
+
+		wlan5g {
+			label = "reh132:green:wlan5g";
+			gpios = <&gpios 12 1>;
+			linux,default-trigger = "timer";
+		};
+
+		wlan2g {
+			label = "reh132:green:wlan2g";
+			gpios = <&gpios 13 1>;
+			linux,default-trigger = "timer";
+		};
+	};
+
+	system-info {
+		plc-chip-type = "QCA7420";
+		plc-with-flash = "1";
+		virtual-hyfi-enable = "0";
+	};
+};
