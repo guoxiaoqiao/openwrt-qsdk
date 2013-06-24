@@ -13,6 +13,10 @@
  */
 
 #include "ag71xx.h"
+#ifdef CONFIG_OF
+#include <linux/of.h>
+#include <linux/of_platform.h>
+#endif
 
 #define AG71XX_DEFAULT_MSG_ENABLE	\
 	(NETIF_MSG_DRV			\
@@ -1152,6 +1156,43 @@ static const struct net_device_ops ag71xx_netdev_ops = {
 #endif
 };
 
+#ifdef CONFIG_OF
+static int ag71xx_of_mii_bus_dev_set(struct platform_device *pdev,
+		struct ag71xx_platform_data *pdata)
+{
+	const phandle *ph;
+	struct device_node *mdio;
+	struct platform_device *pdev_mdio;
+
+	if (!pdev->dev.of_node)
+		return -EINVAL;
+
+	ph = of_get_property(pdev->dev.of_node, "mdio-handle", NULL);
+	if (!ph) {
+		dev_err(&pdev->dev, "No mdio-handle in dtb\n");
+		return -EINVAL;
+	}
+
+	mdio = of_find_node_by_phandle(*ph);
+	if (!mdio) {
+		dev_err(&pdev->dev, "No mdio device found by phandle\n");
+		return -EINVAL;
+	}
+
+	pdev_mdio = of_find_device_by_node(mdio);
+	pdata->mii_bus_dev = &pdev_mdio->dev;
+	of_node_put(mdio);
+
+	return 0;
+}
+#else
+static int ag71xx_of_mii_bus_dev_set(struct platform_device *pdev,
+		struct ag71xx_platform_data *pdata)
+{
+	return -EINVAL;
+}
+#endif
+
 static int __devinit ag71xx_probe(struct platform_device *pdev)
 {
 	struct net_device *dev;
@@ -1168,7 +1209,8 @@ static int __devinit ag71xx_probe(struct platform_device *pdev)
 		goto err_out;
 	}
 
-	if (pdata->mii_bus_dev == NULL) {
+	if (pdata->mii_bus_dev == NULL &&
+			ag71xx_of_mii_bus_dev_set(pdev, pdata)) {
 		dev_err(&pdev->dev, "no MII bus device specified\n");
 		err = -EINVAL;
 		goto err_out;
@@ -1307,11 +1349,21 @@ static int __devexit ag71xx_remove(struct platform_device *pdev)
 	return 0;
 }
 
+#ifdef CONFIG_OF
+static const struct of_device_id ag71xx_of_match_table[] = {
+	{.compatible = "qcom,ag71xx-eth"},
+	{}
+};
+#else
+#define ag71xx_of_match_table NULL
+#endif
+
 static struct platform_driver ag71xx_driver = {
 	.probe		= ag71xx_probe,
 	.remove		= __exit_p(ag71xx_remove),
 	.driver = {
 		.name	= AG71XX_DRV_NAME,
+		.of_match_table = ag71xx_of_match_table,
 	}
 };
 
