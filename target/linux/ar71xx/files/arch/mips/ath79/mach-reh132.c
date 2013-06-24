@@ -23,8 +23,10 @@
 #include <linux/platform_device.h>
 #include <linux/ath9k_platform.h>
 #include <linux/ar8216_platform.h>
+#include <linux/of_platform.h>
 
 #include <asm/mach-ath79/ar71xx_regs.h>
+#include <asm/mach-ath79/ath79.h>
 
 #include "common.h"
 #include "dev-ap9x-pci.h"
@@ -37,128 +39,56 @@
 #include "dev-wmac.h"
 #include "machtypes.h"
 
-#define REH132_GPIO_LED_USB		11
-#define REH132_GPIO_LED_WLAN_5G		12
-#define REH132_GPIO_LED_WLAN_2G		13
-#define REH132_GPIO_LED_STATUS		14
-#define REH132_GPIO_LED_WPS		15
-
-#define REH132_GPIO_BTN_WPS		16
-
-#define REH132_KEYS_POLL_INTERVAL	20	/* msecs */
-#define REH132_KEYS_DEBOUNCE_INTERVAL	(3 * REH132_KEYS_POLL_INTERVAL)
-
 #define REH132_MAC0_OFFSET		0
 #define REH132_MAC1_OFFSET		6
 #define REH132_WMAC_CALDATA_OFFSET	0x1000
-#define REH132_PCIE_CALDATA_OFFSET	0x5000
 
-static struct gpio_led reh132_leds_gpio[] __initdata = {
-	{
-		.name		= "reh132:green:status",
-		.gpio		= REH132_GPIO_LED_STATUS,
-		.active_low	= 1,
-	},
-	{
-		.name		= "reh132:green:wps",
-		.gpio		= REH132_GPIO_LED_WPS,
-		.active_low	= 1,
-	},
-	{
-		.name		= "reh132:green:wlan-5g",
-		.gpio		= REH132_GPIO_LED_WLAN_5G,
-		.active_low	= 1,
-	},
-	{
-		.name		= "reh132:green:wlan-2g",
-		.gpio		= REH132_GPIO_LED_WLAN_2G,
-		.active_low	= 1,
-	},
-	{
-		.name		= "reh132:green:usb",
-		.gpio		= REH132_GPIO_LED_USB,
-		.active_low	= 1,
-	}
+static struct of_device_id __initdata reh132_common_ids[] = {
+	{ .compatible = "simple-bus", },
+	{},
 };
 
-static struct gpio_keys_button reh132_gpio_keys[] __initdata = {
-	{
-		.desc		= "WPS button",
-		.type		= EV_KEY,
-		.code		= KEY_WPS_BUTTON,
-		.debounce_interval = REH132_KEYS_DEBOUNCE_INTERVAL,
-		.gpio		= REH132_GPIO_BTN_WPS,
-		.active_low	= 1,
-	},
+struct of_dev_auxdata reh132_auxdata_lookup[] __initdata = {
+	OF_DEV_AUXDATA("qcom,reh132-wmac", AR934X_WMAC_BASE, "ar934x_wmac", &ath79_wmac_data),
+	OF_DEV_AUXDATA("qcom,reh132-spi",  AR71XX_SPI_BASE,  "ath79-spi",   &ath79_spi_data),
+	OF_DEV_AUXDATA("qcom,reh132-mdio", AR71XX_GE1_BASE,  "ag71xx-mdio", &ath79_mdio1_data),
+	OF_DEV_AUXDATA("qcom,ag71xx-eth",  AR71XX_GE0_BASE,  "ag71xx.0",    &ath79_eth0_data),
+	OF_DEV_AUXDATA("qcom,ag71xx-eth",  AR71XX_GE1_BASE,  "ag71xx.1",    &ath79_eth1_data),
+	{}
 };
 
-static struct ar8327_platform_data reh132_ar8216_data = {
-};
-
-static struct mdio_board_info reh132_mdio0_info[] = {
-	{
-		.bus_id = "ag71xx-mdio.1",
-		.phy_addr = 0,
-		.platform_data = &reh132_ar8216_data,
-	},
-};
-
-static void __init reh132_gmac_setup(void)
+static void __init reh132_init(void)
 {
-	void __iomem *base;
-	u32 t;
+	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
 
-	base = ioremap(AR934X_GMAC_BASE, AR934X_GMAC_SIZE);
+	ath79_init_m25p80_pdata(NULL);
+	ath79_init_mdio_pdata(1, 0);
+	ath79_init_wmac_pdata(art + REH132_WMAC_CALDATA_OFFSET, NULL);
 
-	t = __raw_readl(base + AR934X_GMAC_REG_ETH_CFG);
-	t &= ~(AR934X_ETH_CFG_RGMII_GMAC0 | AR934X_ETH_CFG_MII_GMAC0 |
-	       AR934X_ETH_CFG_GMII_GMAC0 | AR934X_ETH_CFG_SW_ONLY_MODE);
-	t |= AR934X_ETH_CFG_RGMII_GMAC0 | AR934X_ETH_CFG_SW_ONLY_MODE;
+	ath79_setup_ar934x_eth_cfg(AR934X_ETH_CFG_SW_PHY_SWAP);
 
-	__raw_writel(t, base + AR934X_GMAC_REG_ETH_CFG);
+	ath79_eth0_data.phy_if_mode = PHY_INTERFACE_MODE_MII;
+	ath79_eth0_data.speed = SPEED_100;
+	ath79_eth0_data.duplex = DUPLEX_FULL;
+	ath79_eth0_data.fifo_cfg2 = 0x03ff0155;
+	ath79_init_mac(ath79_eth0_data.mac_addr, art + REH132_MAC0_OFFSET, 0);
+	ath79_init_eth_pdata(0);
+	ath79_eth0_data.mii_bus_dev = NULL;
 
-	iounmap(base);
+	ath79_eth1_data.phy_if_mode = PHY_INTERFACE_MODE_GMII;
+	ath79_eth1_data.speed = SPEED_1000;
+	ath79_eth1_data.duplex = DUPLEX_FULL;
+	ath79_eth1_data.fifo_cfg2 = 0x03ff0155;
+	ath79_init_mac(ath79_eth1_data.mac_addr, art + REH132_MAC1_OFFSET, 0);
+	ath79_init_eth_pdata(1);
+	ath79_eth1_data.mii_bus_dev = NULL;
 }
 
 static void __init reh132_setup(void)
 {
-	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
-
-	ath79_gpio_output_select(REH132_GPIO_LED_USB, AR934X_GPIO_OUT_GPIO);
-	ath79_register_m25p80(NULL);
-
-	ath79_register_leds_gpio(-1, ARRAY_SIZE(reh132_leds_gpio),
-				 reh132_leds_gpio);
-	ath79_register_gpio_keys_polled(-1, REH132_KEYS_POLL_INTERVAL,
-					ARRAY_SIZE(reh132_gpio_keys),
-					reh132_gpio_keys);
-	ath79_register_usb();
-	ath79_register_wmac(art + REH132_WMAC_CALDATA_OFFSET, NULL);
-	ap91_pci_init(art + REH132_PCIE_CALDATA_OFFSET, NULL);
-
-	reh132_gmac_setup();
-
-	ath79_register_mdio(1, 0x0);
-
-	ath79_init_mac(ath79_eth0_data.mac_addr, art + REH132_MAC0_OFFSET, 0);
-
-	mdiobus_register_board_info(reh132_mdio0_info,
-				    ARRAY_SIZE(reh132_mdio0_info));
-
-	ath79_eth0_data.phy_if_mode = PHY_INTERFACE_MODE_RGMII;
-	ath79_eth0_data.phy_mask = BIT(0);
-	ath79_eth0_data.mii_bus_dev = &ath79_mdio1_device.dev;
-	ath79_eth0_pll_data.pll_1000 = 0x06000000;
-	ath79_register_eth(0);
-
-	/* GMAC1 is connected to the internal switch */
-	ath79_init_mac(ath79_eth1_data.mac_addr, art + REH132_MAC1_OFFSET, 0);
-	ath79_eth1_data.phy_if_mode = PHY_INTERFACE_MODE_GMII;
-	ath79_eth1_data.speed = SPEED_100;
-	ath79_eth1_data.duplex = DUPLEX_FULL;
-
-	ath79_register_eth(1);
+	reh132_init();
+	of_platform_populate(NULL, reh132_common_ids, reh132_auxdata_lookup, NULL);
 }
 
 MIPS_MACHINE(ATH79_MACH_REH132, "REH132", "Atheros REH132 reference board",
-	     reh132_setup);
+		 reh132_setup);
