@@ -411,6 +411,7 @@
 
 #define AR8327_REG_PORT_STATS_BASE(_i)		(0x1000 + (_i) * 0x100)
 
+#define AR8xxx_ARL_NO_MORE_ENTRY		1
 /* port speed */
 enum {
         AR8216_PORT_SPEED_10M = 0,
