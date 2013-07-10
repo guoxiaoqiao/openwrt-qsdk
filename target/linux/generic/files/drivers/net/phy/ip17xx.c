@@ -24,7 +24,7 @@
 #include <linux/mii.h>
 #include <linux/phy.h>
 #include <linux/delay.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 #include <linux/device.h>
 
 #define MAX_VLANS 16

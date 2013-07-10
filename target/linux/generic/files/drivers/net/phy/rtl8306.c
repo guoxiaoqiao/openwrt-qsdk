@@ -22,7 +22,7 @@
 #include <linux/netdevice.h>
 #include <linux/netlink.h>
 #include <net/genetlink.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 #include <linux/delay.h>
 #include <linux/phy.h>
 

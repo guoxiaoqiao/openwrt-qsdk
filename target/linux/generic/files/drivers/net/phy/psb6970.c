@@ -14,7 +14,7 @@
 
 #include <linux/module.h>
 #include <linux/netdevice.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 #include <linux/phy.h>
 
 #define PSB6970_MAX_VLANS		16

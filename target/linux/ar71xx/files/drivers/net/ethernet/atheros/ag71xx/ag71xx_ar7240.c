@@ -16,7 +16,7 @@
 #include <linux/phy.h>
 #include <linux/mii.h>
 #include <linux/bitops.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 #include "ag71xx.h"
 
 #define BITM(_count)	(BIT(_count) - 1)

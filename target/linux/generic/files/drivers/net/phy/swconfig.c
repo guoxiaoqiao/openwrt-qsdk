@@ -22,7 +22,7 @@
 #include <linux/if_ether.h>
 #include <linux/capability.h>
 #include <linux/skbuff.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 
 //#define DEBUG 1
 #ifdef DEBUG

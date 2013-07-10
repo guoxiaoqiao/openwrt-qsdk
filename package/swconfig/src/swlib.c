@@ -22,7 +22,7 @@
 #include <getopt.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 #include "swlib.h"
 #include <netlink/netlink.h>
 #include <netlink/genl/genl.h>

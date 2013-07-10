@@ -12,7 +12,7 @@
 #define _RTL8366_SMI_H
 
 #include <linux/phy.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 
 struct rtl8366_smi_ops;
 struct rtl8366_vlan_ops;

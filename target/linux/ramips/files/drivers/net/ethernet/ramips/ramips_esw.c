@@ -1,5 +1,5 @@
 #include <linux/ioport.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 #include <linux/mii.h>
 
 #include <rt305x_regs.h>

@@ -30,7 +30,7 @@
 #include <netlink/netlink.h>
 #include <netlink/genl/genl.h>
 #include <netlink/genl/ctrl.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 #include "swlib.h"
 
 #ifndef ARRAY_SIZE

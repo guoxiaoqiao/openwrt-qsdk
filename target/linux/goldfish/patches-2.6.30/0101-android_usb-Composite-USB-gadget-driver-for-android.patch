@@ -1186,7 +1186,7 @@ Signed-off-by: Mike Lockwood <lockwood@android.com>
 +#include <linux/slab.h>
 +#include <linux/spinlock.h>
 +#include <linux/string.h>
-+#include <linux/switch.h>
++#include <net/switch.h>
 +#include <linux/freezer.h>
 +#include <linux/utsname.h>
 +#include <linux/wakelock.h>

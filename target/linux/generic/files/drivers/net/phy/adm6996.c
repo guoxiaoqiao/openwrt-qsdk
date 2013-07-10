@@ -29,7 +29,7 @@
 #include <linux/mii.h>
 #include <linux/ethtool.h>
 #include <linux/phy.h>
-#include <linux/switch.h>
+#include <net/switch.h>
 
 #include <asm/io.h>
 #include <asm/irq.h>
