@@ -9,7 +9,7 @@ define Profile/QSDK_Open
 	  kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat kmod-nls-cp437 kmod-nls-iso8859-1 \
 	  luci-app-ddns ddns-scripts kmod-ipv6 iwinfo luci-app-qos \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
-	  -wpad-mini hostapd hostapd-utils wpa-supplicant wpa-cli
+	  -wpad-mini hostapd hostapd-utils wpa-supplicant wpa-cli wireless-tools
 endef
 
 define Profile/QSDK_Open/Description
