@@ -95,6 +95,7 @@ platform_check_image() {
 	aph131 |\
 	db120 | \
 	db120tb388 | \
+	db120-vhyfi | \
 	hornet-ub | \
 	reh132 |\
 	zcn-1523h-2 | \

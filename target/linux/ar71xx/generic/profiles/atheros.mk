@@ -173,6 +173,17 @@ endef
 
 $(eval $(call Profile,DB120TB388))
 
+define Profile/DB120_VHYFI
+	NAME:=Atheros DB120-vhyfi reference board
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+endef
+
+define Profile/DB120_VHYFI/Description
+	Package set optimized for the Atheros DB120-vhyfi reference board.
+endef
+
+$(eval $(call Profile,DB120_VHYFI))
+
 define Profile/PB42
 	NAME:=Atheros PB42 reference board
 	PACKAGES:=kmod-usb-core kmod-usb-ohci kmod-usb2

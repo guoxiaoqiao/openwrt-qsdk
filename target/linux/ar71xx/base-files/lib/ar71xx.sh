@@ -211,6 +211,9 @@ ar71xx_board_detect() {
 	*"DB120 reference board with TB388 extension")
 		name="db120tb388"
 		;;
+	*"DB120-vhyfi reference board")
+		name="db120-vhyfi"
+		;;
 	*"DIR-600 rev. A1")
 		name="dir-600-a1"
 		;;
