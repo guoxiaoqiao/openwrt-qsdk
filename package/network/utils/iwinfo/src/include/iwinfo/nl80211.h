@@ -93,6 +93,7 @@ int nl80211_get_hwmodelist(const char *ifname, int *buf);
 int nl80211_get_mbssid_support(const char *ifname, int *buf);
 int nl80211_get_hardware_id(const char *ifname, char *buf);
 int nl80211_get_hardware_name(const char *ifname, char *buf);
+int nl80211_get_beacon_int(const char *ifname, int *buf);
 void nl80211_close(void);
 
 static const struct iwinfo_ops nl80211_ops = {
@@ -121,6 +122,7 @@ static const struct iwinfo_ops nl80211_ops = {
 	.scanlist         = nl80211_get_scanlist,
 	.freqlist         = nl80211_get_freqlist,
 	.countrylist      = nl80211_get_countrylist,
+	.beacon_int       = nl80211_get_beacon_int,
 	.close            = nl80211_close
 };
 

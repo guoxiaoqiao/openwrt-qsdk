@@ -174,6 +174,7 @@ struct iwinfo_ops {
 	int (*scanlist)(const char *, char *, int *);
 	int (*freqlist)(const char *, char *, int *);
 	int (*countrylist)(const char *, char *, int *);
+	int (*beacon_int)(const char *, int *);
 	void (*close)(void);
 };
 
