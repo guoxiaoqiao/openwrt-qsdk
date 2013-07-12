@@ -48,7 +48,8 @@ define KernelPackage/gpio-button-hotplug/install
 
 	[ -e ./files/$(BOARD) ] && \
 	  $(INSTALL_DIR) $(1)/etc/uci-defaults && \
-	  $(INSTALL_BIN) ./files/$(BOARD) $(1)/etc/uci-defaults/gpio-button-hotplug
+	  $(INSTALL_BIN) ./files/$(BOARD) $(1)/etc/uci-defaults/gpio-button-hotplug || \
+	  true
 endef
 
 $(eval $(call KernelPackage,gpio-button-hotplug))
