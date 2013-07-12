@@ -368,6 +368,7 @@ define KernelPackage/ath/config
 	menu "Configuration"
 		depends on PACKAGE_kmod-ath
 
+  if CFG80211_CERTIFICATION_ONUS
 	config ATH_USER_REGD
 		bool "Force Atheros drivers to respect the user's regdomain settings"
 		help
@@ -378,6 +379,7 @@ define KernelPackage/ath/config
 
 		  Select this option if you want the driver to respect the user's decision about
 		  regulatory settings.
+  endif
 
 	config PACKAGE_ATH_DEBUG
 		bool "Atheros wireless debugging"
