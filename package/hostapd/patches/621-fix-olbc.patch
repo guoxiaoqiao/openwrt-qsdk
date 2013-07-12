@@ -1,0 +1,12 @@
+--- a/src/ap/ap_config.c
++++ b/src/ap/ap_config.c
+@@ -158,6 +158,9 @@ struct hostapd_config * hostapd_config_d
+ 
+ 	conf->ht_capab = HT_CAP_INFO_SMPS_DISABLED;
+ 
++	conf->ap_table_max_size = 255;
++	conf->ap_table_expiration_time = 60;
++
+ 	return conf;
+ }
+ 
