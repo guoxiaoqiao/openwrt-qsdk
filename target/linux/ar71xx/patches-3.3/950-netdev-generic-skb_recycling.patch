@@ -23,8 +23,6 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  net/core/skbuff.c | 149 +++++++++++++++++++++++++++++++++++++++++++++++++++---
  1 file changed, 143 insertions(+), 6 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a88a97a..1188872 100644
 --- a/net/core/skbuff.c
 +++ b/net/core/skbuff.c
 @@ -59,6 +59,7 @@
@@ -45,7 +43,7 @@ index a88a97a..1188872 100644
  
  static void sock_pipe_buf_release(struct pipe_inode_info *pipe,
  				  struct pipe_buffer *buf)
-@@ -310,13 +314,41 @@ EXPORT_SYMBOL(build_skb);
+@@ -310,13 +314,44 @@ EXPORT_SYMBOL(build_skb);
  struct sk_buff *__netdev_alloc_skb(struct net_device *dev,
  		unsigned int length, gfp_t gfp_mask)
  {
@@ -61,8 +59,11 @@ index a88a97a..1188872 100644
 +	 * from the recycling list?
 +	 */
 +	if (likely(length <= SKB_RECYCLE_SIZE)) {
++		unsigned long flags;
 +		struct sk_buff_head *h = &get_cpu_var(recycle_list);
++		local_irq_save(flags);
 +		skb = __skb_dequeue(h);
++		local_irq_restore(flags);
 +		put_cpu_var(recycle_list);
 +		if (likely(skb)) {
 +			struct skb_shared_info *s = skb_shinfo(skb);
@@ -91,16 +92,19 @@ index a88a97a..1188872 100644
  	return skb;
  }
  EXPORT_SYMBOL(__netdev_alloc_skb);
-@@ -361,11 +393,34 @@ EXPORT_SYMBOL(skb_add_rx_frag);
+@@ -361,11 +396,37 @@ EXPORT_SYMBOL(skb_add_rx_frag);
   */
  struct sk_buff *dev_alloc_skb(unsigned int length)
  {
 +	unsigned int len;
 +
 +	if (likely(length <= SKB_RECYCLE_SIZE)) {
++		unsigned long flags;
 +		struct sk_buff *skb;
 +		struct sk_buff_head *h = &get_cpu_var(recycle_list);
++		local_irq_save(flags);
 +		skb = __skb_dequeue(h);
++		local_irq_restore(flags);
 +		put_cpu_var(recycle_list);
 +		if (likely(skb)) {
 +			struct skb_shared_info *s = skb_shinfo(skb);
@@ -127,7 +131,7 @@ index a88a97a..1188872 100644
  }
  EXPORT_SYMBOL(dev_alloc_skb);
  
-@@ -530,6 +585,31 @@ void kfree_skb(struct sk_buff *skb)
+@@ -530,6 +591,31 @@ void kfree_skb(struct sk_buff *skb)
  }
  EXPORT_SYMBOL(kfree_skb);
  
@@ -159,7 +163,7 @@ index a88a97a..1188872 100644
  /**
   *	consume_skb - free an skbuff
   *	@skb: buffer to free
-@@ -546,8 +626,42 @@ void consume_skb(struct sk_buff *skb)
+@@ -546,8 +632,46 @@ void consume_skb(struct sk_buff *skb)
  		smp_rmb();
  	else if (likely(!atomic_dec_and_test(&skb->users)))
  		return;
@@ -178,15 +182,19 @@ index a88a97a..1188872 100644
 +	 * from scratch.
 +	 */
 +	if (likely(consume_skb_can_recycle(skb, SKB_RECYCLE_SIZE))) {
++		unsigned long flags;
 +		struct sk_buff_head *h;
 +
 +		h = &get_cpu_var(recycle_list);
++		local_irq_save(flags);
 +		if (likely(skb_queue_len(h) < SKB_RECYCLE_MAX_SKBS)) {
 +			__skb_queue_head(h, skb);
++			local_irq_restore(flags);
 +			put_cpu_var(recycle_list);
 +			return;
 +		}
 +
++		local_irq_restore(flags);
 +		put_cpu_var(recycle_list);
 +	}
 +
@@ -203,7 +211,7 @@ index a88a97a..1188872 100644
  }
  EXPORT_SYMBOL(consume_skb);
  
-@@ -2962,8 +3076,23 @@ done:
+@@ -2962,8 +3086,23 @@ done:
  }
  EXPORT_SYMBOL_GPL(skb_gro_receive);
  
@@ -227,7 +235,7 @@ index a88a97a..1188872 100644
  	skbuff_head_cache = kmem_cache_create("skbuff_head_cache",
  					      sizeof(struct sk_buff),
  					      0,
-@@ -2975,6 +3104,14 @@ void __init skb_init(void)
+@@ -2975,6 +3114,14 @@ void __init skb_init(void)
  						0,
  						SLAB_HWCACHE_ALIGN|SLAB_PANIC,
  						NULL);
@@ -242,6 +250,3 @@ index a88a97a..1188872 100644
  }
  
  /**
--- 
-1.8.1.2
-

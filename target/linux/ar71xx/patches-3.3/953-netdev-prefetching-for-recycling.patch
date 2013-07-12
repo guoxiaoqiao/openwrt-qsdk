@@ -12,12 +12,10 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  net/core/skbuff.c | 45 ++++++++++++++++++++++++++++++++++++---------
  1 file changed, 36 insertions(+), 9 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 15b5f83..9336366 100644
 --- a/net/core/skbuff.c
 +++ b/net/core/skbuff.c
-@@ -373,16 +373,26 @@ struct sk_buff *__netdev_alloc_skb(struct net_device *dev,
- 		skb = __skb_dequeue(h);
+@@ -376,16 +376,26 @@ struct sk_buff *__netdev_alloc_skb(struc
+ 		local_irq_restore(flags);
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
 -			struct skb_shared_info *s = skb_shinfo(skb);
@@ -47,7 +45,7 @@ index 15b5f83..9336366 100644
  			skb_reserve(skb, NET_SKB_PAD);
  			skb->dev = dev;
  			return skb;
-@@ -443,28 +453,42 @@ struct sk_buff *dev_alloc_skb(unsigned int length)
+@@ -446,6 +456,10 @@ struct sk_buff *dev_alloc_skb(unsigned i
  {
  	unsigned int len;
  
@@ -56,9 +54,10 @@ index 15b5f83..9336366 100644
 +	 * from the recycling list?
 +	 */
  	if (likely(length <= SKB_RECYCLE_SIZE)) {
+ 		unsigned long flags;
  		struct sk_buff *skb;
- 		struct sk_buff_head *h = &get_cpu_var(recycle_list);
- 		skb = __skb_dequeue(h);
+@@ -455,22 +469,32 @@ struct sk_buff *dev_alloc_skb(unsigned i
+ 		local_irq_restore(flags);
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
 -			struct skb_shared_info *s = skb_shinfo(skb);
@@ -95,7 +94,7 @@ index 15b5f83..9336366 100644
  	/*
  	 * There is more code here than it seems:
  	 * __dev_alloc_skb is an inline
-@@ -671,6 +695,9 @@ void consume_skb(struct sk_buff *skb)
+@@ -677,6 +701,9 @@ void consume_skb(struct sk_buff *skb)
  {
  	if (unlikely(!skb))
  		return;
@@ -105,6 +104,3 @@ index 15b5f83..9336366 100644
  	if (likely(atomic_read(&skb->users) == 1))
  		smp_rmb();
  	else if (likely(!atomic_dec_and_test(&skb->users)))
--- 
-1.8.1.2
-
