@@ -1,0 +1,41 @@
+--- a/drivers/net/wireless/ath/ath9k/debug.c
++++ b/drivers/net/wireless/ath/ath9k/debug.c
+@@ -1808,5 +1808,9 @@ int ath9k_init_debug(struct ath_hw *ah)
+ 	debugfs_create_file("diag", S_IRUSR | S_IWUSR, sc->debug.debugfs_phy,
+ 			    sc, &fops_diag);
+ 
++	debugfs_create_bool("disable_aggregation", S_IRUSR | S_IWUSR,
++			    sc->debug.debugfs_phy,
++			    &sc->debug.disable_aggregation);
++
+ 	return 0;
+ }
+--- a/drivers/net/wireless/ath/ath9k/debug.h
++++ b/drivers/net/wireless/ath/ath9k/debug.h
+@@ -270,6 +270,7 @@ struct ath_dbg_bb_mac_samp {
+ struct ath9k_debug {
+ 	struct dentry *debugfs_phy;
+ 	u32 regidx;
++	u32 disable_aggregation;
+ 	struct ath_stats stats;
+ #ifdef CONFIG_ATH9K_MAC_DEBUG
+ 	spinlock_t samp_lock;
+--- a/drivers/net/wireless/ath/ath9k/main.c
++++ b/drivers/net/wireless/ath/ath9k/main.c
+@@ -1670,10 +1670,16 @@ static int ath9k_ampdu_action(struct iee
+ 
+ 	switch (action) {
+ 	case IEEE80211_AMPDU_RX_START:
++		if (sc->debug.disable_aggregation)
++			ret = -EINVAL;
+ 		break;
+ 	case IEEE80211_AMPDU_RX_STOP:
+ 		break;
+ 	case IEEE80211_AMPDU_TX_START:
++		if (sc->debug.disable_aggregation) {
++			ret = -EINVAL;
++			break;
++		}
+ 		ath9k_ps_wakeup(sc);
+ 		ret = ath_tx_aggr_start(sc, sta, tid, ssn);
+ 		if (!ret)
