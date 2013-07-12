@@ -108,6 +108,10 @@ struct ar8216_priv {
 	u8 vlan_table[AR8X16_MAX_VLANS];
 	u8 vlan_tagged;
 	u16 pvid[AR8X16_MAX_PORTS];
+	/* if set, the vlan interface is UP */
+	u8 vlan_status[AR8X16_MAX_VLANS];
+	struct net_device *vlan_dev[AR8X16_MAX_VLANS];
+	u32 old_port_status;
 };
 
 #define MIB_DESC(_s , _o, _n)	\
@@ -2065,15 +2069,67 @@ err_free_priv:
 	return ret;
 }
 
+static int ar8216_get_vlan_dev(struct phy_device *phydev, int vlanID)
+{
+	struct ar8216_priv *priv = phydev->priv;
+	uint8_t  name[10];
+
+	sprintf(name, "%s.%d\0", phydev->attached_dev->name, vlanID);
+	priv->vlan_dev[vlanID] = dev_get_by_name(&init_net, name);
+	if(priv->vlan_dev[vlanID] != NULL){
+		dev_put(priv->vlan_dev[vlanID]);
+		return 1;
+	}
+	return 0;
+}
+
 static int
 ar8216_read_status(struct phy_device *phydev)
 {
 	struct ar8216_priv *priv = phydev->priv;
 	struct switch_port_link link;
+	struct switch_dev *dev;
 	int ret;
+	int i, port_status = 0;
 
 	if (phydev->addr != 0)
 		return genphy_read_status(phydev);
+
+	dev = (struct switch_dev *)priv;
+        for(i = 1; i < dev->ports; i++) {
+		ar8216_read_port_link(priv, i, &link);
+		if(link.link)
+			port_status |= 1 << i;
+	}
+
+	if(priv->old_port_status ^ port_status != 0) {
+		for(i = 0; i < AR8X16_MAX_VLANS; i++) {
+			if(((port_status & priv->vlan_table[i]) != 0) &&
+					(priv->vlan_status[i] == 0)){
+				if(unlikely(priv->vlan_dev[i] == NULL)) {
+					ret = ar8216_get_vlan_dev(phydev, i);
+				} else
+					ret = 1;
+
+				if(ret == 1) {
+					netif_carrier_on(priv->vlan_dev[i]);
+					priv->vlan_status[i] = 1;
+				}
+			} else if( (priv->vlan_table[i] != 0) &&
+					((port_status & priv->vlan_table[i]) == 0)) {
+				if(unlikely(priv->vlan_dev[i] == NULL)) {
+					ret = ar8216_get_vlan_dev(phydev, i);
+				} else
+					ret = 1;
+
+				if(ret == 1) {
+					netif_carrier_off(priv->vlan_dev[i]);
+					priv->vlan_status[i] = 0;
+				}
+			}
+		}
+	}
+	priv->old_port_status = port_status;
 
 	ar8216_read_port_link(priv, phydev->addr, &link);
 	phydev->link = !!link.link;
