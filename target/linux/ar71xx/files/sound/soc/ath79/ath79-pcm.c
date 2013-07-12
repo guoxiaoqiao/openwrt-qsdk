@@ -261,6 +261,9 @@ static int ath79_pcm_prepare(struct snd_pcm_substream *ss)
 
 	ath79_mbox_dma_prepare(rtpriv);
 
+	ath79_pcm_set_own_bits(rtpriv);
+	rtpriv->last_played = NULL;
+
 	return 0;
 }
 
