@@ -74,6 +74,7 @@ struct ar8xxx_chip {
 	void (*vtu_flush)(struct ar8216_priv *priv);
 	void (*vtu_load_vlan)(struct ar8216_priv *priv, u32 vid, u32 port_mask);
 	int (*atu_dump)(struct ar8216_priv *priv);
+	int (*igmp_snooping)(struct ar8216_priv *priv, u32 enable);
 
 	const struct ar8xxx_mib_desc *mib_decs;
 	unsigned num_mibs;
@@ -1242,6 +1243,41 @@ ar8327_atu_dump(struct ar8216_priv *priv)
 	return len;
 }
 
+static int
+ar8327_igmp_snooping(struct ar8216_priv *priv, u32 enable)
+{
+	volatile u32 reg;
+	if( enable ) {
+		printk(KERN_INFO "ar8327: Enable igmp snooping function.\n");
+		reg = priv->read(priv, AR8327_REG_FWD_CTRL1);
+		reg |= 1 << AR8327_FWD_CTRL1_IGMP_S;
+		reg &= ~(AR8327_FWD_CTRL1_MC_FLOOD);
+		priv->write(priv, AR8327_REG_FWD_CTRL1, reg);
+
+		reg = priv->read(priv, AR8327_REG_ARL_CTRL);
+		reg |= AR8327_ARL_CTRL_IGMP_JOIN_NEW_EN;
+		priv->write(priv, AR8327_REG_ARL_CTRL, reg);
+
+		priv->write(priv, AR8327_REG_FRAME_ACK_CTRL0, 0x07070707);
+		priv->write(priv, AR8327_REG_FRAME_ACK_CTRL1, 0x00070707 | AR8327_FRAME_ACK_CTRL1_IGMP_V3_EN);
+	} else {
+		printk(KERN_INFO "ar8327: Disable igmp snooping function.\n");
+		reg = priv->read(priv, AR8327_REG_FWD_CTRL1);
+		reg &= ~(1 << AR8327_FWD_CTRL1_IGMP_S);
+		reg |= AR8327_FWD_CTRL1_MC_FLOOD;
+		priv->write(priv, AR8327_REG_FWD_CTRL1, reg);
+
+		reg = priv->read(priv, AR8327_REG_ARL_CTRL);
+		reg &= ~(AR8327_ARL_CTRL_IGMP_JOIN_NEW_EN);
+		priv->write(priv, AR8327_REG_ARL_CTRL, reg);
+
+		priv->write(priv, AR8327_REG_FRAME_ACK_CTRL0, 0x0);
+		priv->write(priv, AR8327_REG_FRAME_ACK_CTRL1, 0x0);
+	}
+
+	return 0;
+}
+
 static void
 ar8327_vtu_op(struct ar8216_priv *priv, u32 op, u32 val)
 {
@@ -1334,6 +1370,7 @@ static const struct ar8xxx_chip ar8327_chip = {
 	.vtu_flush = ar8327_vtu_flush,
 	.vtu_load_vlan = ar8327_vtu_load_vlan,
 	.atu_dump = ar8327_atu_dump,
+	.igmp_snooping = ar8327_igmp_snooping,
 
 	.num_mibs = ARRAY_SIZE(ar8236_mibs),
 	.mib_decs = ar8236_mibs,
@@ -1677,6 +1714,24 @@ ar8xxx_atu_flush(struct ar8216_priv *priv)
 }
 
 static int
+ar8xxx_igmp_snooping(struct switch_dev *dev,
+		       const struct switch_attr *attr,
+		       struct switch_val *val)
+{
+	int ret;
+	struct ar8216_priv *priv = to_ar8216(dev);
+
+	if (!priv->chip->igmp_snooping) {
+		printk(KERN_ERR "igmp_snooping not supported on %s\n", priv->dev.name);
+		return -1;
+	}
+
+	ret = priv->chip->igmp_snooping(priv, val->value.i);
+
+	return ret;
+}
+
+static int
 ar8216_sw_get_port_mib(struct switch_dev *dev,
 		       const struct switch_attr *attr,
 		       struct switch_val *val)
@@ -1757,6 +1812,12 @@ static struct switch_attr ar8216_globals[] = {
 		.name = "dump_arl",
 		.description = "Dump ARL table with mac and port map",
 		.get = ar8xxx_atu_dump,
+	},
+	{
+		.type = SWITCH_TYPE_INT,
+		.name = "igmp_snooping",
+		.description = "Enable/Disable igmp snooping function on switch chip",
+		.set = ar8xxx_igmp_snooping,
 	},
 };
 
