@@ -210,11 +210,16 @@
 #define   AR934X_REG_OPER_MODE1_PHY4_MII_EN	BIT(28)
 
 #define AR934X_REG_FLOOD_MASK		0x2c
+#define   AR934X_IGMP_JOIN_LEAVE_DP	BIT(8)
 #define   AR934X_FLOOD_MASK_MC_DP(_p)	BIT(16 + (_p))
+#define   AR934X_FLOOD_MASK_MC		BITS(16, 7)
 #define   AR934X_FLOOD_MASK_BC_DP(_p)	BIT(25 + (_p))
 
 #define AR934X_REG_QM_CTRL		0x3c
+#define   AR934X_IGMP_COPY_EN		BIT(11)
 #define   AR934X_QM_CTRL_ARP_EN		BIT(15)
+#define   AR934X_IGMP_V3_EN		BIT(19)
+#define   AR934X_IGMP_JOIN_NEW_EN	BIT(22)
 
 #define AR934X_REG_AT_CTRL		0x5c
 #define   AR934X_AT_CTRL_AGE_TIME	BITS(0, 15)
@@ -224,6 +229,11 @@
 #define AR934X_MIB_ENABLE		BIT(30)
 
 #define AR934X_REG_PORT_BASE(_port)	(0x100 + (_port) * 0x100)
+
+#define AR934X_REG_PORT_CONTROL(_port)	(AR934X_REG_PORT_BASE((_port)) + 0x04)
+#define   AR934X_PORT_CONTROL_IGMP_MLD_EN		BIT(10)
+#define   AR934X_PORT_CONTROL_IGMP_JOIN_EN		BIT(20)
+#define   AR934X_PORT_CONTROL_IGMP_LEAVE_EN		BIT(21)
 
 #define AR934X_REG_PORT_VLAN1(_port)	(AR934X_REG_PORT_BASE((_port)) + 0x08)
 #define   AR934X_PORT_VLAN1_DEFAULT_SVID_S		0
@@ -873,6 +883,56 @@ ar7240_get_max_frame_size(struct switch_dev *dev, const struct switch_attr *attr
 	return 0;
 }
 
+static int
+ar7240_igmp_snooping(struct switch_dev *dev, const struct switch_attr *attr,
+		struct switch_val *val)
+{
+	u32 v =0, i;
+	struct ar7240sw *as = sw_to_ar7240(dev);
+	struct mii_bus *mii = as->mii_bus;
+
+	if (!sw_is_ar934x(as))
+	    return 0;
+
+	if( val->value.i ){
+		printk(KERN_INFO "ar934x build in switch(s27): Enable igmp snooping function.\n");
+		for(i=0; i<as->swdev.ports; i++){
+			v = ar7240sw_reg_read(mii, AR934X_REG_PORT_CONTROL(i));
+			v |= AR934X_PORT_CONTROL_IGMP_MLD_EN | AR934X_PORT_CONTROL_IGMP_JOIN_EN |
+						AR934X_PORT_CONTROL_IGMP_LEAVE_EN;
+			ar7240sw_reg_write(mii, AR934X_REG_PORT_CONTROL(i), v);
+		}
+
+		v = ar7240sw_reg_read(mii, AR934X_REG_QM_CTRL);
+		v |= AR934X_IGMP_COPY_EN | AR934X_IGMP_V3_EN | AR934X_IGMP_JOIN_NEW_EN;
+		ar7240sw_reg_write(mii, AR934X_REG_QM_CTRL, v);
+
+		v = ar7240sw_reg_read(mii, AR934X_REG_FLOOD_MASK);
+		v |= AR934X_IGMP_JOIN_LEAVE_DP;
+		v &= ~(AR934X_FLOOD_MASK_MC);
+		ar7240sw_reg_write(mii, AR934X_REG_FLOOD_MASK, v);
+	} else {
+		printk(KERN_INFO "ar934x build in switch(s27): Disable igmp snooping function.\n");
+		for(i=0; i<as->swdev.ports; i++){
+			v = ar7240sw_reg_read(mii, AR934X_REG_PORT_CONTROL(i));
+			v &= ~(AR934X_PORT_CONTROL_IGMP_MLD_EN | AR934X_PORT_CONTROL_IGMP_JOIN_EN |
+						AR934X_PORT_CONTROL_IGMP_LEAVE_EN);
+			ar7240sw_reg_write(mii, AR934X_REG_PORT_CONTROL(i), v);
+		}
+
+		v = ar7240sw_reg_read(mii, AR934X_REG_QM_CTRL);
+		v &= ~(AR934X_IGMP_COPY_EN | AR934X_IGMP_V3_EN | AR934X_IGMP_JOIN_NEW_EN);
+		ar7240sw_reg_write(mii, AR934X_REG_QM_CTRL, v);
+
+		v = ar7240sw_reg_read(mii, AR934X_REG_FLOOD_MASK);
+		v &= ~(AR934X_IGMP_JOIN_LEAVE_DP);
+		v |= AR934X_FLOOD_MASK_MC;
+		ar7240sw_reg_write(mii, AR934X_REG_FLOOD_MASK, v);
+	}
+
+	return 0;
+}
+
 static void
 ar7240_vtu_op(struct ar7240sw *as, u32 op, u32 val)
 {
@@ -1021,6 +1081,12 @@ static struct switch_attr ar7240_globals[] = {
 		.set = ar7240_set_max_frame_size,
 		.get = ar7240_get_max_frame_size,
 		.max = 9018
+	},
+	{
+		.type = SWITCH_TYPE_INT,
+		.name = "igmp_snooping",
+		.description = "Enable/Disable igmp snooping function on switch chip",
+		.set = ar7240_igmp_snooping
 	},
 };
 
