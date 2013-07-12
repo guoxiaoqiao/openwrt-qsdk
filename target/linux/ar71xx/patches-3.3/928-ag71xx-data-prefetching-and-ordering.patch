@@ -71,7 +71,7 @@ index 57c6191..b4242e1 100644
 +		 * the cache so try to give some help.
 +		 */
 +		if (likely(next_skb)) {
-+			prefetch(skb_shinfo(skb));
++			prefetch(skb_shinfo(next_skb));
 +			prefetch(&next_skb->users);
 +		}
 +
