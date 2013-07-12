@@ -9,6 +9,7 @@ define Profile/QSDK_Open
 	  kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat kmod-nls-cp437 kmod-nls-iso8859-1 \
 	  luci-app-ddns ddns-scripts kmod-ipv6 iwinfo luci-app-qos \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
+	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client \
 	  -wpad-mini hostapd hostapd-utils wpa-supplicant wpa-cli wireless-tools
 endef
 
@@ -29,6 +30,7 @@ define Profile/QSDK_Retail
 	  kmod-ipv6 luci-app-qos kmod-art2-4.9-scorpion \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
+	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client \
 	  luci-app-ddns ddns-scripts qca-legacy-uboot-ap135 qca-legacy-uboot-db12x \
 	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
 endef
