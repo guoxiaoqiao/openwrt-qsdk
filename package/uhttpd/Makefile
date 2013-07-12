@@ -128,6 +128,8 @@ CMAKE_OPTIONS += \
 	-DTLS_CFLAGS="$(TLS_CFLAGS)" \
 	-DTLS_LDFLAGS="$(TLS_LDFLAGS)" \
 
+EXTRA_CFLAGS+=\
+	      -I$(STAGING_DIR)/usr/include
 
 define Package/uhttpd/conffiles
 /etc/config/uhttpd
