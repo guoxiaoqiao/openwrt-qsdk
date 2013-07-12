@@ -44,12 +44,13 @@ endef
 define Package/opkg
 $(call Package/opkg/Default)
   VARIANT:=nocurl
+  DEPENDS:=+zlib
 endef
 
 define Package/opkg-curl
 $(call Package/opkg/Default)
   TITLE += (with curl support)
-  DEPENDS:=+libcurl
+  DEPENDS:=+libcurl +zlib
   VARIANT:=curl
 endef
 
@@ -75,7 +76,7 @@ endef
 
 TARGET_CFLAGS += $(if $(CONFIG_GCC_VERSION_4_3)$(CONFIG_GCC_VERSION_4_4),-Wno-array-bounds)
 TARGET_CFLAGS += -ffunction-sections -fdata-sections
-EXTRA_CFLAGS += $(TARGET_CPPFLAGS)
+EXTRA_CFLAGS += $(TARGET_CPPFLAGS) -L$(STAGING_DIR)/usr/lib -lz
 
 CONFIGURE_ARGS += \
 	--disable-gpg \
