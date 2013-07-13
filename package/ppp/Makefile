@@ -156,8 +156,8 @@ $(call Build/Configure/Default,, \
 )
 	mkdir -p $(PKG_BUILD_DIR)/pppd/plugins/pppoatm/linux
 	cp \
-		$(LINUX_DIR)/include/linux/compiler.h \
-		$(LINUX_DIR)/include/linux/atm*.h \
+		$(LINUX_SRC_DIR)/include/linux/compiler.h \
+		$(LINUX_SRC_DIR)/include/linux/atm*.h \
 		$(PKG_BUILD_DIR)/pppd/plugins/pppoatm/linux/
 endef
 
