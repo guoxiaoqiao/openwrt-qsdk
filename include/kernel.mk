@@ -36,6 +36,12 @@ else
   KERNEL_BUILD_DIR ?= $(BUILD_DIR_BASE)/linux-$(BOARD)$(if $(SUBTARGET),_$(SUBTARGET))$(if $(BUILD_SUFFIX),_$(BUILD_SUFFIX))
   LINUX_DIR ?= $(KERNEL_BUILD_DIR)/linux-$(LINUX_VERSION)
 
+  ifeq ($(strip $(CONFIG_EXTERNAL_KERNEL_TREE)),"")
+    LINUX_SRC_DIR := $(LINUX_DIR)
+  else
+    LINUX_SRC_DIR := $(CONFIG_EXTERNAL_KERNEL_TREE)
+  endif
+
   LINUX_VERMAGIC:=$(strip $(shell cat $(LINUX_DIR)/.vermagic 2>/dev/null))
   LINUX_VERMAGIC:=$(if $(CONFIG_KERNEL_MODVERSIONS),modversions,$(LINUX_VERMAGIC))
   LINUX_VERMAGIC:=$(if $(LINUX_VERMAGIC),$(LINUX_VERMAGIC),unknown)
