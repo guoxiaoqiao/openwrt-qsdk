@@ -13,6 +13,9 @@
  */
 
 #include "ag71xx.h"
+#ifdef CONFIG_OF
+#include <linux/of.h>
+#endif
 
 #define AG71XX_MDIO_RETRY	1000
 #define AG71XX_MDIO_DELAY	5
@@ -241,11 +244,21 @@ static int __devexit ag71xx_mdio_remove(struct platform_device *pdev)
 	return 0;
 }
 
+#ifdef CONFIG_OF
+static const struct of_device_id ag71xx_of_match_table[] = {
+	{.compatible = "qcom,ag71xx-mdio"},
+	{}
+};
+#else
+#define ag71xx_of_match_table NULL
+#endif
+
 static struct platform_driver ag71xx_mdio_driver = {
 	.probe		= ag71xx_mdio_probe,
 	.remove		= __exit_p(ag71xx_mdio_remove),
 	.driver = {
 		.name	= "ag71xx-mdio",
+		.of_match_table = ag71xx_of_match_table,
 	}
 };
 
