@@ -36,6 +36,10 @@
 #include <linux/workqueue.h>
 #include "ar8216.h"
 
+#ifdef CONFIG_OF
+#include <linux/of.h>
+#endif
+
 /* size of the vlan table */
 #define AR8X16_MAX_VLANS	128
 #define AR8X16_PROBE_RETRIES	10
@@ -892,6 +896,129 @@ static const struct ar8xxx_chip ar8316_chip = {
 	.mib_decs = ar8236_mibs,
 };
 
+#ifdef CONFIG_OF
+static struct ar8327_pad_cfg ar8327_of_pad0_cfg;
+static struct ar8327_pad_cfg ar8327_of_pad5_cfg;
+static struct ar8327_pad_cfg ar8327_of_pad6_cfg;
+static struct ar8327_led_cfg ar8327_of_led_cfg;
+static struct ar8327_platform_data ar8327_of_pdata;
+
+static void ar8327_of_init_pdata(void)
+{
+	memset(&ar8327_of_pad0_cfg, 0, sizeof(struct ar8327_pad_cfg));
+	memset(&ar8327_of_pad5_cfg, 0, sizeof(struct ar8327_pad_cfg));
+	memset(&ar8327_of_pad6_cfg, 0, sizeof(struct ar8327_pad_cfg));
+	memset(&ar8327_of_led_cfg, 0, sizeof(struct ar8327_led_cfg));
+	memset(&ar8327_of_pdata, 0, sizeof(struct ar8327_platform_data));
+}
+
+static struct ar8327_platform_data *ar8327_of_get_pdata(struct phy_device *phy)
+{
+	u32 value[10];
+	struct device_node *of_node;
+	struct ar8327_platform_data *pdata;
+
+	if (!phy)
+		return NULL;
+
+	if (phy->dev.platform_data)
+		return phy->dev.platform_data;
+
+	if (!phy->bus ||
+			!phy->bus->parent ||
+			!phy->bus->parent->of_node)
+		return NULL;
+
+	ar8327_of_init_pdata();
+	of_node = phy->bus->parent->of_node;
+	pdata = &ar8327_of_pdata;
+
+	if (!of_property_read_u32_array(of_node, "bi-port0-cfg", value, 5)) {
+		pdata->cpuport_cfg.force_link = value[0];
+		pdata->cpuport_cfg.speed = value[1];
+		pdata->cpuport_cfg.txpause = value[2];
+		pdata->cpuport_cfg.rxpause = value[3];
+		pdata->cpuport_cfg.duplex = value[4];
+	}
+
+	if (!of_property_read_u32_array(of_node, "bi-port5-cfg", value, 5)) {
+		pdata->port5_cfg.force_link = value[0];
+		pdata->port5_cfg.speed = value[1];
+		pdata->port5_cfg.txpause = value[2];
+		pdata->port5_cfg.rxpause = value[3];
+		pdata->port5_cfg.duplex = value[4];
+	}
+
+	if (!of_property_read_u32_array(of_node, "bi-port6-cfg", value, 5)) {
+		pdata->port6_cfg.force_link = value[0];
+		pdata->port6_cfg.speed = value[1];
+		pdata->port6_cfg.txpause = value[2];
+		pdata->port6_cfg.rxpause = value[3];
+		pdata->port6_cfg.duplex = value[4];
+	}
+
+	if (!of_property_read_u32_array(of_node, "bi-led-cfg", value, 5)) {
+		ar8327_of_pdata.led_cfg = &ar8327_of_led_cfg;
+		pdata->led_cfg->led_ctrl0 = value[0];
+		pdata->led_cfg->led_ctrl1 = value[1];
+		pdata->led_cfg->led_ctrl2 = value[2];
+		pdata->led_cfg->led_ctrl3 = value[3];
+		pdata->led_cfg->open_drain = value[4];
+	}
+
+	if (!of_property_read_u32_array(of_node, "bi-pad0-cfg", value, 10)) {
+		ar8327_of_pdata.pad0_cfg = &ar8327_of_pad0_cfg;
+		pdata->pad0_cfg->mode = value[0];
+		pdata->pad0_cfg->rxclk_sel = value[1];
+		pdata->pad0_cfg->txclk_sel = value[2];
+		pdata->pad0_cfg->pipe_rxclk_sel = value[3];
+		pdata->pad0_cfg->txclk_delay_en = value[4];
+		pdata->pad0_cfg->rxclk_delay_en = value[5];
+		pdata->pad0_cfg->txclk_delay_sel = value[6];
+		pdata->pad0_cfg->rxclk_delay_sel = value[7];
+		pdata->pad0_cfg->sgmii_txclk_phase_sel = value[8];
+		pdata->pad0_cfg->sgmii_rxclk_phase_sel = value[9];
+	}
+
+	if (!of_property_read_u32_array(of_node, "bi-pad5-cfg", value, 10)) {
+		ar8327_of_pdata.pad5_cfg = &ar8327_of_pad5_cfg;
+		pdata->pad5_cfg->mode = value[0];
+		pdata->pad5_cfg->rxclk_sel = value[1];
+		pdata->pad5_cfg->txclk_sel = value[2];
+		pdata->pad5_cfg->pipe_rxclk_sel = value[3];
+		pdata->pad5_cfg->txclk_delay_en = value[4];
+		pdata->pad5_cfg->rxclk_delay_en = value[5];
+		pdata->pad5_cfg->txclk_delay_sel = value[6];
+		pdata->pad5_cfg->rxclk_delay_sel = value[7];
+		pdata->pad5_cfg->sgmii_txclk_phase_sel = value[8];
+		pdata->pad5_cfg->sgmii_rxclk_phase_sel = value[9];
+	}
+
+	if (!of_property_read_u32_array(of_node, "bi-pad6-cfg", value, 10)) {
+		ar8327_of_pdata.pad6_cfg = &ar8327_of_pad6_cfg;
+		pdata->pad6_cfg->mode = value[0];
+		pdata->pad6_cfg->rxclk_sel = value[1];
+		pdata->pad6_cfg->txclk_sel = value[2];
+		pdata->pad6_cfg->pipe_rxclk_sel = value[3];
+		pdata->pad6_cfg->txclk_delay_en = value[4];
+		pdata->pad6_cfg->rxclk_delay_en = value[5];
+		pdata->pad6_cfg->txclk_delay_sel = value[6];
+		pdata->pad6_cfg->rxclk_delay_sel = value[7];
+		pdata->pad6_cfg->sgmii_txclk_phase_sel = value[8];
+		pdata->pad6_cfg->sgmii_rxclk_phase_sel = value[9];
+	}
+
+	phy->dev.platform_data = pdata;
+
+	return pdata;
+}
+#else
+static struct ar8327_platform_data *ar8327_of_get_pdata(struct phy_device *phy)
+{
+	return NULL;
+}
+#endif
+
 static u32
 ar8327_get_pad_cfg(struct ar8327_pad_cfg *cfg)
 {
@@ -1020,7 +1147,7 @@ ar8327_hw_init(struct ar8216_priv *priv)
 	int i;
 
 	pdata = priv->phy->dev.platform_data;
-	if (!pdata)
+	if (!pdata && !(pdata = ar8327_of_get_pdata(priv->phy)))
 		return -EINVAL;
 
 	t = ar8327_get_pad_cfg(pdata->pad0_cfg);
@@ -1101,7 +1228,7 @@ ar8327_init_cpuport(struct ar8216_priv *priv, int port)
 	u32 t;
 
 	pdata = priv->phy->dev.platform_data;
-	if (!pdata)
+	if (!pdata && !(pdata = ar8327_of_get_pdata(priv->phy)))
 		return;
 
 	switch (port) {
@@ -1149,7 +1276,7 @@ ar8327_init_port(struct ar8216_priv *priv, int port)
 	u32 t;
 
 	pdata = priv->phy->dev.platform_data;
-	if (!pdata)
+	if (!pdata && !(pdata = ar8327_of_get_pdata(priv->phy)))
 		return;
 
 	if (((port == 0) && pdata->pad0_cfg) ||

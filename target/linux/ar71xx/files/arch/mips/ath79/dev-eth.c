@@ -563,6 +563,29 @@ static void __init ath79_init_eth_pll_data(unsigned int id)
 		pll_data->pll_1000 = pll_1000;
 }
 
+static void ath79_pll_update_eth0(u32 pll_10, u32 pll_100, u32 pll_1000)
+{
+	if (pll_10)
+		ath79_eth0_pll_data.pll_10 = pll_10;
+
+	if (pll_100)
+		ath79_eth0_pll_data.pll_100 = pll_100;
+
+	if (pll_1000)
+		ath79_eth0_pll_data.pll_1000 = pll_1000;
+}
+static void ath79_pll_update_eth1(u32 pll_10, u32 pll_100, u32 pll_1000)
+{
+	if (pll_10)
+		ath79_eth1_pll_data.pll_10 = pll_10;
+
+	if (pll_100)
+		ath79_eth1_pll_data.pll_100 = pll_100;
+
+	if (pll_1000)
+		ath79_eth1_pll_data.pll_1000 = pll_1000;
+}
+
 static int __init ath79_setup_phy_if_mode(unsigned int id,
 					   struct ag71xx_platform_data *pdata)
 {
@@ -767,6 +790,8 @@ void ath79_init_eth_pdata(unsigned int id)
 		       "ar71xx: invalid PHY interface mode for GE%u\n", id);
 		return;
 	}
+
+	pdata->update_pll = id ? ath79_pll_update_eth1 : ath79_pll_update_eth0;
 
 	switch (ath79_soc) {
 	case ATH79_SOC_AR7130:

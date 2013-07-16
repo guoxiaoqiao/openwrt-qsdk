@@ -1157,12 +1157,34 @@ static const struct net_device_ops ag71xx_netdev_ops = {
 };
 
 #ifdef CONFIG_OF
-static int ag71xx_of_mii_bus_dev_set(struct platform_device *pdev,
-		struct ag71xx_platform_data *pdata)
+static void ag71xx_of_gmac_setup(struct platform_device *pdev, u32 mask)
 {
+	struct resource *res;
+	void __iomem *cfg_base;
+
+	if (!(res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg_base")))
+		return;
+
+	cfg_base = ioremap_nocache(res->start, res->end - res->start + 1);
+	if (!cfg_base) {
+		dev_err(&pdev->dev, "unable to ioremap cfg_base\n");
+		return;
+	}
+
+	__raw_writel(__raw_readl(cfg_base) | mask, cfg_base);
+	/* flush write */
+	(void)__raw_readl(cfg_base);
+
+	iounmap(cfg_base);
+}
+
+static int ag71xx_of_pdata_update(struct platform_device *pdev)
+{
+	u32 value[4];
 	const phandle *ph;
 	struct device_node *mdio;
 	struct platform_device *pdev_mdio;
+	struct ag71xx_platform_data *pdata = pdev->dev.platform_data;
 
 	if (!pdev->dev.of_node)
 		return -EINVAL;
@@ -1183,11 +1205,36 @@ static int ag71xx_of_mii_bus_dev_set(struct platform_device *pdev,
 	pdata->mii_bus_dev = &pdev_mdio->dev;
 	of_node_put(mdio);
 
+	if (!of_property_read_u32(pdev->dev.of_node, "eth-cfg", &value[0]))
+		ag71xx_of_gmac_setup(pdev, value[0]);
+
+	if (pdata->update_pll &&
+			!of_property_read_u32_array(pdev->dev.of_node, "eth-pll-data", value, 3))
+		pdata->update_pll(value[0], value[1], value[2]);
+
+	if (!of_property_read_u32_array(pdev->dev.of_node, "eth-phy-cfg", value, 4)) {
+		pdata->phy_if_mode = value[0];
+		pdata->phy_mask = value[1];
+		pdata->speed = value[2];
+		pdata->duplex = value[3];
+	}
+
+	if (!of_property_read_u32_array(pdev->dev.of_node, "eth-fifo-cfg", value, 3)) {
+		pdata->fifo_cfg1 = value[0];
+		pdata->fifo_cfg2 = value[1];
+		pdata->fifo_cfg3 = value[2];
+	}
+
+	if (pdata->switch_data &&
+			!of_property_read_u32_array(pdev->dev.of_node, "eth-sw-cfg", value, 2)) {
+		pdata->switch_data->phy4_mii_en = value[0];
+		pdata->switch_data->phy_poll_mask = value[1];
+	}
+
 	return 0;
 }
 #else
-static int ag71xx_of_mii_bus_dev_set(struct platform_device *pdev,
-		struct ag71xx_platform_data *pdata)
+static int ag71xx_of_pdata_update(struct platform_device *pdev)
 {
 	return -EINVAL;
 }
@@ -1210,7 +1257,7 @@ static int __devinit ag71xx_probe(struct platform_device *pdev)
 	}
 
 	if (pdata->mii_bus_dev == NULL &&
-			ag71xx_of_mii_bus_dev_set(pdev, pdata)) {
+			ag71xx_of_pdata_update(pdev)) {
 		dev_err(&pdev->dev, "no MII bus device specified\n");
 		err = -EINVAL;
 		goto err_out;
