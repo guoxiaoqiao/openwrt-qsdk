@@ -24,7 +24,7 @@
 
 static struct resource ath79_nfc_resources[2];
 static u64 ar934x_nfc_dmamask = DMA_BIT_MASK(32);
-static struct ar934x_nfc_platform_data ath79_nfc_data;
+struct ar934x_nfc_platform_data ath79_nfc_data;
 
 static struct platform_device ath79_nfc_device = {
 	.name		= AR934X_NFC_DRIVER_NAME,
@@ -55,7 +55,7 @@ static void ar934x_nfc_hw_reset(bool active)
 	}
 }
 
-static void ar934x_nfc_setup(void)
+static inline void ar934x_nfc_setup(void)
 {
 	ath79_nfc_resources[0].start = AR934X_NFC_BASE;
 	ath79_nfc_resources[0].end = AR934X_NFC_BASE + AR934X_NFC_SIZE - 1;
@@ -66,8 +66,6 @@ static void ar934x_nfc_setup(void)
 	ath79_nfc_resources[1].flags = IORESOURCE_IRQ;
 
 	ath79_nfc_data.hw_reset = ar934x_nfc_hw_reset;
-
-	platform_device_register(&ath79_nfc_device);
 }
 
 void __init ath79_nfc_set_select_chip(void (*f)(int chip_no))
@@ -86,10 +84,16 @@ void __init ath79_nfc_set_parts(struct mtd_partition *parts, int nr_parts)
 	ath79_nfc_data.nr_parts = nr_parts;
 }
 
+void ath79_init_nfc_pdata(void)
+{
+	ar934x_nfc_setup();
+}
+
 void __init ath79_register_nfc(void)
 {
-	if (soc_is_ar934x())
-		ar934x_nfc_setup();
-	else
+	if (!soc_is_ar934x())
 		BUG();
+
+	ath79_init_nfc_pdata();
+	platform_device_register(&ath79_nfc_device);
 }
