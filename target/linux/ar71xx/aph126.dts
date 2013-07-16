@@ -9,8 +9,8 @@
 /dts-v1/;
 
 / {
-	model = "Qualcomm Atheros REH132";
-	compatible = "ath79,reh132";
+	model = "Qualcomm Atheros APH126";
+	compatible = "ath79,aph126";
 	#address-cells = <1>;
 	#size-cells = <1>;
 	interrupt-parent = <&vic>;
@@ -30,6 +30,13 @@
 			compatible = "interrupt-controller";
 			interrupt-controller;
 			#interrupt-cells = <1>;
+		};
+
+		ehci@1b000000 {
+			compatible = "qcom,ag71xx-ehci";
+			reg = <0x1b000000 0x20000>;
+			interrupts = <3>;
+			interrupt-parent = <&vic>;
 		};
 
 		spi@1f000000 {
@@ -53,10 +60,16 @@
 			interrupt-parent = <&vic>;
 		};
 
-		MDIO1: mdio@1a000000 {
+		MDIO0: mdio@19000000 {
 			compatible = "qcom,ag71xx-mdio";
-			reg = <0x1a000000 0x200>;
+			reg = <0x19000000 0x200>;
 			reg-names = "mdio_base";
+
+			bi-phy-addr = <0>;
+			bi-port0-cfg = <1 2 1 1 1>; /* force_link speed:1G txpause rxpause duplex */
+			bi-led-cfg = <0 0xc737c737 0 0x00c30c00 1>; /* led_ctrl0 led_ctrl1 led_ctrl2 led_ctrl3 open_drain*/
+			bi-pad0-cfg = <6 0 0 0 1 1 1 2 0 0>; /* mode rxclk_sel txclk_sel pipe_rxclk_sel txclk_delay_en
+				rxclk_delay_en txclk_delay_sel rxclk_delay_sel sgmii_txclk_phase_sel sgmii_rxclk_phase_sel */
 		};
 
 		ETH0: ethernet@19000000 {
@@ -66,24 +79,12 @@
 			interrupts = <4>;
 			interrupt-names = "mac_irq";
 			interrupt-parent = <&vic>;
-			mdio-handle = <&MDIO1>;
+			mdio-handle = <&MDIO0>;
 
-			eth-cfg = <0x00000080>; /* SW_PHY_SWAP */
-			eth-phy-cfg = <1 0 100 1>; /* phy_if_mode:MII phy_mask:0 speed:100M duplex:DUPLEX_FULL */
-			eth-fifo-cfg = <0 0x03ff0155 0>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
-		};
-
-		ETH1: ethernet@1a000000 {
-			compatible = "qcom,ag71xx-eth";
-			reg = <0x1a000000 0x200>;
-			reg-names = "mac_base";
-			interrupts = <5>;
-			interrupt-names = "mac_irq";
-			interrupt-parent = <&vic>;
-			mdio-handle = <&MDIO1>;
-
-			eth-phy-cfg = <2 0 1000 1>; /* phy_if_mode:GMII phy_mask:0 speed:1G duplex:DUPLEX_FULL */
-			eth-fifo-cfg = <0 0x03ff0155 0>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
+			eth-cfg = <0x00000041>; /* RGMII_GMAC0 | SW_ONLY_MODE */
+			eth-phy-cfg = <6 1 1000 1>; /* phy_if_mode:RGMII phy_mask:1 speed:1G duplex:DUPLEX_FULL */
+			eth-fifo-cfg = <0 0 0>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
+			eth-pll-data = <0 0 0x06000000>; /* pll_10 pll_100 pll_1000 */
 		};
 	};
 
@@ -104,25 +105,25 @@
 		compatible = "gpio-leds";
 
 		status {
-			label = "reh132:green:status";
+			label = "aph126:green:status";
 			gpios = <&gpios 14 1>;
 			linux,default-trigger = "timer";
 		};
 
 		wps {
-			label = "reh132:green:wps";
+			label = "aph126:green:wps";
 			gpios = <&gpios 15 1>;
 			linux,default-trigger = "timer";
 		};
 
 		wlan5g {
-			label = "reh132:green:wlan5g";
-			gpios = <&gpios 13 1>;
+			label = "aph126:green:wlan5g";
+			gpios = <&gpios 12 1>;
 			linux,default-trigger = "timer";
 		};
 
 		wlan2g {
-			label = "reh132:green:wlan2g";
+			label = "aph126:green:wlan2g";
 			gpios = <&gpios 13 1>;
 			linux,default-trigger = "timer";
 		};

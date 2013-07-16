@@ -9,8 +9,8 @@
 /dts-v1/;
 
 / {
-	model = "Qualcomm Atheros REH132";
-	compatible = "ath79,reh132";
+	model = "Qualcomm Atheros APH131";
+	compatible = "ath79,aph131";
 	#address-cells = <1>;
 	#size-cells = <1>;
 	interrupt-parent = <&vic>;
@@ -57,9 +57,11 @@
 			compatible = "qcom,ag71xx-mdio";
 			reg = <0x1a000000 0x200>;
 			reg-names = "mdio_base";
+
+			bi-phy-addr = <5>;
 		};
 
-		ETH0: ethernet@19000000 {
+		ETH0: ethernet@19000000 { /* PLC */
 			compatible = "qcom,ag71xx-eth";
 			reg = <0x19000000 0x200>;
 			reg-names = "mac_base";
@@ -68,12 +70,11 @@
 			interrupt-parent = <&vic>;
 			mdio-handle = <&MDIO1>;
 
-			eth-cfg = <0x00000080>; /* SW_PHY_SWAP */
-			eth-phy-cfg = <1 0 100 1>; /* phy_if_mode:MII phy_mask:0 speed:100M duplex:DUPLEX_FULL */
-			eth-fifo-cfg = <0 0x03ff0155 0>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
+			eth-cfg = <0x00000001>; /* RGMII_GMAC0 */
+			eth-phy-cfg = <1 0 100 1>; /* phy_if_mode:MII phy_mask:0 speed:1G duplex:DUPLEX_FULL */
 		};
 
-		ETH1: ethernet@1a000000 {
+		ETH1: ethernet@1a000000 { /* G PHY */
 			compatible = "qcom,ag71xx-eth";
 			reg = <0x1a000000 0x200>;
 			reg-names = "mac_base";
@@ -82,8 +83,8 @@
 			interrupt-parent = <&vic>;
 			mdio-handle = <&MDIO1>;
 
-			eth-phy-cfg = <2 0 1000 1>; /* phy_if_mode:GMII phy_mask:0 speed:1G duplex:DUPLEX_FULL */
-			eth-fifo-cfg = <0 0x03ff0155 0>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
+			eth-phy-cfg = <3 0x20 1000 1>; /* phy_if_mode:SGMII phy_mask:bit(5) speed:1G duplex:DUPLEX_FULL */
+			eth-pll-data = <0 0 0x06000000>; /* pll_10 pll_100 pll_1000 */
 		};
 	};
 
@@ -98,31 +99,43 @@
 			linux,code = <529>;
 			debounce-interval = <60>;
 		};
+		rfkill {
+			label = "rfkill";
+			gpios = <&gpios 21 1>;
+			linux,code = <583>;
+			debounce-interval = <60>;
+		};
 	};
 
 	gpio-leds {
 		compatible = "gpio-leds";
 
-		status {
-			label = "reh132:green:status";
+		status-green {
+			label = "aph131:green:status";
+			gpios = <&gpios 19 1>;
+			linux,default-trigger = "timer";
+		};
+
+		status-red {
+			label = "aph131:red:status";
 			gpios = <&gpios 14 1>;
 			linux,default-trigger = "timer";
 		};
 
-		wps {
-			label = "reh132:green:wps";
+		wps-green {
+			label = "aph131:green:wps";
+			gpios = <&gpios 20 1>;
+			linux,default-trigger = "timer";
+		};
+
+		wps-red {
+			label = "aph131:red:wps";
 			gpios = <&gpios 15 1>;
 			linux,default-trigger = "timer";
 		};
 
-		wlan5g {
-			label = "reh132:green:wlan5g";
-			gpios = <&gpios 13 1>;
-			linux,default-trigger = "timer";
-		};
-
 		wlan2g {
-			label = "reh132:green:wlan2g";
+			label = "aph131:green:wlan2g";
 			gpios = <&gpios 13 1>;
 			linux,default-trigger = "timer";
 		};
