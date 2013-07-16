@@ -29,14 +29,14 @@ endef
 COMMA:=,
 
 define mkcmdline
-$(if $(1),board=$(1) )$(if $(2),console=$(2)$(COMMA)$(3))
+$(if $(1),board=$(1) )$(if $(2),console=$(2)$(COMMA)$(3))$(if $(4), fdt=$(4))
 endef
 
 SINGLE_PROFILES:=
 
 define SingleProfile
   define Image/Build/Profile/$(3)
-	$$(call Image/Build/Template/$(2)/$$(1),$(1),$(4),$$(call mkcmdline,$(5),$(6),$(7)),$(8),$(9),$(10),$(11),$(12))
+	$$(call Image/Build/Template/$(2)/$$(1),$(1),$(4),$$(call mkcmdline,$(5),$(6),$(7),$(13)),$(8),$(9),$(10),$(11),$(12))
   endef
   SINGLE_PROFILES += $(3)
 endef
@@ -169,13 +169,11 @@ ap121_mtdlayout_4M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,2752k(rootfs
 ap135_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 ap135dual_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,15936k@0x50000(firmware);ath79-nand:256m(rootfs_data)
 ap136_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1472k(kernel),64k(art)ro,7744k@0x50000(firmware)
-aph131_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1408k(kernel),64k(art)ro,16000k@0x50000(firmware)
 cameo7240_mtdlayout=mtdparts=spi0.0:192k(u-boot)ro,64k(nvram)ro,960k(kernel),2752k(rootfs),64k(mac)ro,64k(art)ro,3712k@0x40000(firmware)
 cameo913x_mtdlayout=mtdparts=spi0.0:128k(u-boot)ro,64k(config)ro,960k(kernel),2880k(rootfs),64k(art)ro,3840k@0x30000(firmware)
 cameo933x_mtdlayout=mtdparts=spi0.0:64k(u-boot)ro,64k(art)ro,64k(mac)ro,64k(nvram)ro,192k(language)ro,896k(kernel),2752k(rootfs),3648k@0x70000(firmware)
 cap4200ag_mtdlayout=mtdparts=spi0.0:256k(u-boot),64k(u-boot-env),320k(custom)ro,1536k(kernel),12096k(rootfs),2048k(failsafe),64k(art),13632k@0xa0000(firmware)
 db120_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(nvram),64k(art)ro,7744k@0x50000(firmware)
-db120_vhyfi_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(nvram),64k(art)ro,7744k@0x50000(firmware)
 dir825b1_mtdlayout=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,1024k(kernel),5184k(rootfs),64k(caldata)ro,1600k(unknown)ro,6208k@0x50000(firmware),64k@0x7f0000(caldata_copy)
 dir825b1_mtdlayout_fat=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,1024k(kernel),6784k(rootfs),64k(caldata)ro,7808k@0x50000(firmware),64k@0x660000(caldata_orig),6208k@0x50000(firmware_orig)
 ew-dorin_mtdlayout_4M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),1024k(kernel),2688k(rootfs),64k(art),3712k@0x50000(firmware)
@@ -183,7 +181,6 @@ dlrtdev_mtdlayout=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,1024k(kernel),5184
 dlrtdev_mtdlayout_fat=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,1024k(kernel),6544k(rootfs),640k(certs),64k(caldata)ro,7168k@0x50000(firmware),64k@0x660000(caldata_orig),6208k@0x50000(firmware_orig)
 pb92_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,2752k(rootfs),896k(kernel),64k(nvram),64k(art)ro,3648k@0x50000(firmware)
 planex_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,960k(kernel),6784k(rootfs),128k(art)ro,7744k@0x50000(firmware)
-reh132_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1408k(kernel),64k(art)ro,16000k@0x50000(firmware)
 ubntxm_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,1024k(kernel),6528k(rootfs),256k(cfg)ro,64k(EEPROM)ro,7552k@0x50000(firmware)
 ubdev_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,1024k(kernel),6464k(rootfs),64k(certs),256k(cfg)ro,64k(EEPROM)ro,7488k@0x50000(firmware)
 whrhpg300n_mtdlayout=mtdparts=spi0.0:248k(u-boot)ro,8k(u-boot-env)ro,960k(kernel),2816k(rootfs),64k(art)ro,3712k@0x40000(firmware)
@@ -804,15 +801,13 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP121MINI,ap121-mini,AP121-MINI,tt
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP135,ap135,AP135,ttyS0,115200,$$(ap135_mtdlayout),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP135DUAL,ap135-dual,AP135-DUAL,ttyS0,115200,$$(ap135dual_mtdlayout),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP136,ap136,AP136,ttyS0,115200,$$(ap136_mtdlayout),1507328,6488064,RKuImage))
-$(eval $(call SingleProfile,AthLzma,$(fs_64k),APH131,aph131,APH131,ttyS0,115200,$$(aph131_mtdlayout),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CAP4200AG,cap4200ag,CAP4200AG,ttyS0,115200,$$(cap4200ag_mtdlayout),1572864,12386304,KRuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),DB120,db120,DB120,ttyS0,115200,$$(db120_mtdlayout),1441792,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),DB120TB388,db120tb388,DB120TB388,ttyS0,115200,$$(db120_mtdlayout),1441792,6488064,RKuImage))
-$(eval $(call SingleProfile,AthLzma,$(fs_64k),DB120_VHYFI,db120-vhyfi,DB120_VHYFI,ttyS0,115200,$$(db120_vhyfi_mtdlayout),1441792,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),EWDORINAP,ew-dorin,EW-DORIN,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),1048576,2752512,KRuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),EWDORINRT,ew-dorin-router,EW-DORIN-ROUTER,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),1048576,2752512,KRuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),PB92,pb92,PB92,ttyS0,115200,$$(pb92_mtdlayout),917504,2818048,KRuImage))
-$(eval $(call SingleProfile,AthLzma,$(fs_64k),REH132,reh132,REH132,ttyS0,115200,$$(reh132_mtdlayout),1507328,14876672,RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),DT,dt,GENERIC-DT,ttyS0,115200,,1507328,14876672,RKuImage,,0x81000000))
 
 $(eval $(call SingleProfile,Cameo7240,$(fs_64k),DIR600A1,dir-600-a1,DIR-600-A1,ttyS0,115200,"AP91-AR7240-RT-090223-00"))
 $(eval $(call SingleProfile,Cameo7240,$(fs_64k),DIR601A1,dir-601-a1,DIR-600-A1,ttyS0,115200,"AP91-AR7240-RT-090223-02"))

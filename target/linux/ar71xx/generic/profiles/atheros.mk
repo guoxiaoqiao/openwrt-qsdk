@@ -210,3 +210,14 @@ endef
 
 $(eval $(call Profile,REH132))
 
+define Profile/DT
+	NAME:=Atheros DT reference board
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+endef
+
+define Profile/DT/Description
+	Package set optimized for the Atheros DT reference board.
+endef
+
+$(eval $(call Profile,DT))
+
