@@ -27,7 +27,7 @@ define Profile/QSDK_Retail
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp \
 	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
-	  kmod-ipv6 luci-app-qos \
+	  kmod-ipv6 luci-app-qos kmod-ebtables \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client \
