@@ -16,10 +16,9 @@ CONFIG_EXTERNAL_KERNEL_TREE=$(TOPDIR)/qca/src/linux
 
 CFLAGS:=-Os -pipe -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp
 
-DEFAULT_PACKAGES += uboot-ipq806x-cdp mtd-utils uboot-envtools
-DEVICE_TYPE=developerboard
-
 include $(INCLUDE_DIR)/target.mk
+
+DEFAULT_PACKAGES += mtd-utils uboot-envtools
 
 define Target/Description
 	Build firmware images for Qualcomm Atheros IPQ806x (arm) platform.
