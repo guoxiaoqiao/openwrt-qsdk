@@ -25,9 +25,10 @@ define KernelPackage/qca-nss-cfi
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
-  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv
+  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-crypto +kmod-crypto-ocf
   TITLE:=Kernel driver for NSS cfi
-  FILES:=$(PKG_BUILD_DIR)/ipq806x/qca-nss-cfi-ocf.ko
+  FILES:=$(PKG_BUILD_DIR)/ocf/qca-nss-cfi-ocf.ko \
+	 $(PKG_BUILD_DIR)/ipsec/qca-nss-ipsec.ko
 endef
 
 define KernelPackage/qca-nss-cfi/Description
@@ -36,9 +37,9 @@ endef
 
 EXTRA_CFLAGS+= \
 	-DCONFIG_NSS_DEBUG_LEVEL=4 \
+	-I$(STAGING_DIR)/usr/include/qca-nss-crypto \
+	-I$(STAGING_DIR)/usr/include/crypto \
 	-I$(STAGING_DIR)/usr/include/qca-nss-drv \
-	-I$(PKG_BUILD_DIR)/nss_hal/include \
-	-I$(PKG_BUILD_DIR)/nss_hal/$(BOARD)
 
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
@@ -46,6 +47,7 @@ define Build/Compile
 		ARCH="$(LINUX_KARCH)" \
 		SUBDIRS="$(PKG_BUILD_DIR)" \
 		EXTRA_CFLAGS="$(EXTRA_CFLAGS)" \
+		CC="$(TARGET_CC)" \
 		modules
 endef
 
