@@ -1,6 +1,6 @@
-diff -uNr a/bonding.c b/bonding.c
---- a/bonding.c	1970-01-01 08:00:00.000000000 +0800
-+++ b/bonding.c	2013-06-21 11:17:32.341728698 +0800
+diff -ruN a/bonding.c b/bonding.c
+--- a/bonding.c
++++ b/bonding.c
 @@ -0,0 +1,535 @@
 +/*
 + * netifd - network interface daemon
@@ -537,22 +537,22 @@ diff -uNr a/bonding.c b/bonding.c
 +
 +	return dev;
 +}
-diff -uNr a/CMakeLists.txt b/CMakeLists.txt
---- a/CMakeLists.txt	2013-05-06 14:40:12.000000000 +0800
-+++ b/CMakeLists.txt	2013-06-19 19:15:48.000000000 +0800
+diff -ruN a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
 @@ -14,7 +14,7 @@
  	main.c utils.c system.c tunnel.c
  	interface.c interface-ip.c interface-event.c
- 	proto.c proto-static.c proto-shell.c
+ 	iprule.c proto.c proto-static.c proto-shell.c
 -	config.c device.c bridge.c vlan.c alias.c
 +	config.c device.c bridge.c bonding.c vlan.c alias.c
  	ubus.c)
  
  
-diff -uNr a/config.c b/config.c
---- a/config.c	2013-05-06 14:40:12.000000000 +0800
-+++ b/config.c	2013-06-20 18:14:51.000000000 +0800
-@@ -162,6 +162,25 @@
+diff -ruN a/config.c b/config.c
+--- a/config.c
++++ b/config.c
+@@ -163,6 +163,25 @@
  	return 0;
  }
  
@@ -578,7 +578,7 @@ diff -uNr a/config.c b/config.c
  static void
  config_parse_interface(struct uci_section *s, bool alias)
  {
-@@ -169,7 +188,7 @@
+@@ -170,7 +189,7 @@
  	const char *type = NULL;
  	struct blob_attr *config;
  	struct device *dev;
@@ -587,7 +587,7 @@ diff -uNr a/config.c b/config.c
  
  	blob_buf_init(&b, 0);
  
-@@ -179,7 +198,13 @@
+@@ -180,7 +199,13 @@
  		if (config_parse_bridge_interface(s))
  			return;
  
@@ -602,7 +602,7 @@ diff -uNr a/config.c b/config.c
  	}
  
  	uci_to_blob(&b, s, &interface_attr_list);
-@@ -192,7 +217,7 @@
+@@ -193,7 +218,7 @@
  	if (iface->proto_handler && iface->proto_handler->config_params)
  		uci_to_blob(&b, s, iface->proto_handler->config_params);
  
@@ -611,7 +611,7 @@ diff -uNr a/config.c b/config.c
  		iface->device_config = true;
  
  	config = malloc(blob_pad_len(b.head));
-@@ -266,6 +291,8 @@
+@@ -279,6 +304,8 @@
  		if (type) {
  			if (!strcmp(type, "bridge"))
  				devtype = &bridge_device_type;
@@ -620,10 +620,10 @@ diff -uNr a/config.c b/config.c
  			else if (!strcmp(type, "tunnel"))
  				devtype = &tunnel_device_type;
  		}
-diff -uNr a/device.h b/device.h
---- a/device.h	2013-05-06 14:40:12.000000000 +0800
-+++ b/device.h	2013-06-19 19:19:43.000000000 +0800
-@@ -147,6 +147,7 @@
+diff -ruN a/device.h b/device.h
+--- a/device.h
++++ b/device.h
+@@ -152,6 +152,7 @@
  extern const struct device_type simple_device_type;
  extern const struct device_type bridge_device_type;
  extern const struct device_type tunnel_device_type;
@@ -631,10 +631,10 @@ diff -uNr a/device.h b/device.h
  
  void device_lock(void);
  void device_unlock(void);
-diff -uNr a/interface.c b/interface.c
---- a/interface.c	2013-05-06 14:40:12.000000000 +0800
-+++ b/interface.c	2013-06-20 17:50:58.000000000 +0800
-@@ -708,6 +708,7 @@
+diff -ruN a/interface.c b/interface.c
+--- a/interface.c
++++ b/interface.c
+@@ -747,6 +747,7 @@
  
  	if_old->device_config = if_new->device_config;
  	if_old->config_autostart = if_new->config_autostart;
@@ -642,9 +642,9 @@ diff -uNr a/interface.c b/interface.c
  	if_old->ifname = if_new->ifname;
  	if_old->parent_ifname = if_new->parent_ifname;
  	if_old->proto_handler = if_new->proto_handler;
-diff -uNr a/system-dummy.c b/system-dummy.c
---- a/system-dummy.c	2013-05-06 14:40:12.000000000 +0800
-+++ b/system-dummy.c	2013-06-20 18:11:26.000000000 +0800
+diff -ruN a/system-dummy.c b/system-dummy.c
+--- a/system-dummy.c
++++ b/system-dummy.c
 @@ -54,6 +54,30 @@
  	return 0;
  }
@@ -676,10 +676,10 @@ diff -uNr a/system-dummy.c b/system-dummy.c
  int system_vlan_add(struct device *dev, int id)
  {
  	D(SYSTEM, "vconfig add %s %d\n", dev->ifname, id);
-diff -uNr a/system.h b/system.h
---- a/system.h	2013-05-06 14:40:12.000000000 +0800
-+++ b/system.h	2013-06-19 19:24:14.000000000 +0800
-@@ -50,6 +50,10 @@
+diff -ruN a/system.h b/system.h
+--- a/system.h
++++ b/system.h
+@@ -53,6 +53,10 @@
  	int max_age;
  };
  
@@ -690,7 +690,7 @@ diff -uNr a/system.h b/system.h
  static inline int system_get_addr_family(unsigned int flags)
  {
  	if ((flags & DEVADDR_FAMILY) == DEVADDR_INET6)
-@@ -73,6 +77,11 @@
+@@ -76,6 +80,11 @@
  int system_bridge_addif(struct device *bridge, struct device *dev);
  int system_bridge_delif(struct device *bridge, struct device *dev);
  
@@ -702,10 +702,10 @@ diff -uNr a/system.h b/system.h
  int system_vlan_add(struct device *dev, int id);
  int system_vlan_del(struct device *dev);
  
-diff -uNr a/system-linux.c b/system-linux.c
---- a/system-linux.c	2013-05-06 14:40:12.000000000 +0800
-+++ b/system-linux.c	2013-06-20 17:44:23.000000000 +0800
-@@ -275,6 +275,16 @@
+diff -ruN a/system-linux.c b/system-linux.c
+--- a/system-linux.c
++++ b/system-linux.c
+@@ -279,6 +279,16 @@
  	return ioctl(sock_ioctl, SIOCBRDELBR, bridge->ifname);
  }
  
@@ -722,7 +722,7 @@ diff -uNr a/system-linux.c b/system-linux.c
  static int system_bridge_if(const char *bridge, struct device *dev, int cmd, void *data)
  {
  	struct ifreq ifr;
-@@ -299,6 +309,17 @@
+@@ -303,6 +313,18 @@
  	return true;
  }
  
@@ -737,10 +737,11 @@ diff -uNr a/system-linux.c b/system-linux.c
 +	return true;
 +}
 +
++
  static char *system_get_bridge(const char *name, char *buf, int buflen)
  {
  	char *path;
-@@ -324,6 +345,33 @@
+@@ -328,6 +350,33 @@
  	return path + 1;
  }
  
@@ -774,7 +775,7 @@ diff -uNr a/system-linux.c b/system-linux.c
  int system_bridge_addif(struct device *bridge, struct device *dev)
  {
  	char *oldbr;
-@@ -342,6 +390,28 @@
+@@ -346,6 +395,28 @@
  	return system_bridge_if(bridge->ifname, dev, SIOCBRDELIF, NULL);
  }
  
@@ -803,7 +804,7 @@ diff -uNr a/system-linux.c b/system-linux.c
  static int system_if_resolve(struct device *dev)
  {
  	struct ifreq ifr;
-@@ -509,6 +579,7 @@
+@@ -529,6 +600,7 @@
  {
  	static char buf[256];
  	char *bridge;
@@ -811,7 +812,7 @@ diff -uNr a/system-linux.c b/system-linux.c
  
  	if (dev->external)
  		return;
-@@ -525,12 +596,24 @@
+@@ -545,12 +617,24 @@
  		return;
  	}
  
@@ -836,10 +837,11 @@ diff -uNr a/system-linux.c b/system-linux.c
  	system_if_clear_entries(dev, RTM_GETROUTE, AF_INET);
  	system_if_clear_entries(dev, RTM_GETADDR, AF_INET);
  	system_if_clear_entries(dev, RTM_GETROUTE, AF_INET6);
-@@ -583,6 +666,19 @@
+@@ -606,6 +690,19 @@
+ 
  	return 0;
  }
- 
++
 +int system_bonding_addbonding(struct device *bonding, struct bonding_config *cfg)
 +{
 +	char cmd[32], mode[4];
@@ -852,7 +854,6 @@ diff -uNr a/system-linux.c b/system-linux.c
 +
 +	return 0;
 +}
-+
+ 
  static int system_vlan(struct device *dev, int id)
  {
- 	struct vlan_ioctl_args ifr = {
