@@ -356,7 +356,8 @@ int swlib_set_attr_string(struct switch_dev *dev, struct switch_attr *a, int por
 	val.port_vlan = port_vlan;
 	switch(a->type) {
 	case SWITCH_TYPE_INT:
-		val.value.i = atoi(str);
+		/*  store the unsigned value */
+		val.value.i = strtoul(str, NULL, 10);
 		break;
 	case SWITCH_TYPE_STRING:
 		val.value.s = str;
