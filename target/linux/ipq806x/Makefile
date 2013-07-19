@@ -18,7 +18,9 @@ CFLAGS:=-Os -pipe -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp
 
 include $(INCLUDE_DIR)/target.mk
 
-DEFAULT_PACKAGES += mtd-utils uboot-envtools
+DEFAULT_PACKAGES += \
+	mtd-utils kmod-button-hotplug uboot-envtools swconfig \
+	kmod-qca-nss-drv kmod-qca-nss-gmac
 
 define Target/Description
 	Build firmware images for Qualcomm Atheros IPQ806x (arm) platform.
