@@ -60,7 +60,7 @@ define Profile/QSDK_Enterprise
 	# based on carrier profile
 	$(Profile/QSDK_Carrier)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
-	PACKAGES+=kmod-ipsec kmod-ipsec4 kmod-ipsec6 ipsec-tools
+	PACKAGES+=kmod-openswan openswan kmod-crypto-ocf
 endef
 
 define Profile/QSDK_Enterprise/Description
