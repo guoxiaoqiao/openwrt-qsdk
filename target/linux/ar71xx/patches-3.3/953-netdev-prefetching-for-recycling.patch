@@ -14,9 +14,9 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
 
 Index: linux-3.3.8/net/core/skbuff.c
 ===================================================================
---- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:50:21.313783402 -0500
-+++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:53:31.505786973 -0500
-@@ -376,16 +376,26 @@
+--- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:57:02.621790936 -0500
++++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:57:02.617790936 -0500
+@@ -379,16 +379,26 @@
  		local_irq_restore(flags);
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
@@ -47,7 +47,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  			skb_reserve(skb, NET_SKB_PAD);
  			skb->dev = dev;
  			return skb;
-@@ -445,6 +455,10 @@
+@@ -448,6 +458,10 @@
  {
  	unsigned int len;
  
@@ -58,7 +58,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  	if (likely(length <= SKB_RECYCLE_SIZE)) {
  		unsigned long flags;
  		struct sk_buff *skb;
-@@ -454,17 +468,25 @@
+@@ -457,17 +471,25 @@
  		local_irq_restore(flags);
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
@@ -89,7 +89,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  			return skb;
  		}
  	}
-@@ -676,6 +698,9 @@
+@@ -679,6 +701,9 @@
  {
  	if (unlikely(!skb))
  		return;

@@ -15,14 +15,17 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
 Index: linux-3.3.8/net/core/skbuff.c
 ===================================================================
 --- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:48:55.513781792 -0500
-+++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:48:55.509781792 -0500
-@@ -152,6 +152,53 @@
++++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:56:56.717790826 -0500
+@@ -152,6 +152,56 @@
  	BUG();
  }
  
 +static inline void zero_struct(void *v, int size)
 +{
 +	uint32_t *s = (uint32_t *)v;
++
++	/* We assume that size is word aligned; in fact, it's constant */
++	BUG_ON((size & 3) != 0);
 +
 +	/*
 +	 * This looks odd but we "know" size is a constant, and so the
@@ -70,7 +73,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  /* 	Allocate a new skbuff. We do this ourselves so we can fill in a few
   *	'private' fields and also do memory statistics to find all the
   *	[BEEP] leaks.
-@@ -330,9 +377,10 @@
+@@ -330,9 +380,10 @@
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
  			struct skb_shared_info *s = skb_shinfo(skb);
@@ -83,7 +86,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  			skb->data = skb->head;
  			skb_reset_tail_pointer(skb);
  #ifdef NET_SKBUFF_DATA_USES_OFFSET
-@@ -407,9 +455,10 @@
+@@ -407,9 +458,10 @@
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
  			struct skb_shared_info *s = skb_shinfo(skb);
