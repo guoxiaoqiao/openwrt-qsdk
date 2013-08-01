@@ -375,27 +375,42 @@ $(eval $(call KernelPackage,crypto-misc))
 
 
 define KernelPackage/crypto-ocf
-  TITLE:=OCF modules
-  DEPENDS:=+@OPENSSL_ENGINE_CRYPTO @!TARGET_uml +kmod-crypto-manager
+  SUBMENU:=$(CRYPTO_MENU)
+  TITLE:=OCF module
+  DEPENDS:=+@OPENSSL_ENGINE_CRYPTO @!TARGET_uml
   KCONFIG:= \
 	CONFIG_OCF_OCF \
-	CONFIG_OCF_CRYPTODEV \
-	CONFIG_OCF_CRYPTOSOFT \
-	CONFIG_OCF_FIPS=y \
-	CONFIG_OCF_RANDOMHARVEST=y
-  FILES:= \
-	$(LINUX_DIR)/crypto/ocf/ocf.ko \
-	$(LINUX_DIR)/crypto/ocf/cryptodev.ko \
-	$(LINUX_DIR)/crypto/ocf/cryptosoft.ko
-  AUTOLOAD:=$(call AutoLoad,09, \
-	ocf \
-	cryptodev \
-	cryptosoft \
-  )
-  $(call AddDepends/crypto)
+	CONFIG_OCF_RANDOMHARVEST=n
+  FILES:= $(LINUX_DIR)/crypto/ocf/ocf.ko
+  AUTOLOAD:=$(call AutoLoad,09,ocf)
 endef
 
 $(eval $(call KernelPackage,crypto-ocf))
+
+
+define KernelPackage/crypto-ocf-cryptodev
+  TITLE:=OCF cryptodev module
+  DEPENDS:=+@OPENSSL_ENGINE_CRYPTO @!TARGET_uml +kmod-crypto-ocf
+  KCONFIG:= CONFIG_OCF_CRYPTODEV
+  FILES:= $(LINUX_DIR)/crypto/ocf/cryptodev.ko
+  AUTOLOAD:=$(call AutoLoad,10,cryptodev)
+  $(call AddDepends/crypto)
+endef
+
+$(eval $(call KernelPackage,crypto-ocf-cryptodev))
+
+
+define KernelPackage/crypto-ocf-cryptosoft
+  TITLE:=OCF cryptodev module
+  DEPENDS:=+@OPENSSL_ENGINE_CRYPTO @!TARGET_uml +kmod-crypto-ocf
+  KCONFIG:= CONFIG_OCF_CRYPTOSOFT
+  FILES:= $(LINUX_DIR)/crypto/ocf/cryptosoft.ko
+  AUTOLOAD:=$(call AutoLoad,10,cryptosoft)
+  $(call AddDepends/crypto)
+endef
+
+$(eval $(call KernelPackage,crypto-ocf-cryptosoft))
+
 
 
 define KernelPackage/crypto-ocf-hifn7751
@@ -471,3 +486,27 @@ define KernelPackage/crypto-mv-cesa
 endef
 
 $(eval $(call KernelPackage,crypto-mv-cesa))
+
+define KernelPackage/crypto-ocf-bench
+  SUBMENU:=$(CRYPTO_MENU)
+  TITLE:=OCF bench module
+  DEPENDS:=@!TARGET_uml +kmod-crypto-ocf
+  KCONFIG:= CONFIG_OCF_BENCH
+  FILES:= $(LINUX_DIR)/crypto/ocf/ocf-bench.ko
+  AUTOLOAD:=$(call AutoLoad,10,ocf-bench)
+endef
+
+$(eval $(call KernelPackage,crypto-ocf-bench))
+
+
+define KernelPackage/crypto-ocf-null
+  SUBMENU:=$(CRYPTO_MENU)
+  TITLE:=OCF null module
+  DEPENDS:=@!TARGET_uml +kmod-crypto-ocf
+  KCONFIG:= CONFIG_OCF_OCFNULL
+  FILES:= $(LINUX_DIR)/crypto/ocf/ocfnull/ocfnull.ko
+  AUTOLOAD:=$(call AutoLoad,10,ocfnull)
+endef
+
+$(eval $(call KernelPackage,crypto-ocf-null))
+
