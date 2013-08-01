@@ -40,9 +40,45 @@
 
 			flash: m25p80@0 {
 				compatible = "st,m25p80";	/* modalias */
+				#address-cells = <1>;
+				#size-cells = <1>;
 				spi-max-frequency = <25000000>; /* max_speed_hz */
 				reg = <0>;			/* chip_select */
 				spi-controller-data = <1 0 0>;  /* is_flash cs_type cs_line */
+
+				partition@u-boot {
+					label = "u-boot";
+					reg = <0x00000000 0x00040000>;
+                                        read-only;
+                                };
+				partition@u-boot-env {
+					label = "u-boot-env";
+					reg = <0x00040000 0x00010000>;
+                                        read-only;
+                                };
+                                partition@rootfs {
+                                        label = "rootfs";
+                                        reg = <0x00050000 0x00630000>;
+                                };
+                                partition@kernel {
+                                        label = "kernel";
+                                        reg = <0x00680000 0x00160000>;
+                                        read-only;
+                                };
+                                partition@dtb {
+                                        label = "dtb";
+                                        reg = <0x007e0000 0x00010000>;
+                                        read-only;
+                                };
+                                partition@art {
+                                        label = "art";
+                                        reg = <0x007f0000 0x00010000>;
+                                        read-only;
+                                };
+                                partition@firmware {
+                                        label = "firmware";
+                                        reg = <0x00050000 0x00790000>;
+                                };
 			};
 		};
 
@@ -51,6 +87,12 @@
 			reg = <0x18100000 0x20000>;
 			interrupts = <47>;
 			interrupt-parent = <&vic>;
+		};
+
+		MDIO0: mdio@19000000 {
+			compatible = "qcom,ag71xx-mdio";
+			reg = <0x19000000 0x200>;
+			reg-names = "mdio_base";
 		};
 
 		MDIO1: mdio@1a000000 {
@@ -63,15 +105,17 @@
 
 		ETH0: ethernet@19000000 { /* PLC */
 			compatible = "qcom,ag71xx-eth";
-			reg = <0x19000000 0x200>;
-			reg-names = "mac_base";
+			reg = <0x19000000 0x200>,
+			      <0x18070000 0x40>;
+			reg-names = "mac_base",
+				"cfg_base";
 			interrupts = <4>;
 			interrupt-names = "mac_irq";
 			interrupt-parent = <&vic>;
-			mdio-handle = <&MDIO1>;
+			mdio-handle = <&MDIO0>;
 
-			eth-cfg = <0x00000001>; /* RGMII_GMAC0 */
-			eth-phy-cfg = <1 0 100 1>; /* phy_if_mode:MII phy_mask:0 speed:1G duplex:DUPLEX_FULL */
+			eth-cfg = <0x00000012>; /* MII_GE0_SLAVE | MII_GMAC0 */
+			eth-phy-cfg = <1 0 100 1>; /* phy_if_mode:MII phy_mask:0 speed:100M duplex:DUPLEX_FULL */
 		};
 
 		ETH1: ethernet@1a000000 { /* G PHY */

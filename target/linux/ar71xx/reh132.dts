@@ -40,9 +40,45 @@
 
 			flash: m25p80@0 {
 				compatible = "st,m25p80";	/* modalias */
+				#address-cells = <1>;
+				#size-cells = <1>;
 				spi-max-frequency = <25000000>; /* max_speed_hz */
 				reg = <0>;			/* chip_select */
 				spi-controller-data = <1 0 0>;  /* is_flash cs_type cs_line */
+
+				partition@u-boot {
+					label = "u-boot";
+					reg = <0x00000000 0x00040000>;
+                                        read-only;
+                                };
+				partition@u-boot-env {
+					label = "u-boot-env";
+					reg = <0x00040000 0x00010000>;
+                                        read-only;
+                                };
+                                partition@rootfs {
+                                        label = "rootfs";
+                                        reg = <0x00050000 0x00630000>;
+                                };
+                                partition@kernel {
+                                        label = "kernel";
+                                        reg = <0x00680000 0x00160000>;
+                                        read-only;
+                                };
+                                partition@dtb {
+                                        label = "dtb";
+                                        reg = <0x007e0000 0x00010000>;
+                                        read-only;
+                                };
+                                partition@art {
+                                        label = "art";
+                                        reg = <0x007f0000 0x00010000>;
+                                        read-only;
+                                };
+                                partition@firmware {
+                                        label = "firmware";
+                                        reg = <0x00050000 0x00790000>;
+                                };
 			};
 		};
 
@@ -61,16 +97,18 @@
 
 		ETH0: ethernet@19000000 {
 			compatible = "qcom,ag71xx-eth";
-			reg = <0x19000000 0x200>;
-			reg-names = "mac_base";
+			reg = <0x19000000 0x200>,
+			      <0x18070000 0x14>;
+			reg-names = "mac_base",
+				"cfg_base";
 			interrupts = <4>;
 			interrupt-names = "mac_irq";
 			interrupt-parent = <&vic>;
 			mdio-handle = <&MDIO1>;
 
-			eth-cfg = <0x00000080>; /* SW_PHY_SWAP */
+			eth-cfg = <0x00003000>; /* RMII_GMAC0_MASTER | SW_ACC_MSB_FIRST */
 			eth-phy-cfg = <1 0 100 1>; /* phy_if_mode:MII phy_mask:0 speed:100M duplex:DUPLEX_FULL */
-			eth-fifo-cfg = <0 0x03ff0155 0>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
+			eth-fifo-cfg = <0x0010ffff 0x03ff0155 0x01f00140>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
 		};
 
 		ETH1: ethernet@1a000000 {
@@ -83,7 +121,8 @@
 			mdio-handle = <&MDIO1>;
 
 			eth-phy-cfg = <2 0 1000 1>; /* phy_if_mode:GMII phy_mask:0 speed:1G duplex:DUPLEX_FULL */
-			eth-fifo-cfg = <0 0x03ff0155 0>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
+			eth-fifo-cfg = <0x0010ffff 0x03ff0155 0x01f00140>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
+			eth-sw-cfg = <1 0>; /* phy4_mii_en phy_poll_mask */
 		};
 	};
 
