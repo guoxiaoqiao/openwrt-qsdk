@@ -31,7 +31,7 @@ define Profile/QSDK_Retail
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client \
-	  luci-app-ddns ddns-scripts qca-legacy-uboot-ap135 qca-legacy-uboot-db12x \
+	  luci-app-ddns ddns-scripts qca-legacy-uboot-ap135 qca-legacy-uboot-db12x uboot-ipq806x-cdp \
 	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
 endef
 
