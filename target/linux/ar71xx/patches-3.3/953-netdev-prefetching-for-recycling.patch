@@ -12,9 +12,11 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  net/core/skbuff.c | 45 ++++++++++++++++++++++++++++++++++++---------
  1 file changed, 36 insertions(+), 9 deletions(-)
 
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -376,16 +376,26 @@ struct sk_buff *__netdev_alloc_skb(struc
+Index: linux-3.3.8/net/core/skbuff.c
+===================================================================
+--- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:39:37.513771316 -0500
++++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:39:44.000000000 -0500
+@@ -376,16 +376,26 @@
  		local_irq_restore(flags);
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
@@ -45,7 +47,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  			skb_reserve(skb, NET_SKB_PAD);
  			skb->dev = dev;
  			return skb;
-@@ -446,6 +456,10 @@ struct sk_buff *dev_alloc_skb(unsigned i
+@@ -446,6 +456,10 @@
  {
  	unsigned int len;
  
@@ -56,7 +58,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  	if (likely(length <= SKB_RECYCLE_SIZE)) {
  		unsigned long flags;
  		struct sk_buff *skb;
-@@ -455,22 +469,32 @@ struct sk_buff *dev_alloc_skb(unsigned i
+@@ -455,22 +469,32 @@
  		local_irq_restore(flags);
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
@@ -94,7 +96,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  	/*
  	 * There is more code here than it seems:
  	 * __dev_alloc_skb is an inline
-@@ -677,6 +701,9 @@ void consume_skb(struct sk_buff *skb)
+@@ -677,6 +701,9 @@
  {
  	if (unlikely(!skb))
  		return;

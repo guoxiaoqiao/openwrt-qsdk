@@ -12,11 +12,11 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  net/core/skbuff.c | 57 +++++++++++++++++++++++++++++++++++++++++++++++++++----
  1 file changed, 53 insertions(+), 4 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 1188872..15b5f83 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -152,6 +152,53 @@ static void skb_under_panic(struct sk_buff *skb, int sz, void *here)
+Index: linux-3.3.8/net/core/skbuff.c
+===================================================================
+--- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:39:29.965771174 -0500
++++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:39:29.961771174 -0500
+@@ -152,6 +152,53 @@
  	BUG();
  }
  
@@ -70,7 +70,7 @@ index 1188872..15b5f83 100644
  /* 	Allocate a new skbuff. We do this ourselves so we can fill in a few
   *	'private' fields and also do memory statistics to find all the
   *	[BEEP] leaks.
-@@ -327,9 +374,10 @@ struct sk_buff *__netdev_alloc_skb(struct net_device *dev,
+@@ -330,9 +377,10 @@
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
  			struct skb_shared_info *s = skb_shinfo(skb);
@@ -83,7 +83,7 @@ index 1188872..15b5f83 100644
  			skb->data = skb->head;
  			skb_reset_tail_pointer(skb);
  #ifdef NET_SKBUFF_DATA_USES_OFFSET
-@@ -402,9 +450,10 @@ struct sk_buff *dev_alloc_skb(unsigned int length)
+@@ -408,9 +456,10 @@
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
  			struct skb_shared_info *s = skb_shinfo(skb);
@@ -96,6 +96,3 @@ index 1188872..15b5f83 100644
  			skb->data = skb->head + NET_SKB_PAD;
  			skb_reset_tail_pointer(skb);
  			skb_reserve(skb, NET_SKB_PAD);
--- 
-1.8.1.2
-

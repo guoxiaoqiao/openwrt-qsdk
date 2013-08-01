@@ -12,11 +12,11 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  net/core/skbuff.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 9336366..7b36265 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -556,7 +556,7 @@ static void skb_release_data(struct sk_buff *skb)
+Index: linux-3.3.8/net/core/skbuff.c
+===================================================================
+--- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:39:47.565771505 -0500
++++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:39:47.561771505 -0500
+@@ -562,7 +562,7 @@
  /*
   *	Free an skbuff by memory without cleaning the state.
   */
@@ -25,6 +25,3 @@ index 9336366..7b36265 100644
  {
  	struct sk_buff *other;
  	atomic_t *fclone_ref;
--- 
-1.8.1.2
-
