@@ -14,8 +14,8 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
 
 Index: linux-3.3.8/net/core/skbuff.c
 ===================================================================
---- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:39:37.513771316 -0500
-+++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:39:44.000000000 -0500
+--- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:50:21.313783402 -0500
++++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:53:31.505786973 -0500
 @@ -376,16 +376,26 @@
  		local_irq_restore(flags);
  		put_cpu_var(recycle_list);
@@ -47,7 +47,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  			skb_reserve(skb, NET_SKB_PAD);
  			skb->dev = dev;
  			return skb;
-@@ -446,6 +456,10 @@
+@@ -445,6 +455,10 @@
  {
  	unsigned int len;
  
@@ -58,7 +58,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  	if (likely(length <= SKB_RECYCLE_SIZE)) {
  		unsigned long flags;
  		struct sk_buff *skb;
-@@ -455,22 +469,32 @@
+@@ -454,17 +468,25 @@
  		local_irq_restore(flags);
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
@@ -86,17 +86,10 @@ Index: linux-3.3.8/net/core/skbuff.c
 +			zero_struct(shinfo,
 +				    offsetof(struct skb_shared_info, dataref));
 +			atomic_set(&shinfo->dataref, 1);
-+
  			return skb;
  		}
  	}
- 
- 	len = (length <= SKB_RECYCLE_SIZE) ? SKB_RECYCLE_SIZE : len;
-+
- 	/*
- 	 * There is more code here than it seems:
- 	 * __dev_alloc_skb is an inline
-@@ -677,6 +701,9 @@
+@@ -676,6 +698,9 @@
  {
  	if (unlikely(!skb))
  		return;

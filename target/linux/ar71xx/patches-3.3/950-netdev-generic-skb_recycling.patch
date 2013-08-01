@@ -23,8 +23,10 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  net/core/skbuff.c | 149 +++++++++++++++++++++++++++++++++++++++++++++++++++---
  1 file changed, 143 insertions(+), 6 deletions(-)
 
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
+Index: linux-3.3.8/net/core/skbuff.c
+===================================================================
+--- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:39:27.197771122 -0500
++++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:45:03.033777427 -0500
 @@ -59,6 +59,7 @@
  #include <linux/errqueue.h>
  #include <linux/prefetch.h>
@@ -43,7 +45,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  
  static void sock_pipe_buf_release(struct pipe_inode_info *pipe,
  				  struct pipe_buffer *buf)
-@@ -310,13 +314,44 @@ EXPORT_SYMBOL(build_skb);
+@@ -310,13 +314,43 @@
  struct sk_buff *__netdev_alloc_skb(struct net_device *dev,
  		unsigned int length, gfp_t gfp_mask)
  {
@@ -81,9 +83,8 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
 +		}
  	}
 +
-+	len = length + NET_SKB_PAD;
 +	len = (len <= SKB_RECYCLE_SIZE) ? SKB_RECYCLE_SIZE : len;
-+	skb = __alloc_skb(len, gfp_mask, 0, NUMA_NO_NODE);
++	skb = __alloc_skb(len + NET_SKB_PAD, gfp_mask, 0, NUMA_NO_NODE);
 +	if (unlikely(skb == NULL))
 +		return NULL;
 +
@@ -92,7 +93,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  	return skb;
  }
  EXPORT_SYMBOL(__netdev_alloc_skb);
-@@ -361,11 +396,37 @@ EXPORT_SYMBOL(skb_add_rx_frag);
+@@ -361,11 +395,37 @@
   */
  struct sk_buff *dev_alloc_skb(unsigned int length)
  {
@@ -121,7 +122,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
 +		}
 +	}
 +
-+	len = (length <= SKB_RECYCLE_SIZE) ? SKB_RECYCLE_SIZE : len;
++	len = (length <= SKB_RECYCLE_SIZE) ? SKB_RECYCLE_SIZE : length;
  	/*
  	 * There is more code here than it seems:
  	 * __dev_alloc_skb is an inline
@@ -131,7 +132,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  }
  EXPORT_SYMBOL(dev_alloc_skb);
  
-@@ -530,6 +591,31 @@ void kfree_skb(struct sk_buff *skb)
+@@ -530,6 +590,31 @@
  }
  EXPORT_SYMBOL(kfree_skb);
  
@@ -163,7 +164,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  /**
   *	consume_skb - free an skbuff
   *	@skb: buffer to free
-@@ -546,8 +632,46 @@ void consume_skb(struct sk_buff *skb)
+@@ -546,8 +631,46 @@
  		smp_rmb();
  	else if (likely(!atomic_dec_and_test(&skb->users)))
  		return;
@@ -211,7 +212,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  }
  EXPORT_SYMBOL(consume_skb);
  
-@@ -2962,8 +3086,23 @@ done:
+@@ -2962,8 +3085,23 @@
  }
  EXPORT_SYMBOL_GPL(skb_gro_receive);
  
@@ -235,7 +236,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
  	skbuff_head_cache = kmem_cache_create("skbuff_head_cache",
  					      sizeof(struct sk_buff),
  					      0,
-@@ -2975,6 +3114,14 @@ void __init skb_init(void)
+@@ -2975,6 +3113,14 @@
  						0,
  						SLAB_HWCACHE_ALIGN|SLAB_PANIC,
  						NULL);

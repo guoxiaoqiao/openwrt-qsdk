@@ -14,8 +14,8 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
 
 Index: linux-3.3.8/net/core/skbuff.c
 ===================================================================
---- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:39:29.965771174 -0500
-+++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:39:29.961771174 -0500
+--- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:48:55.513781792 -0500
++++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:48:55.509781792 -0500
 @@ -152,6 +152,53 @@
  	BUG();
  }
@@ -83,7 +83,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  			skb->data = skb->head;
  			skb_reset_tail_pointer(skb);
  #ifdef NET_SKBUFF_DATA_USES_OFFSET
-@@ -408,9 +456,10 @@
+@@ -407,9 +455,10 @@
  		put_cpu_var(recycle_list);
  		if (likely(skb)) {
  			struct skb_shared_info *s = skb_shinfo(skb);
