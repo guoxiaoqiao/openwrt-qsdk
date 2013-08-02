@@ -27,7 +27,7 @@ define KernelPackage/qca-nss-drv
   SUBMENU:=Network Devices
   DEPENDS:=@TARGET_ipq806x
   TITLE:=Kernel driver for NSS
-  FILES:=$(PKG_BUILD_DIR)/qca-nss-drv.ko
+  FILES:=$(PKG_BUILD_DIR)/qca-nss-drv.ko $(PKG_BUILD_DIR)/qca-nss-connmgr-ipv4.ko $(PKG_BUILD_DIR)/qca-nss-connmgr-ipv6.ko
   AUTOLOAD:=$(call AutoLoad,10,qca-nss-drv)
 endef
 
