@@ -5,7 +5,7 @@ include $(TOPDIR)/rules.mk
 ARCH:=arm
 BOARD:=ipq806x
 BOARDNAME:=QCA IPQ806X
-FEATURES:=ext4 jffs2 targz squashfs usb
+FEATURES:=ext4 jffs2 targz squashfs usb usbgadget
 
 LINUX_VERSION:=3.4.0
 KERNELNAME:="uImage"

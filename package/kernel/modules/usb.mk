@@ -52,6 +52,39 @@ endef
 $(eval $(call KernelPackage,usb-gadget))
 
 
+define KernelPackage/usb-gadget-dwc3
+  TITLE:=USB Gadget support for DWC3 controller
+  KCONFIG:=CONFIG_USB_DWC3 \
+	CONFIG_USB_DWC3_DEBUG=n
+  FILES:=
+  AUTOLOAD:=
+  DEPENDS:=@TARGET_ipq806x kmod-usb-gadget
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-gadget-dwc3/description
+  Kernel support for USB Gadget DWC3 controller.
+endef
+
+$(eval $(call KernelPackage,usb-gadget-dwc3))
+
+
+define KernelPackage/usb-gadget-dwc3-msm
+  TITLE:=USB Gadget support for MSM DWC3 controller
+  KCONFIG:=CONFIG_USB_DWC3_MSM
+  FILES:=
+  AUTOLOAD:=
+  DEPENDS:=kmod-usb-gadget-dwc3
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-gadget-dwc3-msm/description
+  Kernel support for USB Gadget MSM DWC3 controller.
+endef
+
+$(eval $(call KernelPackage,usb-gadget-dwc3-msm))
+
+
 define KernelPackage/usb-eth-gadget
   TITLE:=USB Ethernet Gadget support
   KCONFIG:= \
