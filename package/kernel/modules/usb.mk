@@ -94,6 +94,7 @@ define KernelPackage/usb-ohci
   KCONFIG:= \
 	CONFIG_USB_OHCI \
 	CONFIG_USB_OHCI_HCD \
+	CONFIG_USB_OHCI_HCD_PLATFORM=y \
 	CONFIG_USB_OHCI_ATH79=y \
 	CONFIG_USB_OHCI_BCM63XX=y \
 	CONFIG_USB_OHCI_RT3883=y \
@@ -114,8 +115,10 @@ define KernelPackage/usb2
   TITLE:=Support for USB2 controllers
   DEPENDS:=+TARGET_brcm47xx:kmod-usb-brcm47xx
   KCONFIG:=CONFIG_USB_EHCI_HCD \
+    CONFIG_USB_EHCI_HCD_PLATFORM=y \
     CONFIG_USB_EHCI_ATH79=y \
     CONFIG_USB_EHCI_BCM63XX=y \
+    CONFIG_USB_EHCI_MSM=y \
     CONFIG_USB_EHCI_RT3883=y \
     CONFIG_USB_OCTEON_EHCI=y \
     CONFIG_USB_EHCI_FSL=n
@@ -129,6 +132,23 @@ define KernelPackage/usb2/description
 endef
 
 $(eval $(call KernelPackage,usb2))
+
+
+define KernelPackage/usb-xhci
+  TITLE:=Support for XHCI controllers
+  DEPENDS:=
+  KCONFIG:=CONFIG_USB_XHCI_HCD \
+	CONFIG_USB_XHCI_HCD_PLATFORM=y
+  FILES:=$(LINUX_DIR)/drivers/usb/host/xhci-hcd.ko
+  AUTOLOAD:=$(call AutoLoad,40,xhci-hcd,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-xhci/description
+ Kernel support for XHCI (USB3) controllers
+endef
+
+$(eval $(call KernelPackage,usb-xhci))
 
 
 define KernelPackage/usb-acm
