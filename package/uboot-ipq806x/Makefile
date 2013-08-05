@@ -71,6 +71,7 @@ define Package/uboot/install/template
 define Package/uboot-ipq806x-$(1)/install
 	$(INSTALL_DIR) $$(1)
 	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/$(2)
+	$(CP) $(PKG_BUILD_DIR)/u-boot.mbn $(BIN_DIR)/$(subst img,mbn,$(2))
 endef
 endef
 
