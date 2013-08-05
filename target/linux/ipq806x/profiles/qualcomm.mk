@@ -14,7 +14,8 @@ endef
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
-	PACKAGES+=kmod-ath9k wpad-mini
+	PACKAGES+=kmod-ath9k wpad-mini \
+	  kmod-qca-nss-connmgr
 endef
 
 define Profile/QSDK_Open/Description
@@ -29,7 +30,8 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Retail
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Retail Profile
-	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant
+	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
+	  kmod-qca-nss-connmgr
 endef
 
 define Profile/QSDK_Retail/Description

@@ -26,13 +26,27 @@ define KernelPackage/qca-nss-drv
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
   DEPENDS:=@TARGET_ipq806x
-  TITLE:=Kernel driver for NSS
-  FILES:=$(PKG_BUILD_DIR)/qca-nss-drv.ko $(PKG_BUILD_DIR)/qca-nss-connmgr-ipv4.ko $(PKG_BUILD_DIR)/qca-nss-connmgr-ipv6.ko
+  TITLE:=Kernel driver for NSS (core driver)
+  FILES:=$(PKG_BUILD_DIR)/qca-nss-drv.ko
   AUTOLOAD:=$(call AutoLoad,10,qca-nss-drv)
 endef
 
 define KernelPackage/qca-nss-drv/Description
 This package contains a NSS driver for QCA chipset
+endef
+
+define KernelPackage/qca-nss-connmgr
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  TITLE:=Kernel driver for NSS (connection manager)
+  DEPENDS:=kmod-qca-nss-drv
+  FILES:=$(PKG_BUILD_DIR)/qca-nss-connmgr-ipv4.ko $(PKG_BUILD_DIR)/qca-nss-connmgr-ipv6.ko
+  AUTOLOAD:=$(call AutoLoad,50,qca-nss-connmgr-ipv4 qca-nss-connmgr-ipv6)
+endef
+
+define KernelPackage/qca-nss-connmgr/Description
+Kernel modules for NSS connection manager
 endef
 
 define Build/InstallDev
@@ -55,3 +69,4 @@ define Build/Compile
 endef
 
 $(eval $(call KernelPackage,qca-nss-drv))
+$(eval $(call KernelPackage,qca-nss-connmgr))
