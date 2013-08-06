@@ -30,7 +30,7 @@ define Profile/QSDK_Retail
 	  kmod-ipv6 luci-app-qos kmod-ebtables iperf devmem2 \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba \
+	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
 	  luci-app-ddns ddns-scripts qca-legacy-uboot-ap135 qca-legacy-uboot-db12x uboot-ipq806x-cdp \
 	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
 endef
