@@ -22,8 +22,7 @@ define Profile/QSDK_Open/Description
 endef
 $(eval $(call Profile,QSDK_Open))
 
-define Profile/QSDK_Retail
-	NAME:=Qualcomm-Atheros SDK Retail Profile
+define Profile/QSDK_Base
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp kmod-fs-ext4 \
 	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
@@ -33,6 +32,11 @@ define Profile/QSDK_Retail
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
 	  luci-app-ddns ddns-scripts qca-legacy-uboot-ap135 qca-legacy-uboot-db12x uboot-ipq806x-cdp \
 	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
+endef
+
+define Profile/QSDK_Retail
+	$(Profile/QSDK_Base)
+	NAME:=Qualcomm-Atheros SDK Retail Profile
 endef
 
 define Profile/QSDK_Retail/Description
@@ -45,8 +49,7 @@ endef
 $(eval $(call Profile,QSDK_Retail))
 
 define Profile/QSDK_Carrier
-	# based on retail profile
-	$(Profile/QSDK_Retail)
+	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Carrier Profile
 	PACKAGES+=
 endef
@@ -57,8 +60,7 @@ endef
 $(eval $(call Profile,QSDK_Carrier))
 
 define Profile/QSDK_Enterprise
-	# based on carrier profile
-	$(Profile/QSDK_Carrier)
+	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
 	PACKAGES+=kmod-openswan openswan kmod-crypto-ocf
 endef
