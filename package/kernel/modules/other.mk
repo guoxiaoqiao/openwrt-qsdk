@@ -680,19 +680,32 @@ endef
 
 $(eval $(call KernelPackage,acpi-button))
 
-define KernelPackage/regmap
+define KernelPackage/regmap-spi
   SUBMENU:=$(OTHER_MENU)
-  TITLE:=Generic register map support
+  TITLE:=Generic register spi map support
   KCONFIG:=CONFIG_REGMAP=y \
-	   CONFIG_REGMAP_SPI \
+	   CONFIG_REGMAP_SPI
+  FILES:=$(LINUX_DIR)/drivers/base/regmap/regmap-spi.ko
+  AUTOLOAD:=$(call AutoLoad,10,regmap-spi)
+endef
+
+define KernelPackage/regmap-spi/description
+  Generic register spi map support
+endef
+
+$(eval $(call KernelPackage,regmap-spi))
+
+define KernelPackage/regmap-i2c
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Generic register i2c map support
+  KCONFIG:=CONFIG_REGMAP=y \
 	   CONFIG_REGMAP_I2C
-  FILES:=$(LINUX_DIR)/drivers/base/regmap/regmap-i2c.ko \
-	 $(LINUX_DIR)/drivers/base/regmap/regmap-spi.ko
-  AUTOLOAD:=$(call AutoLoad,10,regmap-i2c regmap-spi)
+  FILES:=$(LINUX_DIR)/drivers/base/regmap/regmap-i2c.ko
+  AUTOLOAD:=$(call AutoLoad,10,regmap-i2c)
 endef
 
-define KernelPackage/regmap/description
-  Generic register map support
+define KernelPackage/regmap-i2c/description
+  Generic register i2c map support
 endef
 
-$(eval $(call KernelPackage,regmap))
+$(eval $(call KernelPackage,regmap-i2c))
