@@ -3,8 +3,8 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
-JFFS2_BLOCKSIZE=128k
-JFFS2OPTS += --little-endian --pagesize=0x800 --no-cleanmarkers --pad
+UBIFS_OPTS = -m 2048 -e 124KiB -c 4096 -U -F
+UBINIZE_OPTS = -m 2048 -p 128KiB
 
 E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
