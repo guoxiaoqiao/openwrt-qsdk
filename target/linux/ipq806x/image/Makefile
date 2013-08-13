@@ -9,18 +9,9 @@ JFFS2OPTS += --little-endian --pagesize=0x800 --no-cleanmarkers --pad
 E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
 define Image/BuildKernel
-	mkimage -A arm -O linux -T kernel -C none \
-		-a 40808000 -e 40808000 \
-		-n "OpenWRT Kernel Image" \
-		-d $(KDIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-$(KERNEL)-uImage
-
-	mkimage -A arm -O linux -T script -C none \
-		-a 0 -e 0 \
-		-n 'uImage boot cmd' \
-		-d ../files/boot.cmd $(BIN_DIR)/boot.scr
-
 	$(CP) $(LINUX_DIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
 	$(CP) $(LINUX_DIR)/arch/arm/boot/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
+	$(CP) $(LINUX_DIR)/arch/arm/boot/uImage $(BIN_DIR)/$(IMG_PREFIX)-$(KERNEL)-uImage
 endef
 
 define Image/Build
