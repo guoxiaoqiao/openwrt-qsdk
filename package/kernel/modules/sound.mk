@@ -151,7 +151,7 @@ define KernelPackage/sound-soc-core
 	CONFIG_SND_SOC_ALL_CODECS=n
   FILES:=$(LINUX_DIR)/sound/soc/snd-soc-core.ko
   AUTOLOAD:=$(call AutoLoad,55, snd-soc-core)
-  $(call AddDepends/sound)
+  $(call AddDepends/sound,+kmod-regmap-spi)
 endef
 
 $(eval $(call KernelPackage,sound-soc-core))
