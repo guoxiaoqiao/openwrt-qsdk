@@ -29,7 +29,7 @@ define KernelPackage/qca-nss-cfi
   TITLE:=Kernel driver for NSS cfi
   FILES:=$(PKG_BUILD_DIR)/ocf/qca-nss-cfi-ocf.ko \
 	 $(PKG_BUILD_DIR)/ipsec/qca-nss-ipsec.ko
-  AUTLOAD:=$(call AutoLoad,12,qca-nss-cfi-ocf qca-nss-ipsec)
+  AUTOLOAD:=$(call AutoLoad,12,qca-nss-cfi-ocf)
 endef
 
 define KernelPackage/qca-nss-cfi/Description
