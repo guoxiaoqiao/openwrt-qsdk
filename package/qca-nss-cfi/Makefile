@@ -21,6 +21,7 @@ PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
+PKG_BUILD_DEPEND:=ocf-crypto-headers
 define KernelPackage/qca-nss-cfi
   SECTION:=kernel
   CATEGORY:=Kernel modules
