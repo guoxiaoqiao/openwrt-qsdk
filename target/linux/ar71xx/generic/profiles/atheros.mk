@@ -108,17 +108,6 @@ endef
 
 $(eval $(call Profile,AP96))
 
-define Profile/APH131
-	NAME:=Atheros APH131 reference board
-	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
-endef
-
-define Profile/APH131/Description
-	Package set optimized for the Atheros APH131 reference board.
-endef
-
-$(eval $(call Profile,APH131))
-
 define Profile/CUS227
        NAME:=Qualcomm Atheros CUS227 board
        PACKAGES:=kmod-usb-core kmod-usb2 kmod-sound-soc-cus227
@@ -153,17 +142,6 @@ endef
 
 $(eval $(call Profile,DB120TB388))
 
-define Profile/DB120_VHYFI
-	NAME:=Atheros DB120-vhyfi reference board
-	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
-endef
-
-define Profile/DB120_VHYFI/Description
-	Package set optimized for the Atheros DB120-vhyfi reference board.
-endef
-
-$(eval $(call Profile,DB120_VHYFI))
-
 define Profile/PB42
 	NAME:=Atheros PB42 reference board
 	PACKAGES:=kmod-usb-core kmod-usb-ohci kmod-usb2
@@ -197,18 +175,6 @@ define Profile/PB92/Description
 endef
 
 $(eval $(call Profile,PB92))
-
-
-define Profile/REH132
-	NAME:=Atheros REH132 reference board
-	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
-endef
-
-define Profile/REH132/Description
-	Package set optimized for the Atheros REH132 reference board.
-endef
-
-$(eval $(call Profile,REH132))
 
 define Profile/DT
 	NAME:=Atheros DT reference board
