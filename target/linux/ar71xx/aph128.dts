@@ -122,6 +122,9 @@
 			bi-led-cfg = <0 0xc737c737 0 0x00c30c00 1>; /* led_ctrl0 led_ctrl1 led_ctrl2 led_ctrl3 open_drain*/
 			bi-pad0-cfg = <6 0 0 0 1 1 1 2 0 0>; /* mode rxclk_sel txclk_sel pipe_rxclk_sel txclk_delay_en
 				rxclk_delay_en txclk_delay_sel rxclk_delay_sel sgmii_txclk_phase_sel sgmii_rxclk_phase_sel */
+			bi-port6-cfg = <1 2 0 0 1>; /* force_link speed:1G txpause rxpause duplex */
+			bi-pad6-cfg = <6 0 0 0 1 1 1 2 0 0>; /* mode rxclk_sel txclk_sel pipe_rxclk_sel txclk_delay_en
+				rxclk_delay_en txclk_delay_sel rxclk_delay_sel sgmii_txclk_phase_sel sgmii_rxclk_phase_sel */
 		};
 
 		ETH0: ethernet@19000000 {
