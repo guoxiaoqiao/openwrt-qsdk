@@ -68,5 +68,10 @@ define Build/Compile
 		modules
 endef
 
+define KernelPackage/qca-nss-connmgr/install
+	$(INSTALL_DIR) $(1)/etc/sysctl.d
+	$(INSTALL_BIN) ./files/qca-nss-connmgr.sysctl $(1)/etc/sysctl.d/qca-nss-connmgr.conf
+endef
+
 $(eval $(call KernelPackage,qca-nss-drv))
 $(eval $(call KernelPackage,qca-nss-connmgr))
