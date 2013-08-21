@@ -10,20 +10,22 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=u-boot
-PKG_VERSION:=2012.07
-PKG_RELEASE:=1
-PKG_REV:=HEAD
 PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=ssh://qca-git01.qualcomm.com:29418/boot/u-boot.git
 PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=ssh://qca-git01.qualcomm.com:29418/boot/u-boot.git
+PKG_BRANCH:=master
 PKG_TARGETS:=bin
-PKG_SOURCE_VERSION:=$(PKG_REV)
+PKG_RELEASE:=1
+
+include $(INCLUDE_DIR)/local-development.mk
+ifeq ($(DUMP)$(PKG_VERSION),)
+  PKG_REV:=$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
+  PKG_VERSION:=g$(PKG_REV)
+endif
+
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-
-include $(INCLUDE_DIR)/package.mk
-
-include $(TOPDIR)/rules.mk
+PKG_SOURCE_VERSION:=$(PKG_REV)
 
 include $(INCLUDE_DIR)/package.mk
 
