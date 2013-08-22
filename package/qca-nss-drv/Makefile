@@ -28,7 +28,7 @@ define KernelPackage/qca-nss-drv
   DEPENDS:=@TARGET_ipq806x
   TITLE:=Kernel driver for NSS (core driver)
   FILES:=$(PKG_BUILD_DIR)/qca-nss-drv.ko
-  AUTOLOAD:=$(call AutoLoad,10,qca-nss-drv)
+  AUTOLOAD:=$(call AutoLoad,31,qca-nss-drv)
 endef
 
 define KernelPackage/qca-nss-drv/Description
