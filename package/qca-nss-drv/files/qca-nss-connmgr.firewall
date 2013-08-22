@@ -1,0 +1,2 @@
+#!/bin/sh
+fw add i f forwarding_rule ACCEPT { -m physdev --physdev-is-bridged }
