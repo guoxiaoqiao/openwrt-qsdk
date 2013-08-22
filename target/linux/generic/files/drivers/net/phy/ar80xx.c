@@ -37,33 +37,53 @@
 static int
 ar8033_config_init(struct phy_device *pdev)
 {
-	//struct mii_bus *bus = pdev->bus;
-	//bus->write(bus, 0x5, 0x1f, 0x101);
-	//bus->write(bus, 0x5, 0x0, 0x8000);
+	u32 v;
+	v = phy_read(pdev, AR80XX_REG_CHIP_CONFIG);
+	phy_write(pdev, AR80XX_REG_CHIP_CONFIG, AR80XX_BT_BX_REG_SEL | v);
+
+	pdev->autoneg = AUTONEG_ENABLE;
+
 	return 0;
 }
 
 static int
-ar8033_read_status(struct phy_device *phydev)
+ar8033_read_status(struct phy_device *pdev)
 {
 	void __iomem *base;
-	u32 t;
-	genphy_read_status(phydev);
 
-	base = ioremap(QCA955X_GMAC_BASE, QCA955X_GMAC_SIZE);
-	t = __raw_readl(base + SGMII_MAC_RX_CONFIG_ADDRESS_OFFSET);
-	t &= LINK_STATUS_BIT;
-	if( t != 0)
-		phydev->link = 1;
-	else
-		phydev->link = 0;
+	genphy_read_status(pdev);
+
+	base = ioremap(AR71XX_PLL_BASE, AR71XX_PLL_SIZE);
+
+	if (pdev->speed == SPEED_1000) {
+		__raw_writel( ETH_SGMII_GIGE_SET(1) | ETH_SGMII_CLK_SEL_SET(1),
+			base + ETH_SGMII_ADDRESS_OFFSET);
+	} else if (pdev->speed == SPEED_100) {
+		__raw_writel( ETH_SGMII_PHASE0_COUNT_SET(1) | ETH_SGMII_PHASE1_COUNT_SET(1),
+			base + ETH_SGMII_ADDRESS_OFFSET);
+	} else {
+		__raw_writel( ETH_SGMII_PHASE0_COUNT_SET(19) | ETH_SGMII_PHASE1_COUNT_SET(19),
+			base + ETH_SGMII_ADDRESS_OFFSET);
+	}
 	iounmap(base);
+
 	return 0;
 }
 
 static int
 ar8033_config_aneg(struct phy_device *pdev)
 {
+	u32 v;
+
+	v = phy_read(pdev, MII_BMCR);
+	phy_write(pdev, MII_BMCR, v | AR80XX_AUTO_NEGO);
+
+	v = genphy_config_aneg(pdev);
+	if (v < 0) {
+		printk("%s, Error: 0x%x\n", __func__, v);
+		return v;
+	}
+
 	return 0;
 }
 
@@ -84,11 +104,11 @@ static struct phy_driver ar80xx_phy_drivers[] = {
 	.name		= "Qualcomm Atheros AR8033 PHY",
 	.phy_id_mask	= AR80XX_PHY_ID_MASK,
 	.features	= PHY_GBIT_FEATURES,
-	.probe		= ar8033_probe,
-	.remove		= ar8033_remove,
+	.probe          = ar8033_probe,
+	.remove         = ar8033_remove,
 	.config_init	= &ar8033_config_init,
 	.config_aneg	= &ar8033_config_aneg,
-	.read_status	= &ar8033_read_status,
+	.read_status    = &ar8033_read_status,
 	.driver		= { .owner = THIS_MODULE },
     },
 };
