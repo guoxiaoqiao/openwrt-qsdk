@@ -25,8 +25,8 @@ Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
 
 Index: linux-3.3.8/net/core/skbuff.c
 ===================================================================
---- linux-3.3.8.orig/net/core/skbuff.c	2013-08-01 12:39:27.197771122 -0500
-+++ linux-3.3.8/net/core/skbuff.c	2013-08-01 12:45:03.033777427 -0500
+--- linux-3.3.8.orig/net/core/skbuff.c	2013-08-15 09:10:00.822362163 -0500
++++ linux-3.3.8/net/core/skbuff.c	2013-08-23 09:53:59.115388005 -0500
 @@ -59,6 +59,7 @@
  #include <linux/errqueue.h>
  #include <linux/prefetch.h>
@@ -45,7 +45,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  
  static void sock_pipe_buf_release(struct pipe_inode_info *pipe,
  				  struct pipe_buffer *buf)
-@@ -310,13 +314,43 @@
+@@ -310,13 +314,45 @@
  struct sk_buff *__netdev_alloc_skb(struct net_device *dev,
  		unsigned int length, gfp_t gfp_mask)
  {
@@ -83,7 +83,9 @@ Index: linux-3.3.8/net/core/skbuff.c
 +		}
  	}
 +
-+	len = (len <= SKB_RECYCLE_SIZE) ? SKB_RECYCLE_SIZE : len;
++	len = SKB_RECYCLE_SIZE;
++	if (unlikely(length > SKB_RECYCLE_SIZE))
++		len = length;
 +	skb = __alloc_skb(len + NET_SKB_PAD, gfp_mask, 0, NUMA_NO_NODE);
 +	if (unlikely(skb == NULL))
 +		return NULL;
@@ -93,7 +95,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  	return skb;
  }
  EXPORT_SYMBOL(__netdev_alloc_skb);
-@@ -361,11 +395,37 @@
+@@ -361,11 +397,37 @@
   */
  struct sk_buff *dev_alloc_skb(unsigned int length)
  {
@@ -132,7 +134,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  }
  EXPORT_SYMBOL(dev_alloc_skb);
  
-@@ -530,6 +590,31 @@
+@@ -530,6 +592,31 @@
  }
  EXPORT_SYMBOL(kfree_skb);
  
@@ -164,7 +166,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  /**
   *	consume_skb - free an skbuff
   *	@skb: buffer to free
-@@ -546,8 +631,46 @@
+@@ -546,8 +633,46 @@
  		smp_rmb();
  	else if (likely(!atomic_dec_and_test(&skb->users)))
  		return;
@@ -212,7 +214,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  }
  EXPORT_SYMBOL(consume_skb);
  
-@@ -2962,8 +3085,23 @@
+@@ -2962,8 +3087,23 @@
  }
  EXPORT_SYMBOL_GPL(skb_gro_receive);
  
@@ -236,7 +238,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  	skbuff_head_cache = kmem_cache_create("skbuff_head_cache",
  					      sizeof(struct sk_buff),
  					      0,
-@@ -2975,6 +3113,14 @@
+@@ -2975,6 +3115,14 @@
  						0,
  						SLAB_HWCACHE_ALIGN|SLAB_PANIC,
  						NULL);
