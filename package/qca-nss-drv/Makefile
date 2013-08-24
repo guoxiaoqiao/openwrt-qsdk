@@ -42,6 +42,7 @@ define KernelPackage/qca-nss-connmgr
   TITLE:=Kernel driver for NSS (connection manager)
   DEPENDS:=kmod-qca-nss-drv +iptables-mod-extra
   FILES:=$(PKG_BUILD_DIR)/qca-nss-connmgr-ipv4.ko $(PKG_BUILD_DIR)/qca-nss-connmgr-ipv6.ko
+  KCONFIG:=CONFIG_BRIDGE_NETFILTER=y
   AUTOLOAD:=$(call AutoLoad,50,qca-nss-connmgr-ipv4 qca-nss-connmgr-ipv6)
 endef
 
@@ -80,8 +81,7 @@ define Build/Compile
 endef
 
 define KernelPackage/qca-nss-connmgr/install
-	$(INSTALL_DIR) $(1)/etc/sysctl.d $(1)/etc/firewall.d $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/qca-nss-connmgr.sysctl $(1)/etc/sysctl.d/qca-nss-connmgr.conf
+	$(INSTALL_DIR) $(1)/etc/firewall.d $(1)/etc/uci-defaults
 	$(INSTALL_DATA) ./files/qca-nss-connmgr.defaults $(1)/etc/uci-defaults/99-qca-nss-connmgr
 	$(INSTALL_DATA) ./files/qca-nss-connmgr.firewall $(1)/etc/firewall.d/qca-nss-connmgr
 endef
