@@ -58,12 +58,16 @@
                                 };
                                 partition@rootfs {
                                         label = "rootfs";
-                                        reg = <0x00050000 0x00630000>;
+                                        reg = <0x00050000 0x00620000>;
                                 };
                                 partition@kernel {
                                         label = "kernel";
-                                        reg = <0x00680000 0x00160000>;
+                                        reg = <0x00670000 0x00160000>;
                                         read-only;
+                                };
+                                partition@pib {
+                                        label = "pib";
+                                        reg = <0x007d0000 0x00010000>;
                                 };
                                 partition@dtb {
                                         label = "dtb";
@@ -77,7 +81,7 @@
                                 };
                                 partition@firmware {
                                         label = "firmware";
-                                        reg = <0x00050000 0x00790000>;
+                                        reg = <0x00050000 0x00780000>;
                                 };
 			};
 		};
