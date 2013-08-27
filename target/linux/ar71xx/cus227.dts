@@ -12,7 +12,7 @@
 	model = "Qualcomm Atheros CUS227";
 	compatible = "ath79,cus227";
 
-	ssid-prefix = "Skifta_";
+	ssid-prefix = "cus227_";
 	serial = "XXXXXXXX";
 
 	gpios: ath79-gpio {
