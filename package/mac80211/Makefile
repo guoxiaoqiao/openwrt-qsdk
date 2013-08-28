@@ -1546,7 +1546,9 @@ endef
 
 define KernelPackage/cfg80211/install
 	$(INSTALL_DIR) $(1)/lib/wifi
+	$(INSTALL_DIR) $(1)/sbin
 	$(INSTALL_DATA) ./files/lib/wifi/mac80211.sh $(1)/lib/wifi
+	$(INSTALL_DATA) ./files/sbin/wifi_try $(1)/sbin/
 endef
 
 define KernelPackage/p54-pci/install
