@@ -56,12 +56,14 @@ define KernelPackage/mac80211/Default
   URL:=http://linuxwireless.org/
   MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
   DEPENDS:=@(!(TARGET_avr32||TARGET_ps3||TARGET_pxcab)||BROKEN)
+  DEPENDS+= +@BUSYBOX_CONFIG_READLINK +@BUSYBOX_CONFIG_FEATURE_READLINK_FOLLOW
 endef
 
 define KernelPackage/cfg80211
   $(call KernelPackage/mac80211/Default)
   TITLE:=cfg80211 - wireless configuration API
   DEPENDS+= +iw
+  DEPENDS+= +@BUSYBOX_CONFIG_READLINK +@BUSYBOX_CONFIG_FEATURE_READLINK_FOLLOW
   FILES:= \
 	$(PKG_BUILD_DIR)/compat/compat.ko \
 	$(PKG_BUILD_DIR)/net/wireless/cfg80211.ko
