@@ -167,7 +167,7 @@
 		wps {
 			label = "wps";
 			gpios = <&gpios 16 1>;
-			linux,code = <529>;
+			linux,code = <529>; /* KEY_WPS_BUTTON */
 			debounce-interval = <60>;
 		};
 	};
@@ -175,28 +175,40 @@
 	gpio-leds {
 		compatible = "gpio-leds";
 
-		status {
-			label = "db120:green:status";
-			gpios = <&gpios 14 1>;
-			linux,default-trigger = "timer";
+		pwr-green {
+			label = "db120:green:pwr";
+			gpios = <&gpios 17 1>;
+			linux,default-trigger = "default-on";
+		};
+
+		pwr-red {
+			label = "db120:red:pwr";
+			gpios = <&gpios 21 1>;
+			default-state = "off";
+		};
+
+		wlan2g {
+			label = "db120:green:wlan-2g";
+			gpios = <&gpios 13 1>;
+			default-state = "off";
+		};
+
+		wlan5g {
+			label = "db120:green:wlan-5g";
+			gpios = <&gpios 4 1>;
+			default-state = "off";
 		};
 
 		wps {
 			label = "db120:green:wps";
 			gpios = <&gpios 15 1>;
-			linux,default-trigger = "timer";
+			default-state = "off";
 		};
 
-		wlan5g {
-			label = "db120:green:wlan5g";
-			gpios = <&gpios 4 1>;
-			linux,default-trigger = "timer";
-		};
-
-		wlan2g {
-			label = "db120:green:wlan2g";
-			gpios = <&gpios 13 1>;
-			linux,default-trigger = "timer";
+		usb {
+			label = "db120:green:usb";
+			gpios = <&gpios 11 1>;
+			default-state = "off";
 		};
 	};
 };
