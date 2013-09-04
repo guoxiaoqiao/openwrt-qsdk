@@ -32,7 +32,11 @@ endif
 
 # Kernel compiles well in parallel
 # Enable // build if selected in the menuconfig
-KERNEL_JFLAG ?= $(if $(CONFIG_PKG_BUILD_JOBS),-j$(CONFIG_PKG_BUILD_JOBS),-j1)
+ifneq ($(CONFIG_PKG_BUILD_USE_JOBSERVER),)
+  KERNEL_JFLAG ?= $(MAKE_JOBSERVER) -j
+else
+  KERNEL_JFLAG ?= $(if $(CONFIG_PKG_BUILD_JOBS),-j$(CONFIG_PKG_BUILD_JOBS),-j1)
+endif
 
 INITRAMFS_EXTRA_FILES ?= $(GENERIC_PLATFORM_DIR)/image/initramfs-base-files.txt
 
