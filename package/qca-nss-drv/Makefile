@@ -61,15 +61,20 @@ fi
 exit 0
 endef
 
+define KernelPackage/qca-nss-profile-drv
+  $(call KernelPackage/qca-nss-drv/Default)
+  TITLE:=Profiler for QCA NSS driver (IPQ806x)
+  FILES:=$(PKG_BUILD_DIR)/profiler/qca-nss-profile-drv.ko
+endef
+
+define KernelPackage/qca-nss-profile-drv/Description
+This package contains a NSS driver profiler for QCA chipset
+endef
+
 define Build/InstallDev
 	mkdir -p $(1)/usr/include/qca-nss-drv
 	$(CP) $(PKG_BUILD_DIR)/nss_api_if.h $(1)/usr/include/qca-nss-drv/
 endef
-
-EXTRA_CFLAGS+= \
-	-DCONFIG_NSS_DEBUG_LEVEL=4 \
-	-I$(PKG_BUILD_DIR)/nss_hal/include \
-	-I$(PKG_BUILD_DIR)/nss_hal/$(BOARD)
 
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
@@ -86,5 +91,6 @@ define KernelPackage/qca-nss-connmgr/install
 	$(INSTALL_DATA) ./files/qca-nss-connmgr.firewall $(1)/etc/firewall.d/qca-nss-connmgr
 endef
 
+$(eval $(call KernelPackage,qca-nss-profile-drv))
 $(eval $(call KernelPackage,qca-nss-drv))
 $(eval $(call KernelPackage,qca-nss-connmgr))
