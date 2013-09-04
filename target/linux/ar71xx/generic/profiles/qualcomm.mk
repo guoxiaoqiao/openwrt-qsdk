@@ -48,7 +48,7 @@ define Profile/QSDK_Carrier
 	# based on retail profile
 	$(Profile/QSDK_Retail)
 	NAME:=Qualcomm-Atheros SDK Carrier Profile
-	PACKAGES+=
+	PACKAGES+=streamboost
 endef
 
 define Profile/QSDK_Carrier/Description
