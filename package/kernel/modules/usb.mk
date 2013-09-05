@@ -15,7 +15,8 @@ define KernelPackage/usb-core
   SUBMENU:=$(USB_MENU)
   TITLE:=Support for USB
   DEPENDS:=@USB_SUPPORT
-  KCONFIG:=CONFIG_USB CONFIG_XPS_USB_HCD_XILINX=n CONFIG_USB_FHCI_HCD=n
+  KCONFIG:=CONFIG_USB CONFIG_XPS_USB_HCD_XILINX=n CONFIG_USB_FHCI_HCD=n \
+	CONFIG_USB_SUSPEND=y
   FILES:= \
 	$(LINUX_DIR)/drivers/usb/core/usbcore.ko \
 	$(LINUX_DIR)/drivers/usb/usb-common.ko
