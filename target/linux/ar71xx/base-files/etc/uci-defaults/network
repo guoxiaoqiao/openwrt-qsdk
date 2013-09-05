@@ -189,7 +189,7 @@ wp543)
 
 aph131 |\
 reh132)
-	ucidef_set_interfaces_lan_wan "eth0" "eth1"
+	ucidef_set_interface_lan "eth0 eth1"
 	;;
 
 aph126 |\
