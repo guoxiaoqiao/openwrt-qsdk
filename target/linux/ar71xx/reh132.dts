@@ -126,7 +126,7 @@
 
 			eth-phy-cfg = <2 0 1000 1>; /* phy_if_mode:GMII phy_mask:0 speed:1G duplex:DUPLEX_FULL */
 			eth-fifo-cfg = <0x0010ffff 0x03ff0155 0x01f00140>; /* fifo_cfg1 fifo_cfg2 fifo_cfg3 */
-			eth-sw-cfg = <1 0>; /* phy4_mii_en phy_poll_mask */
+			eth-sw-cfg = <1 0x10>; /* phy4_mii_en phy_poll_mask */
 		};
 	};
 
