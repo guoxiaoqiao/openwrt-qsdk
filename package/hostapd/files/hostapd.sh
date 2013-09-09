@@ -3,7 +3,7 @@ hostapd_set_bss_options() {
 	local vif="$2"
 	local enc wep_rekey wpa_group_rekey wpa_pair_rekey wpa_master_rekey wps_possible
 
-	config_get enc "$vif" encryption "none"
+	config_get enc "$vif" encryption
 	config_get wep_rekey        "$vif" wep_rekey        # 300
 	config_get wpa_group_rekey  "$vif" wpa_group_rekey  # 300
 	config_get wpa_pair_rekey   "$vif" wpa_pair_rekey   # 300
@@ -12,6 +12,7 @@ hostapd_set_bss_options() {
 	config_get_bool disassoc_low_ack "$vif" disassoc_low_ack 1
 	config_get max_num_sta "$vif" max_num_sta 0
 	config_get max_inactivity "$vif" max_inactivity 0
+	config_get_bool preamble "$vif" short_preamble 1
 
 	config_get device "$vif" device
 	config_get hwmode "$device" hwmode
@@ -29,6 +30,9 @@ hostapd_set_bss_options() {
 		append "$var" "ap_max_inactivity=$max_inactivity" "$N"
 	fi
 	append "$var" "disassoc_low_ack=$disassoc_low_ack" "$N"
+	if [ "$preamble" -gt 0 ]; then
+		append "$var" "preamble=$preamble" "$N"
+	fi
 
 	# Examples:
 	# psk-mixed/tkip 	=> WPA1+2 PSK, TKIP
@@ -69,14 +73,6 @@ hostapd_set_bss_options() {
 
 	# use crypto/auth settings for building the hostapd config
 	case "$enc" in
-		none)
-			wps_possible=1
-			wpa=0
-			crypto=
-			# Here we make the assumption that if we're in open mode
-			# with WPS enabled, we got to be in unconfigured state.
-			wps_not_configured=1
-		;;
 		*psk*)
 			config_get psk "$vif" key
 			if [ ${#psk} -eq 64 ]; then
@@ -89,7 +85,7 @@ hostapd_set_bss_options() {
 			[ -n "$wpa_pair_rekey"   ] && append "$var" "wpa_ptk_rekey=$wpa_pair_rekey"    "$N"
 			[ -n "$wpa_master_rekey" ] && append "$var" "wpa_gmk_rekey=$wpa_master_rekey"  "$N"
 		;;
-		*wpa*|*8021x*)
+		*wpa*)
 			# required fields? formats?
 			# hostapd is particular, maybe a default configuration for failures
 			config_get auth_server "$vif" auth_server
@@ -102,13 +98,9 @@ hostapd_set_bss_options() {
 			config_get auth_secret "$vif" auth_secret
 			[ -z "$auth_secret" ] && config_get auth_secret "$vif" key
 			append "$var" "auth_server_shared_secret=$auth_secret" "$N"
-			# You don't really want to enable this unless you are doing
-			# some corner case testing or are using OpenWrt as a work around
-			# for some systematic issues.
 			config_get_bool auth_cache "$vif" auth_cache 0
-			config_get rsn_preauth "$vif" rsn_preauth
-			[ "$auth_cache" -gt 0 ] || [[ "$rsn_preauth" = 1 ]] || append "$var" "disable_pmksa_caching=1" "$N"
-			[ "$auth_cache" -gt 0 ] || [[ "$rsn_preauth" = 1 ]] || append "$var" "okc=0" "$N"
+			[ "$auth_cache" -gt 0 ] || append "$var" "disable_pmksa_caching=1" "$N"
+			[ "$auth_cache" -gt 0 ] || append "$var" "okc=0" "$N"
 			config_get acct_server "$vif" acct_server
 			[ -n "$acct_server" ] && append "$var" "acct_server_addr=$acct_server" "$N"
 			config_get acct_port "$vif" acct_port
@@ -116,11 +108,14 @@ hostapd_set_bss_options() {
 			[ -n "$acct_port" ] && append "$var" "acct_server_port=$acct_port" "$N"
 			config_get acct_secret "$vif" acct_secret
 			[ -n "$acct_secret" ] && append "$var" "acct_server_shared_secret=$acct_secret" "$N"
-			config_get eap_reauth_period "$vif" eap_reauth_period
-			[ -n "$eap_reauth_period" ] && append "$var" "eap_reauth_period=$eap_reauth_period" "$N"
+			config_get dae_client "$vif" dae_client
+			config_get dae_secret "$vif" dae_secret
+			[ -n "$dae_client" -a -n "$dae_secret" ] && {
+				config_get dae_port  "$vif" dae_port
+				append "$var" "radius_das_port=${dae_port:-3799}" "$N"
+				append "$var" "radius_das_client=$dae_client $dae_secret" "$N"
+			}
 			config_get nasid "$vif" nasid
-			config_get wep_key_len_broadcast "$vif" wep_key_len_broadcast
-			config_get wep_key_len_unicast "$vif" wep_key_len_unicast
 			append "$var" "nas_identifier=$nasid" "$N"
 			append "$var" "eapol_key_index_workaround=1" "$N"
 			append "$var" "ieee8021x=1" "$N"
@@ -128,9 +123,6 @@ hostapd_set_bss_options() {
 			[ -n "$wpa_group_rekey"  ] && append "$var" "wpa_group_rekey=$wpa_group_rekey" "$N"
 			[ -n "$wpa_pair_rekey"   ] && append "$var" "wpa_ptk_rekey=$wpa_pair_rekey"    "$N"
 			[ -n "$wpa_master_rekey" ] && append "$var" "wpa_gmk_rekey=$wpa_master_rekey"  "$N"
-			[ -n "$wep_key_len_broadcast" ] && append "$var" "wep_key_len_broadcast=$wep_key_len_broadcast" "$N"
-			[ -n "$wep_key_len_unicast" ] && append "$var" "wep_key_len_unicast=$wep_key_len_unicast" "$N"
-			[ -n "$wep_rekey" ] && append "$var" "wep_rekey_period=$wep_rekey" "$N"
 		;;
 		*wep*)
 			config_get key "$vif" key
@@ -184,33 +176,17 @@ hostapd_set_bss_options() {
 	config_get config_methods "$vif" wps_config
 	[ "$wps_pbc" -gt 0 ] && append config_methods push_button
 
-	# WPS 2.0 test case 4.1.7:
-	# if we're configured to enable WPS and we hide our SSID, then
-	# we have to require an "explicit user operation to continue"
-	config_get_bool hidden "$vif" hidden 0
-	[ -n "$wps_possible" -a -n "$config_methods" -a "$hidden" -gt 0 ] && {
-		echo "Hidden SSID is enabled on \"$ifname\", WPS will be automatically disabled"
-		echo "Please press any key to continue."
-		read -s -n 1
-		wps_possible=
-	}
-
 	[ -n "$wps_possible" -a -n "$config_methods" ] && {
 		config_get device_type "$vif" wps_device_type "6-0050F204-1"
 		config_get device_name "$vif" wps_device_name "OpenWrt AP"
 		config_get manufacturer "$vif" wps_manufacturer "openwrt.org"
-		config_get wps_pin "$vif" wps_pin "12345670"
-
-		config_get_bool ext_registrar "$vif" ext_registrar 0
-		[ "$ext_registrar" -gt 0 -a -n "$bridge" ] && append "$var" "upnp_iface=$bridge" "$N"
 
 		config_get_bool ext_registrar "$vif" ext_registrar 0
 		[ "$ext_registrar" -gt 0 -a -n "$bridge" ] && append "$var" "upnp_iface=$bridge" "$N"
 
 		append "$var" "eap_server=1" "$N"
-		append "$var" "ap_pin=$wps_pin" "$N"
-		append "$var" "wps_state=${wps_not_configured:-2}" "$N"
-		append "$var" "ap_setup_locked=0" "$N"
+		append "$var" "wps_state=2" "$N"
+		append "$var" "ap_setup_locked=1" "$N"
 		append "$var" "device_type=$device_type" "$N"
 		append "$var" "device_name=$device_name" "$N"
 		append "$var" "manufacturer=$manufacturer" "$N"
@@ -224,25 +200,12 @@ hostapd_set_bss_options() {
 
 	if [ "$wpa" -ge "2" ]
 	then
-		# RSN -> allow preauthentication. You have two
-		# options, rsn_preauth for production or rsn_preauth_testing
-		# for validation / testing.
+		# RSN -> allow preauthentication
+		config_get_bool rsn_preauth "$vif" rsn_preauth "$auth_cache"
 		if [ -n "$bridge" -a "$rsn_preauth" = 1 ]
 		then
 			append "$var" "rsn_preauth=1" "$N"
 			append "$var" "rsn_preauth_interfaces=$bridge" "$N"
-			append "$var" "okc=1" "$N"
-		else
-			# RSN preauthentication testings hould disable
-			# Opportunistic Key Caching (okc) as otherwise the PMKSA
-			# entry for a test could come from the Opportunistic Key Caching
-			config_get rsn_preauth_testing "$vif" rsn_preauth_testing
-			if [ -n "$bridge" -a "$rsn_preauth_testing" = 1 ]
-			then
-				append "$var" "rsn_preauth=1" "$N"
-				append "$var" "rsn_preauth_interfaces=$bridge" "$N"
-				append "$var" "okc=0" "$N"
-			fi
 		fi
 
 		# RSN -> allow management frame protection
@@ -261,6 +224,44 @@ hostapd_set_bss_options() {
 			;;
 		esac
 	fi
+
+	config_get macfile "$vif" macfile
+	config_get maclist "$vif" maclist
+	if [ -z "$macfile" ]
+	then
+		# if no macfile has been specified, fallback to the default name
+		# and truncate file to avoid aggregating entries over time
+		macfile="/var/run/hostapd-$ifname.maclist"
+		echo "" > "$macfile"
+	else
+		if [ -n "$maclist" ]
+		then
+			# to avoid to overwrite the original file, make a copy
+			# before appending the entries specified by the maclist
+			# option
+			cp $macfile $macfile.maclist
+			macfile=$macfile.maclist
+		fi
+	fi
+
+	if [ -n "$maclist" ]
+	then
+		for mac in $maclist; do
+			echo "$mac" >> $macfile
+		done
+	fi
+
+	config_get macfilter "$vif" macfilter
+	case "$macfilter" in
+		allow)
+			append "$var" "macaddr_acl=1" "$N"
+			append "$var" "accept_mac_file=$macfile" "$N"
+			;;
+		deny)
+			append "$var" "macaddr_acl=0" "$N"
+			append "$var" "deny_mac_file=$macfile" "$N"
+			;;
+	esac
 }
 
 hostapd_set_log_options() {
