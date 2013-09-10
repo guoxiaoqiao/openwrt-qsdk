@@ -50,6 +50,19 @@ define KernelPackage/qca-nss-connmgr/Description
 Kernel modules for NSS connection manager
 endef
 
+define KernelPackage/qca-nss-tun6rd
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  TITLE:=Kernel driver for NSS (connection manager) - tun6rd
+  DEPENDS:=kmod-qca-nss-drv +kmod-qca-nss-connmgr +kmod-sit
+  FILES:=$(PKG_BUILD_DIR)/qca-nss-tun6rd.ko
+endef
+
+define KernelPackage/qca-nss-tun6rd/Description
+Kernel modules for NSS connection manager - Support for 6rd tunnel
+endef
+
 define KernelPackage/qca-nss-connmgr/postinst
 #!/bin/sh
 
@@ -94,3 +107,4 @@ endef
 $(eval $(call KernelPackage,qca-nss-profile-drv))
 $(eval $(call KernelPackage,qca-nss-drv))
 $(eval $(call KernelPackage,qca-nss-connmgr))
+$(eval $(call KernelPackage,qca-nss-tun6rd))
