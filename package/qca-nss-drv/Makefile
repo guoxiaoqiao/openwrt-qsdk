@@ -63,6 +63,20 @@ define KernelPackage/qca-nss-tun6rd/Description
 Kernel modules for NSS connection manager - Support for 6rd tunnel
 endef
 
+define KernelPackage/qca-nss-tunipip6
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  TITLE:=Kernel driver for NSS (connection manager) - DS-lite and ipip6 Tunnel
+  DEPENDS:=kmod-qca-nss-drv +kmod-qca-nss-connmgr +kmod-iptunnel6 +kmod-ip6-tunnel
+  FILES:=$(PKG_BUILD_DIR)/qca-nss-tunipip6.ko
+endef
+
+define KernelPackage/qca-nss-tunipip6/Description
+Kernel modules for NSS connection manager
+Add support for DS-lite and ipip6 tunnel
+endef
+
 define KernelPackage/qca-nss-connmgr/postinst
 #!/bin/sh
 
@@ -108,3 +122,4 @@ $(eval $(call KernelPackage,qca-nss-profile-drv))
 $(eval $(call KernelPackage,qca-nss-drv))
 $(eval $(call KernelPackage,qca-nss-connmgr))
 $(eval $(call KernelPackage,qca-nss-tun6rd))
+$(eval $(call KernelPackage,qca-nss-tunipip6))
