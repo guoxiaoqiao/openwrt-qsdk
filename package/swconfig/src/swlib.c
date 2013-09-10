@@ -357,7 +357,7 @@ int swlib_set_attr_string(struct switch_dev *dev, struct switch_attr *a, int por
 	switch(a->type) {
 	case SWITCH_TYPE_INT:
 		/*  store the unsigned value */
-		val.value.i = strtoul(str, NULL, 10);
+		val.value.i = strtoul(str, NULL, 0);
 		break;
 	case SWITCH_TYPE_STRING:
 		val.value.s = str;
@@ -382,7 +382,7 @@ int swlib_set_attr_string(struct switch_dev *dev, struct switch_attr *a, int por
 				return -1;
 
 			ports[val.len].flags = 0;
-			ports[val.len].id = strtoul(ptr, &ptr, 10);
+			ports[val.len].id = strtoul(ptr, &ptr, 0);
 			while(*ptr && !isspace(*ptr)) {
 				if (*ptr == 't')
 					ports[val.len].flags |= SWLIB_PORT_FLAG_TAGGED;
