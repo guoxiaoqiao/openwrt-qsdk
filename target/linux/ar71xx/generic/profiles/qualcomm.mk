@@ -32,7 +32,7 @@ define Profile/QSDK_Retail
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client \
 	  luci-app-ddns ddns-scripts qca-legacy-uboot-ap135 qca-legacy-uboot-db12x \
-	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
+	  -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini hyfi
 endef
 
 define Profile/QSDK_Retail/Description
@@ -48,7 +48,7 @@ define Profile/QSDK_Carrier
 	# based on retail profile
 	$(Profile/QSDK_Retail)
 	NAME:=Qualcomm-Atheros SDK Carrier Profile
-	PACKAGES+=streamboost
+	PACKAGES+=streamboost hyfi
 endef
 
 define Profile/QSDK_Carrier/Description
