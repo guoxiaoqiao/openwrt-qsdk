@@ -50,7 +50,7 @@ define Profile/QSDK_Carrier
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Carrier Profile
 	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-		  hyfi
+		  hyfi streamboost
 endef
 
 define Profile/QSDK_Carrier/Description
