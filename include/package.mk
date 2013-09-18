@@ -123,6 +123,87 @@ define Build/Exports/Default
 endef
 Build/Exports=$(Build/Exports/Default)
 
+ifdef CREATE_LIST
+Hooks/Download+=CreateList
+define CreateList
+	if [ "$(PKG_SOURCE_URL)" != "" ]; then \
+		echo -n $(PKG_NAME): >> $(TOPDIR)/licenses.txt; \
+		echo -n " " >> $(TOPDIR)/licenses.txt; \
+		for i in $$$$(echo $(PKG_SOURCE_URL) | sed \
+				-e 's,@SF,http://downloads.sourceforge.net,g' \
+				-e 's,@GNU,ftp://ftp.gnu.org/gnu/,g' \
+				-e 's,@KERNEL,http://ftp.all.kernel.org/pub/,g' \
+				); do \
+			if [ "$(PKG_SOURCE_PROTO)" == "git" ]; then \
+				echo -n $$$$i = $(PKG_SOURCE_VERSION) >> $(TOPDIR)/licenses.txt; \
+			else \
+				echo -n $$$$i/$(PKG_SOURCE) >> $(TOPDIR)/licenses.txt; \
+			fi; \
+			echo -n " " >> $(TOPDIR)/licenses.txt; \
+			license=$$$$(curl http://packages.yoctoproject.org/detail?pkgname=$(PKG_NAME) 2>/dev/null | grep License: | sed -e 's/<[^<]*>//g' -e 's/&amp;//g'); \
+			if [ "$(PKG_NAME)" == "bridge-utils" ]; then license="License: GPLv2"; fi; \
+			if [ "$(PKG_NAME)" == "igmpproxy" ]; then license="License: GPLv2"; fi; \
+			if [ "$(PKG_NAME)" == "libnfnetlink" ]; then license="License: GPLv2"; fi; \
+			if [ "$(PKG_NAME)" == "mplayer" ]; then license="License: GPLv2"; fi; \
+			if [ "$(PKG_NAME)" == "ntfs-3g" ]; then license="License: GPLv2"; fi; \
+			if [ "$(PKG_NAME)" == "netifd" ]; then license="License: GPLv2"; fi; \
+			if [ "$(PKG_NAME)" == "hotplug2" ]; then license="License: GPLv2"; fi; \
+			if [ "$(PKG_NAME)" == "xtables-addons" ]; then license="License: GPLv2"; fi; \
+			if [ "$(PKG_NAME)" == "openswan" ]; then license="License: GPLv2"; fi; \
+			if [ "$(PKG_NAME)" == "dnsmasq" ]; then license="License: GPLv2+"; fi; \
+			if [ "$(PKG_NAME)" == "quagga" ]; then license="License: GPLv2+"; fi; \
+			if [ "$(PKG_NAME)" == "rp-pppoe" ]; then license="License: GPLv2+"; fi; \
+			if [ "$(PKG_NAME)" == "libnetfilter_conntrack" ]; then license="License: GPLv2+"; fi; \
+			if [ "$(PKG_NAME)" == "samba" ]; then license="License: GPLv3"; fi; \
+			if [ "$(PKG_NAME)" == "uhttpd" ]; then license="License: Apache-2.0"; fi; \
+			if [ "$(PKG_NAME)" == "opencore-amr" ]; then license="License: Apache-2.0"; fi; \
+			if [ "$(PKG_NAME)" == "uboot-envtools" ]; then license="License: GPLv2+"; fi; \
+			if [ "$(PKG_NAME)" == "uci" ]; then license="License: LGPLv2.1"; fi; \
+			if [ "$(PKG_NAME)" == "luci" ]; then license="License: LGPLv2.1"; fi; \
+			if [ "$(PKG_NAME)" == "uclibc++" ]; then license="License: LGPLv2.1"; fi; \
+			if [ "$(PKG_NAME)" == "ubus" ]; then license="License: LGPLv2.1"; fi; \
+			if [ "$(PKG_NAME)" == "libusb" ]; then license="License: LGPLv2.1"; fi; \
+			if [ "$(PKG_NAME)" == "mpg123" ]; then license="License: LGPLv2.1"; fi; \
+			if [ "$(PKG_NAME)" == "p0f" ]; then license="License: LGPLv2.1"; fi; \
+			if [ "$(PKG_NAME)" == "libnl-bf" ]; then license="License: LGPLv2.1"; fi; \
+			if [ "$(PKG_NAME)" == "iozone3" ]; then license="License: iozone3"; fi; \
+			if [ "$(PKG_NAME)" == "iperf" ]; then license="License: BSD"; fi; \
+			if [ "$(PKG_NAME)" == "wide-dhcpv6" ]; then license="License: BSD"; fi; \
+			if [ "$(PKG_NAME)" == "d3js" ]; then license="License: BSD"; fi; \
+			if [ "$(PKG_NAME)" == "pcre" ]; then license="License: BSD"; fi; \
+			if [ "$(PKG_NAME)" == "ngrep" ]; then license="License: BSD"; fi; \
+			if [ "$(PKG_NAME)" == "tftp-hpa" ]; then license="License: BSD-3-Clause"; fi; \
+			if [ "$(PKG_NAME)" == "redis" ]; then license="License: BSD-3-Clause"; fi; \
+			if [ "$(PKG_NAME)" == "hiredis" ]; then license="License: BSD-3-Clause"; fi; \
+			if [ "$(PKG_NAME)" == "libevent2" ]; then license="License: BSD-3-Clause"; fi; \
+			if [ "$(PKG_NAME)" == "jquery-sparkline" ]; then license="License: BSD-3-Clause"; fi; \
+			if [ "$(PKG_NAME)" == "miniupnpd" ]; then license="License: TODO PD"; fi; \
+			if [ "$(PKG_NAME)" == "radvd" ]; then license="License: TODO PD"; fi; \
+			if [ "$(PKG_NAME)" == "libubox" ]; then license="License: TODO PD"; fi; \
+			if [ "$(PKG_NAME)" == "json-c" ]; then license="License: TODO PD"; fi; \
+			if [ "$(PKG_NAME)" == "fcgi" ]; then license="License: TODO PD"; fi; \
+			if [ "$(PKG_NAME)" == "jquery-flot" ]; then license="License: TODO PD"; fi; \
+			if [ "$(PKG_NAME)" == "sqlite" ]; then license="License: PD"; fi; \
+			if [ "$(PKG_NAME)" == "lua" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "background-size-polyfill" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "jansson" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "jquery" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "jquery-ui" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "raphael" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "jquery-flot-axislabels" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "jquery-jscrollpane" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "jquery-swapsies" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "jquery-flot-gant" ]; then license="License: MIT"; fi; \
+			if [ "$(PKG_NAME)" == "jquery-contextmenu" ]; then license="License: (MIT | GPLv3)"; fi; \
+			echo -n $$$${license} >> $(TOPDIR)/licenses.txt; \
+			echo -n " File:$(TOPDIR)/dl/$(PKG_SOURCE)" >> $(TOPDIR)/licenses.txt; \
+			break; \
+		done; \
+		echo "" >> $(TOPDIR)/licenses.txt; \
+	fi
+endef
+endif
+
 define Build/DefaultTargets
   $(if $(QUILT),$(Build/Quilt))
   $(if $(USE_GIT_TREE),,$(if $(strip $(PKG_SOURCE_URL)),$(call Download,default)))
