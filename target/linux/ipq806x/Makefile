@@ -20,7 +20,8 @@ include $(INCLUDE_DIR)/target.mk
 
 DEFAULT_PACKAGES += \
 	mtd-utils kmod-button-hotplug uboot-envtools swconfig \
-	kmod-qca-nss-drv kmod-qca-nss-gmac
+	kmod-qca-nss-drv kmod-qca-nss-gmac kmod-leds-gpio \
+	kmod-ledtrig-default-on kmod-ledtrig-timer kmod-ledtrig-netdev
 
 define Target/Description
 	Build firmware images for Qualcomm Atheros IPQ806x (arm) platform.
