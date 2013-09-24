@@ -93,6 +93,7 @@ define Package/hostapd/Default
   CATEGORY:=Network
   TITLE:=IEEE 802.1x Authenticator
   URL:=http://hostap.epitest.fi/
+  DEPENDS:=$(DRV_DEPENDS)
 endef
 
 define Package/hostapd
