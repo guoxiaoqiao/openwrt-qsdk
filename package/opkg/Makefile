@@ -19,7 +19,7 @@ PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_SOURCE_SUBDIR:=opkg-$(PKG_VERSION)
 PKG_SOURCE_URL:=http://opkg.googlecode.com/svn/trunk/
 PKG_SOURCE:=$(PKG_SOURCE_SUBDIR).tar.gz
-PKG_FIXUP:=autoreconf
+PKG_FIXUP:=autoreconf libtool
 PKG_REMOVE_FILES = autogen.sh aclocal.m4
 
 PKG_MIRROR_MD5SUM:=e15f0cdbd93dff4e30a417f90acbdbcf
