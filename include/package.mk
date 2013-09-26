@@ -137,40 +137,26 @@ define Build/DefaultTargets
   $(STAMP_PREPARED):
 	@-rm -rf $(PKG_BUILD_DIR)
 	@mkdir -p $(PKG_BUILD_DIR)
-	$(foreach hook,$(Hooks/Prepare/Pre),\
-		$(call $(hook))$(sep)\
-	)
+	$(foreach hook,$(Hooks/Prepare/Pre),$(call $(hook))$(sep))
 	$(Build/Prepare)
-	$(foreach hook,$(Hooks/Prepare/Post),\
-		$(call $(hook))$(sep)\
-	)
+	$(foreach hook,$(Hooks/Prepare/Post),$(call $(hook))$(sep))
 	touch $$@
 
   $(call Build/Exports,$(STAMP_CONFIGURED))
   $(STAMP_CONFIGURED): $(STAMP_PREPARED)
-	$(foreach hook,$(Hooks/Configure/Pre),\
-		$(call $(hook))$(sep)\
-	)
+	$(foreach hook,$(Hooks/Configure/Pre),$(call $(hook))$(sep))
 	$(Build/Configure)
-	$(foreach hook,$(Hooks/Configure/Post),\
-		$(call $(hook))$(sep)\
-	)
+	$(foreach hook,$(Hooks/Configure/Post),$(call $(hook))$(sep))
 	rm -f $(STAMP_CONFIGURED_WILDCARD)
 	touch $$@
 
   $(call Build/Exports,$(STAMP_BUILT))
   $(STAMP_BUILT): $(STAMP_CONFIGURED)
-	$(foreach hook,$(Hooks/Compile/Pre),\
-		$(call $(hook))$(sep)\
-	)
+	$(foreach hook,$(Hooks/Compile/Pre),$(call $(hook))$(sep))
 	$(Build/Compile)
-	$(foreach hook,$(Hooks/Compile/Post),\
-		$(call $(hook))$(sep)\
-	)
+	$(foreach hook,$(Hooks/Compile/Post),$(call $(hook))$(sep))
 	$(Build/Install)
-	$(foreach hook,$(Hooks/Install/Post),\
-		$(call $(hook))$(sep)\
-	)
+	$(foreach hook,$(Hooks/Install/Post),$(call $(hook))$(sep))
 	touch $$@
 
   $(STAMP_INSTALLED) : export PATH=$$(TARGET_PATH_PKG)
