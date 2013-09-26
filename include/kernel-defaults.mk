@@ -32,8 +32,12 @@ endif
 
 # Kernel compiles well in parallel
 # Enable // build if selected in the menuconfig
-ifneq ($(CONFIG_PKG_BUILD_USE_JOBSERVER),)
-  KERNEL_JFLAG ?= $(MAKE_JOBSERVER) -j
+ifneq ($(CONFIG_PKG_BUILD_USE_JOBSERVER)$(MAKE_JOBSERVER),)
+  ifeq ($(MAKE_JOBSERVER),)
+    KERNEL_JFLAG ?= -j1
+  else
+    KERNEL_JFLAG ?= $(MAKE_JOBSERVER) -j
+  endif
 else
   KERNEL_JFLAG ?= $(if $(CONFIG_PKG_BUILD_JOBS),-j$(CONFIG_PKG_BUILD_JOBS),-j1)
 endif
