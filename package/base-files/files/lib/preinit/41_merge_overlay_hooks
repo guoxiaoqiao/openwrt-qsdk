@@ -2,7 +2,7 @@
 # Copyright (C) 2010 OpenWrt.org
 
 merge_overlay_hooks() {
-	jffs2_not_mounted || [ ! -d /tmp/overlay/lib/preinit ] || {
+	(jffs2_not_mounted && ubifs_not_mounted) || [ ! -d /tmp/overlay/lib/preinit ] || {
 		echo "- merge overlay components -"
 
 		mkdir -p /tmp/preinit-hook-merge

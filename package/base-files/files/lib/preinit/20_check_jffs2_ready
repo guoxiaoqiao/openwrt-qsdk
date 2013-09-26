@@ -9,7 +9,7 @@ mount_no_jffs2() {
 
 check_for_jffs2() {
     check_skip || {
-	jffs2_ready || {
+	jffs2_ready || cat /proc/mounts | grep -qs rootfs.*ubifs || {
 	    mount_no_jffs2 && pi_mount_skip_next=true
 	}
     }

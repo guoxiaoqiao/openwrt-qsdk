@@ -10,7 +10,7 @@ mount_no_mtd() {
 
 check_for_mtd() {
     check_skip || {
-	grep -qs rootfs_data /proc/mtd || {
+	grep -qs rootfs_data /proc/mtd || grep -qs rootfs_data /sys/class/ubi/ubi0/ubi0_1/name || {
 	    mount_no_mtd && pi_mount_skip_next=true
 	}
     }
