@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
+#
+
+. /lib/functions/gpio-button-hotplug.sh
+. /lib/ipq806x.sh
+
+board=$(ipq806x_board_name)
+
+case "$board" in
+ap148)
+	button_add_uci_config "pressed" "reset" "reboot"
+	;;
+*)
+	;;
+esac
+
+exit 0
