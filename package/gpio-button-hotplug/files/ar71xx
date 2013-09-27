@@ -5,7 +5,7 @@
 #
 
 . /lib/ar71xx.sh
-. /lib/gpio-button-hotplug.sh
+. /lib/functions/gpio-button-hotplug.sh
 . /lib/functions.sh
 
 board=$(ar71xx_board_name)

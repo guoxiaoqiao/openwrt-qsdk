@@ -43,9 +43,6 @@ define Build/Compile
 endef
 
 define KernelPackage/gpio-button-hotplug/install
-	$(INSTALL_DIR) $(1)/lib
-	$(INSTALL_BIN) ./files/gpio-button-hotplug.sh $(1)/lib
-
 	[ -e ./files/$(BOARD) ] && \
 	  $(INSTALL_DIR) $(1)/etc/uci-defaults && \
 	  $(INSTALL_BIN) ./files/$(BOARD) $(1)/etc/uci-defaults/gpio-button-hotplug || \
