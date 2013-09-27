@@ -18,6 +18,14 @@ define Image/Build
 	$(call Image/Build/$(1),$(1))
 	mkdir -p $(BIN_DIR)
 	dd if=$(KDIR)/root.$(1) of=$(BIN_DIR)/$(IMG_PREFIX)-$(1)-root.img bs=2k conv=sync
+	$(call Sysupgrade,$(1))
+
+endef
+
+define Sysupgrade
+	cat $(BIN_DIR)/$(IMG_PREFIX)-$(KERNEL)-uImage \
+	    $(BIN_DIR)/$(IMG_PREFIX)-$(1)-root.img > \
+		$(BIN_DIR)/$(IMG_PREFIX)-sysupgrade.bin
 endef
 
 $(eval $(call BuildImage))
