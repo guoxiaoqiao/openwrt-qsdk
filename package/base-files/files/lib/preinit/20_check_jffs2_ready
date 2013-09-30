@@ -8,8 +8,10 @@ mount_no_jffs2() {
 }
 
 check_for_jffs2() {
-    check_skip || {
-	jffs2_ready || cat /proc/mounts | grep -qs rootfs.*ubifs || {
+    # skip jffs2 mounting even if it's there if we have volume named
+    # ubi_rootfs_data
+    check_skip || grep -qs ubi_rootfs_data /sys/class/ubi/ubi0/ubi0_1/name || {
+	jffs2_ready || {
 	    mount_no_jffs2 && pi_mount_skip_next=true
 	}
     }
