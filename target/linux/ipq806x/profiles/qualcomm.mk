@@ -12,7 +12,7 @@ define Profile/QSDK_Base
 	  kmod-ipv6 luci-app-qos iperf devmem2 ip ethtool ip6tables \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
-	  luci-app-ddns ddns-scripts uboot-ipq806x-cdp cups \
+	  luci-app-ddns ddns-scripts uboot-ipq806x-cdp cups mdadm\
 	  kmod-md-mod kmod-md-linear kmod-md-raid0 kmod-md-raid1 \
 	  iputils-tracepath iputils-tracepath6
 endef
