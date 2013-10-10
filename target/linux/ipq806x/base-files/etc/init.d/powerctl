@@ -1,0 +1,46 @@
+#!/bin/sh /etc/rc.common
+
+START=01
+
+# ipq806x_power_auto()
+#   Sets the default parameters for cpu ondemand governor (if enabled as default
+#   governor). The parameters are tuned for best performance than for power.
+#   Also, the up_thresholds have been set to low value, to workaround the cpu
+#   utilization anamolies we are seeing with kcpustat with tickless kernel.
+ipq806x_power_auto() {
+	[ -f /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate ] || \
+		return 1
+
+	# Change sampling rate for frequency scaling decisions to 1s, from 10 ms
+	echo 1000000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+
+	# Change sampling rate for frequency down scaling decision to 60s
+	echo 60 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+
+	# Change the CPU load threshold above which frequency is up-scaled to
+	# turbo frequency,to 50%
+	echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+	echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold_any_cpu_load
+	echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold_multi_core
+
+	# Change the CPU load threshold below which frequency is down-scaled to
+	# 10% (down_threshold = up_threshold - down_differential)
+	echo 40 > /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+
+	# Set sync_freq and optimal_freq used for multicore scenarios to max
+	# freq
+	echo 1400000 > /sys/devices/system/cpu/cpufreq/ondemand/optimal_freq
+	echo 1400000 > /sys/devices/system/cpu/cpufreq/ondemand/sync_freq
+}
+
+start() {
+	config_load system
+	config_get mode powerctl mode "auto"
+
+	if eval "type ipq806x_power_${mode}" 2>/dev/null >/dev/null; then
+		eval ipq806x_power_${mode}
+	else
+		echo "\"${mode}\" power mode not supported"
+	fi
+}
+
