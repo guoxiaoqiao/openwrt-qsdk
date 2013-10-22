@@ -89,7 +89,10 @@ exit 0
 endef
 
 define KernelPackage/qca-nss-profile-drv
-  $(call KernelPackage/qca-nss-drv/Default)
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  DEPENDS:=kmod-qca-nss-drv
   TITLE:=Profiler for QCA NSS driver (IPQ806x)
   FILES:=$(PKG_BUILD_DIR)/profiler/qca-nss-profile-drv.ko
 endef
