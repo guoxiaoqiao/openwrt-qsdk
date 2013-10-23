@@ -4,15 +4,14 @@
 
 define Profile/QSDK_Base
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp kmod-fs-ext4 \
-	  kmod-usb-core kmod-usb2 kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
+	  kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  kmod-sound-core kmod-sound-soc-ipq806x alsa mplayer \
-	  kmod-usb-xhci kmod-usb-printer ntfs-3g dosfsck e2fsprogs iozone fdisk mkdosfs \
-	  kmod-usb-gadget kmod-usb-gadget-dwc3 kmod-usb-gadget-dwc3-ipq \
+	  kmod-usb-printer ntfs-3g dosfsck e2fsprogs iozone fdisk mkdosfs \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
 	  kmod-ipv6 luci-app-qos iperf devmem2 ip ethtool ip6tables \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
-	  luci-app-ddns ddns-scripts uboot-ipq806x-cdp cups mdadm\
+	  luci-app-ddns ddns-scripts cups mdadm \
 	  kmod-md-mod kmod-md-linear kmod-md-raid0 kmod-md-raid1 \
 	  iputils-tracepath iputils-tracepath6 alljoyn
 endef
