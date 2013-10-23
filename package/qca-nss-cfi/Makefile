@@ -7,7 +7,7 @@ include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=qca-nss-cfi
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=ssh://qca-git01.qualcomm.com:29418/lklm/nss-cfi
+PKG_SOURCE_URL:=ssh://qca-git01.qualcomm.com:29418/oss/lklm/nss-cfi
 PKG_BRANCH:=master
 PKG_RELEASE:=1
 

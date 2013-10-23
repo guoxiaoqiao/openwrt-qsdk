@@ -12,7 +12,7 @@ include $(INCLUDE_DIR)/kernel.mk
 PKG_NAME:=u-boot
 PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=ssh://qca-git01.qualcomm.com:29418/boot/u-boot.git
+PKG_SOURCE_URL:=ssh://qca-git01.qualcomm.com:29418/oss/boot/u-boot.git
 PKG_BRANCH:=master
 PKG_TARGETS:=bin
 PKG_RELEASE:=1
