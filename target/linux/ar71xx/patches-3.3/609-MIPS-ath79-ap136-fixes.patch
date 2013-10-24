@@ -5,7 +5,7 @@
 - * Qualcomm Atheros AP136 reference board support
 + * Atheros AP136 reference board support
   *
-  * Copyright (c) 2012 Qualcomm Atheros
+  * Copyright (c) 2012 The Linux Foundation. All rights reserved.
   * Copyright (c) 2012 Gabor Juhos <juhosg@openwrt.org>
 @@ -18,23 +18,27 @@
   *

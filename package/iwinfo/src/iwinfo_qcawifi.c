@@ -1,7 +1,7 @@
 /*
  * iwinfo - Wireless Information Library - QCAWifi Backend
  *
- *   Copyright (c) 2013 Qualcomm Atheros, Inc.
+ *   Copyright (c) 2013 The Linux Foundation. All rights reserved.
  *   Copyright (C) 2009-2010 Jo-Philipp Wich <xm@subsignal.org>
  *
  * The iwinfo library is free software: you can redistribute it and/or

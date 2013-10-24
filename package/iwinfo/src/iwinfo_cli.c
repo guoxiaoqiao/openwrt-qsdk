@@ -1,7 +1,7 @@
 /*
  * iwinfo - Wireless Information Library - Command line frontend
  *
- *   Copyright (c) 2013 Qualcomm Atheros, Inc.
+ *   Copyright (c) 2013 The Linux Foundation. All rights reserved.
  *   Copyright (C) 2011 Jo-Philipp Wich <xm@subsignal.org>
  *
  * The iwinfo library is free software: you can redistribute it and/or

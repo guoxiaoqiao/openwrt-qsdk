@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013 Qualcomm Atheros, Inc.
+# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 #
 
 define Profile/QSDK_Base

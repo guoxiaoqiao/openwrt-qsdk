@@ -35,7 +35,7 @@
 +/*
 + * Atheros AP143 reference board support
 + *
-+ * Copyright (c) 2013 Qualcomm Atheros Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + * Copyright (c) 2012 Gabor Juhos <juhosg@openwrt.org>
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any

@@ -1,7 +1,7 @@
 /*
  * ar80xx.c: ar80xx(ar8031/ar8033/ar8035) PHY driver
  *
- * Copyright (C) 2013 Qualcomm Atheros
+ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
  * Copyright (C) 2009 Felix Fietkau <nbd@openwrt.org>
  * Copyright (C) 2011-2012 Gabor Juhos <juhosg@openwrt.org>
  *

@@ -15,7 +15,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
   * based on RR's ip_nat_ftp.c and other modules.
   * (C) 2007 United Security Providers
   * (C) 2007, 2008 Patrick McHardy <kaber@trash.net>
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License version 2 as

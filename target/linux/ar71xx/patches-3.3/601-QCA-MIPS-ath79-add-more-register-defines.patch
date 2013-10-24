@@ -15,7 +15,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  /*
   *  Atheros AR71XX/AR724X/AR913X SoC register definitions
   *
-+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *  Copyright (c) 2013 The Linux Foundation. All rights reserved.
   *  Copyright (C) 2010-2011 Jaiganesh Narayanan <jnarayanan@atheros.com>
   *  Copyright (C) 2008-2010 Gabor Juhos <juhosg@openwrt.org>
   *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>

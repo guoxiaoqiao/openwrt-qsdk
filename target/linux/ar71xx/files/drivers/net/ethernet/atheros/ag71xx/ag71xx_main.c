@@ -1,7 +1,7 @@
 /*
  *  Atheros AR71xx built-in ethernet mac driver
  *
- *  Copyright (c) 2013 Qualcomm Atheros, Inc.
+ *  Copyright (c) 2013 The Linux Foundation. All rights reserved.
  *  Copyright (C) 2008-2010 Gabor Juhos <juhosg@openwrt.org>
  *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
  *

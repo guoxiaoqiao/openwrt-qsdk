@@ -1,4 +1,4 @@
-# Copyright (c) 2013 Qualcomm Atheros, Inc.
+# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 package metadata;
 use base 'Exporter';
 use strict;

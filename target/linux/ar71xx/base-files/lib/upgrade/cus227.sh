@@ -1,4 +1,4 @@
-# Copyright (c) 2013 Qualcomm Atheros, Inc.
+# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 USE_REFRESH=
 
 # make sure we got the tools we need during the fw upgrade process

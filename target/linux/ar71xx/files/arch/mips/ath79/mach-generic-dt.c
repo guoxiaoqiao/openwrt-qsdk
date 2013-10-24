@@ -1,7 +1,7 @@
 /*
  * Qualcomm reference boards support: REH132 DB120 APH126 APH128 APH131
  *
- * Copyright (c) 2013 Qualcomm Atheros
+ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above

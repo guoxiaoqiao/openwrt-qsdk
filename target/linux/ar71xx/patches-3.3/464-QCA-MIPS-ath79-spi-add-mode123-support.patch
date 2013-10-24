@@ -15,7 +15,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  /*
   *  Platform data definition for Atheros AR71XX/AR724X/AR913X SPI controller
   *
-+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *  Copyright (c) 2013 The Linux Foundation. All rights reserved.
   *  Copyright (C) 2008-2010 Gabor Juhos <juhosg@openwrt.org>
   *
   *  This program is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  /*
   * SPI controller driver for the Atheros AR71XX/AR724X/AR913X SoCs
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
   * Copyright (C) 2009-2011 Gabor Juhos <juhosg@openwrt.org>
   *
   * This driver has been based on the spi-gpio.c:

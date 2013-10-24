@@ -15,7 +15,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
   * Copyright (C) 1996 Stoned Elipot
   * Copyright (C) 1999 Silicon Graphics, Inc.
   * Copyright (C) 2000, 2001, 2002, 2007  Maciej W. Rozycki
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
   */
  #include <linux/init.h>
  #include <linux/ioport.h>
@@ -344,7 +344,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 +++ b/arch/mips/include/asm/mach-ath79/irq.h
 @@ -1,4 +1,5 @@
  /*
-+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *  Copyright (c) 2013 The Linux Foundation. All rights reserved.
   *  Copyright (C) 2008-2010 Gabor Juhos <juhosg@openwrt.org>
   *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
   *
