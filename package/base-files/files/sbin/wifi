@@ -144,7 +144,6 @@ start_net() {(
 	[ -f "/var/run/$iface.pid" ] && kill "$(cat /var/run/${iface}.pid)" 2>/dev/null
 	[ -z "$config" ] || {
 		include /lib/network
-		scan_interfaces
 		for config in $config; do
 			setup_interface "$iface" "$config"
 		done
