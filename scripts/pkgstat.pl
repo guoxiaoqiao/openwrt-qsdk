@@ -21,14 +21,22 @@ sub get_info_from_make($$) {
 	my $ret=shift;
 	my $dir=shift;
 
-	my @pkgname = `make -C ${dir} var.PKG_SOURCE var.PKG_VERSION var.LINUX_SOURCE var.LINUX_VERSION --no-print-directory TOPDIR=\`pwd\` 2>/dev/null`;
+	my @varlist = (	"var.PKG_NAME",
+			"var.PKG_SOURCE",
+			"var.PKG_VERSION",
+			"var.LINUX_SOURCE",
+			"var.LINUX_VERSION",
+	);
+	my $varstr = join(" ", @varlist);
+
+	my @pkgname = `make -C ${dir} ${varstr} --no-print-directory TOPDIR=\`pwd\` 2>/dev/null`;
 	chomp @pkgname;
 
 	return if ($#pkgname==-1);
 
 	foreach (@pkgname) {
-		(my $name, my $value) = ($_ =~ m/(.*)=\'(.*)\'/);
-		$ret->{$name}=$value;
+		(my $key, my $value) = ($_ =~ m/(.*)=\'(.*)\'/);
+		$ret->{$key}=$value;
 	}
 }
 
@@ -50,9 +58,9 @@ sub get_host_tools() {
 		get_info_from_make(\%h_pkg, "tools/$pkg");
 
 		if (-f "dl/$h_pkg{PKG_SOURCE}") {
-			$localpkgs{$h_pkg{PKG_SOURCE}}->{host} = "x"
-				unless $h_pkg{PKG_SOURCE} =~ m/^$/;
-			$localpkgs{$h_pkg{PKG_SOURCE}}->{version} = $h_pkg{PKG_VERSION};
+			$localpkgs{$h_pkg{PKG_NAME}}->{host} = "x";
+			$localpkgs{$h_pkg{PKG_NAME}}->{version} = $h_pkg{PKG_VERSION};
+			$localpkgs{$h_pkg{PKG_NAME}}->{source} = $h_pkg{PKG_SOURCE};
 		}
 	}
 	printf("\033[M\r");
@@ -64,12 +72,13 @@ sub get_target_pkgs() {
 	parse_package_metadata("tmp/.packageinfo") or exit 1;
 
 	foreach my $pkg (sort {uc($a) cmp uc($b)} keys %package) {
-		my $pkgname = $package{$pkg}->{source};
+		my $pkgname = $package{$pkg}->{src};
 		printf("\033[M\r");
 		printf("Get target pkg name...$pkg");
-		if (-f "dl/$pkgname") {
-			$localpkgs{$pkgname}->{target} = "x" unless $pkgname =~ m/^$/;
+		if (-f "dl/$package{$pkg}->{source}") {
+			$localpkgs{$pkgname}->{target} = "x";
 			$localpkgs{$pkgname}->{version} = $package{$pkg}->{version};
+			$localpkgs{$pkgname}->{source} = $package{$pkg}->{source};
 		}
 	}
 
@@ -96,8 +105,9 @@ sub get_toolchain_pkgs() {
 		get_info_from_make(\%h_pkg, "toolchain/$pkg");
 
 		if (-f "dl/$h_pkg{PKG_SOURCE}") {
-			$localpkgs{$h_pkg{PKG_SOURCE}}->{toolchain} = "x" unless $h_pkg{PKG_SOURCE} =~ m/^$/;
-			$localpkgs{$h_pkg{PKG_SOURCE}}->{version} = $h_pkg{PKG_VERSION};
+			$localpkgs{$h_pkg{PKG_NAME}}->{toolchain} = "x";
+			$localpkgs{$h_pkg{PKG_NAME}}->{version} = $h_pkg{PKG_VERSION};
+			$localpkgs{$h_pkg{PKG_NAME}}->{source} = $h_pkg{PKG_SOURCE};
 		}
 	}
 	printf("\033[M\r");
@@ -116,8 +126,9 @@ sub get_linux_pkg() {
 		printf("Get kernel pkg name...$target");
 		get_info_from_make(\%h_pkg, "$targetdir/$target");
 		if (-f "dl/$h_pkg{LINUX_SOURCE}") {
-			$localpkgs{$h_pkg{LINUX_SOURCE}}->{target} = "x";
-			$localpkgs{$h_pkg{LINUX_VERSION}}->{version} = $h_pkg{LINUX_VERSION};
+			$localpkgs{"linux"}->{target} = "x";
+			$localpkgs{"linux"}->{version} = $h_pkg{LINUX_VERSION};
+			$localpkgs{"linux"}->{source} = $h_pkg{LINUX_SOURCE};
 		}
 	}
 	printf("\033[M\r");
@@ -132,15 +143,16 @@ sub is_downloaded($) {
 }
 
 sub write_txt() {
-	printf("%-70s\t%-8s\t%-12s\t%-12s\n",
-		"source","host","toolchain","target");
+	printf("%-30s\t%-70s\t%-8s\t%-12s\t%-12s\t%-20s\n",
+		"name", "source","host","toolchain","target","version");
 	foreach my $src (sort keys %localpkgs) {
 		# We fill in the hash with empty strings to facilitate the print below
 		$localpkgs{$src}->{host} = "" unless exists($localpkgs{$src}->{host});
 		$localpkgs{$src}->{toolchain} = "" unless exists($localpkgs{$src}->{toolchain});
 		$localpkgs{$src}->{target} = "" unless exists($localpkgs{$src}->{target});
-		printf("%-70s\t%-8s\t%-12s\t%-12s\t%-20s\n",
+		printf("%-30s\t%-70s\t%-8s\t%-12s\t%-12s\t%-20s\n",
 			$src,
+			$localpkgs{$src}->{source},
 			$localpkgs{$src}->{host},
 			$localpkgs{$src}->{toolchain},
 			$localpkgs{$src}->{target},
@@ -155,9 +167,10 @@ sub write_xlsx() {
 	}
 
 	my $worksheet = $workbook->add_worksheet();
-	$worksheet->set_column("A:A", 80);
-	$worksheet->set_column("E:E", 30);
-	$worksheet->autofilter("B:D");
+	$worksheet->set_column("A:A", 30);
+	$worksheet->set_column("B:B", 50);
+	$worksheet->set_column("F:F", 30);
+	$worksheet->autofilter("C:E");
 
 	my $title_format = $workbook->add_format();
 	$title_format->set_bold();
@@ -167,22 +180,24 @@ sub write_xlsx() {
 	$select_format->set_align("center");
 
 	my $row = 0;
-	$worksheet->write($row, 0, "source", $title_format);
-	$worksheet->write($row, 1, "host", $title_format);
-	$worksheet->write($row, 2, "toolchain", $title_format);
-	$worksheet->write($row, 3, "target", $title_format);
-	$worksheet->write($row, 4, "version", $title_format);
+	$worksheet->write($row, 0, "name", $title_format);
+	$worksheet->write($row, 1, "source", $title_format);
+	$worksheet->write($row, 2, "host", $title_format);
+	$worksheet->write($row, 3, "toolchain", $title_format);
+	$worksheet->write($row, 4, "target", $title_format);
+	$worksheet->write($row, 5, "version", $title_format);
 
 	foreach my $src (sort keys %localpkgs) {
 		$row++;
 		$worksheet->write($row, 0, $src);
-		$worksheet->write($row, 1, $localpkgs{$src}->{host}, $select_format)
+		$worksheet->write($row, 1, $localpkgs{$src}->{source});
+		$worksheet->write($row, 2, $localpkgs{$src}->{host}, $select_format)
 				if exists($localpkgs{$src}->{host});
-		$worksheet->write($row, 2, $localpkgs{$src}->{toolchain}, $select_format)
+		$worksheet->write($row, 3, $localpkgs{$src}->{toolchain}, $select_format)
 				if exists($localpkgs{$src}->{toolchain});
-		$worksheet->write($row, 3, $localpkgs{$src}->{target}, $select_format)
+		$worksheet->write($row, 4, $localpkgs{$src}->{target}, $select_format)
 				if exists($localpkgs{$src}->{target});
-		$worksheet->write_string($row, 4, $localpkgs{$src}->{version})
+		$worksheet->write_string($row, 5, $localpkgs{$src}->{version})
 				if exists($localpkgs{$src}->{version});
 	}
 }
