@@ -79,6 +79,13 @@ sub get_target_pkgs() {
 			$localpkgs{$pkgname}->{target} = "x";
 			$localpkgs{$pkgname}->{version} = $package{$pkg}->{version};
 			$localpkgs{$pkgname}->{source} = $package{$pkg}->{source};
+
+			# Subdir field contains the full dir (feeds/package/)
+			# We just want the feed name (package)
+			if (! $package{$pkg}->{subdir} =~ m/^$/) {
+				$package{$pkg}->{subdir} =~ s,feeds/(.*)/,$1,;
+				$localpkgs{$pkgname}->{feed} = $package{$pkg}->{subdir}
+			}
 		}
 	}
 
@@ -143,16 +150,17 @@ sub is_downloaded($) {
 }
 
 sub write_txt() {
-	printf("%-30s\t%-70s\t%-8s\t%-12s\t%-12s\t%-20s\n",
-		"name", "source","host","toolchain","target","version");
+	printf("%-30s\t%-20s\t%-70s\t%-8s\t%-12s\t%-12s\t%-20s\n",
+		"name", "feed", "source","host","toolchain","target","version");
 	foreach my $src (sort keys %localpkgs) {
 		# We fill in the hash with empty strings to facilitate the print below
 		$localpkgs{$src}->{host} = "" unless exists($localpkgs{$src}->{host});
 		$localpkgs{$src}->{toolchain} = "" unless exists($localpkgs{$src}->{toolchain});
 		$localpkgs{$src}->{target} = "" unless exists($localpkgs{$src}->{target});
-		printf("%-30s\t%-70s\t%-8s\t%-12s\t%-12s\t%-20s\n",
+		printf("%-30s\t%-20s\t%-70s\t%-8s\t%-12s\t%-12s\t%-20s\n",
 			$src,
 			$localpkgs{$src}->{source},
+			$localpkgs{$src}->{feed},
 			$localpkgs{$src}->{host},
 			$localpkgs{$src}->{toolchain},
 			$localpkgs{$src}->{target},
@@ -169,8 +177,9 @@ sub write_xlsx() {
 	my $worksheet = $workbook->add_worksheet();
 	$worksheet->set_column("A:A", 30);
 	$worksheet->set_column("B:B", 50);
-	$worksheet->set_column("F:F", 30);
-	$worksheet->autofilter("C:E");
+	$worksheet->set_column("C:C", 30);
+	$worksheet->set_column("D:D", 15);
+	$worksheet->autofilter("D:G");
 
 	my $title_format = $workbook->add_format();
 	$title_format->set_bold();
@@ -182,23 +191,26 @@ sub write_xlsx() {
 	my $row = 0;
 	$worksheet->write($row, 0, "name", $title_format);
 	$worksheet->write($row, 1, "source", $title_format);
-	$worksheet->write($row, 2, "host", $title_format);
-	$worksheet->write($row, 3, "toolchain", $title_format);
-	$worksheet->write($row, 4, "target", $title_format);
-	$worksheet->write($row, 5, "version", $title_format);
+	$worksheet->write($row, 2, "version", $title_format);
+	$worksheet->write($row, 3, "feed", $title_format);
+	$worksheet->write($row, 4, "host", $title_format);
+	$worksheet->write($row, 5, "toolchain", $title_format);
+	$worksheet->write($row, 6, "target", $title_format);
 
 	foreach my $src (sort keys %localpkgs) {
 		$row++;
 		$worksheet->write($row, 0, $src);
 		$worksheet->write($row, 1, $localpkgs{$src}->{source});
-		$worksheet->write($row, 2, $localpkgs{$src}->{host}, $select_format)
-				if exists($localpkgs{$src}->{host});
-		$worksheet->write($row, 3, $localpkgs{$src}->{toolchain}, $select_format)
-				if exists($localpkgs{$src}->{toolchain});
-		$worksheet->write($row, 4, $localpkgs{$src}->{target}, $select_format)
-				if exists($localpkgs{$src}->{target});
-		$worksheet->write_string($row, 5, $localpkgs{$src}->{version})
+		$worksheet->write_string($row, 2, $localpkgs{$src}->{version})
 				if exists($localpkgs{$src}->{version});
+		$worksheet->write($row, 3, $localpkgs{$src}->{feed})
+				if exists($localpkgs{$src}->{feed});
+		$worksheet->write($row, 4, $localpkgs{$src}->{host}, $select_format)
+				if exists($localpkgs{$src}->{host});
+		$worksheet->write($row, 5, $localpkgs{$src}->{toolchain}, $select_format)
+				if exists($localpkgs{$src}->{toolchain});
+		$worksheet->write($row, 6, $localpkgs{$src}->{target}, $select_format)
+				if exists($localpkgs{$src}->{target});
 	}
 }
 
