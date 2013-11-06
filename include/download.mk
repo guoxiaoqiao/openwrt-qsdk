@@ -83,12 +83,16 @@ endef
 define DownloadMethod/git
 	$(call wrap_mirror, \
 		echo "Checking out files from the git repository..."; \
+		GIT_NAME=$$$$(echo $(URL) | sed -e s:.*/::g -e s/.git$$$$//g); \
 		mkdir -p $(TMP_DIR)/dl && \
 		cd $(TMP_DIR)/dl && \
 		rm -rf $(SUBDIR) && \
 		[ \! -d $(SUBDIR) ] && \
-		git clone $(URL) $(SUBDIR) --recursive && \
-		(cd $(SUBDIR) && git checkout $(VERSION) && git submodule update) && \
+		[ -n "${CONFIG_GIT_MIRROR}" ] && \
+		  git clone $(CONFIG_GIT_MIRROR)$$$$GIT_NAME $(SUBDIR) --recursive || \
+		  git clone $(URL) $(SUBDIR) --recursive && \
+		(cd $(SUBDIR) && git remote -v && git checkout $(VERSION) || \
+			(git fetch origin $(VERSION) && git checkout FETCH_HEAD && git submodule update)) && \
 		echo "Packing checkout..." && \
 		rm -rf $(SUBDIR)/.git && \
 		$(call dl_pack,$(TMP_DIR)/dl/$(FILE),$(SUBDIR)) && \
