@@ -35,6 +35,7 @@ define Profile/QSDK_Retail
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Retail Profile
 	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
+	  qca-spectral \
 	  kmod-qca-nss-connmgr hyfi kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6
 endef
 
@@ -51,7 +52,7 @@ define Profile/QSDK_Carrier
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Carrier Profile
 	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-		  hyfi streamboost
+		  qca-spectral hyfi streamboost
 endef
 
 define Profile/QSDK_Carrier/Description
@@ -63,6 +64,7 @@ define Profile/QSDK_Enterprise
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
 	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
+	  qca-spectral \
 	  kmod-openswan-nss openswan-nss kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi 
 endef
 
