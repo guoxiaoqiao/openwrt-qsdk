@@ -35,7 +35,7 @@ define KernelPackage/qca-nss-drv/Description
 This package contains a NSS driver for QCA chipset
 endef
 
-define KernelPackage/qca-nss-connmgr
+define KernelPackage/qca-nss-connmgr/Default
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
@@ -43,11 +43,38 @@ define KernelPackage/qca-nss-connmgr
   DEPENDS:=kmod-qca-nss-drv +iptables-mod-extra
   FILES:=$(PKG_BUILD_DIR)/qca-nss-connmgr-ipv4.ko $(PKG_BUILD_DIR)/qca-nss-connmgr-ipv6.ko
   KCONFIG:=CONFIG_BRIDGE_NETFILTER=y
+endef
+
+define KernelPackage/qca-nss-connmgr/Description/Default
+Kernel modules for NSS connection manager
+endef
+
+define KernelPackage/qca-nss-connmgr
+  $(call KernelPackage/qca-nss-connmgr/Default)
   AUTOLOAD:=$(call AutoLoad,50,qca-nss-connmgr-ipv4 qca-nss-connmgr-ipv6)
 endef
 
 define KernelPackage/qca-nss-connmgr/Description
-Kernel modules for NSS connection manager
+  $(call KernelPackage/qca-nss-connmgr/Description/Default)
+endef
+
+define KernelPackage/qca-nss-connmgr/install
+	$(INSTALL_DIR) $(1)/etc/firewall.d $(1)/etc/uci-defaults
+	$(INSTALL_DATA) ./files/qca-nss-connmgr.defaults $(1)/etc/uci-defaults/99-qca-nss-connmgr
+	$(INSTALL_DATA) ./files/qca-nss-connmgr.firewall $(1)/etc/firewall.d/qca-nss-connmgr
+endef
+
+define KernelPackage/qca-nss-connmgr-noload
+  $(call KernelPackage/qca-nss-connmgr/Default)
+endef
+
+define KernelPackage/qca-nss-connmgr-noload/Description
+  $(call KernelPackage/qca-nss-connmgr/Description/Default)
+  When selected, this package installs the driver but does not load it at init.
+endef
+
+define KernelPackage/qca-nss-connmgr-noload/install
+  $(call KernelPackage/qca-nss-connmgr/install,$(1))
 endef
 
 define KernelPackage/qca-nss-tun6rd
@@ -117,14 +144,9 @@ define Build/Compile
 		modules
 endef
 
-define KernelPackage/qca-nss-connmgr/install
-	$(INSTALL_DIR) $(1)/etc/firewall.d $(1)/etc/uci-defaults
-	$(INSTALL_DATA) ./files/qca-nss-connmgr.defaults $(1)/etc/uci-defaults/99-qca-nss-connmgr
-	$(INSTALL_DATA) ./files/qca-nss-connmgr.firewall $(1)/etc/firewall.d/qca-nss-connmgr
-endef
-
 $(eval $(call KernelPackage,qca-nss-profile-drv))
 $(eval $(call KernelPackage,qca-nss-drv))
 $(eval $(call KernelPackage,qca-nss-connmgr))
+$(eval $(call KernelPackage,qca-nss-connmgr-noload))
 $(eval $(call KernelPackage,qca-nss-tun6rd))
 $(eval $(call KernelPackage,qca-nss-tunipip6))
