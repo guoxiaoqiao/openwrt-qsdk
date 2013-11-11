@@ -4,7 +4,9 @@
 
 SOUND_SOC_IPQ806X_MODULES:= \
 		snd-soc-ipq806x \
+		snd-soc-ipq806x-clk\
 		snd-soc-ipq-lpaif \
+		snd-soc-ipq-pcm-raw\
 		snd-soc-ipq-dmlite \
 		snd-soc-ipq-spdif \
 		snd-soc-ipq-cpu-dai \
