@@ -30,6 +30,7 @@ proto_dhcp_setup() {
 	[ -n "$clientid" ] && clientid="-x 0x3d:${clientid//:/}" || clientid="-C"
 
 	proto_export "INTERFACE=$config"
+	proto_export "IFNAME=$iface"
 	proto_run_command "$config" udhcpc \
 		-p /var/run/udhcpc-$iface.pid \
 		-s /lib/netifd/dhcp.script \
