@@ -49,6 +49,11 @@ define KernelPackage/qca-nss-connmgr/Description/Default
 Kernel modules for NSS connection manager
 endef
 
+define KernelPackage/qca-nss-connmgr/Default/install
+	$(INSTALL_DIR) $(1)/etc/firewall.d
+	$(INSTALL_DATA) ./files/qca-nss-connmgr.firewall $(1)/etc/firewall.d/qca-nss-connmgr
+endef
+
 define KernelPackage/qca-nss-connmgr
   $(call KernelPackage/qca-nss-connmgr/Default)
   AUTOLOAD:=$(call AutoLoad,50,qca-nss-connmgr-ipv4 qca-nss-connmgr-ipv6)
@@ -59,9 +64,10 @@ define KernelPackage/qca-nss-connmgr/Description
 endef
 
 define KernelPackage/qca-nss-connmgr/install
-	$(INSTALL_DIR) $(1)/etc/firewall.d $(1)/etc/uci-defaults
+$(call KernelPackage/qca-nss-connmgr/Default/install, $(1))
+	$(INSTALL_DIR) $(1)/etc/uci-defaults $(1)/etc/sysctl.d
 	$(INSTALL_DATA) ./files/qca-nss-connmgr.defaults $(1)/etc/uci-defaults/99-qca-nss-connmgr
-	$(INSTALL_DATA) ./files/qca-nss-connmgr.firewall $(1)/etc/firewall.d/qca-nss-connmgr
+	$(INSTALL_BIN) ./files/qca-nss-connmgr.sysctl $(1)/etc/sysctl.d/qca-nss-connmgr.conf
 endef
 
 define KernelPackage/qca-nss-connmgr-noload
@@ -74,7 +80,7 @@ define KernelPackage/qca-nss-connmgr-noload/Description
 endef
 
 define KernelPackage/qca-nss-connmgr-noload/install
-  $(call KernelPackage/qca-nss-connmgr/install,$(1))
+  $(call KernelPackage/qca-nss-connmgr/Default/install,$(1))
 endef
 
 define KernelPackage/qca-nss-tun6rd
