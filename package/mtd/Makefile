@@ -19,6 +19,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/mtd
   SECTION:=utils
   CATEGORY:=Base system
+  DEPENDS:=+libubox
   TITLE:=Update utility for trx firmware images
 endef
 
