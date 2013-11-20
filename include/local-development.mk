@@ -7,5 +7,5 @@ ifeq (exists, $(shell [ -d $(LOCAL_SRC) ] && echo exists))
 PKG_REV=$(shell cd $(LOCAL_SRC)/; git describe --dirty --long --always | sed 's/.*-g//g')
 PKG_VERSION:=g$(PKG_REV)
 PKG_SOURCE_URL:=
-PKG_UNPACK=mkdir -p $(PKG_BUILD_DIR); $(CP) $(LOCAL_SRC)/* $(PKG_BUILD_DIR)/
+PKG_UNPACK=mkdir -p $(PKG_BUILD_DIR); git --git-dir=$(LOCAL_SRC)/.git checkout-index -a -f --prefix=$(PKG_BUILD_DIR)/
 endif
