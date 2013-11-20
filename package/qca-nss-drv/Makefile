@@ -50,8 +50,9 @@ Kernel modules for NSS connection manager
 endef
 
 define KernelPackage/qca-nss-connmgr/Default/install
-	$(INSTALL_DIR) $(1)/etc/firewall.d
+	$(INSTALL_DIR) $(1)/etc/firewall.d $(1)/etc/init.d
 	$(INSTALL_DATA) ./files/qca-nss-connmgr.firewall $(1)/etc/firewall.d/qca-nss-connmgr
+	$(INSTALL_BIN) ./files/qca-nss-connmgr.init $(1)/etc/init.d/qca-nss-connmgr
 endef
 
 define KernelPackage/qca-nss-connmgr
