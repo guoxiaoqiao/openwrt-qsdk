@@ -1,7 +1,6 @@
-diff -ruN a/bonding.c b/bonding.c
---- a/bonding.c
+--- /dev/null
 +++ b/bonding.c
-@@ -0,0 +1,535 @@
+@@ -0,0 +1,542 @@
 +/*
 + * netifd - network interface daemon
 + * Copyright (c) 2013 The Linux Foundation. All rights reserved.
@@ -31,6 +30,7 @@ diff -ruN a/bonding.c b/bonding.c
 +	BONDING_ATTR_IFNAME,
 +	BONDING_ATTR_SLAVES,
 +	BONDING_ATTR_MODE,
++	BONDING_ATTR_XMITHASHPOL,
 +	__BONDING_ATTR_MAX
 +};
 +
@@ -38,6 +38,7 @@ diff -ruN a/bonding.c b/bonding.c
 +	[BONDING_ATTR_IFNAME] = { "ifname", BLOBMSG_TYPE_STRING },
 +	[BONDING_ATTR_SLAVES] = { "slaves", BLOBMSG_TYPE_ARRAY },
 +	[BONDING_ATTR_MODE] = { "mode", BLOBMSG_TYPE_INT32 },
++	[BONDING_ATTR_XMITHASHPOL] = { "xmit_hash_policy", BLOBMSG_TYPE_STRING },
 +};
 +
 +static const union config_param_info bonding_attr_info[__BONDING_ATTR_MAX] = {
@@ -460,6 +461,11 @@ diff -ruN a/bonding.c b/bonding.c
 +
 +	if ((cur = tb[BONDING_ATTR_MODE]))
 +		cfg->mode = blobmsg_get_u32(cur);
++
++	if ((cur = tb[BONDING_ATTR_XMITHASHPOL])) {
++		memcpy(&cfg->xmit_hash_policy, blobmsg_get_string(cur),
++		       sizeof(cfg->xmit_hash_policy));
++	}
 +}
 +
 +enum dev_change_type
@@ -537,10 +543,9 @@ diff -ruN a/bonding.c b/bonding.c
 +
 +	return dev;
 +}
-diff -ruN a/CMakeLists.txt b/CMakeLists.txt
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -14,7 +14,7 @@
+@@ -14,7 +14,7 @@ SET(SOURCES
  	main.c utils.c system.c tunnel.c
  	interface.c interface-ip.c interface-event.c
  	iprule.c proto.c proto-static.c proto-shell.c
@@ -549,10 +554,9 @@ diff -ruN a/CMakeLists.txt b/CMakeLists.txt
  	ubus.c)
  
  
-diff -ruN a/config.c b/config.c
 --- a/config.c
 +++ b/config.c
-@@ -163,6 +163,25 @@
+@@ -163,6 +163,25 @@ config_parse_bridge_interface(struct uci
  	return 0;
  }
  
@@ -578,7 +582,7 @@ diff -ruN a/config.c b/config.c
  static void
  config_parse_interface(struct uci_section *s, bool alias)
  {
-@@ -170,7 +189,7 @@
+@@ -170,7 +189,7 @@ config_parse_interface(struct uci_sectio
  	const char *type = NULL;
  	struct blob_attr *config;
  	struct device *dev;
@@ -587,7 +591,7 @@ diff -ruN a/config.c b/config.c
  
  	blob_buf_init(&b, 0);
  
-@@ -180,7 +199,13 @@
+@@ -180,7 +199,13 @@ config_parse_interface(struct uci_sectio
  		if (config_parse_bridge_interface(s))
  			return;
  
@@ -602,7 +606,7 @@ diff -ruN a/config.c b/config.c
  	}
  
  	uci_to_blob(&b, s, &interface_attr_list);
-@@ -193,7 +218,7 @@
+@@ -193,7 +218,7 @@ config_parse_interface(struct uci_sectio
  	if (iface->proto_handler && iface->proto_handler->config_params)
  		uci_to_blob(&b, s, iface->proto_handler->config_params);
  
@@ -611,7 +615,7 @@ diff -ruN a/config.c b/config.c
  		iface->device_config = true;
  
  	config = malloc(blob_pad_len(b.head));
-@@ -279,6 +304,8 @@
+@@ -279,6 +304,8 @@ config_init_devices(void)
  		if (type) {
  			if (!strcmp(type, "bridge"))
  				devtype = &bridge_device_type;
@@ -620,10 +624,9 @@ diff -ruN a/config.c b/config.c
  			else if (!strcmp(type, "tunnel"))
  				devtype = &tunnel_device_type;
  		}
-diff -ruN a/device.h b/device.h
 --- a/device.h
 +++ b/device.h
-@@ -152,6 +152,7 @@
+@@ -152,6 +152,7 @@ extern const struct config_param_list de
  extern const struct device_type simple_device_type;
  extern const struct device_type bridge_device_type;
  extern const struct device_type tunnel_device_type;
@@ -631,10 +634,9 @@ diff -ruN a/device.h b/device.h
  
  void device_lock(void);
  void device_unlock(void);
-diff -ruN a/interface.c b/interface.c
 --- a/interface.c
 +++ b/interface.c
-@@ -747,6 +747,7 @@
+@@ -747,6 +747,7 @@ interface_change_config(struct interface
  
  	if_old->device_config = if_new->device_config;
  	if_old->config_autostart = if_new->config_autostart;
@@ -642,10 +644,9 @@ diff -ruN a/interface.c b/interface.c
  	if_old->ifname = if_new->ifname;
  	if_old->parent_ifname = if_new->parent_ifname;
  	if_old->proto_handler = if_new->proto_handler;
-diff -ruN a/system-dummy.c b/system-dummy.c
 --- a/system-dummy.c
 +++ b/system-dummy.c
-@@ -54,6 +54,30 @@
+@@ -54,6 +54,30 @@ int system_bridge_delif(struct device *b
  	return 0;
  }
  
@@ -676,21 +677,21 @@ diff -ruN a/system-dummy.c b/system-dummy.c
  int system_vlan_add(struct device *dev, int id)
  {
  	D(SYSTEM, "vconfig add %s %d\n", dev->ifname, id);
-diff -ruN a/system.h b/system.h
 --- a/system.h
 +++ b/system.h
-@@ -53,6 +53,10 @@
+@@ -53,6 +53,11 @@ struct bridge_config {
  	int max_age;
  };
  
 +struct bonding_config {
 +	int mode;
++	char xmit_hash_policy[16];
 +};
 +
  static inline int system_get_addr_family(unsigned int flags)
  {
  	if ((flags & DEVADDR_FAMILY) == DEVADDR_INET6)
-@@ -76,6 +80,11 @@
+@@ -76,6 +81,11 @@ int system_bridge_delbr(struct device *b
  int system_bridge_addif(struct device *bridge, struct device *dev);
  int system_bridge_delif(struct device *bridge, struct device *dev);
  
@@ -702,10 +703,9 @@ diff -ruN a/system.h b/system.h
  int system_vlan_add(struct device *dev, int id);
  int system_vlan_del(struct device *dev);
  
-diff -ruN a/system-linux.c b/system-linux.c
 --- a/system-linux.c
 +++ b/system-linux.c
-@@ -279,6 +279,16 @@
+@@ -279,6 +279,16 @@ int system_bridge_delbr(struct device *b
  	return ioctl(sock_ioctl, SIOCBRDELBR, bridge->ifname);
  }
  
@@ -722,7 +722,7 @@ diff -ruN a/system-linux.c b/system-linux.c
  static int system_bridge_if(const char *bridge, struct device *dev, int cmd, void *data)
  {
  	struct ifreq ifr;
-@@ -303,6 +313,18 @@
+@@ -303,6 +313,18 @@ static bool system_is_bridge(const char
  	return true;
  }
  
@@ -741,7 +741,7 @@ diff -ruN a/system-linux.c b/system-linux.c
  static char *system_get_bridge(const char *name, char *buf, int buflen)
  {
  	char *path;
-@@ -328,6 +350,33 @@
+@@ -328,6 +350,33 @@ static char *system_get_bridge(const cha
  	return path + 1;
  }
  
@@ -775,7 +775,7 @@ diff -ruN a/system-linux.c b/system-linux.c
  int system_bridge_addif(struct device *bridge, struct device *dev)
  {
  	char *oldbr;
-@@ -346,6 +395,28 @@
+@@ -346,6 +395,28 @@ int system_bridge_delif(struct device *b
  	return system_bridge_if(bridge->ifname, dev, SIOCBRDELIF, NULL);
  }
  
@@ -804,7 +804,7 @@ diff -ruN a/system-linux.c b/system-linux.c
  static int system_if_resolve(struct device *dev)
  {
  	struct ifreq ifr;
-@@ -529,6 +600,7 @@
+@@ -529,6 +600,7 @@ void system_if_clear_state(struct device
  {
  	static char buf[256];
  	char *bridge;
@@ -812,7 +812,7 @@ diff -ruN a/system-linux.c b/system-linux.c
  
  	if (dev->external)
  		return;
-@@ -545,12 +617,24 @@
+@@ -545,12 +617,24 @@ void system_if_clear_state(struct device
  		return;
  	}
  
@@ -837,20 +837,24 @@ diff -ruN a/system-linux.c b/system-linux.c
  	system_if_clear_entries(dev, RTM_GETROUTE, AF_INET);
  	system_if_clear_entries(dev, RTM_GETADDR, AF_INET);
  	system_if_clear_entries(dev, RTM_GETROUTE, AF_INET6);
-@@ -606,6 +690,19 @@
+@@ -606,6 +690,23 @@ int system_bridge_addbr(struct device *b
  
  	return 0;
  }
 +
 +int system_bonding_addbonding(struct device *bonding, struct bonding_config *cfg)
 +{
-+	char cmd[32], mode[4];
++	char cmd[32], mode[4], policy[16];
 +
 +	snprintf(cmd, sizeof(cmd), "+%s", bonding->ifname);
 +	system_set_sysctl("/sys/class/net/bonding_masters", cmd);
 +
 +	snprintf(mode, sizeof(mode), "%d", cfg->mode);
 +	system_set_dev_sysctl("/sys/class/net/%s/bonding/mode", bonding->ifname, mode);
++
++	snprintf(policy, sizeof(policy), "%s", cfg->xmit_hash_policy);
++	system_set_dev_sysctl("/sys/class/net/%s/bonding/xmit_hash_policy",
++			      bonding->ifname, policy);
 +
 +	return 0;
 +}
