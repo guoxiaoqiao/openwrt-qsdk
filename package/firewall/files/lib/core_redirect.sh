@@ -75,6 +75,9 @@ fw_load_redirect() {
 		fw_get_port_range srcdports "$redirect_dest_port" ":"
 		fw_get_negation srcdports '--dport' "$srcdports"
 
+		list_contains FW_CONNTRACK_ZONES $redirect_src || \
+			append FW_CONNTRACK_ZONES $redirect_src
+
 		list_contains FW_CONNTRACK_ZONES $redirect_dest || \
 			append FW_CONNTRACK_ZONES $redirect_dest
 
