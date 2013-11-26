@@ -23,7 +23,7 @@ db149)
 	ucidef_add_switch_vlan "switch0" "2" "0 5"
 	;;
 ap148|\
-db147)
+ap145)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	ucidef_add_switch "switch0" "1" "1"
 	ucidef_add_switch_vlan "switch0" "1" "6 1 2 3 4"
