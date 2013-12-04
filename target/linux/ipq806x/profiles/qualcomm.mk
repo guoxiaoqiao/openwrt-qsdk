@@ -8,7 +8,7 @@ define Profile/QSDK_Base
 	  kmod-sound-core kmod-sound-soc-ipq806x alsa mplayer \
 	  ntfs-3g dosfsck e2fsprogs iozone fdisk mkdosfs \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
-	  kmod-ipv6 luci-app-qos iperf devmem2 ip ethtool ip6tables lltdd \
+	  kmod-ipv6 iperf devmem2 ip ethtool ip6tables lltdd \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
 	  luci-app-ddns ddns-scripts cups cups-client mdadm\
@@ -35,7 +35,7 @@ define Profile/QSDK_Retail
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Retail Profile
 	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-	  qca-spectral \
+	  qca-spectral luci-app-qos \
 	  kmod-qca-nss-connmgr hyfi kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6
 endef
 
@@ -64,7 +64,7 @@ define Profile/QSDK_Enterprise
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
 	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-	  qca-spectral kmod-qca-nss-connmgr-noload \
+	  qca-spectral kmod-qca-nss-connmgr-noload luci-app-qos \
 	  kmod-openswan-nss openswan-nss luci-app-openswan \
 	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi
 endef
