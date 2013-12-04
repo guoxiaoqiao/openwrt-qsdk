@@ -7,7 +7,7 @@ define Profile/QSDK_Base
 	  kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  ntfs-3g dosfsck e2fsprogs fdisk mkdosfs \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
-	  kmod-ipv6 luci-app-qos iperf devmem2 ip ethtool ip6tables \
+	  kmod-ipv6 iperf devmem2 ip ethtool ip6tables \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
 	  luci-app-ddns ddns-scripts cups cups-client \
@@ -17,7 +17,7 @@ endef
 define Profile/QSDK_Wired_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Wired Router Profile
-	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini
+	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos
 endef
 
 define Profile/QSDK_Wired_Router/Description
