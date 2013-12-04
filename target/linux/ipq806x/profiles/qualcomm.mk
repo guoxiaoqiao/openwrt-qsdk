@@ -65,7 +65,8 @@ define Profile/QSDK_Enterprise
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
 	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 	  qca-spectral kmod-qca-nss-connmgr-noload \
-	  kmod-openswan-nss openswan-nss kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi 
+	  kmod-openswan-nss openswan-nss luci-app-openswan \
+	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi
 endef
 
 define Profile/QSDK_Enterprise/Description
