@@ -8,6 +8,7 @@ usage() {
 Usage: $0 [down|detect]
 enables (default), disables or detects a wifi configuration.
 EOF
+	lock -u /var/run/wifi.lock
 	exit 1
 }
 
@@ -204,6 +205,9 @@ scan_wifi() {
 DEVICES=
 DRIVERS=
 include /lib/wifi
+
+trap '' INT TERM ABRT QUIT ALRM
+lock /var/run/wifi.lock
 scan_wifi
 
 case "$1" in
@@ -212,3 +216,4 @@ case "$1" in
 	--help|help) usage;;
 	*) wifi_updown "enable" "$2";;
 esac
+lock -u /var/run/wifi.lock
