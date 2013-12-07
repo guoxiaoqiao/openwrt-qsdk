@@ -8,7 +8,7 @@ define Profile/QSDK_Base
 	  kmod-sound-core kmod-sound-soc-ipq806x alsa mplayer \
 	  ntfs-3g dosfsck e2fsprogs iozone fdisk mkdosfs \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
-	  kmod-ipv6 luci-app-qos iperf devmem2 ip ethtool ip6tables \
+	  kmod-ipv6 luci-app-qos iperf devmem2 ip ethtool ip6tables lltdd \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
 	  luci-app-ddns ddns-scripts cups cups-client mdadm\
