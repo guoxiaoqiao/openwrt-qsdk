@@ -9,4 +9,6 @@
 
 min_free_kbytes=`grep MemTotal /proc/meminfo | awk '{print $2}'`
 min_free_kbytes=$((min_free_kbytes/20))
+
+mkdir -p /etc/sysctl.d/
 echo "vm.min_free_kbytes=${min_free_kbytes}" > /etc/sysctl.d/min_free_kbytes.conf
