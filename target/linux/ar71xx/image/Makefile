@@ -993,29 +993,13 @@ define Image/Build/Profile/CUS227
 endef
 SINGLE_PROFILES += CUS227
 
-define Image/Build/Profile/QSDK_Retail
-	$(call Image/Build/Profile/AP135,$(1))
-	$(call Image/Build/Profile/AP135DUAL,$(1))
+define Image/Build/Profile/QSDK_Wired_Router
 	$(call Image/Build/Profile/AP136,$(1))
-	$(call Image/Build/Profile/AP121_8M,$(1))
-	$(call Image/Build/Profile/DB120,$(1))
 endef
 
-define Image/Build/Profile/QSDK_Carrier
-	$(Image/Build/Profile/QSDK_Retail)
-endef
-
-define Image/Build/Profile/QSDK_Enterprise
-	$(Image/Build/Profile/QSDK_Retail)
-endef
-
-define Image/Build/Profile/QSDK_Open
+define Image/Build/Profile/QSDK_Premium_Router
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP135DUAL,$(1))
-endef
-
-define Image/Build/Profile/Factory_Wasp
-	$(call Image/Build/Profile/CUS227,$(1))
 endef
 
 $(eval $(call BuildImage))
