@@ -9,9 +9,9 @@ define Profile/QSDK_Base
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
 	  kmod-ipv6 iperf devmem2 ip ethtool ip6tables \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
-	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
-	  luci-app-ddns ddns-scripts cups cups-client \
-	  iputils-tracepath iputils-tracepath6 alljoyn
+	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
+	  luci-app-ddns ddns-scripts \
+	  iputils-tracepath iputils-tracepath6
 endef
 
 define Profile/QSDK_Wired_Router
@@ -36,7 +36,7 @@ $(eval $(call Profile,QSDK_Wired_Router))
 define Profile/QSDK_Premium_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
-	PACKAGES+= streamboost \
+	PACKAGES+= streamboost cups cups-client alljoyn \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant
 endef
 
