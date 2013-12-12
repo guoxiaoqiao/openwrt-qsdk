@@ -7,8 +7,8 @@
  * Copyright 2008 Michael Wu <flamingice@sourmilk.net>
  * Copyright 2008 Luis Carlos Cobo <luisca@cozybit.com>
  * Copyright 2008 Michael Buesch <m@bues.ch>
- * Copyright 2008, 2009 Luis R. Rodriguez <lrodriguez@atheros.com>
- * Copyright 2008 Jouni Malinen <jouni.malinen@atheros.com>
+ * Copyright (c) 2008, 2009 Luis R. Rodriguez <lrodriguez@atheros.com>
+ * Copyright (c) 2008 Jouni Malinen <jouni.malinen@atheros.com>
  * Copyright 2008 Colin McCabe <colin@cozybit.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any

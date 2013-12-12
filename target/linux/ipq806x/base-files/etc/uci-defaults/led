@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2013 Qualcomm Atheros, Inc.
+# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 # Copyright (C) 2011 OpenWrt.org
 #
 

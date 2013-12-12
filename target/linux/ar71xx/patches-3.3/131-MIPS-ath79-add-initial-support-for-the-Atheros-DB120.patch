@@ -53,7 +53,7 @@ Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 +/*
 + * Atheros DB120 reference board support
 + *
-+ * Copyright (c) 2011 Qualcomm Atheros
++ * Copyright (c) 2011 The Linux Foundation. All rights reserved.
 + * Copyright (c) 2011 Gabor Juhos <juhosg@openwrt.org>
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any

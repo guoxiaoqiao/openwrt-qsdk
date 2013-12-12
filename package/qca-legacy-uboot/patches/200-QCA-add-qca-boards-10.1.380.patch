@@ -18,7 +18,7 @@
  # (C) Copyright 2000-2006
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  #
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -1564,7 +1564,7 @@
 +written agreement, this file provides no license to any Qualcomm Atheros patents,  
 +trademarks, copyrights, or other intellectual property.
 +
-+Copyright (c) 2012 QUALCOMM ATHEROS Incorporated.  All rights reserved. 
++Copyright (c) 2012 The Linux Foundation. All rights reserved.Incorporated.  All rights reserved. 
 +
 +QUALCOMM ATHEROS® is a registered trademark and registered service mark of QUALCOMM 
 +ATHEROS Incorporated.  
@@ -1964,7 +1964,7 @@
 +++ b/board/ar7240/ap120/Makefile
 @@ -0,0 +1,90 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -2057,7 +2057,7 @@
 +++ b/board/ar7240/ap120/ap120.c
 @@ -0,0 +1,199 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -2259,7 +2259,7 @@
 +++ b/board/ar7240/ap120/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -2303,7 +2303,7 @@
 +++ b/board/ar7240/ap120/flash.c
 @@ -0,0 +1,52 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -2358,7 +2358,7 @@
 +++ b/board/ar7240/ap120/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -2421,7 +2421,7 @@
 +++ b/board/ar7240/ap120/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -2488,7 +2488,7 @@
 +++ b/board/ar7240/ap123/Makefile
 @@ -0,0 +1,90 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -2581,7 +2581,7 @@
 +++ b/board/ar7240/ap123/ap123.c
 @@ -0,0 +1,193 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -2777,7 +2777,7 @@
 +++ b/board/ar7240/ap123/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -2821,7 +2821,7 @@
 +++ b/board/ar7240/ap123/flash.c
 @@ -0,0 +1,52 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -2876,7 +2876,7 @@
 +++ b/board/ar7240/ap123/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/* 
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -2939,7 +2939,7 @@
 +++ b/board/ar7240/ap123/u-boot.lds
 @@ -0,0 +1,64 @@
 +/* 
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -3006,7 +3006,7 @@
 +++ b/board/ar7240/aph126/Makefile
 @@ -0,0 +1,84 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -3093,7 +3093,7 @@
 +++ b/board/ar7240/aph126/aph126.c
 @@ -0,0 +1,185 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -3281,7 +3281,7 @@
 +++ b/board/ar7240/aph126/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -3325,7 +3325,7 @@
 +++ b/board/ar7240/aph126/flash.c
 @@ -0,0 +1,50 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -3378,7 +3378,7 @@
 +++ b/board/ar7240/aph126/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -3441,7 +3441,7 @@
 +++ b/board/ar7240/aph126/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -3508,7 +3508,7 @@
 +++ b/board/ar7240/aph128/Makefile
 @@ -0,0 +1,84 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -3595,7 +3595,7 @@
 +++ b/board/ar7240/aph128/aph128.c
 @@ -0,0 +1,197 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -3795,7 +3795,7 @@
 +++ b/board/ar7240/aph128/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -3839,7 +3839,7 @@
 +++ b/board/ar7240/aph128/flash.c
 @@ -0,0 +1,50 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -3892,7 +3892,7 @@
 +++ b/board/ar7240/aph128/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -3955,7 +3955,7 @@
 +++ b/board/ar7240/aph128/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -4022,7 +4022,7 @@
 +++ b/board/ar7240/common/ar7240_flash.c
 @@ -0,0 +1,271 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -4296,7 +4296,7 @@
 +++ b/board/ar7240/common/ar7240_flash.h
 @@ -0,0 +1,86 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -4385,7 +4385,7 @@
 +++ b/board/ar7240/common/ar7240_pci.c
 @@ -0,0 +1,574 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -4962,7 +4962,7 @@
 +++ b/board/ar7240/common/ar7240_s26_phy.c
 @@ -0,0 +1,930 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -5895,7 +5895,7 @@
 +++ b/board/ar7240/common/ar7240_s26_phy.h
 @@ -0,0 +1,143 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -6041,7 +6041,7 @@
 +++ b/board/ar7240/common/ath_nand.c
 @@ -0,0 +1,1619 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -7663,7 +7663,7 @@
 +++ b/board/ar7240/common/athr_s27_phy.c
 @@ -0,0 +1,891 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -8557,7 +8557,7 @@
 +++ b/board/ar7240/common/athr_s27_phy.h
 @@ -0,0 +1,208 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any
 + * purpose with or without fee is hereby granted, provided that the above
@@ -8768,7 +8768,7 @@
 +++ b/board/ar7240/common/athrs16_phy.c
 @@ -0,0 +1,701 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -9472,7 +9472,7 @@
 +++ b/board/ar7240/common/athrs16_phy.h
 @@ -0,0 +1,165 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -9640,7 +9640,7 @@
 +++ b/board/ar7240/common/athrs17_phy.c
 @@ -0,0 +1,642 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -10285,7 +10285,7 @@
 +++ b/board/ar7240/common/athrs17_phy.h
 @@ -0,0 +1,131 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -10419,7 +10419,7 @@
 +++ b/board/ar7240/common/athrs_vir_phy.c
 @@ -0,0 +1,123 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any
 + * purpose with or without fee is hereby granted, provided that the above
@@ -10545,7 +10545,7 @@
 +++ b/board/ar7240/common/athrsf1_phy.c
 @@ -0,0 +1,434 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any
 + * purpose with or without fee is hereby granted, provided that the above
@@ -10982,7 +10982,7 @@
 +++ b/board/ar7240/common/athrsf1_phy.h
 @@ -0,0 +1,26 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any
 + * purpose with or without fee is hereby granted, provided that the above
@@ -11011,7 +11011,7 @@
 +++ b/board/ar7240/common/athrsf2_phy.c
 @@ -0,0 +1,377 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any
 + * purpose with or without fee is hereby granted, provided that the above
@@ -11391,7 +11391,7 @@
 +++ b/board/ar7240/common/lowlevel_init.S
 @@ -0,0 +1,234 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -11628,7 +11628,7 @@
 +++ b/board/ar7240/common/lowlevel_init_934x-1.1.S
 @@ -0,0 +1,427 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -12058,7 +12058,7 @@
 +++ b/board/ar7240/common/lowlevel_init_934x.S
 @@ -0,0 +1,202 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -12263,7 +12263,7 @@
 +++ b/board/ar7240/common/phy.h
 @@ -0,0 +1,41 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -12307,7 +12307,7 @@
 +++ b/board/ar7240/db12x-extender/Makefile
 @@ -0,0 +1,84 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -12394,7 +12394,7 @@
 +++ b/board/ar7240/db12x-extender/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -12438,7 +12438,7 @@
 +++ b/board/ar7240/db12x-extender/db12x-extender.c
 @@ -0,0 +1,158 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -12599,7 +12599,7 @@
 +++ b/board/ar7240/db12x-extender/flash.c
 @@ -0,0 +1,50 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -12652,7 +12652,7 @@
 +++ b/board/ar7240/db12x-extender/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -12715,7 +12715,7 @@
 +++ b/board/ar7240/db12x-extender/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -12782,7 +12782,7 @@
 +++ b/board/ar7240/db12x-hybrid/Makefile
 @@ -0,0 +1,90 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -12875,7 +12875,7 @@
 +++ b/board/ar7240/db12x-hybrid/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -12919,7 +12919,7 @@
 +++ b/board/ar7240/db12x-hybrid/db12x-hybrid.c
 @@ -0,0 +1,192 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -13114,7 +13114,7 @@
 +++ b/board/ar7240/db12x-hybrid/flash.c
 @@ -0,0 +1,52 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -13169,7 +13169,7 @@
 +++ b/board/ar7240/db12x-hybrid/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -13232,7 +13232,7 @@
 +++ b/board/ar7240/db12x-hybrid/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -13299,7 +13299,7 @@
 +++ b/board/ar7240/db12x/Makefile
 @@ -0,0 +1,100 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -13402,7 +13402,7 @@
 +++ b/board/ar7240/db12x/config.mk
 @@ -0,0 +1,57 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -13462,7 +13462,7 @@
 +++ b/board/ar7240/db12x/db12x.c
 @@ -0,0 +1,151 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -13616,7 +13616,7 @@
 +++ b/board/ar7240/db12x/extra.c
 @@ -0,0 +1,111 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -13730,7 +13730,7 @@
 +++ b/board/ar7240/db12x/flash.c
 @@ -0,0 +1,52 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -13785,7 +13785,7 @@
 +++ b/board/ar7240/db12x/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -13848,7 +13848,7 @@
 +++ b/board/ar7240/db12x/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -13915,7 +13915,7 @@
 +++ b/board/ar7240/dhp1565/Makefile
 @@ -0,0 +1,84 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -14002,7 +14002,7 @@
 +++ b/board/ar7240/dhp1565/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -14046,7 +14046,7 @@
 +++ b/board/ar7240/dhp1565/dhp1565.c
 @@ -0,0 +1,193 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -14242,7 +14242,7 @@
 +++ b/board/ar7240/dhp1565/flash.c
 @@ -0,0 +1,50 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -14295,7 +14295,7 @@
 +++ b/board/ar7240/dhp1565/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -14358,7 +14358,7 @@
 +++ b/board/ar7240/dhp1565/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -14425,7 +14425,7 @@
 +++ b/board/ar7240/reh132/Makefile
 @@ -0,0 +1,84 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -14512,7 +14512,7 @@
 +++ b/board/ar7240/reh132/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -14556,7 +14556,7 @@
 +++ b/board/ar7240/reh132/flash.c
 @@ -0,0 +1,50 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -14609,7 +14609,7 @@
 +++ b/board/ar7240/reh132/reh132.c
 @@ -0,0 +1,198 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -14810,7 +14810,7 @@
 +++ b/board/ar7240/reh132/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -14873,7 +14873,7 @@
 +++ b/board/ar7240/reh132/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -14940,7 +14940,7 @@
 +++ b/board/ar7240/wasp_emu/Makefile
 @@ -0,0 +1,40 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -14983,7 +14983,7 @@
 +++ b/board/ar7240/wasp_emu/config.mk
 @@ -0,0 +1,31 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -15017,7 +15017,7 @@
 +++ b/board/ar7240/wasp_emu/flash.c
 @@ -0,0 +1,50 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -15070,7 +15070,7 @@
 +++ b/board/ar7240/wasp_emu/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -15137,7 +15137,7 @@
 +++ b/board/ar7240/wasp_emu/wasp_emu.c
 @@ -0,0 +1,91 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -15231,7 +15231,7 @@
 +++ b/board/atheros/board955x/Makefile
 @@ -0,0 +1,120 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -15354,7 +15354,7 @@
 +++ b/board/atheros/board955x/board955x.c
 @@ -0,0 +1,165 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -15522,7 +15522,7 @@
 +++ b/board/atheros/board955x/config.mk
 @@ -0,0 +1,57 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -15582,7 +15582,7 @@
 +++ b/board/atheros/board955x/extra.c
 @@ -0,0 +1,125 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -15710,7 +15710,7 @@
 +++ b/board/atheros/board955x/flash.c
 @@ -0,0 +1,54 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -15767,7 +15767,7 @@
 +++ b/board/atheros/board955x/u-boot-bootstrap.lds
 @@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -15830,7 +15830,7 @@
 +++ b/board/atheros/board955x/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -15897,7 +15897,7 @@
 +++ b/board/atheros/common/955x.S
 @@ -0,0 +1,175 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -16075,7 +16075,7 @@
 +++ b/board/atheros/common/ath_flash.c
 @@ -0,0 +1,263 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -16341,7 +16341,7 @@
 +++ b/board/atheros/common/ath_flash.h
 @@ -0,0 +1,61 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -16405,7 +16405,7 @@
 +++ b/board/atheros/common/ath_nand.c
 @@ -0,0 +1,1615 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -18023,7 +18023,7 @@
 +++ b/board/atheros/common/ath_pci.c
 @@ -0,0 +1,394 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -18420,7 +18420,7 @@
 +++ b/board/atheros/common/athr_ar8033_phy.c
 @@ -0,0 +1,156 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any
 + * purpose with or without fee is hereby granted, provided that the above
@@ -18579,7 +18579,7 @@
 +++ b/board/atheros/common/athrs17_lpbk.c
 @@ -0,0 +1,312 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -18894,7 +18894,7 @@
 +++ b/board/atheros/common/athrs17_phy.c
 @@ -0,0 +1,727 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -19624,7 +19624,7 @@
 +++ b/board/atheros/common/athrs17_phy.h
 @@ -0,0 +1,577 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -20204,7 +20204,7 @@
 +++ b/board/atheros/common/athrs_ar8033_phy.h
 @@ -0,0 +1,87 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any
 + * purpose with or without fee is hereby granted, provided that the above
@@ -20294,7 +20294,7 @@
 +++ b/board/atheros/common/athrs_vir_phy.c
 @@ -0,0 +1,123 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * Permission to use, copy, modify, and/or distribute this software for any
 + * purpose with or without fee is hereby granted, provided that the above
@@ -20420,7 +20420,7 @@
 +++ b/board/atheros/common/init-955x.c
 @@ -0,0 +1,492 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -20915,7 +20915,7 @@
 +++ b/board/atheros/common/phy.h
 @@ -0,0 +1,38 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -20956,7 +20956,7 @@
 +++ b/board/atheros/common/qca-eth-955x.c
 @@ -0,0 +1,1002 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -21961,7 +21961,7 @@
 +++ b/board/atheros/common/qca-eth-955x.h
 @@ -0,0 +1,429 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -22393,7 +22393,7 @@
 +++ b/board/atheros/common/qca-eth-955x_phy.h
 @@ -0,0 +1,124 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -22520,7 +22520,7 @@
 +++ b/board/atheros/common/rgmii-cal-955x.c
 @@ -0,0 +1,626 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -23149,7 +23149,7 @@
 +++ b/board/atheros/common/serial.c
 @@ -0,0 +1,110 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -23262,7 +23262,7 @@
 +++ b/board/atheros/common/tap-955x.S
 @@ -0,0 +1,206 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -23471,7 +23471,7 @@
 +++ b/board/atheros/scoemu/Makefile
 @@ -0,0 +1,95 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -23569,7 +23569,7 @@
 +++ b/board/atheros/scoemu/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -23613,7 +23613,7 @@
 +++ b/board/atheros/scoemu/flash.c
 @@ -0,0 +1,54 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -23670,7 +23670,7 @@
 +++ b/board/atheros/scoemu/scoemu.c
 @@ -0,0 +1,143 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -23816,7 +23816,7 @@
 +++ b/board/atheros/scoemu/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -23883,7 +23883,7 @@
 +++ b/board/atheros/tb6xx/Makefile
 @@ -0,0 +1,95 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -23981,7 +23981,7 @@
 +++ b/board/atheros/tb6xx/config.mk
 @@ -0,0 +1,41 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -24025,7 +24025,7 @@
 +++ b/board/atheros/tb6xx/flash.c
 @@ -0,0 +1,54 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -24082,7 +24082,7 @@
 +++ b/board/atheros/tb6xx/tb6xx.c
 @@ -0,0 +1,148 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -24233,7 +24233,7 @@
 +++ b/board/atheros/tb6xx/u-boot.lds
 @@ -0,0 +1,64 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -24302,7 +24302,7 @@
  # (C) Copyright 2004
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  #
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -24378,7 +24378,7 @@
 +++ b/common/cmd_bdr.c
 @@ -0,0 +1,449 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -24832,7 +24832,7 @@
   * (C) Copyright 2000-2003
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -24879,7 +24879,7 @@
   * (C) Copyright 2000-2006
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -25012,7 +25012,7 @@
 +++ b/common/cmd_ethreg.c
 @@ -0,0 +1,192 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -25209,7 +25209,7 @@
   * (C) Copyright 2000
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -25385,7 +25385,7 @@
   * (C) Copyright 2000-2004
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -25412,7 +25412,7 @@
   * (C) Copyright 2000
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -25578,7 +25578,7 @@
   * (C) Copyright 2001
   * Gerald Van Baren, Custom IDEAS, vanbaren@cideas.com
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -25874,7 +25874,7 @@
   *
   * Added 16-bit nand support
   * (C) 2004 Texas Instruments
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
   */
  
  #include <common.h>
@@ -25985,7 +25985,7 @@
   * (C) Copyright 2000
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -26038,7 +26038,7 @@
 +++ b/common/cmd_pll.c
 @@ -0,0 +1,308 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -26351,7 +26351,7 @@
   * (C) Copyright 2000-2003
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + * 
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -26376,7 +26376,7 @@
 +++ b/common/env_common.c
 @@ -1,10 +1,12 @@
  /*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * (C) Copyright 2000-2002
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -26403,7 +26403,7 @@
   * (C) Copyright 2000
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -26461,7 +26461,7 @@
  # (C) Copyright 2000
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  #
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -26591,7 +26591,7 @@
  # (C) Copyright 2003
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  #
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -26618,7 +26618,7 @@
 +++ b/cpu/mips/ar7240/Makefile
 @@ -0,0 +1,83 @@
 +#
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
 +# See file CREDITS for list of people who contributed to this
 +# project.
@@ -26704,7 +26704,7 @@
 +++ b/cpu/mips/ar7240/ag934x.c
 @@ -0,0 +1,899 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -27606,7 +27606,7 @@
 +++ b/cpu/mips/ar7240/ag934x.h
 @@ -0,0 +1,264 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -27873,7 +27873,7 @@
 +++ b/cpu/mips/ar7240/ag934x_phy.h
 @@ -0,0 +1,139 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -28015,7 +28015,7 @@
 +++ b/cpu/mips/ar7240/ar7240_serial.c
 @@ -0,0 +1,164 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -28182,7 +28182,7 @@
 +++ b/cpu/mips/ar7240/meminit.c
 @@ -0,0 +1,580 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -28767,7 +28767,7 @@
   *
   *  Copyright (c) 2003	Wolfgang Denk <wd@denx.de>
   *
-+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *  Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -29004,7 +29004,7 @@
  # (C) Copyright 2003
  # Wolfgang Denk, DENX Software Engineering, <wd@denx.de>
  #
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -29038,7 +29038,7 @@
   * (C) Copyright 2003
   * Wolfgang Denk, DENX Software Engineering, <wd@denx.de>
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -29133,7 +29133,7 @@
   *
   *  Copyright (c) 2003	Wolfgang Denk <wd@denx.de>
 - *
-+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *  Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + * 
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -34025,7 +34025,7 @@
 + *  Startup Code for MIPS32 CPU-core
 + *
 + *  Copyright (c) 2003	Wolfgang Denk <wd@denx.de>
-+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *  Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -34699,7 +34699,7 @@
  # (C) Copyright 2000-2004
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  #
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -34730,7 +34730,7 @@
   *  Copyright (C) 2002 Thomas Gleixner (tglx@linutronix.de)
 -  *
 - * $Id: nand_ids.c,v 1.10 2004/05/26 13:40:12 gleixner Exp $
-+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *  Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * $Id: //depot/sw/qca_main/components/bootloaders/u-boot-1.1.4/1.1/drivers/nand/nand_ids.c#3 $
   *
@@ -34752,7 +34752,7 @@
 +/*
 + * QCA 955x series processor SOC registers
 + *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of the GNU General Public License as
@@ -38239,7 +38239,7 @@
 +/*
 + * Atheror AR7240 series processor SOC registers
 + *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of the GNU General Public License as
@@ -39010,7 +39010,7 @@
 +/*
 + * Atheros AR924X series processor SOC registers
 + *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of the GNU General Public License as
@@ -42161,7 +42161,7 @@
   *
   * Copyright (C) 1996 by Ralf Baechle
   * Copyright (C) 2000 by Maciej W. Rozycki
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
   *
   * Defitions for the address spaces of the MIPS CPUs.
   */
@@ -42182,7 +42182,7 @@
   *
   * Copyright (c) 1994 - 1997, 1999, 2000  Ralf Baechle (ralf@gnu.org)
   * Copyright (c) 2000  Silicon Graphics, Inc.
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
   */
  #ifndef _ASM_BITOPS_H
  #define _ASM_BITOPS_H
@@ -42209,7 +42209,7 @@
 + * vim: tabstop=8 : noexpandtab
 + */
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -42548,7 +42548,7 @@
 +++ b/include/athversion.h
 @@ -0,0 +1,30 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -44534,7 +44534,7 @@
   * (C) Copyright 2000-2002
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -44652,7 +44652,7 @@
   * (C) Copyright 2000-2004
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -44693,7 +44693,7 @@
 +++ b/include/configs/ap120.h
 @@ -0,0 +1,498 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -45194,7 +45194,7 @@
 +++ b/include/configs/ap123.h
 @@ -0,0 +1,496 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -45693,7 +45693,7 @@
 +++ b/include/configs/aph126.h
 @@ -0,0 +1,442 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -46138,7 +46138,7 @@
 +++ b/include/configs/aph128.h
 @@ -0,0 +1,442 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -46583,7 +46583,7 @@
 +++ b/include/configs/ar7240.h
 @@ -0,0 +1,175 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -46761,7 +46761,7 @@
 +++ b/include/configs/ar7240_emu.h
 @@ -0,0 +1,199 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -46963,7 +46963,7 @@
 +++ b/include/configs/board955x.h
 @@ -0,0 +1,331 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -47297,7 +47297,7 @@
 +++ b/include/configs/db12x-extender.h
 @@ -0,0 +1,440 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -47740,7 +47740,7 @@
 +++ b/include/configs/db12x-hybrid.h
 @@ -0,0 +1,516 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -48259,7 +48259,7 @@
 +++ b/include/configs/db12x.h
 @@ -0,0 +1,505 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -48767,7 +48767,7 @@
 +++ b/include/configs/dhp1565.h
 @@ -0,0 +1,442 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -49212,7 +49212,7 @@
 +++ b/include/configs/reh132.h
 @@ -0,0 +1,444 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -49659,7 +49659,7 @@
 +++ b/include/configs/scoemu.h
 @@ -0,0 +1,461 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -50123,7 +50123,7 @@
 +++ b/include/configs/tb6xx.h
 @@ -0,0 +1,364 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -50490,7 +50490,7 @@
 +++ b/include/configs/wah132.h
 @@ -0,0 +1,444 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -50937,7 +50937,7 @@
 +++ b/include/configs/wasp_emu.h
 @@ -0,0 +1,201 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -51143,7 +51143,7 @@
   * (C) Copyright 2000-2005
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -51163,7 +51163,7 @@
   * (C) Copyright 2000-2005
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -51185,7 +51185,7 @@
 + * $Id: //depot/sw/qca_main/components/bootloaders/u-boot-1.1.4/1.1/include/linux/mtd/mtd.h#3 $
   *
   * Copyright (C) 1999-2003 David Woodhouse <dwmw2@infradead.org> et al.
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
   *
   * Released under GPL
   */
@@ -51207,7 +51207,7 @@
   *		       Thomas Gleixner <tglx@linutronix.de>
   *
 - * $Id: nand.h,v 1.68 2004/11/12 10:40:37 gleixner Exp $
-+ *  Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *  Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * $Id: //depot/sw/qca_main/components/bootloaders/u-boot-1.1.4/1.1/include/linux/mtd/nand.h#3 $
   *
@@ -51230,7 +51230,7 @@
   * 2N Telekomunikace, a.s. <www.2n.cz>
   * Ladislav Michl <michl@2n.cz>
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -51262,7 +51262,7 @@
   *	Copyright 1994 - 2000 Neil Russell.
   *	(See License)
   *
-+ *	Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *	Copyright (c) 2013 The Linux Foundation. All rights reserved.
   *
   * History
   *	9/16/00	  bor  adapted to TQM823L/STK8xxL board, RARP/TFTP boot added
@@ -51296,7 +51296,7 @@
   * (C) Copyright 2000-2006
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -51314,7 +51314,7 @@
  #
  # (C) Copyright 2003
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
  #
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -51348,7 +51348,7 @@
 +/*
 + * (C) Copyright 2003
 + * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -51841,7 +51841,7 @@
  # (C) Copyright 2000-2002
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  #
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -51873,7 +51873,7 @@
   * Copyright (C) 1995 Jean-loup Gailly.
   * For conditions of distribution and use, see copyright notice in zlib.h
 + *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
   */
  
  /* WARNING: this file should *not* be used by applications. It is
@@ -51893,7 +51893,7 @@
   * (C) Copyright 2003
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -52027,7 +52027,7 @@
   * (C) Copyright 2003
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -52165,7 +52165,7 @@
  # (C) Copyright 2003
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  #
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -52188,7 +52188,7 @@
  # (C) Copyright 2000
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  #
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 +#
  # See file CREDITS for list of people who contributed to this
  # project.
@@ -52213,7 +52213,7 @@
   * (C) Copyright 2001-2004
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * See file CREDITS for list of people who contributed to this
   * project.
@@ -52267,7 +52267,7 @@
   *	Copyright 2000 Roland Borde
   *	Copyright 2000 Paolo Scaffardi
   *	Copyright 2000-2002 Wolfgang Denk, wd@denx.de
-+ *	Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *	Copyright (c) 2013 The Linux Foundation. All rights reserved.
   */
  
  /*
@@ -52479,7 +52479,7 @@
   * Wolfgang Denk, wd@denx.de
   * All rights reserved.
   *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * This program is free software; you can redistribute it and/or
   * modify it under the terms of the GNU General Public License as
