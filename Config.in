@@ -243,6 +243,11 @@ menu "Global build settings"
 		help
 		  This will compile your kernel and modules with debug information.
 
+	config KERNEL_DEBUG_INFO_REDUCED
+		bool "Reduce debugging information"
+		depends on KERNEL_DEBUG_INFO
+		default y
+
 	config KERNEL_DEBUG_LL_UART_NONE
 		bool
 		default n
