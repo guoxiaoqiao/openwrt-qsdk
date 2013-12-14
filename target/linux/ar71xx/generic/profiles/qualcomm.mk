@@ -36,7 +36,8 @@ $(eval $(call Profile,QSDK_Wired_Router))
 define Profile/QSDK_Premium_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
-	PACKAGES+= streamboost cups cups-client alljoyn kmod-fast-classifier \
+	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
+	  streamboost cups cups-client alljoyn kmod-fast-classifier \
 	  kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant
 endef
 
