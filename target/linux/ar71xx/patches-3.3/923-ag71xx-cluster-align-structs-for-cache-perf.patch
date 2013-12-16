@@ -1,5 +1,5 @@
 From 24993647d36b127a57079362194d8e6165be32f1 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Fri, 7 Jun 2013 10:57:28 -0500
 Subject: [ag71xx] cluster/align structs for cache perf
 
@@ -7,7 +7,7 @@ Cluster the frequently used, per-packet structures in ag71xx near
 to each other, and cacheline-align them.  Some other re-ordering
 occurred to move "warmer" structures near the per-packet structures.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx.h | 27 +++++++++++++++++++--------
  1 file changed, 19 insertions(+), 8 deletions(-)

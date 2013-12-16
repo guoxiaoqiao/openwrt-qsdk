@@ -1,5 +1,5 @@
 From 033f8542b4dfb49629813ca8adade695d8ac6eae Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Fri, 7 Jun 2013 15:25:00 -0500
 Subject: [ag71xx] support for descriptors in SRAM
 
@@ -8,7 +8,7 @@ number of ag71xx instances.  This is a significant performance
 improvement over using non-cacheable RAM (~4% overall bridging
 performance).
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/Kconfig       |  8 ++++
  drivers/net/ethernet/atheros/ag71xx/ag71xx.h      |  1 +

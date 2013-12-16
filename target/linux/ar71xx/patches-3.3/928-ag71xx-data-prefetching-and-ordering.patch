@@ -1,5 +1,5 @@
 From 1243e65296e86dded2c3f7b489f508fd9f973c57 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 17:21:37 -0500
 Subject: [ag71xx] data prefetching and ordering
 
@@ -7,7 +7,7 @@ Added several prefetch operations for soon-to-be accessed data, and
 move some of the next buffer calculations into the shadows of the known
 dcache misses.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 75 +++++++++++++----------
  1 file changed, 43 insertions(+), 32 deletions(-)

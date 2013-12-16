@@ -1,12 +1,12 @@
 From 3861601f548a23216543f51f8cbddcbf0052d10a Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Mon, 10 Jun 2013 18:09:40 -0500
 Subject: [ag71xx] separate rx replenish for future perf
 
 This patch separates the rx_replenish function in preparation for
 upcoming performance changes.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 41 +++++++++++++----------
  1 file changed, 24 insertions(+), 17 deletions(-)

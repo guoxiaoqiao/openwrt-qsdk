@@ -1,5 +1,5 @@
 From 23d90fa5baf7b90253d8f53c3186c754f2e7ff6e Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 16:15:52 -0500
 Subject: [ag71xx] allocate/position rings to avoid aliasing
 
@@ -7,7 +7,7 @@ Using our current method of ring allocation, we get cache line aliasing
 effects on rx vs. tx.  This patch attempts to misalign these two rings
 to reduce this effect.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx.h      |  1 +
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 34 +++++++++++++++++------

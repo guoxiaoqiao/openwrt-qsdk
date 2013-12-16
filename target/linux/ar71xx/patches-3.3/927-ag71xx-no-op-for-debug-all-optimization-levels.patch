@@ -1,5 +1,5 @@
 From 11c3f6fc6b0f772df7abe75467615208e5f37672 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Fri, 7 Jun 2013 11:20:00 -0500
 Subject: [ag71xx] no-op for debug all optimization levels
 
@@ -7,7 +7,7 @@ Debug code was still generating instructions at some debug levels; this
 change ensures that no debug code is needlessly generated with debug
 disabled.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 6 ++++++
  1 file changed, 6 insertions(+)

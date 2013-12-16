@@ -1,5 +1,5 @@
 From 675435ecaecbc21aa97064beda3f88d48db07d79 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Fri, 7 Jun 2013 09:36:25 -0500
 Subject: [ag71xx] change tx and rx ring max and defaults
 
@@ -9,7 +9,7 @@ prevents the issue.  However, rings that are too large begin to see
 a performance decrease as cache coolness effects begin to dominate.
 We set the maximums to these empirically determined values.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx.h | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)

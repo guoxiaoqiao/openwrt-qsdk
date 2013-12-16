@@ -1,5 +1,5 @@
 From 5bd1f7827d4f1ca147e9a419304358b50ba4d9d3 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Fri, 7 Jun 2013 18:31:30 -0500
 Subject: [netdev] align NET_SKB_PAD for our platform
 
@@ -8,7 +8,7 @@ attempted to move this to L1_CACHE_BYTES, but there are assumptions
 in the wifi driver that there will be headroom > 32 bytes.  So, we
 choose the next L1_CACHE_BYTES-aligned value.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  include/linux/skbuff.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
