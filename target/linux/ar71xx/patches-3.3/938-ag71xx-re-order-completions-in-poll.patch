@@ -1,12 +1,12 @@
 From 28ce5a3a43207c34e5e14222df4539cd9039de00 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 17:13:58 -0500
 Subject: [ag71xx] re-order completions in poll
 
 We are reordering the RX/TX completion handlers to give the TX
 completions a chance to provide us warm SKBs to use for RX.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 9 ++++++++-
  1 file changed, 8 insertions(+), 1 deletion(-)

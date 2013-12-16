@@ -1,11 +1,11 @@
 From 77a8a4554ed88111f206c9c845a5f14a547f79da Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 16:51:01 -0500
 Subject: [ag71xx] optimize tx loop with early exit
 
 Add an early exit check for the TX completion loop.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 16 +++++++++++++---
  1 file changed, 13 insertions(+), 3 deletions(-)

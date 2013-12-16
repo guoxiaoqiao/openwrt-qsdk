@@ -1,12 +1,12 @@
 From 3f98f573940db265c5119c5ba7d6a67ff8e9dc2c Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 17:12:49 -0500
 Subject: [ag71xx] move is_ar7240 to caller
 
 This moves the is_ar7240 check to the calling function where it has
 access to pdata.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)

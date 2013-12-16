@@ -1,5 +1,5 @@
 From fa594ce811bbf06f284d42d25dd4ad519f066c78 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 19:16:57 -0500
 Subject: [ag71xx] rework rx_packets back into single func
 
@@ -9,7 +9,7 @@ acknowledges the buffer to the HW, and sends the buffer to the stack.
 Also, since we are replenishing as we go, we don't need the double-tail
 entries to track position.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 156 +++++++++++-----------
  1 file changed, 81 insertions(+), 75 deletions(-)

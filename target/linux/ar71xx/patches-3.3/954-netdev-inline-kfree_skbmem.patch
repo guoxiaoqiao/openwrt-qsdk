@@ -1,5 +1,5 @@
 From e30d4578974b2cd1395e78811d5dad693f267c3f Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 10:50:08 -0500
 Subject: [netdev] inline kfree_skbmem
 
@@ -7,7 +7,7 @@ Our call to kfree_skbmem in the consume_skb change does not inline
 at the optimization levels we usually use for our compiler.  This gives
 the required hint to inline it.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  net/core/skbuff.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

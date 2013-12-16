@@ -1,5 +1,5 @@
 From bed567d50eb092e820722c83b77680fa852b74fb Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Fri, 7 Jun 2013 18:30:32 -0500
 Subject: [netdev] generic skb_recycling
 
@@ -18,7 +18,7 @@ while accessing the list.
 Overall, the performance gain on the wired-to-wireless bridging
 workload was around 16%.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  net/core/skbuff.c | 149 +++++++++++++++++++++++++++++++++++++++++++++++++++---
  1 file changed, 143 insertions(+), 6 deletions(-)

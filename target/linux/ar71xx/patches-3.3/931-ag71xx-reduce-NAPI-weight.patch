@@ -1,12 +1,12 @@
 From 0dff1151feb1d11ce700d22efedd0ae2dbd6da9d Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 12:18:46 -0500
 Subject: [ag71xx] reduce NAPI weight
 
 In an attempt to increase our cache warmth, we are decreasing NAPI.
 This increases the warmth of the reused SKBs.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx.h | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)

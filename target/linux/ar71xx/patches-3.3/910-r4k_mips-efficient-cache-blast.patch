@@ -1,12 +1,12 @@
 From 4f6fcee5deca31e059c73dcfd912d975e91d8c59 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Fri, 7 Jun 2013 18:35:22 -0500
 Subject: [r4k_mips] efficient cache blast
 
 Optimize the compiler output for larger cache blast cases that are
 common for DMA-based networking.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  arch/mips/include/asm/r4kcache.h | 42 +++++++++++++++++++++++++++++++++++-----
  1 file changed, 37 insertions(+), 5 deletions(-)

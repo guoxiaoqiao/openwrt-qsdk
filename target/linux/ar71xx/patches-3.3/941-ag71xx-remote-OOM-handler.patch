@@ -1,5 +1,5 @@
 From f0f6439a90531e5ec4196aad3f3777b182750ada Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 12:56:34 -0500
 Subject: [ag71xx] remove OOM handler
 
@@ -8,7 +8,7 @@ will not release a buffer unless it can allocate the replacement.  We
 do not ACK to the GMAC, so we will take another interrupt once they
 are enabled.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx.h      |  1 -
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 22 ----------------------

@@ -1,5 +1,5 @@
 From 82d6698a1d2e1d261cb0c586970d8d331e88475b Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 10:46:58 -0500
 Subject: [netdev] prefetching for recycling
 
@@ -7,7 +7,7 @@ Added some simple prefetches during the recycle alloc so that the
 subsequent writes to shinfo will not cause a data miss.  Also, added
 a prefetch for skb->destructor that was another almost-certain miss.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  net/core/skbuff.c | 45 ++++++++++++++++++++++++++++++++++++---------
  1 file changed, 36 insertions(+), 9 deletions(-)

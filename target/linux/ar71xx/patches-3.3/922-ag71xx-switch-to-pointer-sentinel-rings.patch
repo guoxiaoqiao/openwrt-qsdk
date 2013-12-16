@@ -1,5 +1,5 @@
 From f35a0181d42daf5b65011db1842305c74bcf2685 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Fri, 7 Jun 2013 10:23:09 -0500
 Subject: [ag71xx] switch to pointer sentinel rings
 
@@ -7,7 +7,7 @@ Change to a ring structure that reduces the number of instructions per
 entry, and reduces the amount of state needed per entry in preparation
 for future alignment opportunities.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx.h      |  26 ++++--
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 102 +++++++++++-----------

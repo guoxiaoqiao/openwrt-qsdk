@@ -1,5 +1,5 @@
 From 8b1c0e600bf75c74fb5d397832f61a5655b95b2f Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Fri, 7 Jun 2013 15:18:16 -0500
 Subject: [ag71xx] add method to count ag71xx probes
 
@@ -7,7 +7,7 @@ This patch is preparation for ag71xx usage of external, on-die
 resources.  Since these resources are limited, we need to track how
 many instances we have probed.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  drivers/net/ethernet/atheros/ag71xx/ag71xx.h      | 1 +
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 3 +++

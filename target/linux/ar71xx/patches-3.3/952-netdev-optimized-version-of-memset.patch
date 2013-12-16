@@ -1,5 +1,5 @@
 From 2361032eb4d30f938ded30e70c2e4ff3a5af83e1 Mon Sep 17 00:00:00 2001
-From: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+From: Ben Menchaca <ben.menchaca@codeaurora.org>
 Date: Tue, 11 Jun 2013 10:43:40 -0500
 Subject: [netdev] optimized version of memset
 
@@ -7,7 +7,7 @@ Add a new, specialized routine to zero large structs, like SKBs.  This
 function compiles nicely for known-size bzeros, but it certainly does
 not look pretty.
 
-Signed-off-by: Ben Menchaca <ben.menchaca@qca.qualcomm.com>
+Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 ---
  net/core/skbuff.c | 57 +++++++++++++++++++++++++++++++++++++++++++++++++++----
  1 file changed, 53 insertions(+), 4 deletions(-)
