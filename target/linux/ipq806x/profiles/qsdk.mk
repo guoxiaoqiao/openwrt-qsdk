@@ -34,7 +34,7 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Retail
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Retail Profile
-	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
+	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 	  qca-spectral luci-app-qos \
 	  kmod-qca-nss-connmgr hyfi kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6
 endef
@@ -51,7 +51,7 @@ $(eval $(call Profile,QSDK_Retail))
 define Profile/QSDK_Carrier
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Carrier Profile
-	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
+	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 		  qca-spectral hyfi streamboost
 endef
 
@@ -63,7 +63,7 @@ $(eval $(call Profile,QSDK_Carrier))
 define Profile/QSDK_Enterprise
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
-	PACKAGES+=kmod-qca-wifi qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
+	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 	  qca-spectral kmod-qca-nss-connmgr-noload luci-app-qos \
 	  kmod-openswan-nss openswan-nss luci-app-openswan \
 	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi
