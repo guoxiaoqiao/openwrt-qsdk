@@ -1,4 +1,10 @@
 # Put your custom commands here that should be executed once
 # the system init finished. By default this file does nothing.
 
+# Disable memory over-commit for two reasons:
+# 1. We dont have swap
+# 2. We dont want unexpected OOM killer behaviour
+sysctl -w vm.overcommit_memory=2
+# Restrict user-space memory usage to 250MB
+sysctl -w vm.overcommit_ratio=50
 exit 0
