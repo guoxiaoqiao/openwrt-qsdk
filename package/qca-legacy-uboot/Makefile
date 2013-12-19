@@ -32,6 +32,11 @@ define qca-legacy-uboot/ap135
   DEPENDS:=@TARGET_ar71xx
 endef
 
+define qca-legacy-uboot/ap136
+  TITLE:=U-boot for the router ap136
+  DEPENDS:=@TARGET_ar71xx
+endef
+
 define qca-legacy-uboot/db12x
   TITLE:=U-boot for the board db12x
   DEPENDS:=@TARGET_ar71xx
@@ -42,7 +47,7 @@ define qca-legacy-uboot/cus227
   DEPENDS:=@TARGET_ar71xx
 endef
 
-UBOOTS:=ap135 db12x cus227
+UBOOTS:=ap135 ap136 db12x cus227
 
 define Package/qca-legacy-uboot/template
 define Package/qca-legacy-uboot-$(1)
