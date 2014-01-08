@@ -17,7 +17,8 @@ endef
 define Profile/QSDK_Wired_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Wired Router Profile
-	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos
+	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos \
+	  qca-legacy-uboot-ap136
 endef
 
 define Profile/QSDK_Wired_Router/Description
@@ -38,7 +39,8 @@ define Profile/QSDK_Premium_Router
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  streamboost cups cups-client alljoyn kmod-fast-classifier \
-	  kmod-qca-wifi-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant
+	  kmod-qca-wifi-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
+	  qca-legacy-uboot-ap135
 endef
 
 define Profile/QSDK_Premium_Router/Description
