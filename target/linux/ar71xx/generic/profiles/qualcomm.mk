@@ -18,7 +18,7 @@ define Profile/QSDK_Wired_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Wired Router Profile
 	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos \
-	  qca-legacy-uboot-ap136
+	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat
 endef
 
 define Profile/QSDK_Wired_Router/Description
