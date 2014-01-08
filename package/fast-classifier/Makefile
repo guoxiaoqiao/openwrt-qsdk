@@ -39,13 +39,7 @@ endef
 
 define Package/fast-classifier-example
   TITLE:=Example user space program for fast-classifier
-  DEPENDS:=+libnl +libfast-classifier
-endef
-
-define Package/libfast-classifier
-  SECTION:=libs
-  TITLE:=Library to invoke fast-classifier offload
-  CATEGORY:=Libraries
+  DEPENDS:=+libnl-bf +libfast-classifier
 endef
 
 define Package/fast-classifier-example/description
@@ -62,34 +56,18 @@ define Build/Compile
 		EXTRA_CFLAGS="$(EXTRA_CFLAGS)" \
 		modules
 
-	$(TARGET_CC) -Wall -fPIC -c $(PKG_BUILD_DIR)/fast-classifier/fast-classifier-lib.c \
-				-I$(LINUX_DIR)/user_headers/include \
-				-I$(STAGING_DIR)/usr/include/libnl3 \
-				-o $(PKG_BUILD_DIR)/fast-classifier/fast-classifier-lib.o
-
-	$(TARGET_CC) -shared -Wl,-soname,libfast-classifier.so -o \
-		$(PKG_BUILD_DIR)/fast-classifier/libfast-classifier.so \
-		$(PKG_BUILD_DIR)/fast-classifier/fast-classifier-lib.o
-
 	$(TARGET_CC) -o $(PKG_BUILD_DIR)/userspace_fast_classifier \
 		-I $(PKG_BUILD_DIR)/fast-classifier \
-		-L $(PKG_BUILD_DIR)/fast-classifier \
-		-lfast-classifier -lnl-genl-3 \
+		-I$(STAGING_DIR)/usr/include/libnl3 \
+		-lnl-genl-3 -lnl-3 \
 		$(PKG_BUILD_DIR)/fast-classifier/userspace_example.c
 endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
 	$(CP) $(PKG_BUILD_DIR)/fast-classifier/fast-classifier.h $(1)/usr/include/
-
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/fast-classifier/libfast-classifier.so $(1)/usr/lib/
 endef
 
-define Package/libfast-classifier/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/fast-classifier/libfast-classifier.so $(1)/usr/lib/
-endef
 
 define Package/fast-classifier-example/install
 	$(INSTALL_DIR) $(1)/sbin
@@ -98,4 +76,3 @@ endef
 
 $(eval $(call KernelPackage,fast-classifier))
 $(eval $(call BuildPackage,fast-classifier-example))
-$(eval $(call BuildPackage,libfast-classifier))
