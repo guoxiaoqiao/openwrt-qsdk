@@ -16,6 +16,7 @@
 static void ag71xx_phy_link_adjust(struct net_device *dev)
 {
 	struct ag71xx *ag = netdev_priv(dev);
+	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
 	struct phy_device *phydev = ag->phy_dev;
 	unsigned long flags;
 	int status_change = 0;
@@ -32,9 +33,16 @@ static void ag71xx_phy_link_adjust(struct net_device *dev)
 	if (phydev->link != ag->link)
 		status_change = 1;
 
-	ag->link = phydev->link;
-	ag->duplex = phydev->duplex;
-	ag->speed = phydev->speed;
+	if (pdata->force_link) {
+		ag->link = 1;
+		ag->duplex = pdata->duplex;
+		ag->speed = pdata->speed;
+	}
+	else {
+		ag->link = phydev->link;
+		ag->duplex = phydev->duplex;
+		ag->speed = phydev->speed;
+	}
 
 	if (status_change)
 		ag71xx_link_adjust(ag);
