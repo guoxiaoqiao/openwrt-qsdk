@@ -57,6 +57,7 @@ enum {
 	AR8XXX_VER_AR8236 = 0x03,
 	AR8XXX_VER_AR8316 = 0x10,
 	AR8XXX_VER_AR8327 = 0x12,
+	AR8XXX_VER_AR8337 = 0x13
 };
 
 struct ar8xxx_mib_desc {
@@ -239,6 +240,10 @@ static inline bool chip_is_ar8327(struct ar8216_priv *priv)
 {
 	return priv->chip_ver == AR8XXX_VER_AR8327;
 }
+static  inline bool chip_is_ar8337(struct ar8216_priv *priv)
+{
+	 return priv->chip_ver == AR8XXX_VER_AR8337;
+}
 
 static inline void
 split_addr(u32 regaddr, u16 *r1, u16 *r2, u16 *page)
@@ -365,6 +370,20 @@ ar8216_reg_set(struct ar8216_priv *priv, int reg, u32 val)
 	priv->write(priv, reg, v);
 }
 
+static inline void
+ar8216_sw_reg_set(struct ar8216_priv *priv, int reg, u32 val)
+{
+	lockdep_assert_held(&priv->reg_mutex);
+	priv->write(priv, reg, val);
+}
+
+static inline void
+ar8216_sw_reg_get(struct ar8216_priv *priv, int reg, int *val)
+{
+	lockdep_assert_held(&priv->reg_mutex);
+	*val= priv->read(priv, reg);
+}
+
 static int
 ar8216_reg_wait(struct ar8216_priv *priv, u32 reg, u32 mask, u32 val,
 		unsigned timeout)
@@ -392,7 +411,7 @@ ar8216_mib_op(struct ar8216_priv *priv, u32 op)
 
 	lockdep_assert_held(&priv->mib_lock);
 
-	if (chip_is_ar8327(priv))
+	if (chip_is_ar8327(priv) || chip_is_ar8337(priv))
 		mib_func = AR8327_REG_MIB_FUNC;
 	else
 		mib_func = AR8216_REG_MIB_FUNC;
@@ -436,7 +455,7 @@ ar8216_mib_fetch_port_stat(struct ar8216_priv *priv, int port, bool flush)
 
 	lockdep_assert_held(&priv->mib_lock);
 
-	if (chip_is_ar8327(priv))
+	if (chip_is_ar8327(priv) || chip_is_ar8337(priv))
 		base = AR8327_REG_PORT_STATS_BASE(port);
 	else if (chip_is_ar8236(priv) ||
 		 chip_is_ar8316(priv))
@@ -1218,6 +1237,30 @@ ar8327_init_globals(struct ar8216_priv *priv)
 	/* Enable MIB counters */
 	ar8216_reg_set(priv, AR8327_REG_MODULE_EN,
 		       AR8327_MODULE_EN_MIB);
+
+	/* Updating HOL registers and RGMII delay settings
+	with the values suggested by QCA switch team */
+
+	if(chip_is_ar8337(priv)) {
+		ar8216_reg_set(priv, AR8327_REG_PAD5_MODE,
+			AR8327_PAD_RGMII_RXCLK_DELAY_EN);
+
+		ar8216_sw_reg_set(priv, 0x970, 0x1e864443);
+		ar8216_sw_reg_set(priv, 0x974, 0x000001c6);
+		ar8216_sw_reg_set(priv, 0x978, 0x19008643);
+		ar8216_sw_reg_set(priv, 0x97c, 0x000001c6);
+		ar8216_sw_reg_set(priv, 0x980, 0x19008643);
+		ar8216_sw_reg_set(priv, 0x984, 0x000001c6);
+		ar8216_sw_reg_set(priv, 0x988, 0x19008643);
+		ar8216_sw_reg_set(priv, 0x98c, 0x000001c6);
+		ar8216_sw_reg_set(priv, 0x990, 0x19008643);
+		ar8216_sw_reg_set(priv, 0x994, 0x000001c6);
+		ar8216_sw_reg_set(priv, 0x998, 0x1e864443);
+		ar8216_sw_reg_set(priv, 0x99c, 0x000001c6);
+		ar8216_sw_reg_set(priv, 0x9a0, 0x1e864443);
+		ar8216_sw_reg_set(priv, 0x9a4, 0x000001c6);
+
+	}
 }
 
 static void
@@ -1324,7 +1367,7 @@ static int
 ar8327_atu_dump(struct ar8216_priv *priv)
 {
 	u32 ret;
-	u32 i = 0, len = 0;
+	u32 i = 0, len = 0, entry_len = 0;
 	volatile u32 reg[4] = {0,0,0,0};
 	u8 addr[ETH_ALEN] = { 0 };
 	char *buf;
@@ -1365,6 +1408,12 @@ ar8327_atu_dump(struct ar8216_priv *priv)
 		len += snprintf(buf+len, sizeof(priv->buf) - len, "PORTMAP: 0x%02x\n", ((reg[1] >> 16) & 0x7f));
 
 		reg[2] |= 0xf;
+
+		if (!entry_len)
+			entry_len = len;
+
+		if (sizeof(priv->buf) - len <= entry_len)
+			break;
 	}while(1);
 
 	return len;
@@ -1535,11 +1584,29 @@ ar8216_sw_set_max_frame_size(struct switch_dev *dev, const struct switch_attr *a
 	else if(chip_is_ar8216(priv))
 		ar8216_rmw(priv, AR8216_REG_GLOBAL_CTRL,
 				AR8216_GCTRL_MTU, val->value.i + 8 + 2);
-	else if(chip_is_ar8327(priv))
+	else if(chip_is_ar8327(priv) || chip_is_ar8337(priv))
 		ar8216_rmw(priv, AR8327_REG_MAX_FRAME_SIZE,
 				AR8327_MAX_FRAME_SIZE_MTU, val->value.i + 8 + 2);
 	return 0;
 }
+
+static int
+ar8216_sw_set_reg_val(struct switch_dev *dev, int reg, int val)
+{
+	struct ar8216_priv *priv = to_ar8216(dev);
+	if(chip_is_ar8327(priv) || chip_is_ar8337(priv))
+		ar8216_sw_reg_set(priv, reg, val);
+	return 0;
+};
+
+static int
+ar8216_sw_get_reg_val(struct switch_dev *dev, int reg, int *val)
+{
+	struct ar8216_priv *priv = to_ar8216(dev);
+	if(chip_is_ar8327(priv) || chip_is_ar8337(priv) )
+		ar8216_sw_reg_get(priv, reg, val);
+	return 0;
+};
 
 static int
 ar8216_sw_get_max_frame_size(struct switch_dev *dev, const struct switch_attr *attr,
@@ -1554,7 +1621,7 @@ ar8216_sw_get_max_frame_size(struct switch_dev *dev, const struct switch_attr *a
 		v = ar8216_rmr(priv, AR8216_REG_GLOBAL_CTRL,AR8316_GCTRL_MTU);
 	else if(chip_is_ar8216(priv))
 		v = ar8216_rmr(priv, AR8216_REG_GLOBAL_CTRL,AR8216_GCTRL_MTU);
-	else if(chip_is_ar8327(priv))
+	else if(chip_is_ar8327(priv) || chip_is_ar8337(priv))
 		v = ar8216_rmr(priv, AR8327_REG_MAX_FRAME_SIZE,AR8327_MAX_FRAME_SIZE_MTU);
 
 	val->value.i = v;
@@ -1995,6 +2062,8 @@ static const struct switch_dev_ops ar8216_sw_ops = {
 	.apply_config = ar8216_sw_hw_apply,
 	.reset_switch = ar8216_sw_reset_switch,
 	.get_port_link = ar8216_sw_get_port_link,
+	.get_reg_val = ar8216_sw_get_reg_val,
+	.set_reg_val = ar8216_sw_set_reg_val,
 };
 
 static int
@@ -2035,6 +2104,10 @@ ar8216_id_chip(struct ar8216_priv *priv)
 		priv->chip = &ar8316_chip;
 		break;
 	case AR8XXX_VER_AR8327:
+		priv->mii_lo_first = true;
+		priv->chip = &ar8327_chip;
+		break;
+	case AR8XXX_VER_AR8337:
 		priv->mii_lo_first = true;
 		priv->chip = &ar8327_chip;
 		break;
@@ -2205,7 +2278,7 @@ ar8216_config_init(struct phy_device *pdev)
 		swdev->name = "Atheros AR8236";
 		swdev->vlans = AR8216_NUM_VLANS;
 		swdev->ports = AR8216_NUM_PORTS;
-	} else if (chip_is_ar8327(priv)) {
+	} else if (chip_is_ar8327(priv) || chip_is_ar8337(priv)) {
 		swdev->name = "Atheros AR8327";
 		swdev->vlans = AR8X16_MAX_VLANS;
 		swdev->ports = AR8327_NUM_PORTS;

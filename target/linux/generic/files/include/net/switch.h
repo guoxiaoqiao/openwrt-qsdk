@@ -48,6 +48,7 @@ enum {
 	SWITCH_ATTR_OP_NAME,
 	SWITCH_ATTR_OP_PORT,
 	SWITCH_ATTR_OP_VLAN,
+	SWITCH_ATTR_OP_REG,
 	SWITCH_ATTR_OP_VALUE_INT,
 	SWITCH_ATTR_OP_VALUE_STR,
 	SWITCH_ATTR_OP_VALUE_PORTS,
@@ -70,7 +71,10 @@ enum {
 	SWITCH_CMD_SET_PORT,
 	SWITCH_CMD_LIST_VLAN,
 	SWITCH_CMD_GET_VLAN,
-	SWITCH_CMD_SET_VLAN
+	SWITCH_CMD_SET_VLAN,
+	SWITCH_CMD_LIST_REG,
+	SWITCH_CMD_GET_REG,
+	SWITCH_CMD_SET_REG,
 };
 
 /* data types */
@@ -156,6 +160,10 @@ struct switch_port_stats {
  */
 struct switch_dev_ops {
 	struct switch_attrlist attr_global, attr_port, attr_vlan;
+	struct switch_attrlist attr_reg;
+
+	int (*get_reg_val)(struct switch_dev *dev, int reg, int *val);
+	int (*set_reg_val)(struct switch_dev *dev, int reg, int val);
 
 	int (*get_vlan_ports)(struct switch_dev *dev, struct switch_val *val);
 	int (*set_vlan_ports)(struct switch_dev *dev, struct switch_val *val);
@@ -190,6 +198,7 @@ struct switch_dev {
 	int id;
 	struct list_head dev_list;
 	unsigned long def_global, def_port, def_vlan;
+	unsigned long def_reg;
 
 	struct mutex sw_mutex;
 	struct switch_port *portbuf;
