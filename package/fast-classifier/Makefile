@@ -39,7 +39,7 @@ endef
 
 define Package/fast-classifier-example
   TITLE:=Example user space program for fast-classifier
-  DEPENDS:=+libnl-tiny +libfast-classifier
+  DEPENDS:=+libnl +libfast-classifier
 endef
 
 define Package/libfast-classifier
@@ -64,9 +64,7 @@ define Build/Compile
 
 	$(TARGET_CC) -Wall -fPIC -c $(PKG_BUILD_DIR)/fast-classifier/fast-classifier-lib.c \
 				-I$(LINUX_DIR)/user_headers/include \
-				-I$(LINUX_DIR)/user_headers/include \
-				-I$(STAGING_DIR)/usr/include/libnl-tiny \
-				-lnl-tiny \
+				-I$(STAGING_DIR)/usr/include/libnl3 \
 				-o $(PKG_BUILD_DIR)/fast-classifier/fast-classifier-lib.o
 
 	$(TARGET_CC) -shared -Wl,-soname,libfast-classifier.so -o \
@@ -76,7 +74,7 @@ define Build/Compile
 	$(TARGET_CC) -o $(PKG_BUILD_DIR)/userspace_fast_classifier \
 		-I $(PKG_BUILD_DIR)/fast-classifier \
 		-L $(PKG_BUILD_DIR)/fast-classifier \
-		-lfast-classifier -lnl-tiny \
+		-lfast-classifier -lnl-genl-3 \
 		$(PKG_BUILD_DIR)/fast-classifier/userspace_example.c
 endef
 
