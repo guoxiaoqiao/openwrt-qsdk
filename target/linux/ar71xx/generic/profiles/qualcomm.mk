@@ -39,8 +39,8 @@ define Profile/QSDK_Premium_Router
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  streamboost cups cups-client alljoyn kmod-fast-classifier \
-	  kmod-qca-wifi-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-	  qca-legacy-uboot-ap135
+	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-cli \
+	  qca-wpa-supplicant qca-legacy-uboot-ap135 kmod-art2
 endef
 
 define Profile/QSDK_Premium_Router/Description
