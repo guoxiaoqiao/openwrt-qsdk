@@ -72,6 +72,21 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  config ATH79_MACH_PB42
  	bool "Atheros PB42 board support"
  	select SOC_AR71XX
+@@ -157,6 +197,14 @@ config ATH79_MACH_PB92
+ 	select ATH79_DEV_PB9X_PCI if PCI
+ 	select ATH79_DEV_USB
+ 
++config ATH79_MACH_RUBBERDUCK
++	bool "Qualcomm-Atheros RubberDuck board support"
++	select SOC_QCA955X
++	select ATH79_DEV_SPI
++	help
++	  Say 'Y' here if you want your kernel to support the
++	  RubberDuck custom design support.
++
+ config ATH79_MACH_AW_NR580
+ 	bool "AzureWave AW-NR580 board support"
+ 	select SOC_AR71XX
 --- a/arch/mips/ath79/Makefile
 +++ b/arch/mips/ath79/Makefile
 @@ -47,12 +47,15 @@ obj-$(CONFIG_ATH79_MACH_ALL0258N)	+= mac
@@ -90,6 +105,14 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  obj-$(CONFIG_ATH79_MACH_DIR_600_A1)	+= mach-dir-600-a1.o
  obj-$(CONFIG_ATH79_MACH_DIR_615_C1)	+= mach-dir-615-c1.o
  obj-$(CONFIG_ATH79_MACH_DIR_825_B1)	+= mach-dir-825-b1.o
+@@ -71,6 +74,7 @@ obj-$(CONFIG_ATH79_MACH_PB92)		+= mach-p
+ obj-$(CONFIG_ATH79_MACH_RB4XX)		+= mach-rb4xx.o
+ obj-$(CONFIG_ATH79_MACH_RB750)		+= mach-rb750.o
+ obj-$(CONFIG_ATH79_MACH_RB2011)		+= mach-rb2011.o
++obj-$(CONFIG_ATH79_MACH_RUBBERDUCK)	+= mach-rubberduck.o
+ obj-$(CONFIG_ATH79_MACH_RW2458N)	+= mach-rw2458n.o
+ obj-$(CONFIG_ATH79_MACH_TEW_632BRP)	+= mach-tew-632brp.o
+ obj-$(CONFIG_ATH79_MACH_TEW_673GRU)	+= mach-tew-673gru.o
 --- a/arch/mips/ath79/machtypes.h
 +++ b/arch/mips/ath79/machtypes.h
 @@ -1,6 +1,7 @@
@@ -116,3 +139,11 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  	ATH79_MACH_PB44,		/* Atheros PB44 reference board */
  	ATH79_MACH_DIR_600_A1,		/* D-Link DIR-600 rev. A1 */
  	ATH79_MACH_DIR_615_C1,		/* D-Link DIR-615 rev. C1 */
+@@ -64,6 +68,7 @@ enum ath79_mach_type {
+ 	ATH79_MACH_RB_751G,		/* Mikrotik RouterBOARD 751G */
+ 	ATH79_MACH_RB_2011G,		/* Mikrotik RouterBOARD 2011UAS-2HnD */
+ 	ATH79_MACH_RB_2011L,		/* Mikrotik RouterBOARD 2011L */
++	ATH79_MACH_RUBBERDUCK,		/* Qualcomm-Atheros RubberDuck */
+ 	ATH79_MACH_RW2458N,		/* Redwave RW2458N */
+ 	ATH79_MACH_TEW_632BRP,		/* TRENDnet TEW-632BRP */
+ 	ATH79_MACH_TEW_673GRU,		/* TRENDnet TEW-673GRU */
