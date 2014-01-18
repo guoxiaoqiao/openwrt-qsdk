@@ -14,6 +14,27 @@ define Profile/QSDK_Base
 	  iputils-tracepath iputils-tracepath6
 endef
 
+define Profile/QSDK_Open_Router
+	$(Profile/QSDK_Base)
+	NAME:=Qualcomm-Atheros SDK Open Router Profile
+	PACKAGES+= -kmod-ath5k -wpad-mini alljoyn hostapd hostapd-utils iwinfo \
+	  kmod-fast-classifier kmod-usb2 luci-app-qos wireless-tools \
+	  wpa-supplicant wpa-cli
+endef
+
+define Profile/QSDK_Open_Router/Description
+  QSDK Open Router package set configuration.
+  This profile includes only open source packages and is designed to fit in a 16M flash. It supports:
+  - Bridging and routing networking
+  - LuCI web configuration interface
+  - USB hard drive support
+  - Samba
+  - IPv4/IPv6
+  - DynDns
+  - Integrated 11abgn support using the ath9k driver
+endef
+$(eval $(call Profile,QSDK_Open_Router))
+
 define Profile/QSDK_Wired_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Wired Router Profile
