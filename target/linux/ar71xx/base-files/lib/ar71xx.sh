@@ -208,6 +208,9 @@ ar71xx_board_detect() {
 	*"DB120 reference board with TB388 extension")
 		name="db120tb388"
 		;;
+	*"RubberDuck custom design")
+		name="rubberduck"
+		;;
 	*"DIR-600 rev. A1")
 		name="dir-600-a1"
 		;;

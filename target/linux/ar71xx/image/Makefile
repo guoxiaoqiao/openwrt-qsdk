@@ -169,6 +169,7 @@ ap121_mtdlayout_4M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,2752k(rootfs
 ap121_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1408k(kernel),64k(mib0),64k(art)ro,7744k@0x50000(firmware)
 ap135_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 ap135dual_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,15936k@0x50000(firmware);ath79-nand:256m(rootfs_data)
+rubberduck_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 ap136_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1472k(kernel),64k(art)ro,7744k@0x50000(firmware)
 ap143_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1472k(kernel),64k(art)ro,7744k@0x50000(firmware)
 cameo7240_mtdlayout=mtdparts=spi0.0:192k(u-boot)ro,64k(nvram)ro,960k(kernel),2752k(rootfs),64k(mac)ro,64k(art)ro,3712k@0x40000(firmware)
@@ -805,6 +806,7 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP135,ap135,AP135,ttyS0,115200,$$(
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP135DUAL,ap135-dual,AP135-DUAL,ttyS0,115200,$$(ap135dual_mtdlayout),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP136,ap136,AP136,ttyS0,115200,$$(ap136_mtdlayout),1507328,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143,ap143,AP143,ttyS0,115200,$$(ap143_mtdlayout),1507328,6488064,RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),RUBBERDUCK,rubberduck,RUBBERDUCK,ttyS0,115200,$$(rubberduck_mtdlayout),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CAP4200AG,cap4200ag,CAP4200AG,ttyS0,115200,$$(cap4200ag_mtdlayout),1572864,12386304,KRuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),DB120,db120,DB120,ttyS0,115200,$$(db120_mtdlayout),1441792,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),DB120TB388,db120tb388,DB120TB388,ttyS0,115200,$$(db120_mtdlayout),1441792,6488064,RKuImage))
@@ -994,7 +996,9 @@ endef
 SINGLE_PROFILES += CUS227
 
 define Image/Build/Profile/QSDK_Wired_Router
+	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP136,$(1))
+	$(call Image/Build/Profile/RUBBERDUCK,$(1))
 endef
 
 define Image/Build/Profile/QSDK_Premium_Router
