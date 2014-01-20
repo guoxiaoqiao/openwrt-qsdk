@@ -18,7 +18,7 @@ diff --git a/drivers/net/ethernet/atheros/ag71xx/ag71xx.h b/drivers/net/ethernet
 index 2812cda..e79e8f9 100644
 --- a/drivers/net/ethernet/atheros/ag71xx/ag71xx.h
 +++ b/drivers/net/ethernet/atheros/ag71xx/ag71xx.h
-@@ -57,11 +57,11 @@
+@@ -57,7 +57,7 @@
  	(ETH_FRAME_LEN + ETH_FCS_LEN + VLAN_HLEN)
  #define AG71XX_RX_BUF_SIZE (AG71XX_RX_PKT_SIZE + NET_SKB_PAD + NET_IP_ALIGN)
  
@@ -26,13 +26,7 @@ index 2812cda..e79e8f9 100644
 +#define AG71XX_TX_RING_SIZE_DEFAULT	128
  #define AG71XX_RX_RING_SIZE_DEFAULT	128
  
--#define AG71XX_TX_RING_SIZE_MAX		256
--#define AG71XX_RX_RING_SIZE_MAX		256
-+#define AG71XX_TX_RING_SIZE_MAX		128
-+#define AG71XX_RX_RING_SIZE_MAX		128
- 
- #define AG71XX_JUMBO_LEN		9000
- 
+ #define AG71XX_TX_RING_SIZE_MAX		256
 -- 
 1.8.1.2
 
