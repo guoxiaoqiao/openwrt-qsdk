@@ -206,7 +206,6 @@ DEVICES=
 DRIVERS=
 include /lib/wifi
 
-trap '' INT TERM ABRT QUIT ALRM
 lock /var/run/wifi.lock
 scan_wifi
 
