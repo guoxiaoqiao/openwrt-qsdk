@@ -27,6 +27,11 @@ define qca-legacy-uboot/Default
   IMAGE:=
 endef
 
+define qca-legacy-uboot/ap121
+  TITLE:=U-boot for the board ap121
+  DEPENDS:=@TARGET_ar71xx
+endef
+
 define qca-legacy-uboot/ap135
   TITLE:=U-boot for the router ap135
   DEPENDS:=@TARGET_ar71xx
@@ -47,7 +52,7 @@ define qca-legacy-uboot/cus227
   DEPENDS:=@TARGET_ar71xx
 endef
 
-UBOOTS:=ap135 ap136 db12x cus227
+UBOOTS:=ap121 ap135 ap136 db12x cus227
 
 define Package/qca-legacy-uboot/template
 define Package/qca-legacy-uboot-$(1)
