@@ -47,7 +47,7 @@ platform_check_image() {
 	[ "$ARGC" -gt 1 ] && return 1
 
 	case "$board" in
-	db149)
+	db149 | db147 | ap148 | ap145)
 		uImage_blockoffset=$( platform_get_offset "$1" uImage "0" )
 		[ -z $uImage_blockoffset ] && {
 			echo "uImage not found"
@@ -81,7 +81,7 @@ platform_do_upgrade() {
 	fi
 
 	case "$board" in
-	db149)
+	db149 | db147 | ap148 | ap145)
 		dd if=$1 of=/tmp/kernel \
 			bs=$CI_BLKSZ count=$(( $rootfs_size - $kern_size )) \
 			skip=$(( $kern_size ))
