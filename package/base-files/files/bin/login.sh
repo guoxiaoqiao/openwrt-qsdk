@@ -14,5 +14,5 @@ cat << EOF
   this will enable telnet login with password
  ------------------------------------------
 EOF
-+exec /bin/ash --login
+exec /bin/ash --login
 fi
