@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+# Copyright (c) 2014 The Linux Foundation. All rights reserved.
+
+START=11
+
+start() {
+	# Disable memory over-commit for two reasons:
+	# 1. We dont have swap
+	# 2. We dont want unexpected OOM killer behaviour
+	sysctl -w vm.overcommit_memory=2
+	# Restrict user-space memory usage to 250MB
+	sysctl -w vm.overcommit_ratio=50
+}
