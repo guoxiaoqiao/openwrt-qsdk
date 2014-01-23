@@ -13,7 +13,8 @@ define Profile/QSDK_Base
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
 	  luci-app-ddns ddns-scripts cups cups-client mdadm\
 	  kmod-md-mod kmod-md-linear kmod-md-raid0 kmod-md-raid1 \
-	  iputils-tracepath iputils-tracepath6 alljoyn kmod-qca-ssdk-nohnat kmod-art2 file
+	  iputils-tracepath iputils-tracepath6 alljoyn kmod-qca-ssdk-nohnat qca-ssdk-shell \
+	  kmod-art2 file
 endef
 
 define Profile/QSDK_Open
