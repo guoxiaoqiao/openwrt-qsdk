@@ -11,6 +11,10 @@ use FindBin;
 use lib "$FindBin::Bin";
 use metadata;
 
+# %OPTS
+# Hash of all the options provided through command line
+my %OPTS;
+
 # @CONFIGS
 # Each element in CONFIGS contains a hash storing a config file content
 my @CONFIGS;
@@ -25,7 +29,7 @@ sub load_config($) {
     my $dotconfig = tmpnam();
 
     # Create a temporary file and extrapolate it with default values
-    copy( $defconfig, $dotconfig ) or die "Copy failed: $!";
+    copy( $defconfig, $dotconfig ) or die "Error when copying $defconfig: $!";
     system( "./scripts/config/conf "
           . "-D $dotconfig "
           . "-w $dotconfig "
@@ -104,7 +108,7 @@ sub xref_packages() {
 sub write_output_xlsx() {
 
     # Create a new workbook and add a worksheet
-    my $workbook  = Excel::Writer::XLSX->new('openwrt.xlsx');
+    my $workbook  = Excel::Writer::XLSX->new(exists($OPTS{o}) ? $OPTS{o} : 'openwrt.xlsx');
     my $worksheet = $workbook->add_worksheet();
 
     # Init the worksheet (set columns width, create colors & formats)
@@ -216,9 +220,25 @@ sub write_output_xlsx() {
     }
 }
 
+sub show_help() {
+    print <<EOF
+$0 [options] config1 config2 config3 ...
+Available Options:
+    -o filename		Output file name (default: openwrt.xlsx)
+EOF
+}
+
+sub show_help_and_exit {
+    print "Error: $_[0]\n" if defined $_[0];
+    show_help();
+    exit 1;
+}
+
 sub parse_command() {
-    foreach (@ARGV) {
-        load_config($_);
+    while (my $opt = shift @ARGV) {
+        if ($opt =~ /^-o$/)  { $OPTS{o}=shift(@ARGV); }
+        elsif ($opt =~ /^-.*$/) { show_help_and_exit("\"$opt\" option not supported"); }
+        else { load_config($opt); }
     }
 }
 
