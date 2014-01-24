@@ -108,7 +108,8 @@ sub xref_packages() {
 sub write_output_xlsx() {
 
     # Create a new workbook and add a worksheet
-    my $workbook  = Excel::Writer::XLSX->new(exists($OPTS{o}) ? $OPTS{o} : 'openwrt.xlsx');
+    my $workbook = Excel::Writer::XLSX->new(
+        exists( $OPTS{o} ) ? $OPTS{o} : 'openwrt.xlsx' );
     my $worksheet = $workbook->add_worksheet();
 
     # Init the worksheet (set columns width, create colors & formats)
@@ -117,35 +118,35 @@ sub write_output_xlsx() {
     $worksheet->set_column( 4, 4, 28 );    # Column E width set to 28
     $worksheet->set_column( 5, 5, 14 );    # Column E width set to 14
     $worksheet->set_column( 6, 6, 12 );    # Column F width set to 12
-    my $c_orange = $workbook->set_custom_color( 40, 247,  150, 70 );
-    my $c_green = $workbook->set_custom_color(41, 196, 215, 155);
-    my $c_red = $workbook->set_custom_color(42, 218, 150, 148);
-    my $f_title = $workbook->add_format(
-        align  => 'center',
-        valign => 'vcenter',
-        bold   => 1,
-        border => 2,                       # Continuous, Weight=2
+    my $c_orange = $workbook->set_custom_color( 40, 247, 150, 70 );
+    my $c_green  = $workbook->set_custom_color( 41, 196, 215, 155 );
+    my $c_red    = $workbook->set_custom_color( 42, 218, 150, 148 );
+    my $f_title  = $workbook->add_format(
+        align    => 'center',
+        valign   => 'vcenter',
+        bold     => 1,
+        border   => 2,                     # Continuous, Weight=2
         bg_color => $c_orange,
     );
     my $f_data = $workbook->add_format(
-        align => 'center',
+        align  => 'center',
         valign => 'vcenter',
         border => 1,
     );
     my $f_green_data = $workbook->add_format(
-        align => 'center',
-        valign => 'vcenter',
-        border => 1,
+        align    => 'center',
+        valign   => 'vcenter',
+        border   => 1,
         bg_color => $c_green,
     );
     my $f_red_data = $workbook->add_format(
-        align => 'center',
-        valign => 'vcenter',
-        border => 1,
+        align    => 'center',
+        valign   => 'vcenter',
+        border   => 1,
         bg_color => $c_red,
     );
     my $f_desc = $workbook->add_format(
-        align => 'fill',
+        align  => 'fill',
         border => 1,
     );
 
@@ -159,9 +160,9 @@ sub write_output_xlsx() {
         $worksheet->write( 0, $colid, $col[$colid], $f_title );
         $colid++;
     }
-    foreach (sort { $a->{name} cmp $b->{name} } @CONFIGS) {
-        $worksheet->write( 0, $colid, $_->{name}, $f_title);
-        $worksheet->set_column( $colid, $colid, 20);
+    foreach ( sort { $a->{name} cmp $b->{name} } @CONFIGS ) {
+        $worksheet->write( 0, $colid, $_->{name}, $f_title );
+        $worksheet->set_column( $colid, $colid, 20 );
         $colid++;
     }
 
@@ -235,9 +236,11 @@ sub show_help_and_exit {
 }
 
 sub parse_command() {
-    while (my $opt = shift @ARGV) {
-        if ($opt =~ /^-o$/)  { $OPTS{o}=shift(@ARGV); }
-        elsif ($opt =~ /^-.*$/) { show_help_and_exit("\"$opt\" option not supported"); }
+    while ( my $opt = shift @ARGV ) {
+        if ( $opt =~ /^-o$/ ) { $OPTS{o} = shift(@ARGV); }
+        elsif ( $opt =~ /^-.*$/ ) {
+            show_help_and_exit("\"$opt\" option not supported");
+        }
         else { load_config($opt); }
     }
 }
