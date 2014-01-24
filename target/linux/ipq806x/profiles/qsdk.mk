@@ -14,7 +14,7 @@ define Profile/QSDK_Base
 	  luci-app-ddns ddns-scripts cups cups-client mdadm\
 	  kmod-md-mod kmod-md-linear kmod-md-raid0 kmod-md-raid1 \
 	  iputils-tracepath iputils-tracepath6 alljoyn kmod-qca-ssdk-nohnat qca-ssdk-shell \
-	  kmod-art2 file
+	  kmod-art2 file pure-ftpd
 endef
 
 define Profile/QSDK_Open
