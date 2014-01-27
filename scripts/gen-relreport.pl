@@ -40,36 +40,14 @@ sub load_config($) {
     my %config;
     open FILE, "<$dotconfig" or return;
     while (<FILE>) {
-        /^CONFIG_DEFAULT_(.+?)=y$/ and push( @{ $config{default} },  $1 );
-        /^CONFIG_PACKAGE_(.+?)=y$/ and push( @{ $config{packages} }, $1 );
+        /^CONFIG_DEFAULT_(.+?)=y$/ and $config{$1} = { default => 1 };
+        /^CONFIG_PACKAGE_(.+?)=y$/ and $config{$1} = {};
     }
     close FILE;
     $config{name} = basename( $defconfig, ".config" );
 
-    # Ok; so now we have this:
-    # %config = {
-    #   packages => [ pkgA, pkgB, pkgC, ...]
-    #   default => [ pkgA, pkgC, ...]
-    #   name => "configname",
-    # };
-    # and we want to convert it into this (to process is easily):
-    # %hashed_config = [
-    #   name => "configname",
-    #   pkgA => { default => 1 },
-    #   pkgB => {},
-    #   pkgC => { default => 1 },
-    #   ...
-    # ];
-    my %hashed_config = ( name => $config{name} );
-    foreach my $pkg ( @{ $config{packages} } ) {
-        $hashed_config{$pkg} = {};
-    }
-    foreach my $pkg ( @{ $config{default} } ) {
-        $hashed_config{$pkg} = { default => 1 };
-    }
-
     # Store the config hash in @CONFIGS and clean-up the FS
-    push( @CONFIGS, \%hashed_config );
+    push( @CONFIGS, \%config );
     unlink $dotconfig;
 }
 
