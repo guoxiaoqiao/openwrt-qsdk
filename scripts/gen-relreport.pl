@@ -76,6 +76,11 @@ sub xref_packages() {
               }
               unless exists( $QSDKPKGS{$pkg} );
 
+            # Linux & kmods version starts with the string <LINUX_VERSION>
+            # We remove this prefix here for better readability
+            $QSDKPKGS{$pkg}->{version} =~ s/^<LINUX_VERSION>-$/KERNEL/;
+            $QSDKPKGS{$pkg}->{version} =~ s/<LINUX_VERSION>[\+-](.+)/$1/;
+
             push( @{ $QSDKPKGS{$pkg}->{configs} },    $config->{name} );
             push( @{ $QSDKPKGS{$pkg}->{defconfigs} }, $config->{name} )
               if ( exists( $config->{$pkg}->{default} ) );
