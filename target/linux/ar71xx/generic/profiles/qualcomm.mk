@@ -4,7 +4,7 @@
 
 define Profile/QSDK_Base
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp kmod-fs-ext4 \
-	  kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
+	  kmod-usb-storage kmod-usb2 kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	  ntfs-3g dosfsck e2fsprogs fdisk mkdosfs \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat igmpproxy kmod-ipt-nathelper-rtsp \
 	  kmod-ipv6 iperf devmem2 ip ethtool ip6tables \
