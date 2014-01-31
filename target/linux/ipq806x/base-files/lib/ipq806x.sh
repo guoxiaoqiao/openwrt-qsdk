@@ -17,9 +17,6 @@ ipq806x_board_detect() {
 	*"DB149 reference board")
 		name="db149"
 		;;
-	*"DB147 reference board")
-		name="db147"
-		;;
 	*"AP148 reference board")
 		name="ap148"
 		;;
