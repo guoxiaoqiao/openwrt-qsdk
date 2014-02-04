@@ -141,6 +141,19 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/nss_api_if.h $(1)/usr/include/qca-nss-drv/
 endef
 
+define KernelPackage/qca-nss-qdisc
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Support
+  TITLE:=Qdisc for configuring shapers in NSS
+  DEPENDS:=kmod-qca-nss-drv
+  FILES:=$(PKG_BUILD_DIR)/qca-nss-qdisc.ko
+endef
+
+define KernelPackage/qca-nss-qdisc/Description
+Linux qdisc that aids in configuring shapers in the NSS
+endef
+
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
@@ -156,3 +169,4 @@ $(eval $(call KernelPackage,qca-nss-connmgr))
 $(eval $(call KernelPackage,qca-nss-connmgr-noload))
 $(eval $(call KernelPackage,qca-nss-tun6rd))
 $(eval $(call KernelPackage,qca-nss-tunipip6))
+$(eval $(call KernelPackage,qca-nss-qdisc))
