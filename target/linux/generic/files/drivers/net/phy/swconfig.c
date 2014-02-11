@@ -355,6 +355,7 @@ static const struct nla_policy switch_policy[SWITCH_ATTR_MAX+1] = {
 	[SWITCH_ATTR_OP_VALUE_INT] = { .type = NLA_U32 },
 	[SWITCH_ATTR_OP_VALUE_STR] = { .type = NLA_NUL_STRING },
 	[SWITCH_ATTR_OP_VALUE_PORTS] = { .type = NLA_NESTED },
+	[SWITCH_ATTR_OP_VALUE_EXT] = { .type = NLA_NESTED },
 	[SWITCH_ATTR_TYPE] = { .type = NLA_U32 },
 };
 
@@ -362,6 +363,12 @@ static const struct nla_policy port_policy[SWITCH_PORT_ATTR_MAX+1] = {
 	[SWITCH_PORT_ID] = { .type = NLA_U32 },
 	[SWITCH_PORT_FLAG_TAGGED] = { .type = NLA_FLAG },
 };
+
+static const struct nla_policy ext_policy[SWITCH_EXT_ATTR_MAX+1] = {
+	[SWITCH_EXT_NAME] = { .type = NLA_NUL_STRING },
+	[SWITCH_EXT_VALUE] = { .type = NLA_NUL_STRING },
+};
+
 
 static inline void
 swconfig_lock(void)
@@ -689,11 +696,53 @@ swconfig_parse_ports(struct sk_buff *msg, struct nlattr *head,
 }
 
 static int
+swconfig_parse_ext(struct sk_buff *msg, struct nlattr *head,
+		struct switch_val *val, int max)
+{
+	struct nlattr *nla;
+	struct switch_ext *switch_ext_p, *switch_ext_tmp;
+	int rem;
+
+	val->len = 0;
+	switch_ext_p = val->value.ext_val;
+	nla_for_each_nested(nla, head, rem) {
+		struct nlattr *tb[SWITCH_EXT_ATTR_MAX+1];
+
+		switch_ext_tmp = kzalloc(sizeof(struct switch_ext), GFP_KERNEL);
+		if (!switch_ext_tmp)
+			return -ENOMEM;
+
+		if (nla_parse_nested(tb, SWITCH_EXT_ATTR_MAX, nla,
+				ext_policy))
+			return -EINVAL;
+
+		if (!tb[SWITCH_EXT_NAME])
+			return -EINVAL;
+		switch_ext_tmp->option_name = nla_data(tb[SWITCH_EXT_NAME]);
+
+		if (!tb[SWITCH_EXT_VALUE])
+			return -EINVAL;
+		switch_ext_tmp->option_value = nla_data(tb[SWITCH_EXT_VALUE]);
+
+		if(!switch_ext_p)
+			val->value.ext_val = switch_ext_tmp;
+		else
+			switch_ext_p->next = switch_ext_tmp;
+		switch_ext_p=switch_ext_tmp;
+
+		val->len++;
+	}
+
+	return 0;
+}
+
+static int
 swconfig_set_attr(struct sk_buff *skb, struct genl_info *info)
 {
 	const struct switch_attr *attr;
 	struct switch_dev *dev;
 	struct switch_val val;
+	struct switch_ext *switch_ext_p;
 	int err = -EINVAL;
 
 	dev = swconfig_get_dev(info);
@@ -737,12 +786,36 @@ swconfig_set_attr(struct sk_buff *skb, struct genl_info *info)
 			err = 0;
 		}
 		break;
+	case SWITCH_TYPE_EXT:
+		if (info->attrs[SWITCH_ATTR_OP_VALUE_EXT]) {
+			err = swconfig_parse_ext(skb,
+				info->attrs[SWITCH_ATTR_OP_VALUE_EXT], &val, dev->ports);
+			if (err < 0)
+				goto error;
+		} else {
+			val.len = 0;
+			err = 0;
+		}
+		break;
+
 	default:
 		goto error;
 	}
 
 	err = attr->set(dev, attr, &val);
+
 error:
+	/* free memory if necessary */
+	switch(attr->type) {
+	case SWITCH_TYPE_EXT:
+		switch_ext_p = val.value.ext_val;
+		while(switch_ext_p) {
+			struct switch_ext *ext_value_p = switch_ext_p;
+			switch_ext_p = switch_ext_p->next;
+			kfree(ext_value_p);
+		}
+	}
+
 	swconfig_put_dev(dev);
 	return err;
 }

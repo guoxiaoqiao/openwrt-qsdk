@@ -52,9 +52,12 @@ enum {
 	SWITCH_ATTR_OP_VALUE_INT,
 	SWITCH_ATTR_OP_VALUE_STR,
 	SWITCH_ATTR_OP_VALUE_PORTS,
+	SWITCH_ATTR_OP_VALUE_EXT,
 	SWITCH_ATTR_OP_DESCRIPTION,
 	/* port lists */
 	SWITCH_ATTR_PORT,
+	/* switch_ext attribute */
+	SWITCH_ATTR_EXT,
 	SWITCH_ATTR_MAX
 };
 
@@ -83,6 +86,7 @@ enum switch_val_type {
 	SWITCH_TYPE_INT,
 	SWITCH_TYPE_STRING,
 	SWITCH_TYPE_PORTS,
+	SWITCH_TYPE_EXT,
 	SWITCH_TYPE_NOVAL,
 };
 
@@ -92,6 +96,14 @@ enum {
 	SWITCH_PORT_ID,
 	SWITCH_PORT_FLAG_TAGGED,
 	SWITCH_PORT_ATTR_MAX
+};
+
+/* switch_ext nested attributes */
+enum {
+	SWITCH_EXT_UNSPEC,
+	SWITCH_EXT_NAME,
+	SWITCH_EXT_VALUE,
+	SWITCH_EXT_ATTR_MAX
 };
 
 #define SWITCH_ATTR_DEFAULTS_OFFSET	0x1000
@@ -215,6 +227,12 @@ struct switch_port {
 	u32 flags;
 };
 
+struct switch_ext {
+	const char *option_name;
+	const char *option_value;
+	struct switch_ext *next;
+};
+
 struct switch_val {
 	const struct switch_attr *attr;
 	int port_vlan;
@@ -223,6 +241,7 @@ struct switch_val {
 		const char *s;
 		u32 i;
 		struct switch_port *ports;
+		struct switch_ext *ext_val;
 	} value;
 };
 
