@@ -27,29 +27,11 @@ define qca-legacy-uboot/Default
   IMAGE:=
 endef
 
-define qca-legacy-uboot/ap121
-  TITLE:=U-boot for the board ap121
+define qca-legacy-uboot/template
+define qca-legacy-uboot/$(1)
+  TITLE:=U-boot for the board $(1)
   DEPENDS:=@TARGET_ar71xx
 endef
-
-define qca-legacy-uboot/ap135
-  TITLE:=U-boot for the router ap135
-  DEPENDS:=@TARGET_ar71xx
-endef
-
-define qca-legacy-uboot/ap136
-  TITLE:=U-boot for the router ap136
-  DEPENDS:=@TARGET_ar71xx
-endef
-
-define qca-legacy-uboot/db12x
-  TITLE:=U-boot for the board db12x
-  DEPENDS:=@TARGET_ar71xx
-endef
-
-define qca-legacy-uboot/cus227
-  TITLE:=U-boot for the board cus227
-  DEPENDS:=@TARGET_ar71xx
 endef
 
 UBOOTS:=ap121 ap135 ap136 db12x cus227
@@ -123,6 +105,7 @@ endef
 endef
 
 $(foreach u,$(UBOOTS), \
+	$(eval $(call qca-legacy-uboot/template,$(u))) \
 	$(eval $(call Package/qca-legacy-uboot/install/template,$(u))) \
 	$(eval $(call Package/qca-legacy-uboot/config/template,$(u))) \
 	$(eval $(call BuildQcaLegacyUbootPackage,$(u))) \
