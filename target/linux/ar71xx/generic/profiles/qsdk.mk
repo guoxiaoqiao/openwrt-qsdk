@@ -17,7 +17,8 @@ endef
 define Profile/QSDK_Open_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Open Router Profile
-	PACKAGES+= -kmod-ath5k -wpad-mini alljoyn hostapd hostapd-utils iwinfo \
+	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini alljoyn \
+	  hostapd hostapd-utils iwinfo kmod-qca-ath10k kmod-qca-ath9k kmod-qca-ath \
 	  kmod-fast-classifier kmod-usb2 luci-app-qos wireless-tools \
 	  wpa-supplicant wpa-cli qca-legacy-uboot-ap121
 endef
