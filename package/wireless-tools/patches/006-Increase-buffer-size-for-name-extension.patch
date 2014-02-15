@@ -1,0 +1,16 @@
+diff --git a/wireless.21.h b/wireless.21.h
+index 2d94fab..1cd6e98 100644
+--- a/wireless.21.h
++++ b/wireless.21.h
+@@ -1079,7 +1079,7 @@ struct	iw_priv_args
+ 	__u32		cmd;		/* Number of the ioctl to issue */
+ 	__u16		set_args;	/* Type and number of args */
+ 	__u16		get_args;	/* Type and number of args */
+-	char		name[IFNAMSIZ];	/* Name of the extension */
++	char		name[IFNAMSIZ + 16];	/* Name of the extension */
+ };
+ 
+ /* ----------------------- WIRELESS EVENTS ----------------------- */
+-- 
+1.7.8.3
+
