@@ -19,7 +19,7 @@ define Profile/QSDK_Open_Router
 	NAME:=Qualcomm-Atheros SDK Open Router Profile
 	PACKAGES+= -kmod-ath5k -wpad-mini alljoyn hostapd hostapd-utils iwinfo \
 	  kmod-fast-classifier kmod-usb2 luci-app-qos wireless-tools \
-	  wpa-supplicant wpa-cli
+	  wpa-supplicant wpa-cli qca-legacy-uboot-ap121
 endef
 
 define Profile/QSDK_Open_Router/Description
