@@ -94,6 +94,20 @@ Extra iptables extensions for connection tracking.
 
 endef
 
+define Package/iptables-mod-conntrack-qos
+$(call Package/iptables/Module, +kmod-ipt-conntrack-qos)
+  TITLE:=QoS connection tracking extensions
+endef
+
+define Package/iptables-mod-conntrack-qos/description
+QoS iptables extensions for connection tracking.
+
+ Targets:
+  - DSCPREMARK
+  - VLANTAG
+
+endef
+
 define Package/iptables-mod-filter
 $(call Package/iptables/Module, +kmod-ipt-filter)
   TITLE:=Content inspection extensions
@@ -360,7 +374,7 @@ MAKE_FLAGS := \
 	COPT_FLAGS="$(TARGET_CFLAGS)" \
 	KERNEL_DIR="$(LINUX_DIR)/user_headers/" PREFIX=/usr \
 	KBUILD_OUTPUT="$(LINUX_DIR)" \
-	BUILTIN_MODULES="$(patsubst ipt_%,%,$(patsubst xt_%,%,$(IPT_BUILTIN) $(IPT_CONNTRACK-m) $(IPT_NAT-m)))"
+	BUILTIN_MODULES="$(patsubst ipt_%,%,$(patsubst xt_%,%,$(IPT_BUILTIN) $(IPT_CONNTRACK-m) $(IPT_CONNTRACK_QOS-m) $(IPT_NAT-m)))"
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
@@ -450,6 +464,7 @@ L7_INSTALL:=\
 
 $(eval $(call BuildPackage,iptables))
 $(eval $(call BuildPlugin,iptables-mod-conntrack-extra,$(IPT_CONNTRACK_EXTRA-m)))
+$(eval $(call BuildPlugin,iptables-mod-conntrack-qos,$(IPT_CONNTRACK_QOS-m)))
 $(eval $(call BuildPlugin,iptables-mod-extra,$(IPT_EXTRA-m)))
 $(eval $(call BuildPlugin,iptables-mod-filter,$(IPT_FILTER-m),$(L7_INSTALL)))
 $(eval $(call BuildPlugin,iptables-mod-ipopt,$(IPT_IPOPT-m)))
