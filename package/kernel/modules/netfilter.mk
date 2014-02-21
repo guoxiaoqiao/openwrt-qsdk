@@ -84,6 +84,25 @@ endef
 $(eval $(call KernelPackage,ipt-conntrack-extra))
 
 
+define KernelPackage/ipt-conntrack-qos
+  TITLE:=QoS connection tracking modules
+  KCONFIG:=$(KCONFIG_IPT_CONNTRACK_QOS)
+  FILES:=$(foreach mod,$(IPT_CONNTRACK_QOS-m),$(LINUX_DIR)/net/$(mod).ko)
+  AUTOLOAD:=$(call AutoLoad,42,$(notdir $(IPT_CONNTRACK_EXTRA-m)))
+  $(call AddDepends/ipt,+kmod-ipt-conntrack)
+  DEPENDS+=@TARGET_ipq806x
+endef
+
+define KernelPackage/ipt-conntrack-qos/description
+ Netfilter (IPv4) QoS kernel modules for connection tracking
+ Includes:
+ - DSCPREMARK
+ - VLANTAG
+endef
+
+$(eval $(call KernelPackage,ipt-conntrack-qos))
+
+
 define KernelPackage/ipt-filter
   TITLE:=Modules for packet content inspection
   KCONFIG:=$(KCONFIG_IPT_FILTER)
