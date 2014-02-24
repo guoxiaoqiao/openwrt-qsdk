@@ -1,0 +1,84 @@
+From ac14cddc7f8e0dee8e741030f841b6283e48dfed Mon Sep 17 00:00:00 2001
+From: "Kiran Kumar C.S.K" <kkumarcs@codeaurora.org>
+Date: Tue, 6 Aug 2013 14:35:06 +0530
+Subject: [PATCH] Add bridge API to access the bridge slave port given a bridge
+ and a MAC address
+
+This API is needed by the NSS connection manager modules to enable NSS fast path for
+bridge flows. The connection manager needs to inspect the netdevice of the bridge slave
+port that has learned a given MAC address. Currently no such API exists that is
+exported out of the kernel network stack for this purpose.
+
+Change-Id: Ifd4f2a447768d17a8b7b4b862f6971e45a791791
+Signed-off-by: Kiran Kumar C.S.K <kkumarcs@codeaurora.org>
+Reviewed-by: Bob Amstadt <ramstadt@codeaurora.org>
+---
+ include/linux/if_bridge.h |  1 +
+ net/bridge/br_if.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 43 insertions(+)
+
+diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
+index dd3f201..f825801 100644
+--- a/include/linux/if_bridge.h
++++ b/include/linux/if_bridge.h
+@@ -102,6 +102,7 @@ struct __fdb_entry {
+ #include <linux/netdevice.h>
+ 
+ extern void brioctl_set(int (*ioctl_hook)(struct net *, unsigned int, void __user *));
++extern struct net_device *br_port_dev_get(struct net_device *dev, unsigned char *addr);
+ 
+ typedef int br_should_route_hook_t(struct sk_buff *skb);
+ extern br_should_route_hook_t __rcu *br_should_route_hook;
+diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+index 0a942fb..33d8fe5 100644
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -454,3 +454,45 @@ void __net_exit br_net_exit(struct net *net)
+ 	rtnl_unlock();
+ 
+ }
++
++/*
++ * br_port_dev_get()
++ *	Using the given addr, identify the port to which it is reachable,
++ * 	returing a reference to the net device associated with that port.
++ *
++ * NOTE: Return NULL if given dev is not a bridge or the mac has no associated port
++ */
++struct net_device *br_port_dev_get(struct net_device *dev, unsigned char *addr)
++{
++	struct net_bridge_fdb_entry *fdbe;
++	struct net_bridge *br;
++	struct net_device *pdev;
++
++	/*
++	 * Is this a bridge?
++	 */
++	if (!(dev->priv_flags & IFF_EBRIDGE)) {
++		return NULL;
++	}
++
++	/*
++	 * Lookup the fdb entry
++	 */
++	br = netdev_priv(dev);
++	rcu_read_lock();
++	fdbe = __br_fdb_get(br, addr);
++	if (!fdbe) {
++		rcu_read_unlock();
++		return NULL;
++	}
++
++	/*
++	 * Get reference to the port dev
++	 */
++	pdev = fdbe->dst->dev;
++	dev_hold(pdev);
++	rcu_read_unlock();
++
++	return pdev;
++}
++EXPORT_SYMBOL_GPL(br_port_dev_get);
+-- 
+1.8.4.2
+
