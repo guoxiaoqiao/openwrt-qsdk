@@ -1,0 +1,101 @@
+From 2f562a5434d7e34b2392b2e620bacafb653998b6 Mon Sep 17 00:00:00 2001
+From: "Kiran Kumar C.S.K" <kkumarcs@codeaurora.org>
+Date: Mon, 25 Nov 2013 17:32:43 +0530
+Subject: [PATCH] Add support to refresh bridge FDB entries for NSS accelerated
+ flows
+
+CRs Fixed: 582515
+
+Summary: This commit adds two APIs for the following, to be used by NSS connection managers
+
+1.) To update bridge statistics at host for bridge packets bring forwarded by NSS fast path
+2.) To refresh MAC entries in bridge table for bridge packets bring forwarded by NSS fast path
+
+Change-Id: I8d5a6a31ee70d88499206f6e3b1afd610adec70a
+Signed-off-by: Kiran Kumar C.S.K <kkumarcs@codeaurora.org>
+---
+ include/linux/if_bridge.h |  2 ++
+ net/bridge/br_fdb.c       | 20 ++++++++++++++++++++
+ net/bridge/br_if.c        | 25 +++++++++++++++++++++++++
+ 3 files changed, 47 insertions(+)
+
+diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
+index b35d660..0d8ba92 100644
+--- a/include/linux/if_bridge.h
++++ b/include/linux/if_bridge.h
+@@ -103,6 +103,8 @@ struct __fdb_entry {
+ 
+ extern void brioctl_set(int (*ioctl_hook)(struct net *, unsigned int, void __user *));
+ extern struct net_device *br_port_dev_get(struct net_device *dev, unsigned char *addr);
++extern void br_refresh_fdb_entry(struct net_device *dev, const char *addr);
++extern void br_dev_update_stats(struct net_device *dev, struct rtnl_link_stats64 *nlstats);
+ 
+ typedef int br_should_route_hook_t(struct sk_buff *skb);
+ extern br_should_route_hook_t __rcu *br_should_route_hook;
+diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
+index a7aa832..561ecf8 100644
+--- a/net/bridge/br_fdb.c
++++ b/net/bridge/br_fdb.c
+@@ -454,6 +454,26 @@ void br_fdb_update(struct net_bridge *br, struct net_bridge_port *source,
+ 	}
+ }
+ 
++/* Refresh FDB entries for bridge packets being forwarded by offload engines */
++void br_refresh_fdb_entry(struct net_device *dev, const char *addr)
++{
++	struct net_bridge_port *p = br_port_get_rcu(dev);
++
++	if (!p || p->state == BR_STATE_DISABLED)
++		return;
++
++	if (!is_valid_ether_addr(addr)) {
++		pr_info("bridge: Attempt to refresh with invalid ether address\n");
++		return;
++	}
++
++	rcu_read_lock();
++	br_fdb_update(p->br, p, addr);
++	rcu_read_unlock();
++}
++
++EXPORT_SYMBOL_GPL(br_refresh_fdb_entry);
++
+ static int fdb_to_nud(const struct net_bridge_fdb_entry *fdb)
+ {
+ 	if (fdb->is_local)
+diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+index 33d8fe5..509e89e 100644
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -496,3 +496,28 @@ struct net_device *br_port_dev_get(struct net_device *dev, unsigned char *addr)
+ 	return pdev;
+ }
+ EXPORT_SYMBOL_GPL(br_port_dev_get);
++
++/* Update bridge statistics for bridge packets processed by offload engines */
++void br_dev_update_stats(struct net_device *dev, struct rtnl_link_stats64 *nlstats)
++{
++	struct net_bridge *br;
++	struct br_cpu_netstats *stats;
++
++	/*
++	 * Is this a bridge?
++	 */
++	if (!(dev->priv_flags & IFF_EBRIDGE)) {
++		return;
++	}
++
++	br = netdev_priv(dev);
++	stats = per_cpu_ptr(br->stats, 0);
++
++	u64_stats_update_begin(&stats->syncp);
++	stats->rx_packets += nlstats->rx_packets;
++	stats->rx_bytes += nlstats->rx_bytes;
++	stats->tx_packets += nlstats->tx_packets;
++	stats->tx_bytes += nlstats->tx_bytes;
++	u64_stats_update_end(&stats->syncp);
++}
++EXPORT_SYMBOL_GPL(br_dev_update_stats);
+-- 
+1.8.4.2
+
