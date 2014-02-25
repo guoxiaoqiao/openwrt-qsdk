@@ -109,6 +109,7 @@ enum swlib_port_flags {
 struct switch_dev;
 struct switch_attr;
 struct switch_port;
+struct switch_ext;
 struct switch_val;
 struct uci_package;
 
@@ -136,6 +137,7 @@ struct switch_val {
 		const char *s;
 		unsigned int i;
 		struct switch_port *ports;
+		struct switch_ext *ext_val;
 	} value;
 };
 
@@ -152,6 +154,12 @@ struct switch_attr {
 struct switch_port {
 	unsigned int id;
 	unsigned int flags;
+};
+
+struct switch_ext {
+	const char *option_name;
+	const char *option_value;
+	struct switch_ext *next;
 };
 
 /**
