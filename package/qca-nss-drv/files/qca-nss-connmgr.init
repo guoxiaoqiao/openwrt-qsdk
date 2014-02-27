@@ -8,6 +8,9 @@ START=
 load_nss_connmgr() {
 	[ -d /sys/module/qca_nss_connmgr_ipv4 ] || insmod qca-nss-connmgr-ipv4
 	[ -d /sys/module/qca_nss_connmgr_ipv6 ] || insmod qca-nss-connmgr-ipv6
+
+	sysctl -w net.bridge.bridge-nf-call-ip6tables=1
+	sysctl -w net.bridge.bridge-nf-call-iptables=1
 }
 
 unload_nss_connmgr() {
@@ -30,6 +33,9 @@ unload_nss_connmgr() {
 		sleep 2
 		rmmod qca_nss_connmgr_ipv4
 	}
+
+	sysctl -w net.bridge.bridge-nf-call-ip6tables=0
+	sysctl -w net.bridge.bridge-nf-call-iptables=0
 }
 
 start() {
