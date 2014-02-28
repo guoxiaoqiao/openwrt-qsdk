@@ -28,39 +28,16 @@ PKG_SOURCE_VERSION:=$(PKG_REV)
 
 include $(INCLUDE_DIR)/package.mk
 
-define uboot/cdp
-  TITLE:=U-Boot for the IPQ806x CDP
-endef
-
-UBOOTS:=cdp
-
-define Package/uboot/template
-define Package/uboot-ipq806x-$(1)
+define Package/uboot-ipq806x
   SECTION:=boot
   CATEGORY:=Boot Loaders
   DEPENDS:=@TARGET_ipq806x
-  TITLE:=$(2)
+  TITLE:=U-boot for IPQ806x based platforms
   URL:=http://www.denx.de/wiki/U-Boot
-  VARIANT:=$(1)
 endef
-endef
-
-define BuildUbootPackage
-	$(eval $(uboot/Default))
-	$(eval $(uboot/$(1)))
-	$(call Package/uboot/template,$(1),$(TITLE))
-endef
-
-
-ifdef BUILD_VARIANT
-$(eval $(call uboot/$(BUILD_VARIANT)))
-UBOOT_CONFIG:=$(BOARD)_$(if $(CONFIG),$(CONFIG),$(BUILD_VARIANT))
-UBOOT_IMAGE:=$(if $(IMAGE),$(IMAGE),openwrt-$(BOARD)-$(BUILD_VARIANT)-u-boot.bin)
-endif
 
 define Build/Configure
-	$(MAKE) -C $(PKG_BUILD_DIR) \
-		$(UBOOT_CONFIG)_config
+	$(MAKE) -C $(PKG_BUILD_DIR) ipq806x_cdp_config
 endef
 
 define Build/Compile
@@ -68,19 +45,10 @@ define Build/Compile
 		CROSS_COMPILE=$(TARGET_CROSS)
 endef
 
-define Package/uboot/install/template
-define Package/uboot-ipq806x-$(1)/install
-	$(INSTALL_DIR) $$(1)
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/$(2)
-	$(CP) $(PKG_BUILD_DIR)/u-boot.mbn $(BIN_DIR)/$(subst img,mbn,$(2))
-endef
+define Package/uboot-ipq806x/install
+	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-$(BOARD)-u-boot.img
+	$(CP) $(PKG_BUILD_DIR)/u-boot.mbn $(BIN_DIR)/openwrt-$(BOARD)-u-boot.mbn
 endef
 
-$(foreach u,$(UBOOTS), \
-	$(eval $(call Package/uboot/install/template,$(u),openwrt-$(BOARD)-$(u)-u-boot.img)) \
-)
-
-$(foreach u,$(UBOOTS), \
-	$(eval $(call BuildUbootPackage,$(u))) \
-	$(eval $(call BuildPackage,uboot-ipq806x-$(u))) \
-)
+$(eval $(call BuildPackage,uboot-ipq806x))
