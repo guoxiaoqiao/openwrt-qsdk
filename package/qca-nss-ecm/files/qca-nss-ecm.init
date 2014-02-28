@@ -1,0 +1,132 @@
+#!/bin/sh /etc/rc.common
+#
+# Copyright (c) 2014 The Linux Foundation. All rights reserved.
+#
+
+#
+# module_state_mount(module_name)
+#	Mounts the state file of the module, if supported
+#
+module_state_mount() {
+	local module_name=$1
+	local state_file="/sys/devices/system/${module_name}/${module_name}0/state_dev_major"
+
+	echo "Mount state file for $module_name ..."
+	if [ ! -e "$state_file" ]
+	then
+		echo "... $module_name does not support state"
+		return 1
+	fi
+
+	local major="`cat $state_file`"
+	echo "... Mounting state $state_file with major: $major"
+	mknod "/dev/ecm/$module_name" c $major 0
+}
+
+threaded_module_unload() {
+	MODULE_NAME=$1
+	TERMINATE_FILE=$2
+
+	echo "Unloading module $MODULE_NAME"
+
+	#
+	# Signal to the module to begin shutdown
+	#
+	echo 1 > $TERMINATE_FILE
+
+	#
+	# Wait for module refs to reduce to zero
+	#
+	echo "Waiting for $MODULE_NAME to unload"
+	REFS=$(cat /proc/modules | grep -w ^$MODULE_NAME | cut -s -d ' ' -f3)
+	until [  $REFS -eq 0 ]; do
+		echo -n $REFS " . "
+		sleep 1
+		REFS=$(cat /proc/modules | grep -w ^$MODULE_NAME | cut -s -d ' ' -f3)
+	done
+	echo "Module $MODULE_NAME unloaded"
+
+	#
+	# Now unload the module
+	#
+	rmmod $MODULE_NAME
+}
+
+start() {
+	insmod ecm_tracker
+	insmod ecm_db
+	insmod ecm_tracker_tcp
+	insmod ecm_tracker_udp
+	insmod ecm_tracker_datagram
+	insmod ecm_classifier_default
+	insmod ecm_classifier_nl
+	insmod ecm_classifier_hyfi
+	insmod ecm_interface
+	insmod ecm_bond_notifier
+	insmod ecm_front_end_ipv4
+	insmod ecm_front_end_ipv6
+	insmod ecm_conntrack_notifier
+
+	#
+	# If terminate sys node is not ready and writeble, wait one second to be sure
+	#
+	ECM_SYSFS_FEV4=/sys/devices/system/ecm_front_end_ipv4/ecm_front_end_ipv40/terminate
+	if [ ! -w ${ECM_SYSFS_FEV4} ]; then
+		sleep 1
+	fi
+
+
+	#
+	# Now mount state files for each of the modules that support state
+	#
+	mkdir /dev/ecm
+	module_state_mount ecm_db
+	module_state_mount ecm_classifier_default
+
+	echo 0 > /sys/devices/system/ecm_classifier_nl/ecm_classifier_nl0/enabled
+
+	sysctl -w net.bridge.bridge-nf-call-ip6tables=1
+	sysctl -w net.bridge.bridge-nf-call-iptables=1
+}
+
+stop() {
+	#
+	# Signal to the notification and front ends to stop processing further
+	#
+	echo 1 > /sys/devices/system/ecm_conntrack_notifier/ecm_conntrack_notifier0/stop
+	echo 1 > /sys/devices/system/ecm_front_end_ipv4/ecm_front_end_ipv40/stop
+	echo 1 > /sys/devices/system/ecm_front_end_ipv6/ecm_front_end_ipv60/stop
+	echo 1 > /sys/devices/system/ecm_interface/ecm_interface0/stop
+	echo 1 > /sys/devices/system/ecm_bond_notifier/ecm_bond_notifier0/stop
+
+	#
+	# Ask the database to expire all connections
+	#
+	echo 1 > /sys/devices/system/ecm_db/ecm_db0/defunct_all
+
+	#
+	# Now we can unload the modules - reverse order of loading
+	# NOTE: Some modules don't have threads so can just be unloaded directly.
+	#
+	threaded_module_unload ecm_conntrack_notifier /sys/devices/system/ecm_conntrack_notifier/ecm_conntrack_notifier0/terminate
+	threaded_module_unload ecm_front_end_ipv4 /sys/devices/system/ecm_front_end_ipv4/ecm_front_end_ipv40/terminate
+	threaded_module_unload ecm_front_end_ipv6 /sys/devices/system/ecm_front_end_ipv6/ecm_front_end_ipv60/terminate
+	threaded_module_unload ecm_bond_notifier /sys/devices/system/ecm_bond_notifier/ecm_bond_notifier0/terminate
+	threaded_module_unload ecm_interface /sys/devices/system/ecm_interface/ecm_interface0/terminate
+	threaded_module_unload ecm_classifier_hyfi /sys/devices/system/ecm_classifier_hyfi/ecm_classifier_hyfi0/terminate
+	threaded_module_unload ecm_classifier_nl /sys/devices/system/ecm_classifier_nl/ecm_classifier_nl0/terminate
+	threaded_module_unload ecm_classifier_default /sys/devices/system/ecm_classifier_default/ecm_classifier_default0/terminate
+	rmmod ecm_tracker_datagram
+	rmmod ecm_tracker_udp
+	rmmod ecm_tracker_tcp
+	threaded_module_unload ecm_db /sys/devices/system/ecm_db/ecm_db0/terminate
+	rmmod ecm_tracker
+
+	#
+	# Remove all state files
+	#
+	rm -f /dev/ecm
+
+	sysctl -w net.bridge.bridge-nf-call-ip6tables=0
+	sysctl -w net.bridge.bridge-nf-call-iptables=0
+}
