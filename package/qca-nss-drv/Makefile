@@ -56,7 +56,6 @@ endef
 
 define KernelPackage/qca-nss-connmgr
   $(call KernelPackage/qca-nss-connmgr/Default)
-  AUTOLOAD:=$(call AutoLoad,50,qca-nss-connmgr-ipv4 qca-nss-connmgr-ipv6)
 endef
 
 define KernelPackage/qca-nss-connmgr/Description
@@ -68,10 +67,15 @@ $(call KernelPackage/qca-nss-connmgr/Default/install, $(1))
 	$(INSTALL_DIR) $(1)/etc/uci-defaults $(1)/etc/sysctl.d
 	$(INSTALL_DATA) ./files/qca-nss-connmgr.defaults $(1)/etc/uci-defaults/99-qca-nss-connmgr
 	$(INSTALL_BIN) ./files/qca-nss-connmgr.sysctl $(1)/etc/sysctl.d/qca-nss-connmgr.conf
+
+	# install service by default
+	$(INSTALL_DIR) $(1)/etc/rc.d
+	$(LN) ../init.d/qca-nss-connmgr $(1)/etc/rc.d/S70qca-nss-connmgr
 endef
 
 define KernelPackage/qca-nss-connmgr-noload
   $(call KernelPackage/qca-nss-connmgr/Default)
+  PROVIDES:=kmod-qca-nss-connmgr
 endef
 
 define KernelPackage/qca-nss-connmgr-noload/Description
