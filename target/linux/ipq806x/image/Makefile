@@ -11,7 +11,8 @@ E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 define Image/BuildKernel
 	$(CP) $(LINUX_DIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
 	$(CP) $(LINUX_DIR)/arch/arm/boot/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
-	dd if=$(LINUX_DIR)/arch/arm/boot/uImage of=$(BIN_DIR)/$(IMG_PREFIX)-$(KERNEL)-uImage bs=2k conv=sync
+	dd if=$(LINUX_DIR)/arch/arm/boot/uImage of=$(KERNEL_BUILD_DIR)/uImage bs=2k conv=sync
+	$(CP) $(KERNEL_BUILD_DIR)/uImage $(BIN_DIR)/$(IMG_PREFIX)-$(KERNEL)-uImage
 endef
 
 define Image/Build
