@@ -36,7 +36,7 @@ define Profile/QSDK_Retail
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Retail Profile
 	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-	  qca-spectral qca-wapid luci-app-qos sigma-dut \
+	  qca-spectral qca-wapid luci-app-qos sigma-dut streamboost-noload \
 	  kmod-qca-nss-connmgr hyfi kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6
 endef
 
