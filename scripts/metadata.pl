@@ -472,7 +472,12 @@ sub mconf_depends {
 		}
 		next if $package{$depend} and $package{$depend}->{buildonly};
 		if ($package{$depend}->{virtual} and $vdep = $package{$depend}->{vdepends}) {
-			$depend = join("||", map { "PACKAGE_".$_ } @$vdep);
+			my $vdeps = join("||", map { "PACKAGE_".$_ } @$vdep);
+			if ($condition) {
+				$depend = "!($condition) || $vdeps";
+			} else {
+				$depend = "($vdeps)";
+			}
 		} else {
 			$flags =~ /\+/ and do {
 				# Menuconfig will not treat 'select FOO' as a real dependency
