@@ -55,7 +55,7 @@ define Profile/QSDK_Carrier
 	NAME:=Qualcomm-Atheros SDK Carrier Profile
 	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
 		  qca-spectral qca-wapid hyfi streamboost sigma-dut \
-		  kmod-qca-nss-fw-carrier
+		  kmod-qca-nss-fw-carrier iptables-mod-filter
 endef
 
 define Profile/QSDK_Carrier/Description
