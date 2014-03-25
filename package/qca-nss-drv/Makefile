@@ -32,7 +32,7 @@ $(eval $(call Download,qca-nss-fw))
 
 define NssFirmware
 
-  define KernelPackage/qca-nss-fw-$(1)
+  define Package/qca-nss-fw-$(1)
     SECTION:=kernel
     CATEGORY:=Kernel modules
     SUBMENU:=Network Devices
@@ -41,11 +41,11 @@ define NssFirmware
     PROVIDES:=qca-nss-fw
   endef
 
-  define KernelPackage/qca-nss-fw-$(1)/description
+  define Package/qca-nss-fw-$(1)/description
   This package contains the NSS firmwares ($(1)) for QCA chipset
   endef
 
-  define KernelPackage/qca-nss-fw-$(1)/install
+  define Package/qca-nss-fw-$(1)/install
 	$(INSTALL_DIR) $$(1)/lib/firmware/qcom
 	$(INSTALL_DATA) \
 		$(PKG_BUILD_DIR)/NSS.AK.$(PKG_NSS_FIRMWARE_VERSION)/$(2)0.bin \
@@ -54,7 +54,7 @@ define NssFirmware
 		$(PKG_BUILD_DIR)/NSS.AK.$(PKG_NSS_FIRMWARE_VERSION)/$(2)1.bin \
 		$$(1)/lib/firmware/qcom-nss1.bin
   endef
-  $$(eval $$(call KernelPackage,qca-nss-fw-$(1)))
+  $$(eval $$(call BuildPackage,qca-nss-fw-$(1)))
 endef
 
 define KernelPackage/qca-nss-drv
