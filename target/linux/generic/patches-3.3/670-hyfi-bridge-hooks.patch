@@ -33,7 +33,20 @@
  MODULE_LICENSE("GPL");
 --- a/net/bridge/br_device.c
 +++ b/net/bridge/br_device.c
-@@ -52,6 +52,10 @@ netdev_tx_t br_dev_xmit(struct sk_buff *
+@@ -30,6 +30,8 @@ netdev_tx_t br_dev_xmit(struct sk_buff *
+ 	struct net_bridge_fdb_entry *dst;
+ 	struct net_bridge_mdb_entry *mdst;
+ 	struct br_cpu_netstats *brstats = this_cpu_ptr(br->stats);
++	struct net_bridge_port *pdst;
++	br_get_dst_hook_t *get_dst_hook;
+ 
+ #ifdef CONFIG_BRIDGE_NETFILTER
+ 	if (skb->nf_bridge && (skb->nf_bridge->mask & BRNF_BRIDGED_DNAT)) {
+@@ -49,9 +51,14 @@ netdev_tx_t br_dev_xmit(struct sk_buff *
+ 	skb_pull(skb, ETH_HLEN);
+ 
+ 	rcu_read_lock();
++	get_dst_hook = rcu_dereference(br_get_dst_hook);
  	if (is_broadcast_ether_addr(dest))
  		br_flood_deliver(br, skb);
  	else if (is_multicast_ether_addr(dest)) {
@@ -44,6 +57,17 @@
  		if (unlikely(netpoll_tx_running(dev))) {
  			br_flood_deliver(br, skb);
  			goto out;
+@@ -66,6 +73,10 @@ netdev_tx_t br_dev_xmit(struct sk_buff *
+ 			br_multicast_deliver(mdst, skb);
+ 		else
+ 			br_flood_deliver(br, skb);
++	} else if ((pdst = __br_get(get_dst_hook, NULL, NULL, &skb))) {
++		if (!skb)
++			goto out;
++		br_deliver(pdst, skb);
+ 	} else if ((dst = __br_fdb_get(br, dest)) != NULL)
+ 		br_deliver(dst->dst, skb);
+ 	else
 --- a/net/bridge/br_fdb.c
 +++ b/net/bridge/br_fdb.c
 @@ -246,6 +246,7 @@ struct net_bridge_fdb_entry *__br_fdb_ge
