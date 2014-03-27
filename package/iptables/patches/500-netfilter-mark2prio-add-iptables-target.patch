@@ -1,0 +1,44 @@
+From 9dcada52e270884604bb7fdb6d98ed05be062544 Mon Sep 17 00:00:00 2001
+From: Matthew McClintock <mmcclint@codeaurora.org>
+Date: Wed, 26 Mar 2014 17:15:09 -0500
+Subject: [PATCH] netfilter: mark2prio: add iptables target
+
+This target unconditionally copies mark to priority
+
+Signed-off-by: Matthew McClintock <mmcclint@codeaurora.org>
+---
+ extensions/libipt_mark2prio.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 extensions/libipt_mark2prio.c
+
+diff --git a/extensions/libipt_mark2prio.c b/extensions/libipt_mark2prio.c
+new file mode 100644
+index 0000000..b2ad43e
+--- /dev/null
++++ b/extensions/libipt_mark2prio.c
+@@ -0,0 +1,22 @@
++/* Copyright (c) 2013, The Linux Foundation. All rights reserved. */
++
++#include <stdbool.h>
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <getopt.h>
++#include <xtables.h>
++#include <linux/version.h>
++
++static struct xtables_target mark2prio_target= {
++	.name		= "mark2prio",
++	.version	= XTABLES_VERSION,
++	.family		= NFPROTO_IPV4,
++	.size		= 0,
++	.userspacesize	= 0,
++};
++
++void _init(void)
++{
++	xtables_register_target(&mark2prio_target);
++}
+-- 
+1.8.4.2
+
