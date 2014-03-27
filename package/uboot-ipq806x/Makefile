@@ -54,6 +54,7 @@ endef
 
 define Package/uboot-ipq806x/install
 	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-$(BOARD)-u-boot.elf
 	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-$(BOARD)-u-boot.img
 	$(CP) $(PKG_BUILD_DIR)/u-boot.mbn $(BIN_DIR)/openwrt-$(BOARD)-u-boot.mbn
 endef
