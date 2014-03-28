@@ -1,6 +1,6 @@
 --- a/include/linux/pkt_sched.h
 +++ b/include/linux/pkt_sched.h
-@@ -104,6 +104,101 @@ enum {
+@@ -104,6 +104,98 @@ enum {
  
  #define TCA_STAB_MAX (__TCA_STAB_MAX - 1)
  
@@ -87,16 +87,13 @@
 +
 +struct tc_nssbf_class_qopt {
 +	__u32	burst;		/* Maximum burst size */
-+	__u32	rate;		/* Limiting rate of TBF */
-+	__u32	mtu;		/* Max size of packet, or minumim burst size */
++	__u32	rate;		/* Allowed bandwidth for this class */
++	__u32	mtu;		/* MTU of the associated interface */
++	__u32	quantum;	/* Quamtum allocation for DRR */
 +};
 +
 +struct tc_nssbf_qopt {
 +	__u16	defcls;		/* Default class value */
-+};
-+
-+struct tc_nssbf_xstats {
-+	__u32	count;		/* Total number of packets processed by queue */
 +};
 +
  /* FIFO section */
@@ -114,7 +111,7 @@
  ifeq ($(TC_CONFIG_ATM),y)
 --- /dev/null
 +++ b/tc/q_nss.c
-@@ -0,0 +1,669 @@
+@@ -0,0 +1,644 @@
 +/*
 + **************************************************************************
 + * Copyright (c) 2014, The Linux Foundation. All rights reserved.
@@ -314,7 +311,6 @@
 +	struct tc_nsscodel_qopt *qopt;
 +	SPRINT_BUF(b1);
 +	SPRINT_BUF(b2);
-+	SPRINT_BUF(b3);
 +
 +	if (opt == NULL)
 +		return 0;
@@ -332,7 +328,7 @@
 +	fprintf(f, "target %s limit %up interval %s",
 +		sprint_time(qopt->target, b1),
 +		qopt->limit,
-+		sprint_time(qopt->interval, b3));
++		sprint_time(qopt->interval, b2));
 +
 +	return 0;
 +}
@@ -365,7 +361,7 @@
 +
 +static void nsstbl_explain(void)
 +{
-+	fprintf(stderr, "Usage: ... nsstbl burst BYTES[/BYTES] rate KBPS [ mtu BYTES[/BYTES] ]\n");
++	fprintf(stderr, "Usage: ... nsstbl burst BYTES rate KBPS [ mtu BYTES ]\n");
 +	fprintf(stderr, "               [ peakrate KBPS ]");
 +}
 +
@@ -464,7 +460,6 @@
 +{
 +	struct rtattr *tb[TCA_NSSTBL_MAX + 1];
 +	struct tc_nsstbl_qopt *qopt;
-+	double latency;
 +	SPRINT_BUF(b1);
 +
 +	if (opt == NULL)
@@ -511,7 +506,7 @@
 +	while (argc > 0) {
 +		if (strcmp(*argv, "bands") == 0) {
 +			NEXT_ARG();
-+			if (get_size(&opt.bands, *argv)) {
++			if (get_unsigned(&opt.bands, *argv, 0)) {
 +				fprintf(stderr, "Illegal \"limit\"\n");
 +				return -1;
 +			}
@@ -545,7 +540,6 @@
 +{
 +	struct rtattr *tb[TCA_NSSPRIO_MAX + 1];
 +	struct tc_nssprio_qopt *qopt;
-+	int i;
 +
 +	if (opt == NULL)
 +		return 0;
@@ -582,11 +576,10 @@
 +	);
 +}
 +
-+
 +static void nssbf_explain_class(void)
 +{
-+	fprintf(stderr, "Usage: ... nssbf burst BYTES[/BYTES] rate KBPS [ mtu BYTES[/BYTES] ]\n");
-+	fprintf(stderr, "               [ peakrate KBPS ]");
++	fprintf(stderr, "Usage: ... nssbf rate KBPS burst BYTES [ mtu BYTES ]\n");
++	fprintf(stderr, "                 [ quantum BYTES ]");
 +}
 +
 +static void nssbf_explain1(char *arg)
@@ -646,28 +639,11 @@
 +	return 0;
 +}
 +
-+static int nssbf_print_xstats(struct qdisc_util *qu, FILE *f, struct rtattr *xstats)
-+{
-+	struct tc_nssbf_xstats *st;
-+
-+	if (xstats == NULL)
-+		return 0;
-+
-+	if (RTA_PAYLOAD(xstats) < sizeof(*st))
-+		return -1;
-+
-+	st = RTA_DATA(xstats);
-+	fprintf(f, "  packet count %u", st->count);
-+
-+	return 0;
-+}
-+
 +static int nssbf_parse_class_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
 +{
 +	int ok = 0;
 +	struct rtattr *tail;
 +	struct tc_nssbf_class_qopt opt;
-+	unsigned int latency = 0;
 +
 +	memset(&opt, 0, sizeof(opt));
 +
@@ -693,6 +669,17 @@
 +			}
 +			if (get_size(&opt.mtu, *argv)) {
 +				fprintf(stderr, "Illegal \"mtu\"\n");
++				return -1;
++			}
++			ok++;
++		} else if (strcmp(*argv, "quantum") == 0) {
++			NEXT_ARG();
++			if (opt.quantum) {
++				fprintf(stderr, "Double \"quantum\" spec\n");
++				return -1;
++			}
++			if (get_size(&opt.quantum, *argv)) {
++				fprintf(stderr, "Illegal \"quantum\"\n");
 +				return -1;
 +			}
 +			ok++;
@@ -755,24 +742,10 @@
 +
 +	qopt = RTA_DATA(tb[TCA_NSSBF_CLASS_PARMS]);
 +
-+	fprintf(f, "buffer/maxburst\t:%s\n", sprint_size(qopt->burst, b1));
-+	fprintf(f, "rate\t:%s\n", sprint_rate(qopt->rate, b1));
-+	return 0;
-+}
-+
-+static int nssbf_print_class_xstats(struct qdisc_util *qu, FILE *f, struct rtattr *xstats)
-+{
-+	struct tc_nssbf_xstats *st;
-+
-+	if (xstats == NULL)
-+		return 0;
-+
-+	if (RTA_PAYLOAD(xstats) < sizeof(*st))
-+		return -1;
-+
-+	st = RTA_DATA(xstats);
-+	fprintf(f, "  packet count %u", st->count);
-+
++	fprintf(f, "burst %s ", sprint_size(qopt->burst, b1));
++	fprintf(f, "rate %s ", sprint_rate(qopt->rate, b1));
++	fprintf(f, "quantum %s ", sprint_size(qopt->quantum, b1));
++	fprintf(f, "mtu %s ", sprint_size(qopt->mtu, b1));
 +	return 0;
 +}
 +
@@ -780,7 +753,6 @@
 +	.id		= "nssbf",
 +	.parse_qopt	= nssbf_parse_opt,
 +	.print_qopt	= nssbf_print_opt,
-+	.print_xstats	= nssbf_print_xstats,
 +	.parse_copt	= nssbf_parse_class_opt,
 +	.print_copt	= nssbf_print_class_opt,
 +};
