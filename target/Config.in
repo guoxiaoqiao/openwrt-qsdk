@@ -66,6 +66,9 @@ config PROFILE_KCONFIG
 config NOMMU
 	bool
 
+config DTC
+	bool
+
 # Architecture selection
 
 config arm

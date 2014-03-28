@@ -30,6 +30,10 @@ ifdef CONFIG_KERNEL_SPARSE
 	C=1 CHECK=$(STAGING_DIR_HOST)/bin/sparse
 endif
 
+ifdef CONFIG_DTC
+  KERNEL_MAKEOPTS += CONFIG_DTC=y
+endif
+
 # Kernel compiles well in parallel
 # Enable // build if selected in the menuconfig
 ifneq ($(CONFIG_PKG_BUILD_USE_JOBSERVER)$(MAKE_JOBSERVER),)
