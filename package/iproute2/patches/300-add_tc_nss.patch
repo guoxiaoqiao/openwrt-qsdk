@@ -1,6 +1,6 @@
 --- a/include/linux/pkt_sched.h
 +++ b/include/linux/pkt_sched.h
-@@ -104,6 +104,98 @@ enum {
+@@ -104,6 +104,126 @@ enum {
  
  #define TCA_STAB_MAX (__TCA_STAB_MAX - 1)
  
@@ -96,6 +96,34 @@
 +	__u16	defcls;		/* Default class value */
 +};
 +
++/* NSSWRR section */
++
++enum {
++	TCA_NSSWRR_UNSPEC,
++	TCA_NSSWRR_CLASS_PARMS,
++	__TCA_NSSWRR_MAX
++};
++
++#define TCA_NSSWRR_MAX	(__TCA_NSSWRR_MAX - 1)
++
++struct tc_nsswrr_class_qopt {
++	__u32	quantum;	/* Weight associated to this class */
++};
++
++/* NSSWFQ section */
++
++enum {
++	TCA_NSSWFQ_UNSPEC,
++	TCA_NSSWFQ_CLASS_PARMS,
++	__TCA_NSSWFQ_MAX
++};
++
++#define TCA_NSSWFQ_MAX	(__TCA_NSSWFQ_MAX - 1)
++
++struct tc_nsswfq_class_qopt {
++	__u32	quantum;	/* Weight associated to this class */
++};
++
  /* FIFO section */
  
  struct tc_fifo_qopt {
@@ -111,7 +139,7 @@
  ifeq ($(TC_CONFIG_ATM),y)
 --- /dev/null
 +++ b/tc/q_nss.c
-@@ -0,0 +1,644 @@
+@@ -0,0 +1,863 @@
 +/*
 + **************************************************************************
 + * Copyright (c) 2014, The Linux Foundation. All rights reserved.
@@ -506,7 +534,7 @@
 +	while (argc > 0) {
 +		if (strcmp(*argv, "bands") == 0) {
 +			NEXT_ARG();
-+			if (get_unsigned(&opt.bands, *argv, 0)) {
++			if (get_integer(&opt.bands, *argv, 10)) {
 +				fprintf(stderr, "Illegal \"limit\"\n");
 +				return -1;
 +			}
@@ -726,7 +754,6 @@
 +{
 +	struct rtattr *tb[TCA_NSSBF_MAX + 1];
 +	struct tc_nssbf_class_qopt *qopt;
-+	double latency;
 +	SPRINT_BUF(b1);
 +
 +	if (opt == NULL)
@@ -755,4 +782,224 @@
 +	.print_qopt	= nssbf_print_opt,
 +	.parse_copt	= nssbf_parse_class_opt,
 +	.print_copt	= nssbf_print_class_opt,
++};
++
++/* ======================== NSSWRR =======================*/
++
++static void nsswrr_explain_qdisc(void)
++{
++	fprintf(stderr,
++		"Usage (qdisc): ... nsswrr\n"
++		"\n"
++		"nsswrr qdisc does not take in any parameters\n"
++	);
++}
++
++static void nsswrr_explain_class(void)
++{
++	fprintf(stderr, "Usage (class): ... nsswrr quantum PACKETS ]\n");
++}
++
++static int nsswrr_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	while (argc > 0) {
++		if (matches(*argv, "help") == 0) {
++			nsswrr_explain_qdisc();
++			return -1;
++		} else {
++			fprintf(stderr, "NSSWRR: What is \"%s\" ?\n", *argv);
++			nsswrr_explain_qdisc();
++			return -1;
++		}
++		argc--, argv++;
++	}
++
++	return 0;
++}
++
++static int nsswrr_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
++{
++	/*
++	 * We currently dont have any parameters to print
++	 */
++
++	return 0;
++}
++
++static int nsswrr_parse_class_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	int ok = 0;
++	struct rtattr *tail;
++	struct tc_nsswrr_class_qopt opt;
++
++	memset(&opt, 0, sizeof(opt));
++
++	while (argc > 0) {
++		if (strcmp(*argv, "quantum") == 0) {
++			NEXT_ARG();
++			if (get_u32(&opt.quantum, *argv, 10)) {
++				fprintf(stderr, "Illegal \"quantum\"\n");
++				return -1;
++			}
++			ok++;
++		} else if (strcmp(*argv, "help") == 0) {
++			nsswrr_explain_class();
++			return -1;
++		} else {
++			fprintf(stderr, "What is \"%s\"?\n", *argv);
++			nsswrr_explain_class();
++			return -1;
++		}
++		argc--; argv++;
++	}
++
++	if (!ok) {
++		nsswrr_explain_class();
++		return -1;
++	}
++
++	tail = NLMSG_TAIL(n);
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 1024, TCA_NSSWRR_CLASS_PARMS, &opt, sizeof(opt));
++	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++	return 0;
++}
++
++static int nsswrr_print_class_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
++{
++	struct rtattr *tb[TCA_NSSWRR_MAX + 1];
++	struct tc_nsswrr_class_qopt *qopt;
++
++	if (opt == NULL)
++		return 0;
++
++	parse_rtattr_nested(tb, TCA_NSSWRR_MAX, opt);
++
++	if (tb[TCA_NSSWRR_CLASS_PARMS] == NULL)
++		return -1;
++
++	if (RTA_PAYLOAD(tb[TCA_NSSWRR_CLASS_PARMS]) < sizeof(*qopt))
++		return -1;
++
++	qopt = RTA_DATA(tb[TCA_NSSWRR_CLASS_PARMS]);
++
++	fprintf(f, "quantum\t:%up\n", qopt->quantum);
++	return 0;
++}
++
++struct qdisc_util nsswrr_qdisc_util = {
++	.id		= "nsswrr",
++	.parse_qopt	= nsswrr_parse_opt,
++	.print_qopt	= nsswrr_print_opt,
++	.parse_copt	= nsswrr_parse_class_opt,
++	.print_copt	= nsswrr_print_class_opt,
++};
++
++/* ======================== NSSWFQ =======================*/
++
++static void nsswfq_explain_qdisc(void)
++{
++	fprintf(stderr,
++		"Usage (qdisc): ... nsswfq\n"
++		"\n"
++		"nsswfq qdisc does not take in any parameters\n"
++	);
++}
++
++static void nsswfq_explain_class(void)
++{
++	fprintf(stderr, "Usage (class): ... nsswfq quantum BYTES ]\n");
++}
++
++static int nsswfq_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	while (argc > 0) {
++		if (matches(*argv, "help") == 0) {
++			nsswfq_explain_qdisc();
++			return -1;
++		} else {
++			fprintf(stderr, "NSSWFQ: What is \"%s\" ?\n", *argv);
++			nsswfq_explain_qdisc();
++			return -1;
++		}
++		argc--, argv++;
++	}
++	return 0;
++}
++
++static int nsswfq_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
++{
++	/*
++	 * We currently dont have any parameters to print
++	 */
++	return 0;
++}
++
++static int nsswfq_parse_class_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	int ok = 0;
++	struct rtattr *tail;
++	struct tc_nsswfq_class_qopt opt;
++
++	memset(&opt, 0, sizeof(opt));
++
++	while (argc > 0) {
++		if (strcmp(*argv, "quantum") == 0) {
++			NEXT_ARG();
++			if (get_u32(&opt.quantum, *argv, 10)) {
++				fprintf(stderr, "Illegal \"quantum\"\n");
++				return -1;
++			}
++			ok++;
++		} else if (strcmp(*argv, "help") == 0) {
++			nsswfq_explain_class();
++			return -1;
++		} else {
++			fprintf(stderr, "What is \"%s\"?\n", *argv);
++			nsswfq_explain_class();
++			return -1;
++		}
++		argc--; argv++;
++	}
++
++	if (!ok) {
++		nsswfq_explain_class();
++		return -1;
++	}
++
++	tail = NLMSG_TAIL(n);
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 1024, TCA_NSSWFQ_CLASS_PARMS, &opt, sizeof(opt));
++	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++	return 0;
++}
++
++static int nsswfq_print_class_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
++{
++	struct rtattr *tb[TCA_NSSWFQ_MAX + 1];
++	struct tc_nsswfq_class_qopt *qopt;
++
++	if (opt == NULL)
++		return 0;
++
++	parse_rtattr_nested(tb, TCA_NSSWFQ_MAX, opt);
++
++	if (tb[TCA_NSSWFQ_CLASS_PARMS] == NULL)
++		return -1;
++
++	if (RTA_PAYLOAD(tb[TCA_NSSWFQ_CLASS_PARMS]) < sizeof(*qopt))
++		return -1;
++
++	qopt = RTA_DATA(tb[TCA_NSSWFQ_CLASS_PARMS]);
++
++	fprintf(f, "quantum\t:%ubytes\n", qopt->quantum);
++	return 0;
++}
++
++struct qdisc_util nsswfq_qdisc_util = {
++	.id		= "nsswfq",
++	.parse_qopt	= nsswfq_parse_opt,
++	.print_qopt	= nsswfq_print_opt,
++	.parse_copt	= nsswfq_parse_class_opt,
++	.print_copt	= nsswfq_print_class_opt,
 +};
