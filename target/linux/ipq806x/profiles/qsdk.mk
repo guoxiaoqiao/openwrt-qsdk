@@ -63,6 +63,24 @@ define Profile/QSDK_Carrier/Description
 endef
 $(eval $(call Profile,QSDK_Carrier))
 
+define Profile/QSDK_Standard
+	$(Profile/QSDK_Base)
+	NAME:=Qualcomm-Atheros SDK Standard Profile
+	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
+	  qca-spectral qca-wapid luci-app-qos sigma-dut streamboost-noload \
+	  kmod-qca-nss-connmgr hyfi kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 \
+	  qca-nss-fw-retail
+endef
+
+define Profile/QSDK_Standard/Description
+	QSDK Standard package set configuration.
+	This profile provides basic Wi-Fi router features using the QCA proprietary Wi-Fi driver. It supports:
+	-Bridging and routing networking
+	-LuCI web configuration interface
+	-Integrated 11abgn/ac support using the proprietary qca-wifi driver
+endef
+$(eval $(call Profile,QSDK_Standard))
+
 define Profile/QSDK_Enterprise
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
