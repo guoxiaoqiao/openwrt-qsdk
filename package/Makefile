@@ -61,6 +61,19 @@ ifdef CONFIG_USE_MKLIBS
   endef
 endif
 
+define push_git_build_stats
+	GIT_CONFIG="--git-dir=$(BIN_DIR)/manifest/.git --work-tree=$(BIN_DIR)/manifest"; \
+	[ -e "$(BIN_DIR)/manifest/.git" ] || { \
+		  git $${GIT_CONFIG} init; \
+	}; \
+	git $${GIT_CONFIG} remote add origin $(CONFIG_GIT_BUILD_STATS_REPO); \
+	git $${GIT_CONFIG} fetch --all; \
+	git $${GIT_CONFIG} reset origin/$(CONFIG_GIT_BUILD_STATS_BRANCH); \
+	git $${GIT_CONFIG} add manifest.txt; \
+	git $${GIT_CONFIG} commit -asm "build on $$(date)"; \
+	git $${GIT_CONFIG} push origin HEAD:$(CONFIG_GIT_BUILD_STATS_BRANCH);
+endef
+
 $(curdir)/rootfs-prepare: $(TMP_DIR)/.build
 	@-$(MAKE) package/preconfig
 	@if [ -d $(TOPDIR)/files ]; then \
@@ -98,6 +111,8 @@ $(curdir)/rootfs-prepare: $(TMP_DIR)/.build
 		f=$$($${OPKG_T} files $${pkg} | grep ^/); \
 		[ -n "$$f" ] && { du -ch $$f | sed 's,$(TARGET_DIR),,g'; echo; } \
 	done > $(BIN_DIR)/manifest/manifest.txt
+
+	$(if $(CONFIG_GIT_BUILD_STATS_REPO),$(call push_git_build_stats))
 
 	$(if $(CONFIG_CLEAN_IPKG),rm -rf $(TARGET_DIR)/usr/lib/opkg)
 	$(call mklibs)
