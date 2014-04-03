@@ -20,43 +20,6 @@ PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
-PKG_NSS_FIRMWARE_VERSION:=1.0-00126
-PKG_NSS_FIRMWARE_SOURCE:=NSS.AK.$(PKG_NSS_FIRMWARE_VERSION).tar.bz2
-PKG_NSS_FIRMWARE_SOURCE_URL:=http://tritium.qca.qualcomm.com/software/NBU/NSS.AK/NSS.AK.$(PKG_NSS_FIRMWARE_VERSION)
-
-define Download/qca-nss-fw
-  FILE:=$(PKG_NSS_FIRMWARE_SOURCE)
-  URL:=$(PKG_NSS_FIRMWARE_SOURCE_URL)
-endef
-$(eval $(call Download,qca-nss-fw))
-
-define NssFirmware
-
-  define Package/qca-nss-fw-$(1)
-    SECTION:=kernel
-    CATEGORY:=Kernel modules
-    SUBMENU:=Network Devices
-    DEPENDS:=@TARGET_ipq806x
-    TITLE:=NSS firmware binaries - $(1)
-    PROVIDES:=qca-nss-fw
-  endef
-
-  define Package/qca-nss-fw-$(1)/description
-  This package contains the NSS firmwares ($(1)) for QCA chipset
-  endef
-
-  define Package/qca-nss-fw-$(1)/install
-	$(INSTALL_DIR) $$(1)/lib/firmware/qcom
-	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/NSS.AK.$(PKG_NSS_FIRMWARE_VERSION)/$(2)0.bin \
-		$$(1)/lib/firmware/qcom-nss0.bin
-	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/NSS.AK.$(PKG_NSS_FIRMWARE_VERSION)/$(2)1.bin \
-		$$(1)/lib/firmware/qcom-nss1.bin
-  endef
-  $$(eval $$(call BuildPackage,qca-nss-fw-$(1)))
-endef
-
 define KernelPackage/qca-nss-drv
   SECTION:=kernel
   CATEGORY:=Kernel modules
@@ -195,11 +158,6 @@ define KernelPackage/qca-nss-qdisc/Description
 Linux qdisc that aids in configuring shapers in the NSS
 endef
 
-define Build/Prepare
-	$(Build/Prepare/Default)
-	$(TAR) -C $(PKG_BUILD_DIR) -xjf $(DL_DIR)/$(PKG_NSS_FIRMWARE_SOURCE)
-endef
-
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
@@ -209,9 +167,6 @@ define Build/Compile
 		modules
 endef
 
-$(eval $(call NssFirmware,retail,R/retail_router))
-$(eval $(call NssFirmware,carrier,C/carrier_router))
-$(eval $(call NssFirmware,enterprise,E/enterprise_ap))
 $(eval $(call KernelPackage,qca-nss-profile-drv))
 $(eval $(call KernelPackage,qca-nss-drv))
 $(eval $(call KernelPackage,qca-nss-connmgr))
