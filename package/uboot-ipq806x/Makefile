@@ -13,7 +13,6 @@ PKG_NAME:=u-boot
 PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_PROTO:=git
 PKG_BRANCH:=master
-PKG_TARGETS:=bin
 PKG_RELEASE:=1
 
 include $(INCLUDE_DIR)/local-development.mk
@@ -36,13 +35,21 @@ define Package/uboot-ipq806x
   URL:=http://www.denx.de/wiki/U-Boot
 endef
 
+define Package/uboot-ipq806x-fwupgrade-tools
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ipq806x
+  TITLE:=U-boot images tools (dumpimage, mkimage)
+  URL:=http://www.denx.de/wiki/U-Boot
+endef
+
 define Build/Configure
 	$(MAKE) -C $(PKG_BUILD_DIR) ipq806x_cdp_config
 endef
 
 define Build/Compile
-	$(MAKE) -C $(PKG_BUILD_DIR) \
-		CROSS_COMPILE=$(TARGET_CROSS)
+	$(MAKE) -C $(PKG_BUILD_DIR) HOSTCC=$(TARGET_CC) \
+		HOSTSTRIP=true CROSS_COMPILE=$(TARGET_CROSS)
 endef
 
 define Package/uboot-ipq806x/install
@@ -51,4 +58,11 @@ define Package/uboot-ipq806x/install
 	$(CP) $(PKG_BUILD_DIR)/u-boot.mbn $(BIN_DIR)/openwrt-$(BOARD)-u-boot.mbn
 endef
 
+define Package/uboot-ipq806x-fwupgrade-tools/install
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/mkimage $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/dumpimage $(1)/usr/bin
+endef
+
 $(eval $(call BuildPackage,uboot-ipq806x))
+$(eval $(call BuildPackage,uboot-ipq806x-fwupgrade-tools))
