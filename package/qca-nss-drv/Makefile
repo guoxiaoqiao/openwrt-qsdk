@@ -49,10 +49,10 @@ define NssFirmware
 	$(INSTALL_DIR) $$(1)/lib/firmware/qcom
 	$(INSTALL_DATA) \
 		$(PKG_BUILD_DIR)/NSS.AK.$(PKG_NSS_FIRMWARE_VERSION)/$(2)0.bin \
-		$$(1)/lib/firmware/qcom/qcom-nss0.bin
+		$$(1)/lib/firmware/qcom-nss0.bin
 	$(INSTALL_DATA) \
 		$(PKG_BUILD_DIR)/NSS.AK.$(PKG_NSS_FIRMWARE_VERSION)/$(2)1.bin \
-		$$(1)/lib/firmware/qcom/qcom-nss1.bin
+		$$(1)/lib/firmware/qcom-nss1.bin
   endef
   $$(eval $$(call KernelPackage,qca-nss-fw-$(1)))
 endef
