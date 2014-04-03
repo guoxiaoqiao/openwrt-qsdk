@@ -23,7 +23,7 @@ DEFAULT_PACKAGES += \
 	kmod-input-gpio-keys kmod-qca-nss-drv kmod-qca-nss-gmac kmod-leds-gpio \
 	kmod-ledtrig-default-on kmod-ledtrig-timer kmod-ledtrig-netdev \
 	kmod-usb-gadget kmod-usb-gadget-dwc3 kmod-usb-gadget-dwc3-ipq \
-	kmod-usb-core kmod-usb2 kmod-usb-xhci uboot-ipq806x-cdp \
+	kmod-usb-core kmod-usb2 kmod-usb-xhci uboot-ipq806x \
 	kmod-ledtrig-usbdev
 
 define Target/Description
