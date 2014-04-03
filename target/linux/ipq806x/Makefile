@@ -24,7 +24,7 @@ DEFAULT_PACKAGES += \
 	kmod-ledtrig-default-on kmod-ledtrig-timer kmod-ledtrig-netdev \
 	kmod-usb-gadget kmod-usb-gadget-dwc3 kmod-usb-gadget-dwc3-ipq \
 	kmod-usb-core kmod-usb2 kmod-usb-xhci uboot-ipq806x \
-	kmod-ledtrig-usbdev
+	kmod-ledtrig-usbdev uboot-ipq806x-fwupgrade-tools
 
 define Target/Description
 	Build firmware images for Qualcomm Atheros IPQ806x (arm) platform.
