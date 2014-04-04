@@ -29,6 +29,17 @@ print_sections() {
 	dumpimage -l ${img} | awk '/^ Image.*(.*)/ { print gensub(/Image .* \((.*)\)/,"\\1", $0) }'
 }
 
+image_has_mandatory_section() {
+	local img=$1
+	local mandatory_sections=$2
+
+	for sec in ${mandatory_sections}; do
+		image_contains $img ${sec} || {\
+			return 1
+		}
+	done
+}
+
 image_demux() {
 	local img=$1
 
@@ -84,6 +95,7 @@ flash_section() {
 	case "${sec}" in
 		hlos*) switch_layout linux; do_flash_mtd ${sec} "kernel";;
 		fs*) switch_layout linux; do_flash_mtd ${sec} "rootfs";;
+		ubi*) switch_layout linux; do_flash_mtd ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_mtd ${sec} "SBL1";;
 		sbl2*) switch_layout boot; do_flash_mtd ${sec} "SBL2";;
 		sbl3*) switch_layout boot; do_flash_mtd ${sec} "SBL3";;
@@ -99,17 +111,26 @@ flash_section() {
 platform_check_image() {
 	local board=$(ipq806x_board_name)
 
-	local mandatory="fs"
+	local mandatory_nand="ubi"
+	local mandatory_nor="hlos fs"
+	local mandatory_section_found=0
 	local optional="sbl1 sbl2 sbl3 u-boot ddr-${board} ssd tz rpm"
 	local ignored="mibib"
 
 	image_is_FIT $1 || return 1
-	for sec in ${mandatory}; do
-		image_contains $1 ${sec} || {\
-			echo "Error: mandatory section \"${sec}\" missing from \"$1\". Abort..."
-			return 1
-		}
-	done
+
+	image_has_mandatory_section $1 ${mandatory_nand} && {\
+		mandatory_section_found=1
+	}
+
+	image_has_mandatory_section $1 ${mandatory_nor} && {\
+		mandatory_section_found=1
+	}
+
+	if [ $mandatory_section_found -eq 0 ]; then
+		echo "Error: mandatory section(s) missing from \"$1\". Abort..."
+		return 1
+	fi
 
 	for sec in ${optional}; do
 		image_contains $1 ${sec} || {\
