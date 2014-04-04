@@ -19,7 +19,9 @@ CFLAGS:=-Os -pipe -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp
 include $(INCLUDE_DIR)/target.mk
 
 DEFAULT_PACKAGES += \
-	mtd-utils kmod-button-hotplug uboot-envtools swconfig \
+	mtd-utils mtd-utils-mkfs.ubifs mtd-utils-ubiattach mtd-utils-ubidetach \
+	mtd-utils-ubiformat mtd-utils-ubimkvol mtd-utils-ubiupdatevol \
+	kmod-button-hotplug uboot-envtools swconfig \
 	kmod-input-gpio-keys kmod-qca-nss-drv kmod-qca-nss-gmac kmod-leds-gpio \
 	kmod-ledtrig-default-on kmod-ledtrig-timer kmod-ledtrig-netdev \
 	kmod-usb-gadget kmod-usb-gadget-dwc3 kmod-usb-gadget-dwc3-ipq \
