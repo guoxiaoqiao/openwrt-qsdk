@@ -16,7 +16,7 @@
  	ath79_soc_rev = rev;
  
 -	if (soc_is_qca955x())
-+	if (soc_is_qca955x() || soc_is_qca9531())
++	if (soc_is_qca955x() || soc_is_qca953x())
  		sprintf(ath79_sys_type, "Qualcomm Atheros QCA%s rev %u",
  			chip, rev);
  	else
@@ -49,7 +49,7 @@
  	ATH79_SOC_QCA9558,
  };
  
-@@ -94,9 +95,15 @@ static inline int soc_is_ar9344(void)
+@@ -94,4 +95,14 @@ static inline int soc_is_ar9344(void)
  	return (ath79_soc == ATH79_SOC_AR9344);
  }
  
@@ -58,14 +58,12 @@
 +	return ath79_soc == ATH79_SOC_QCA9531;
 +}
 +
++static inline int soc_is_qca953x(void)
++{
++	return soc_is_qca9531();
++}
++
  static inline int soc_is_ar934x(void)
- {
--	return soc_is_ar9341() || soc_is_ar9342() || soc_is_ar9344();
-+	return soc_is_ar9341() || soc_is_ar9342()
-+		||soc_is_ar9344() || soc_is_qca9531();
- }
- 
- static inline int soc_is_qca9558(void)
 --- a/arch/mips/ath79/Kconfig
 +++ b/arch/mips/ath79/Kconfig
 @@ -100,6 +100,12 @@ config SOC_AR934X
