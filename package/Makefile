@@ -86,6 +86,19 @@ $(curdir)/rootfs-prepare: $(TMP_DIR)/.build
 	@-find $(TARGET_DIR) -name .svn  | $(XARGS) rm -rf
 	@-find $(TARGET_DIR) -name '.#*' | $(XARGS) rm -f
 	rm -f $(TARGET_DIR)/usr/lib/opkg/info/*.postinst
+
+	mkdir -p $(BIN_DIR)/manifest
+	OPKG_T="$(STAGING_DIR_HOST)/bin/opkg \
+		--offline-root=$(TARGET_DIR) \
+		--add-arch $(if $(ARCH_PACKAGES),$(ARCH_PACKAGES),$(BOARD)):200 \
+		--add-arch all:100"; \
+	pkgs="`$${OPKG_T} list-installed | awk '{print $$1}'`"; \
+	for pkg in $${pkgs}; do \
+		$${OPKG_T} info $${pkg}; \
+		f=$$($${OPKG_T} files $${pkg} | grep ^/); \
+		[ -n "$$f" ] && { du -ch $$f | sed 's,$(TARGET_DIR),,g'; echo; } \
+	done > $(BIN_DIR)/manifest/manifest.txt
+
 	$(if $(CONFIG_CLEAN_IPKG),rm -rf $(TARGET_DIR)/usr/lib/opkg)
 	$(call mklibs)
 
