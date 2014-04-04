@@ -6,7 +6,9 @@
 . /lib/ipq806x.sh
 
 RAMFS_COPY_DATA=/lib/ipq806x.sh
-RAMFS_COPY_BIN=/usr/bin/dumpimage
+RAMFS_COPY_BIN="/usr/bin/dumpimage /bin/mktemp /usr/sbin/mkfs.ubifs
+	/usr/sbin/ubiattach /usr/sbin/ubidetach /usr/sbin/ubiformat /usr/sbin/ubimkvol
+	/usr/sbin/ubiupdatevol"
 
 get_full_section_name() {
 	local img=$1
@@ -80,12 +82,22 @@ switch_layout() {
 }
 
 do_flash_mtd() {
-	local sec=$1
+	local bin=$1
 	local mtdname=$2
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
-	dd if=/tmp/${sec}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+}
+
+do_flash_ubi() {
+	local bin=$1
+	local mtdname=$2
+
+	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
+	ubidetach -p /dev/${mtdpart}
+	ubiformat /dev/${mtdpart} -y -f /tmp/${bin}.bin
 }
 
 flash_section() {
