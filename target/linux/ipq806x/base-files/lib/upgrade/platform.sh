@@ -3,6 +3,8 @@
 # Copyright (C) 2011 OpenWrt.org
 #
 
+USE_REFRESH=1
+
 . /lib/ipq806x.sh
 
 RAMFS_COPY_DATA=/lib/ipq806x.sh
@@ -96,7 +98,7 @@ do_flash_ubi() {
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
-	ubidetach -p /dev/${mtdpart}
+	ubidetach -f -p /dev/${mtdpart}
 	ubiformat /dev/${mtdpart} -y -f /tmp/${bin}.bin
 }
 
@@ -107,7 +109,7 @@ flash_section() {
 	case "${sec}" in
 		hlos*) switch_layout linux; do_flash_mtd ${sec} "kernel";;
 		fs*) switch_layout linux; do_flash_mtd ${sec} "rootfs";;
-		ubi*) switch_layout linux; do_flash_mtd ${sec} "rootfs";;
+		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_mtd ${sec} "SBL1";;
 		sbl2*) switch_layout boot; do_flash_mtd ${sec} "SBL2";;
 		sbl3*) switch_layout boot; do_flash_mtd ${sec} "SBL3";;
@@ -118,6 +120,8 @@ flash_section() {
 		rpm*) switch_layout boot; do_flash_mtd ${sec} "RPM";;
 		*) echo "Section ${sec} ignored"; return 1;;
 	esac
+
+	echo "Flashed ${sec}"
 }
 
 platform_check_image() {
@@ -185,11 +189,19 @@ platform_do_upgrade() {
 		done
 		switch_layout linux
 
-		# TODO restore overlay and config
 		return 0;
 		;;
 	esac
 
 	echo "Upgrade failed!"
 	return 1;
+}
+
+platform_copy_config() {
+	local mtdname=rootfs
+	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+
+	ubiattach -p /dev/${mtdpart}
+	mount -t ubifs ubi0:ubi_rootfs_data /tmp/overlay
+	tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
 }
