@@ -8,6 +8,7 @@
 
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
+include $(INCLUDE_DIR)/version.mk
 
 PKG_NAME:=u-boot
 PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
@@ -48,6 +49,8 @@ define Build/Configure
 endef
 
 define Build/Compile
+	VERSION_CODE='$(VERSION_NICK) $(VERSION_NUMBER)' \
+	REVISION='$(REVISION)' \
 	$(MAKE) -C $(PKG_BUILD_DIR) HOSTCC=$(TARGET_CC) \
 		HOSTSTRIP=true CROSS_COMPILE=$(TARGET_CROSS)
 endef
