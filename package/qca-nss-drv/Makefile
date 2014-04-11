@@ -142,7 +142,7 @@ endef
 
 define Build/InstallDev
 	mkdir -p $(1)/usr/include/qca-nss-drv
-	$(CP) $(PKG_BUILD_DIR)/nss_api_if.h $(1)/usr/include/qca-nss-drv/
+	$(CP) $(PKG_BUILD_DIR)/exports/* $(1)/usr/include/qca-nss-drv/
 endef
 
 define KernelPackage/qca-nss-qdisc
