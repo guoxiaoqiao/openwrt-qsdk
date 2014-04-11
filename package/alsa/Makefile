@@ -14,7 +14,7 @@ define Package/alsa
   CATEGORY:=Base system
   URL:=http://openwrt.org/
   TITLE:=OpenWrt ALSA configuration framework
-  MAINTAINER:=Mathieu Olivari <mathieu.olivari@qualcomm.com>
+  MAINTAINER:=Mathieu Olivari <mathieu.olivari@qca.qualcomm.com>
   DEPENDS:=+alsa-utils
   PKGARCH:=all
 endef
