@@ -10,7 +10,7 @@ USB: android gadget: add remote wakeup attribute to android function
 Add remote wakeup attribute to configuration descriptor of android
 function to advertise remote wakeup capability to host
 
-Acked-by: Allam, Suresh Reddy <sallam@qualcomm.com>
+Acked-by: Allam, Suresh Reddy <sallam@qca.qualcomm.com>
 
 Signed-off-by: Mike Lockwood <lockwood@android.com>
 
