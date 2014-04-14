@@ -60,6 +60,12 @@ ifeq ($(LOCAL_VARIANT),hnat)
     QCASSDK_CONFIG_OPTS+= HNAT_FEATURE=enable
 endif
 
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/usr/include/qca-ssdk
+	$(INSTALL_DIR) $(1)/usr/include/qca-ssdk/api
+	$(CP) -rf $(PKG_BUILD_DIR)/include/api/sw_ioctl.h $(1)/usr/include/qca-ssdk/api
+endef
+
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) $(strip $(QCASSDK_CONFIG_OPTS))
 endef
