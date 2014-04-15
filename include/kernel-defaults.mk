@@ -24,6 +24,10 @@ ifneq (,$(KERNEL_CC))
   KERNEL_MAKEOPTS += CC="$(KERNEL_CC)"
 endif
 
+ifneq (,$(KERNELLOAD))
+  KERNEL_MAKEOPTS += LOADADDR=$(KERNELLOAD)
+endif
+
 export HOST_EXTRACFLAGS=-I$(STAGING_DIR_HOST)/include
 
 # defined in quilt.mk
