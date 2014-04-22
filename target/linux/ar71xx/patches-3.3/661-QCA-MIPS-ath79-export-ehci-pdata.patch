@@ -1,6 +1,6 @@
 --- a/arch/mips/ath79/dev-usb.c
 +++ b/arch/mips/ath79/dev-usb.c
-@@ -44,8 +44,6 @@
+@@ -44,8 +44,6 @@ static struct platform_device ath79_ohci
  	},
  };
  
@@ -9,7 +9,7 @@
  static u64 ath79_ehci_dmamask = DMA_BIT_MASK(32);
  
  static struct usb_ehci_pdata ath79_ehci_pdata_v1 = {
-@@ -53,17 +51,34 @@
+@@ -53,17 +51,34 @@ static struct usb_ehci_pdata ath79_ehci_
  	.port_power_off		= 1,
  };
  
@@ -49,7 +49,7 @@
  	.dev = {
  		.dma_mask		= &ath79_ehci_dmamask,
  		.coherent_dma_mask	= DMA_BIT_MASK(32),
-@@ -114,10 +129,10 @@
+@@ -114,10 +129,10 @@ static void __init ath79_usb_setup(void)
  				AR71XX_OHCI_SIZE, ATH79_MISC_IRQ_OHCI);
  	platform_device_register(&ath79_ohci_device);
  
@@ -63,7 +63,7 @@
  }
  
  static void __init ar7240_usb_setup(void)
-@@ -155,10 +170,9 @@
+@@ -155,10 +170,9 @@ static void __init ar724x_usb_setup(void
  	ath79_device_reset_clear(AR724X_RESET_USB_PHY);
  	mdelay(10);
  
@@ -76,7 +76,7 @@
  }
  
  static void __init ar913x_usb_setup(void)
-@@ -172,10 +186,9 @@
+@@ -172,10 +186,9 @@ static void __init ar913x_usb_setup(void
  	ath79_device_reset_clear(AR913X_RESET_USB_PHY);
  	mdelay(10);
  
@@ -89,7 +89,7 @@
  }
  
  static void __init ar933x_usb_setup(void)
-@@ -189,10 +202,9 @@
+@@ -189,10 +202,9 @@ static void __init ar933x_usb_setup(void
  	ath79_device_reset_clear(AR933X_RESET_USB_PHY);
  	mdelay(10);
  
@@ -102,7 +102,7 @@
  }
  
  static void __init ar934x_usb_setup(void)
-@@ -215,61 +227,29 @@
+@@ -215,10 +227,9 @@ static void __init ar934x_usb_setup(void
  	ath79_device_reset_clear(AR934X_RESET_USB_HOST);
  	udelay(1000);
  
@@ -112,6 +112,11 @@
 -	ath79_ehci_device.dev.platform_data = &ath79_ehci_pdata_v2;
 -	platform_device_register(&ath79_ehci_device);
 +	ath79_ehci0_device.dev.platform_data = &ath79_ehci0_pdata_v2;
+ }
+ 
+ static void __init qca953x_usb_setup(void)
+@@ -244,55 +255,24 @@ static void __init qca953x_usb_setup(voi
+ 	ath79_ehci0_device.dev.platform_data = &ath79_ehci0_pdata_v2;
  }
  
 -static void __init qca955x_usb_setup(void)
@@ -175,10 +180,10 @@
  		ar724x_usb_setup();
  	else if (soc_is_ar913x())
  		ar913x_usb_setup();
-@@ -277,8 +257,24 @@
- 		ar933x_usb_setup();
- 	else if (soc_is_ar934x())
+@@ -302,8 +282,24 @@ void __init ath79_register_usb(void)
  		ar934x_usb_setup();
+ 	else if (soc_is_qca953x())
+ 		qca953x_usb_setup();
 -	else if (soc_is_qca955x())
 -		qca955x_usb_setup();
 -	else
