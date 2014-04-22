@@ -43,10 +43,10 @@ endef
 
 define Profile/QSDK_Retail/Description
 	QSDK Retail package set configuration.
-	This profile provides basic Wi-Fi router features using the QCA proprietary Wi-Fi driver. It supports:
+	This profile provides basic Wi-Fi router features using the QCA Wi-Fi driver. It supports:
 	-Bridging and routing networking
 	-LuCI web configuration interface
-	-Integrated 11abgn/ac support using the proprietary qca-wifi driver
+	-Integrated 11abgn/ac support using the qca-wifi driver
 endef
 $(eval $(call Profile,QSDK_Retail))
 
@@ -74,10 +74,10 @@ endef
 
 define Profile/QSDK_Standard/Description
 	QSDK Standard package set configuration.
-	This profile provides basic Wi-Fi router features using the QCA proprietary Wi-Fi driver. It supports:
+	This profile provides basic Wi-Fi router features using the QCA Wi-Fi driver. It supports:
 	-Bridging and routing networking
 	-LuCI web configuration interface
-	-Integrated 11abgn/ac support using the proprietary qca-wifi driver
+	-Integrated 11abgn/ac support using the qca-wifi driver
 endef
 $(eval $(call Profile,QSDK_Standard))
 
