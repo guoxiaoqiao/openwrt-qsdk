@@ -53,9 +53,62 @@
 #define AP152_MAC1_OFFSET               6
 #define AP152_WMAC_CALDATA_OFFSET       0x1000
 
+#define AP152_GPIO_MDC			3
+#define AP152_GPIO_MDIO			4
+
+static struct ar8327_pad_cfg ap152_ar8337_pad0_cfg = {
+	.mode = AR8327_PAD_MAC_SGMII,
+	.sgmii_txclk_phase_sel = AR8327_SGMII_CLK_PHASE_RISE,
+	.sgmii_rxclk_phase_sel = AR8327_SGMII_CLK_PHASE_FALL,
+};
+
+static struct ar8327_platform_data ap152_ar8337_data = {
+	.pad0_cfg = &ap152_ar8337_pad0_cfg,
+	.cpuport_cfg = {
+		.force_link = 1,
+		.speed = AR8327_PORT_SPEED_1000,
+		.duplex = 1,
+		.txpause = 1,
+		.rxpause = 1,
+	},
+};
+
+static struct mdio_board_info ap152_mdio0_info[] = {
+	{
+		.bus_id = "ag71xx-mdio.0",
+		.phy_addr = 0,
+		.platform_data = &ap152_ar8337_data,
+	},
+};
+
+static void __init ap152_mdio_setup(void)
+{
+	ath79_gpio_output_select(AP152_GPIO_MDC, QCA9561_GPIO_OUT_MUX_GE0_MDC);
+	ath79_gpio_output_select(AP152_GPIO_MDIO, QCA9561_GPIO_OUT_MUX_GE0_MDO);
+
+	ath79_register_mdio(0, 0x0);
+}
+
 static void __init ap152_setup(void)
 {
+	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
+
 	ath79_register_m25p80(NULL);
+
+	ap152_mdio_setup();
+
+	mdiobus_register_board_info(ap152_mdio0_info,
+				    ARRAY_SIZE(ap152_mdio0_info));
+
+	/* GMAC0 is connected to an AR8337 switch */
+	ath79_init_mac(ath79_eth0_data.mac_addr, art + AP152_MAC0_OFFSET, 0);
+	ath79_eth0_data.phy_if_mode = PHY_INTERFACE_MODE_SGMII;
+	ath79_eth0_data.speed = SPEED_1000;
+	ath79_eth0_data.duplex = DUPLEX_FULL;
+	ath79_eth0_data.phy_mask = BIT(0);
+	ath79_eth0_data.mii_bus_dev = &ath79_mdio0_device.dev;
+	ath79_eth0_pll_data.pll_1000 = 0x06000000;
+	ath79_register_eth(0);
 }
 
 MIPS_MACHINE(ATH79_MACH_AP152, "AP152", "Qualcomm Atheros AP152 reference board",
