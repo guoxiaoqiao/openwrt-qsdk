@@ -83,8 +83,8 @@ static struct mdio_board_info ap152_mdio0_info[] = {
 
 static void __init ap152_mdio_setup(void)
 {
-	ath79_gpio_output_select(AP152_GPIO_MDC, QCA9561_GPIO_OUT_MUX_GE0_MDC);
-	ath79_gpio_output_select(AP152_GPIO_MDIO, QCA9561_GPIO_OUT_MUX_GE0_MDO);
+	ath79_gpio_output_select(AP152_GPIO_MDC, QCA9563_GPIO_OUT_MUX_GE0_MDC);
+	ath79_gpio_output_select(AP152_GPIO_MDIO, QCA9563_GPIO_OUT_MUX_GE0_MDO);
 
 	ath79_register_mdio(0, 0x0);
 }
