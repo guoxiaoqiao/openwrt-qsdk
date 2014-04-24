@@ -1006,6 +1006,7 @@ define Image/Build/Profile/QSDK_Wired_Router
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP136,$(1))
 	$(call Image/Build/Profile/RUBBERDUCK,$(1))
+	$(call Image/Build/Profile/AP152,$(1))
 endef
 
 define Image/Build/Profile/QSDK_Premium_Router
