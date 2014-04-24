@@ -28,6 +28,7 @@
 #include "common.h"
 #include "dev-m25p80.h"
 #include "machtypes.h"
+#include "pci.h"
 #include "dev-eth.h"
 #include "dev-gpio-buttons.h"
 #include "dev-leds-gpio.h"
@@ -99,6 +100,9 @@ static void __init ap152_setup(void)
 
 	mdiobus_register_board_info(ap152_mdio0_info,
 				    ARRAY_SIZE(ap152_mdio0_info));
+
+	ath79_register_wmac(art + AP152_WMAC_CALDATA_OFFSET, NULL);
+	ath79_register_pci();
 
 	/* GMAC0 is connected to an AR8337 switch */
 	ath79_init_mac(ath79_eth0_data.mac_addr, art + AP152_MAC0_OFFSET, 0);

@@ -49,7 +49,31 @@
  	else
 --- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
 +++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
-@@ -380,6 +380,49 @@
+@@ -147,6 +147,23 @@
+ #define QCA955X_NFC_BASE	0x1b000200
+ #define QCA955X_NFC_SIZE	0xb8
+ 
++#define QCA956X_PCI_MEM_BASE0	0x12000000
++#define QCA956X_PCI_MEM_SIZE	0x02000000
++#define QCA956X_PCI_CFG_BASE0	0x16000000
++#define QCA956X_PCI_CFG_SIZE	0x1000
++#define QCA956X_PCI_CRP_BASE0	(AR71XX_APB_BASE + 0x00250000)
++#define QCA956X_PCI_CRP_SIZE	0x1000
++#define QCA956X_PCI_CTRL_BASE0	(AR71XX_APB_BASE + 0x00280000)
++#define QCA956X_PCI_CTRL_SIZE	0x100
++
++#define QCA956X_WMAC_BASE	(AR71XX_APB_BASE + 0x00100000)
++#define QCA956X_WMAC_SIZE	0x20000
++#define QCA956X_EHCI0_BASE	0x1b000000
++#define QCA956X_EHCI1_BASE	0x1b400000
++#define QCA956X_EHCI_SIZE	0x200
++#define QCA956X_GMAC_BASE	(AR71XX_APB_BASE + 0x00070000)
++#define QCA956X_GMAC_SIZE	0x64
++
+ #define AR9300_OTP_BASE		0x14000
+ #define AR9300_OTP_STATUS	0x15f18
+ #define AR9300_OTP_STATUS_TYPE		0x7
+@@ -380,6 +397,49 @@
  #define QCA955X_PLL_CLK_CTRL_DDRCLK_FROM_DDRPLL		BIT(21)
  #define QCA955X_PLL_CLK_CTRL_AHBCLK_FROM_DDRPLL		BIT(24)
  
@@ -99,7 +123,7 @@
  #define AR934X_PLL_AUDIO_CONFIG_EXT_DIV_SHIFT		12
  #define AR934X_PLL_AUDIO_CONFIG_EXT_DIV_MASK		0x7
  #define AR934X_PLL_AUDIO_CONFIG_POSTPLLPWD_SHIFT	7
-@@ -440,6 +483,10 @@
+@@ -440,6 +500,10 @@
  #define QCA955X_RESET_REG_BOOTSTRAP		0xb0
  #define QCA955X_RESET_REG_EXT_INT_STATUS	0xac
  
@@ -110,7 +134,7 @@
  #define MISC_INT_ETHSW			BIT(12)
  #define MISC_INT_TIMER4			BIT(10)
  #define MISC_INT_TIMER3			BIT(9)
-@@ -581,6 +628,8 @@
+@@ -581,6 +645,8 @@
  
  #define QCA955X_BOOTSTRAP_REF_CLK_40	BIT(4)
  
@@ -119,7 +143,7 @@
  #define AR934X_PCIE_WMAC_INT_WMAC_MISC		BIT(0)
  #define AR934X_PCIE_WMAC_INT_WMAC_TX		BIT(1)
  #define AR934X_PCIE_WMAC_INT_WMAC_RXLP		BIT(2)
-@@ -648,6 +697,36 @@
+@@ -648,6 +714,36 @@
  	 QCA955X_EXT_INT_PCIE_RC2_INT1 | QCA955X_EXT_INT_PCIE_RC2_INT2 | \
  	 QCA955X_EXT_INT_PCIE_RC2_INT3)
  
@@ -156,7 +180,7 @@
  #define REV_ID_MAJOR_MASK		0xfff0
  #define REV_ID_MAJOR_AR71XX		0x00a0
  #define REV_ID_MAJOR_AR913X		0x00b0
-@@ -661,6 +740,7 @@
+@@ -661,6 +757,7 @@
  #define REV_ID_MAJOR_AR9344		0x2120
  #define REV_ID_MAJOR_QCA9531		0x0140
  #define REV_ID_MAJOR_QCA9558		0x1130
@@ -164,7 +188,7 @@
  
  #define AR71XX_REV_ID_MINOR_MASK	0x3
  #define AR71XX_REV_ID_MINOR_AR7130	0x0
-@@ -685,6 +765,8 @@
+@@ -685,6 +782,8 @@
  
  #define QCA953X_REV_ID_REVISION_MASK	0xf
  
@@ -173,7 +197,7 @@
  /*
   * SPI block
   */
-@@ -775,6 +857,19 @@
+@@ -775,6 +874,19 @@
  #define QCA953X_GPIO_OUT_MUX_LED_LINK4		44
  #define QCA953X_GPIO_OUT_MUX_LED_LINK5		45
  
@@ -193,7 +217,7 @@
  #define AR71XX_GPIO_COUNT		16
  #define AR724X_GPIO_COUNT		18
  #define AR913X_GPIO_COUNT		22
-@@ -782,6 +877,7 @@
+@@ -782,6 +894,7 @@
  #define AR934X_GPIO_COUNT		23
  #define QCA953X_GPIO_COUNT		18
  #define QCA955X_GPIO_COUNT		24
@@ -620,4 +644,58 @@
 +	    case ATH79_SOC_QCA9563:
  			pdata->mii_bus_dev = &ath79_mdio1_device.dev;
  			break;
+ 
+--- a/arch/mips/ath79/pci.c
++++ b/arch/mips/ath79/pci.c
+@@ -293,6 +293,15 @@ int __init ath79_register_pci(void)
+ 						 QCA955X_PCI_MEM_SIZE,
+ 						 1,
+ 						 ATH79_IP3_IRQ(2));
++	} else if (soc_is_qca956x()) {
++		pdev = ath79_register_pci_ar724x(0,
++						 QCA956X_PCI_CFG_BASE0,
++						 QCA956X_PCI_CTRL_BASE0,
++						 QCA956X_PCI_CRP_BASE0,
++						 QCA956X_PCI_MEM_BASE0,
++						 QCA956X_PCI_MEM_SIZE,
++						 0,
++						 ATH79_IP2_IRQ(0));
+ 	} else {
+ 		/* No PCI support */
+ 		return -ENODEV;
+--- a/arch/mips/ath79/dev-wmac.c
++++ b/arch/mips/ath79/dev-wmac.c
+@@ -157,6 +157,24 @@ static void qca955x_wmac_setup(void)
+ 		ath79_wmac_data.is_clk_25mhz = true;
+ }
+ 
++static void qca956x_wmac_setup(void)
++{
++	u32 t;
++
++	ath79_wmac_device.name = "qca956x_wmac";
++
++	ath79_wmac_resources[0].start = QCA956X_WMAC_BASE;
++	ath79_wmac_resources[0].end = QCA956X_WMAC_BASE + QCA956X_WMAC_SIZE - 1;
++	ath79_wmac_resources[1].start = ATH79_IP2_IRQ(1);
++	ath79_wmac_resources[1].end = ATH79_IP2_IRQ(1);
++
++	t = ath79_reset_rr(QCA955X_RESET_REG_BOOTSTRAP);
++	if (t & QCA955X_BOOTSTRAP_REF_CLK_40)
++		ath79_wmac_data.is_clk_25mhz = false;
++	else
++		ath79_wmac_data.is_clk_25mhz = true;
++}
++
+ static bool __init
+ ar93xx_wmac_otp_read_word(void __iomem *base, int addr, u32 *data)
+ {
+@@ -310,6 +328,8 @@ void __init ath79_register_wmac(u8 *cal_
+ 		qca953x_wmac_setup();
+ 	else if (soc_is_qca955x())
+ 		qca955x_wmac_setup();
++	else if (soc_is_qca956x())
++		qca956x_wmac_setup();
+ 	else
+ 		BUG();
  
