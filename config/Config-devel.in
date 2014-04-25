@@ -64,6 +64,7 @@ menuconfig DEVEL
 
 	config KERNEL_GIT_LOCAL_REPOSITORY
 		string "Enter path to local reference repository" if DEVEL
+		depends on (KERNEL_GIT_CLONE_URI != "")
 		default ""
 		help
 		  Enter a full pathname to a local reference git repository.
