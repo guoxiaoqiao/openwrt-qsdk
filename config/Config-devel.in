@@ -80,6 +80,18 @@ menuconfig DEVEL
 		  In this instance, the --branch option of git clone will be used.
 		  If unused, the clone's repository HEAD will be checked-out.
 
+	config KERNEL_GIT_PATCH_APPLY
+		bool "Apply OpenWrt patches on git kernel" if DEVEL
+		depends on (KERNEL_GIT_CLONE_URI != "")
+		default n
+		help
+		  By default OpenWrt will apply the OpenWrt specific kernel
+		  patches only if the kernel was downloaded as a regular tarball
+		  and then uncompressed. If the pulled from GIT or from a local
+		  directory, the OpenWrt patches will not be applied.
+		  Use this option if you want to apply these patches even on Git
+		  pulled kernel.
+
 	config BUILD_LOG
 		bool "Enable log files during build process" if DEVEL
 		help

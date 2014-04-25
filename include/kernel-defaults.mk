@@ -42,6 +42,10 @@ ifneq ($(strip $(CONFIG_KERNEL_GIT_BRANCH)),"")
   KERNEL_GIT_OPTS+=--branch $(CONFIG_KERNEL_GIT_BRANCH)
 endif
 
+ifneq ($(KERNEL_GIT_PATCH_APPLY),y)
+  Kernel/Patch/Git:=$(Kernel/Patch)
+endif
+
 ifeq ($(strip $(CONFIG_EXTERNAL_KERNEL_TREE)),"")
   ifeq ($(strip $(CONFIG_KERNEL_GIT_CLONE_URI)),"")
     define Kernel/Prepare/Default
@@ -52,6 +56,7 @@ ifeq ($(strip $(CONFIG_EXTERNAL_KERNEL_TREE)),"")
   else
     define Kernel/Prepare/Default
 	git clone $(KERNEL_GIT_OPTS) $(CONFIG_KERNEL_GIT_CLONE_URI) $(LINUX_DIR)
+	$(Kernel/Patch/Git)
     endef
   endif
 else
