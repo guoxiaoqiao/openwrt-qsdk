@@ -1,15 +1,14 @@
 --- a/arch/mips/ath79/clock.c
 +++ b/arch/mips/ath79/clock.c
-@@ -295,6 +295,113 @@ static void __init ar934x_clocks_init(vo
+@@ -295,6 +295,81 @@ static void __init ar934x_clocks_init(vo
  	iounmap(dpll_base);
  }
  
 +static void __init qca953x_clocks_init(void)
 +{
-+	u32 pll, out_div, ref_div, nint, nfrac, frac, clk_ctrl, postdiv;
++	u32 pll, out_div, ref_div, nint, frac, clk_ctrl, postdiv;
 +	u32 cpu_pll, ddr_pll;
 +	u32 bootstrap;
-+	void __iomem *dpll_base;
 +
 +	bootstrap = ath79_reset_rr(QCA953X_RESET_REG_BOOTSTRAP);
 +	if (bootstrap &	QCA953X_BOOTSTRAP_REF_CLK_40)
@@ -17,62 +16,33 @@
 +	else
 +		ath79_ref_clk.rate = 25 * 1000 * 1000;
 +
-+	dpll_base = ioremap(QCA953X_SRIF_BASE, QCA953X_SRIF_SIZE);
++	pll = ath79_pll_rr(QCA953X_PLL_CPU_CONFIG_REG);
++	out_div = (pll >> QCA953X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
++		QCA953X_PLL_CPU_CONFIG_OUTDIV_MASK;
++	ref_div = (pll >> QCA953X_PLL_CPU_CONFIG_REFDIV_SHIFT) &
++		QCA953X_PLL_CPU_CONFIG_REFDIV_MASK;
++	nint = (pll >> QCA953X_PLL_CPU_CONFIG_NINT_SHIFT) &
++		QCA953X_PLL_CPU_CONFIG_NINT_MASK;
++	frac = (pll >> QCA953X_PLL_CPU_CONFIG_NFRAC_SHIFT) &
++		QCA953X_PLL_CPU_CONFIG_NFRAC_MASK;
 +
-+	pll = __raw_readl(dpll_base + QCA953X_SRIF_CPU_DPLL2_REG);
-+	if (pll & QCA953X_SRIF_DPLL2_LOCAL_PLL) {
-+		out_div = (pll >> QCA953X_SRIF_DPLL2_OUTDIV_SHIFT) &
-+			  QCA953X_SRIF_DPLL2_OUTDIV_MASK;
-+		pll = __raw_readl(dpll_base + QCA953X_SRIF_CPU_DPLL1_REG);
-+		nint = (pll >> QCA953X_SRIF_DPLL1_NINT_SHIFT) &
-+		       QCA953X_SRIF_DPLL1_NINT_MASK;
-+		nfrac = pll & QCA953X_SRIF_DPLL1_NFRAC_MASK;
-+		ref_div = (pll >> QCA953X_SRIF_DPLL1_REFDIV_SHIFT) &
-+			  QCA953X_SRIF_DPLL1_REFDIV_MASK;
-+		frac = 1 << 18;
-+	} else {
-+		pll = ath79_pll_rr(QCA953X_PLL_CPU_CONFIG_REG);
-+		out_div = (pll >> QCA953X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
-+			QCA953X_PLL_CPU_CONFIG_OUTDIV_MASK;
-+		ref_div = (pll >> QCA953X_PLL_CPU_CONFIG_REFDIV_SHIFT) &
-+			  QCA953X_PLL_CPU_CONFIG_REFDIV_MASK;
-+		nint = (pll >> QCA953X_PLL_CPU_CONFIG_NINT_SHIFT) &
-+		       QCA953X_PLL_CPU_CONFIG_NINT_MASK;
-+		nfrac = (pll >> QCA953X_PLL_CPU_CONFIG_NFRAC_SHIFT) &
-+			QCA953X_PLL_CPU_CONFIG_NFRAC_MASK;
-+		frac = 1 << 6;
-+	}
++	cpu_pll = nint * ath79_ref_clk.rate / ref_div;
++	cpu_pll += frac * ath79_ref_clk.rate / (ref_div * (1 << 6));
++	cpu_pll /= (1 << out_div);
 +
-+	cpu_pll = ar934x_get_pll_freq(ath79_ref_clk.rate, ref_div, nint,
-+				      nfrac, frac, out_div);
++	pll = ath79_pll_rr(QCA953X_PLL_DDR_CONFIG_REG);
++	out_div = (pll >> QCA953X_PLL_DDR_CONFIG_OUTDIV_SHIFT) &
++		QCA953X_PLL_DDR_CONFIG_OUTDIV_MASK;
++	ref_div = (pll >> QCA953X_PLL_DDR_CONFIG_REFDIV_SHIFT) &
++		QCA953X_PLL_DDR_CONFIG_REFDIV_MASK;
++	nint = (pll >> QCA953X_PLL_DDR_CONFIG_NINT_SHIFT) &
++		QCA953X_PLL_DDR_CONFIG_NINT_MASK;
++	frac = (pll >> QCA953X_PLL_DDR_CONFIG_NFRAC_SHIFT) &
++		QCA953X_PLL_DDR_CONFIG_NFRAC_MASK;
 +
-+	pll = __raw_readl(dpll_base + QCA953X_SRIF_DDR_DPLL2_REG);
-+	if (pll & QCA953X_SRIF_DPLL2_LOCAL_PLL) {
-+		out_div = (pll >> QCA953X_SRIF_DPLL2_OUTDIV_SHIFT) &
-+			  QCA953X_SRIF_DPLL2_OUTDIV_MASK;
-+		pll = __raw_readl(dpll_base + QCA953X_SRIF_DDR_DPLL1_REG);
-+		nint = (pll >> QCA953X_SRIF_DPLL1_NINT_SHIFT) &
-+		       QCA953X_SRIF_DPLL1_NINT_MASK;
-+		nfrac = pll & QCA953X_SRIF_DPLL1_NFRAC_MASK;
-+		ref_div = (pll >> QCA953X_SRIF_DPLL1_REFDIV_SHIFT) &
-+			  QCA953X_SRIF_DPLL1_REFDIV_MASK;
-+		frac = 1 << 18;
-+	} else {
-+		pll = ath79_pll_rr(QCA953X_PLL_DDR_CONFIG_REG);
-+		out_div = (pll >> QCA953X_PLL_DDR_CONFIG_OUTDIV_SHIFT) &
-+			  QCA953X_PLL_DDR_CONFIG_OUTDIV_MASK;
-+		ref_div = (pll >> QCA953X_PLL_DDR_CONFIG_REFDIV_SHIFT) &
-+			   QCA953X_PLL_DDR_CONFIG_REFDIV_MASK;
-+		nint = (pll >> QCA953X_PLL_DDR_CONFIG_NINT_SHIFT) &
-+		       QCA953X_PLL_DDR_CONFIG_NINT_MASK;
-+		nfrac = (pll >> QCA953X_PLL_DDR_CONFIG_NFRAC_SHIFT) &
-+			QCA953X_PLL_DDR_CONFIG_NFRAC_MASK;
-+		frac = 1 << 10;
-+	}
-+
-+	ddr_pll = ar934x_get_pll_freq(ath79_ref_clk.rate, ref_div, nint,
-+				      nfrac, frac, out_div);
-+
++	ddr_pll = nint * ath79_ref_clk.rate / ref_div;
++	ddr_pll += frac * ath79_ref_clk.rate / (ref_div * (1 << 10));
++	ddr_pll /= (1 << out_div);
 +	clk_ctrl = ath79_pll_rr(QCA953X_PLL_CPU_DDR_CLK_CTRL_REG);
 +
 +	postdiv = (clk_ctrl >> QCA953X_PLL_CPU_DDR_CLK_CTRL_CPU_POST_DIV_SHIFT) &
@@ -107,8 +77,6 @@
 +
 +	ath79_wdt_clk.rate = ath79_ref_clk.rate;
 +	ath79_uart_clk.rate = ath79_ref_clk.rate;
-+
-+	iounmap(dpll_base);
 +}
 +
  static void __init qca955x_clocks_init(void)
