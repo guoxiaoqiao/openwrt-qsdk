@@ -15,7 +15,8 @@ define Profile/QSDK_Base
 	  kmod-md-mod kmod-md-linear kmod-md-raid0 kmod-md-raid1 \
 	  iputils-tracepath iputils-tracepath6 alljoyn kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  kmod-art2 file pure-ftpd kmod-qca-nss-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
-	  kmod-qca-nss-macsec
+	  kmod-qca-nss-macsec kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli \
+	  qca-wpa-supplicant qca-wpa-cli qca-spectral qca-wapid sigma-dut
 endef
 
 define Profile/QSDK_Open
@@ -36,10 +37,8 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Retail
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Retail Profile
-	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-	  qca-spectral qca-wapid sigma-dut streamboost-noload \
-	  kmod-qca-nss-connmgr hyfi kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 \
-	  qca-nss-fw-retail
+	PACKAGES+=streamboost-noload kmod-qca-nss-connmgr hyfi \
+		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail
 endef
 
 define Profile/QSDK_Retail/Description
@@ -54,9 +53,7 @@ $(eval $(call Profile,QSDK_Retail))
 define Profile/QSDK_Carrier
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Carrier Profile
-	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-		  qca-spectral qca-wapid hyfi streamboost sigma-dut \
-		  qca-nss-fw-carrier iptables-mod-filter
+	PACKAGES+=hyfi streamboost qca-nss-fw-carrier iptables-mod-filter
 endef
 
 define Profile/QSDK_Carrier/Description
@@ -67,10 +64,8 @@ $(eval $(call Profile,QSDK_Carrier))
 define Profile/QSDK_Standard
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-	  qca-spectral qca-wapid luci-app-qos sigma-dut streamboost-noload \
-	  kmod-qca-nss-connmgr hyfi kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 \
-	  qca-nss-fw-retail
+	PACKAGES+=luci-app-qos streamboost-noload kmod-qca-nss-connmgr hyfi \
+		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail
 endef
 
 define Profile/QSDK_Standard/Description
@@ -85,10 +80,9 @@ $(eval $(call Profile,QSDK_Standard))
 define Profile/QSDK_Enterprise
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
-	PACKAGES+=kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli qca-wpa-cli qca-wpa-supplicant \
-	  qca-spectral qca-wapid kmod-qca-nss-connmgr-noload luci-app-qos \
+	PACKAGES+=kmod-qca-nss-connmgr-noload luci-app-qos \
 	  kmod-openswan-nss openswan-nss luci-app-openswan \
-	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi sigma-dut \
+	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 	  qca-nss-fw-enterprise
 endef
 
