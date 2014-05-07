@@ -1,14 +1,5 @@
 --- a/arch/mips/ath79/mach-ap143.c
 +++ b/arch/mips/ath79/mach-ap143.c
-@@ -1,6 +1,7 @@
- /*
-- * Atheros AP143 reference board support
-+ * Qualcomm Atheros AP143 reference board support
-  *
-+ * Copyright (c) 2014 Qualcomm Atheros
-  * Copyright (c) 2013 The Linux Foundation. All rights reserved.
-  * Copyright (c) 2012 Gabor Juhos <juhosg@openwrt.org>
-  *
 @@ -19,18 +20,123 @@
   */
  
