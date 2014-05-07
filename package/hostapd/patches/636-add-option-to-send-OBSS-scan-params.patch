@@ -1,0 +1,92 @@
+diff --git a/hostapd/config_file.c b/hostapd/config_file.c
+index 63c7881..60a6a8d 100644
+--- a/hostapd/config_file.c
++++ b/hostapd/config_file.c
+@@ -2493,6 +2493,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
+ 				conf->dynamic_ht40 = 1500;
+ 		} else if (os_strcmp(buf, "require_ht") == 0) {
+ 			conf->require_ht = atoi(pos);
++		} else if (os_strcmp(buf, "obss_interval") == 0) {
++			conf->obss_interval = atoi(pos);
+ #endif /* CONFIG_IEEE80211N */
+ #ifdef CONFIG_IEEE80211AC
+ 		} else if (os_strcmp(buf, "ieee80211ac") == 0) {
+diff --git a/hostapd/hostapd.conf b/hostapd/hostapd.conf
+index c46dff5..88eb56b 100644
+--- a/hostapd/hostapd.conf
++++ b/hostapd/hostapd.conf
+@@ -442,6 +442,13 @@ wmm_ac_vo_acm=0
+ # Require stations to support HT PHY (reject association if they do not)
+ #require_ht=1
+ 
++# If set non-zero, require stations to perform scans of overlapping
++# channels to test for stations which would be affected by 40 MHz traffic.
++# This parameter sets the interval in seconds between these scans. This
++# is useful only for testing that stations properly set the OBSS interval,
++# since the other parameters in the OBSS scan parameters IE are set to 0.
++#obss_interval=0
++
+ ##### IEEE 802.11ac related configuration #####################################
+ 
+ # ieee80211ac: Whether IEEE 802.11ac (VHT) is enabled
+diff --git a/src/ap/ap_config.h b/src/ap/ap_config.h
+index 1fba7dd..5a3f50d 100644
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -519,6 +519,7 @@ struct hostapd_config {
+ 	int ieee80211n;
+ 	int secondary_channel;
+ 	int require_ht;
++	int obss_interval;
+ 	int dynamic_ht40;
+ 	u32 vht_capab;
+ 	int ieee80211ac;
+diff --git a/src/ap/ieee802_11_ht.c b/src/ap/ieee802_11_ht.c
+index a4dd0d1..34c96c8 100644
+--- a/src/ap/ieee802_11_ht.c
++++ b/src/ap/ieee802_11_ht.c
+@@ -52,6 +52,22 @@ u8 * hostapd_eid_ht_capabilities(struct hostapd_data *hapd, u8 *eid)
+ 
+  	pos += sizeof(*cap);
+ 
++	if (hapd->iconf->obss_interval) {
++		struct ieee80211_obss_scan_parameters *scan_params;
++
++		*pos++ = WLAN_EID_OVERLAPPING_BSS_SCAN_PARAMS;
++		*pos++ = sizeof(*scan_params);
++
++		scan_params = (struct ieee80211_obss_scan_parameters *) pos;
++		os_memset(scan_params, 0, sizeof(*scan_params));
++		scan_params->width_trigger_scan_interval =
++			host_to_le16(hapd->iconf->obss_interval);
++
++		/* TODO: Fill in more parameters (supplicant ignores them) */
++
++		pos += sizeof(*scan_params);
++	}
++
+ 	return pos;
+ }
+ 
+diff --git a/src/common/ieee802_11_defs.h b/src/common/ieee802_11_defs.h
+index 137c309..d2e458d 100644
+--- a/src/common/ieee802_11_defs.h
++++ b/src/common/ieee802_11_defs.h
+@@ -585,6 +585,17 @@ struct ieee80211_ht_operation {
+ } STRUCT_PACKED;
+ 
+ 
++struct ieee80211_obss_scan_parameters {
++	le16 scan_passive_dwell;
++	le16 scan_active_dwell;
++	le16 width_trigger_scan_interval;
++	le16 scan_passive_total_per_channel;
++	le16 scan_active_total_per_channel;
++	le16 channel_transition_delay_factor;
++	le16 scan_activity_threshold;
++} STRUCT_PACKED;
++
++
+ struct ieee80211_vht_capabilities {
+ 	le32 vht_capabilities_info;
+ 	struct {

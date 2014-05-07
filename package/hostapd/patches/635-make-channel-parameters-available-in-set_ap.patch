@@ -1,0 +1,58 @@
+diff --git a/src/ap/beacon.c b/src/ap/beacon.c
+index 8a68cff..730af44 100644
+--- a/src/ap/beacon.c
++++ b/src/ap/beacon.c
+@@ -582,6 +582,9 @@ void ieee802_11_set_beacon(struct hostapd_data *hapd)
+ 	u8 *resp = NULL;
+ 	size_t resp_len = 0;
+ 	struct wpa_driver_ap_params params;
++	struct hostapd_freq_params freq;
++	struct hostapd_iface *iface = hapd->iface;
++	struct hostapd_config *iconf = iface->conf;
+ 	struct wpabuf *beacon, *proberesp, *assocresp;
+ #ifdef NEED_AP_MLME
+ 	u16 capab_info;
+@@ -790,6 +793,17 @@ void ieee802_11_set_beacon(struct hostapd_data *hapd)
+ #ifdef CONFIG_HS20
+ 	params.disable_dgaf = hapd->conf->disable_dgaf;
+ #endif /* CONFIG_HS20 */
++	if (iface->current_mode &&
++	    hostapd_set_freq_params(&freq, iconf->hw_mode, iface->freq,
++				    iconf->channel, iconf->ieee80211n,
++				    iconf->ieee80211ac,
++				    iconf->secondary_channel,
++				    iconf->vht_oper_chwidth,
++				    iconf->vht_oper_centr_freq_seg0_idx,
++				    iconf->vht_oper_centr_freq_seg1_idx,
++				    iface->current_mode->vht_capab) == 0)
++		params.freq = &freq;
++
+ 	if (hostapd_drv_set_ap(hapd, &params))
+ 		wpa_printf(MSG_ERROR, "Failed to set beacon parameters");
+ 	hostapd_free_ap_extra_ies(hapd, beacon, proberesp, assocresp);
+diff --git a/src/drivers/driver.h b/src/drivers/driver.h
+index 6ab0edb..d361d43 100644
+--- a/src/drivers/driver.h
++++ b/src/drivers/driver.h
+@@ -785,6 +785,11 @@ struct wpa_driver_ap_params {
+ 	 * disable_dgaf - Whether group-addressed frames are disabled
+ 	 */
+ 	int disable_dgaf;
++
++	/**
++	 * freq - Channel parameters for dynamic bandwidth changes
++	 */
++	struct hostapd_freq_params *freq;
+ };
+ 
+ /**
+@@ -830,7 +835,8 @@ struct wpa_driver_capa {
+ #define WPA_DRIVER_FLAGS_AP		0x00000040
+ /* Driver needs static WEP key setup after association has been completed */
+ #define WPA_DRIVER_FLAGS_SET_KEYS_AFTER_ASSOC_DONE	0x00000080
+-/* unused: 0x00000100 */
++/* Driver supports dynamic HT 20/40 MHz channel changes during BSS lifetime */
++#define WPA_DRIVER_FLAGS_HT_2040_COEX			0x00000100
+ /* Driver supports concurrent P2P operations */
+ #define WPA_DRIVER_FLAGS_P2P_CONCURRENT	0x00000200
+ /*

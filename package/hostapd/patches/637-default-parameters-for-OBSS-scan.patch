@@ -1,0 +1,48 @@
+diff --git a/src/ap/ieee802_11_ht.c b/src/ap/ieee802_11_ht.c
+index 34c96c8..4ad15ef 100644
+--- a/src/ap/ieee802_11_ht.c
++++ b/src/ap/ieee802_11_ht.c
+@@ -63,7 +63,20 @@ u8 * hostapd_eid_ht_capabilities(struct hostapd_data *hapd, u8 *eid)
+ 		scan_params->width_trigger_scan_interval =
+ 			host_to_le16(hapd->iconf->obss_interval);
+ 
+-		/* TODO: Fill in more parameters (supplicant ignores them) */
++		/* Fill in default values for remaining parameters
++		 * (IEEE Std 802.11-2012, 8.4.2.61 and MIB defval) */
++		scan_params->scan_passive_dwell =
++			host_to_le16(20);
++		scan_params->scan_active_dwell =
++			host_to_le16(10);
++		scan_params->scan_passive_total_per_channel =
++			host_to_le16(200);
++		scan_params->scan_active_total_per_channel =
++			host_to_le16(20);
++		scan_params->channel_transition_delay_factor =
++			host_to_le16(5);
++		scan_params->scan_activity_threshold =
++			host_to_le16(25);
+ 
+ 		pos += sizeof(*scan_params);
+ 	}
+diff --git a/src/ap/ieee802_11_shared.c b/src/ap/ieee802_11_shared.c
+index c36bbe3..0232f0e 100644
+--- a/src/ap/ieee802_11_shared.c
++++ b/src/ap/ieee802_11_shared.c
+@@ -170,6 +170,8 @@ static void hostapd_ext_capab_byte(struct hostapd_data *hapd, u8 *pos, int idx)
+ 
+ 	switch (idx) {
+ 	case 0: /* Bits 0-7 */
++		if (hapd->iconf->obss_interval)
++			*pos |= 0x01; /* Bit 0 - Coexistence management */
+ 		break;
+ 	case 1: /* Bits 8-15 */
+ 		break;
+@@ -217,6 +219,8 @@ u8 * hostapd_eid_ext_capab(struct hostapd_data *hapd, u8 *eid)
+ 		len = 4;
+ 	if (len < 3 && hapd->conf->wnm_sleep_mode)
+ 		len = 3;
++	if (len < 1 && hapd->iconf->obss_interval)
++		len = 1;
+ 	if (len < 7 && hapd->conf->ssid.utf8_ssid)
+ 		len = 7;
+ #ifdef CONFIG_WNM
