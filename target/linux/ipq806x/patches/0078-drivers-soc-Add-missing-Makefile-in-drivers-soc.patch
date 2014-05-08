@@ -1,0 +1,25 @@
+From c8a93326a6ae3046bb87677918b39d45365069de Mon Sep 17 00:00:00 2001
+From: Mathieu Olivari <mathieu@codeaurora.org>
+Date: Wed, 7 May 2014 12:26:32 -0700
+Subject: [PATCH 78/78] drivers: soc: Add missing Makefile in drivers/soc
+
+This change fixes the following build error:
+
+scripts/Makefile.build:44: .../drivers/soc/Makefile: No such file or directory
+
+Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
+---
+ drivers/soc/Makefile |    1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 drivers/soc/Makefile
+
+diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+new file mode 100644
+index 0000000..25ca0be
+--- /dev/null
++++ b/drivers/soc/Makefile
+@@ -0,0 +1 @@
++obj-y				+= qcom/
+-- 
+1.7.10.4
+

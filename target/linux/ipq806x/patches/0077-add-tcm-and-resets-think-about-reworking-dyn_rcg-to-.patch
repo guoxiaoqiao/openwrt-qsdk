@@ -1,0 +1,388 @@
+From 7ed1f7a37e9dbf8f4050cd84ad9d8bba31c4daad Mon Sep 17 00:00:00 2001
+From: Stephen Boyd <sboyd@codeaurora.org>
+Date: Mon, 5 May 2014 17:45:10 -0700
+Subject: [PATCH 77/78] add tcm and resets, think about reworking dyn_rcg to
+ be more generic
+
+Change-Id: I0d123ee9fd91b4e7097f6ca67ce9bd1b8c2aa066
+---
+ drivers/clk/qcom/clk-rcg.c                   |   45 ++++++----
+ drivers/clk/qcom/clk-rcg.h                   |    5 +-
+ drivers/clk/qcom/gcc-ipq806x.c               |  125 +++++++++++++++++++++++---
+ include/dt-bindings/clock/qcom,gcc-ipq806x.h |    4 +-
+ include/dt-bindings/reset/qcom,gcc-ipq806x.h |    9 ++
+ 5 files changed, 156 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/clk/qcom/clk-rcg.c b/drivers/clk/qcom/clk-rcg.c
+index 7090c55..ce42bba3 100644
+--- a/drivers/clk/qcom/clk-rcg.c
++++ b/drivers/clk/qcom/clk-rcg.c
+@@ -292,6 +292,7 @@ configure_md_bank(struct clk_dyn_rcg_md *rcg, const struct freq_tbl *f)
+ 	u32 md_reg, ns_reg;
+ 	u32 bank_reg;
+ 	struct clk_hw *hw = &rcg->clkr.hw;
++	bool banked_mn = !!rcg->mn[1].width;
+ 
+ 	enabled = __clk_is_enabled(hw->clk);
+ 
+@@ -311,18 +312,20 @@ configure_md_bank(struct clk_dyn_rcg_md *rcg, const struct freq_tbl *f)
+ 	ns |= BIT(mn->mnctr_reset_bit);
+ 	regmap_write(rcg->clkr.regmap, ns_reg, ns);
+ 
+-	regmap_read(rcg->clkr.regmap, md_reg, &md);
+-	md = mn_to_md(mn, f->m, f->n, md);
+-	regmap_write(rcg->clkr.regmap, md_reg, md);
++	if (banked_mn) {
++		regmap_read(rcg->clkr.regmap, md_reg, &md);
++		md = mn_to_md(mn, f->m, f->n, md);
++		regmap_write(rcg->clkr.regmap, md_reg, md);
+ 
+-	ns = mn_to_ns(mn, f->m, f->n, ns);
+-	regmap_write(rcg->clkr.regmap, ns_reg, ns);
++		ns = mn_to_ns(mn, f->m, f->n, ns);
++		regmap_write(rcg->clkr.regmap, ns_reg, ns);
+ 
+-	ctl = mn_to_reg(mn, f->m, f->n, ctl);
+-	regmap_write(rcg->clkr.regmap, rcg->clkr.enable_reg, ctl);
++		ctl = mn_to_reg(mn, f->m, f->n, ctl);
++		regmap_write(rcg->clkr.regmap, rcg->clkr.enable_reg, ctl);
+ 
+-	ns &= ~BIT(mn->mnctr_reset_bit);
+-	regmap_write(rcg->clkr.regmap, ns_reg, ns);
++		ns &= ~BIT(mn->mnctr_reset_bit);
++		regmap_write(rcg->clkr.regmap, ns_reg, ns);
++	}
+ 
+ 	p = &rcg->p[new_bank];
+ 	ns = pre_div_to_ns(p, f->pre_div - 1, ns);
+@@ -371,14 +374,17 @@ static int clk_dyn_rcg_md_set_parent(struct clk_hw *hw, u8 index)
+ 	u32 ns, ctl, md;
+ 	int bank;
+ 	struct freq_tbl f = { 0 };
++	bool banked_mn = !!rcg->mn[1].width;
+ 
+ 	regmap_read(rcg->clkr.regmap, rcg->clkr.enable_reg, &ctl);
+ 	bank = dyn_md_to_bank(rcg, ctl);
+ 
+ 	regmap_read(rcg->clkr.regmap, rcg->ns_reg[bank], &ns);
+-	regmap_read(rcg->clkr.regmap, rcg->md_reg[bank], &md);
+-	f.m = md_to_m(&rcg->mn[bank], md);
+-	f.n = ns_m_to_n(&rcg->mn[bank], ns, f.m);
++	if (banked_mn) {
++		regmap_read(rcg->clkr.regmap, rcg->md_reg[bank], &md);
++		f.m = md_to_m(&rcg->mn[bank], md);
++		f.n = ns_m_to_n(&rcg->mn[bank], ns, f.m);
++	}
+ 	f.pre_div = ns_to_pre_div(&rcg->p[bank], ns) + 1;
+ 	f.src = index;
+ 
+@@ -473,16 +479,21 @@ clk_dyn_rcg_md_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+ 	u32 m, n, pre_div, ns, md, mode, reg;
+ 	int bank;
+ 	struct mn *mn;
++	bool banked_mn = !!rcg->mn[1].width;
+ 
+ 	regmap_read(rcg->clkr.regmap, rcg->clkr.enable_reg, &reg);
+ 	bank = dyn_md_to_bank(rcg, reg);
+ 
+ 	regmap_read(rcg->clkr.regmap, rcg->ns_reg[bank], &ns);
+-	mn = &rcg->mn[bank];
+-	regmap_read(rcg->clkr.regmap, rcg->md_reg[bank], &md);
+-	m = md_to_m(mn, md);
+-	n = ns_m_to_n(mn, ns, m);
+-	mode = reg_to_mnctr_mode(mn, reg);
++	if (banked_mn) {
++		mn = &rcg->mn[bank];
++		regmap_read(rcg->clkr.regmap, rcg->md_reg[bank], &md);
++		m = md_to_m(mn, md);
++		n = ns_m_to_n(mn, ns, m);
++		mode = reg_to_mnctr_mode(mn, reg);
++	} else {
++		m = n = mode = 0;
++	}
+ 	pre_div = ns_to_pre_div(&rcg->p[bank], ns);
+ 
+ 	return calc_rate(parent_rate, m, n, mode, pre_div);
+diff --git a/drivers/clk/qcom/clk-rcg.h b/drivers/clk/qcom/clk-rcg.h
+index 7524aa8..0410fc3 100644
+--- a/drivers/clk/qcom/clk-rcg.h
++++ b/drivers/clk/qcom/clk-rcg.h
+@@ -112,7 +112,10 @@ extern const struct clk_ops clk_rcg_ops;
+  *
+  */
+ struct clk_dyn_rcg {
+-	u32	ns_reg;
++	union {
++		u32	ns_reg;
++		u32	ns_regs[2];
++	};
+ 	u32	md_reg[2];
+ 
+ 	u8	mux_sel_bit;
+diff --git a/drivers/clk/qcom/gcc-ipq806x.c b/drivers/clk/qcom/gcc-ipq806x.c
+index 6034fa0..b2a2113 100644
+--- a/drivers/clk/qcom/gcc-ipq806x.c
++++ b/drivers/clk/qcom/gcc-ipq806x.c
+@@ -32,6 +32,33 @@
+ #include "clk-branch.h"
+ #include "reset.h"
+ 
++static struct clk_pll pll0 = {
++	.l_reg = 0x30c4,
++	.m_reg = 0x30c8,
++	.n_reg = 0x30cc,
++	.config_reg = 0x30d4,
++	.mode_reg = 0x30c0,
++	.status_reg = 0x30d8,
++	.status_bit = 16,
++	.clkr.hw.init = &(struct clk_init_data){
++		.name = "pll0",
++		.parent_names = (const char *[]){ "pxo" },
++		.num_parents = 1,
++		.ops = &clk_pll_ops,
++	},
++};
++
++static struct clk_regmap pll0_vote = {
++	.enable_reg = 0x34c0,
++	.enable_mask = BIT(0),
++	.hw.init = &(struct clk_init_data){
++		.name = "pll0_vote",
++		.parent_names = (const char *[]){ "pll8" },
++		.num_parents = 1,
++		.ops = &clk_pll_vote_ops,
++	},
++};
++
+ static struct clk_pll pll3 = {
+ 	.l_reg = 0x3164,
+ 	.m_reg = 0x3168,
+@@ -140,6 +167,7 @@ static struct clk_pll pll18 = {
+ #define P_PLL3	3
+ #define P_PLL18	3
+ #define P_PLL0	4
++#define P_PLL0	4
+ #define P_PLL11	5
+ #define P_MXO	6
+ 
+@@ -205,18 +233,20 @@ static const char *gcc_pxo_mxo_pll0_pll8[] = {
+ 	"pll8",
+ };
+ 
+-static const u8 gcc_pxo_pll8_pll14_pll18_map[] = {
++static const u8 gcc_pxo_pll8_pll14_pll18_pll0_map[] = {
+ 	[P_PXO]		= 0,
+ 	[P_PLL8]	= 4,
+ 	[P_PLL14]	= 5,
+ 	[P_PLL18]	= 1,
++	[P_PLL0]	= 2,
+ };
+ 
+-static const char *gcc_pxo_pll8_pll14_pll18[] = {
++static const char *gcc_pxo_pll8_pll14_pll18_pll0[] = {
+ 	"pxo",
+-	"pll8",
++	"pll8_vote",
+ 	"pll14",
+ 	"pll18",
++	"pll0_vote",
+ };
+  
+ static struct freq_tbl clk_tbl_gsbi_uart[] = {
+@@ -2195,6 +2225,63 @@ static struct clk_branch usb_fs1_h_clk = {
+ 	},
+ };
+ 
++static const struct freq_tbl clk_tbl_nss_tcm[] = {
++	{ 266000000, P_PLL0, 3, 0, 0 },
++	{ 400000000, P_PLL0, 2, 0, 0 },
++	{ }
++};
++
++static struct clk_dyn_rcg_md nss_tcm_src = {
++	.ns_reg[0] = 0x3dc4,
++	.ns_reg[1] = 0x3dc8,
++	.s[0] = {
++		.src_sel_shift = 0,
++		.parent_map = gcc_pxo_pll8_pll14_pll18_pll0_map,
++	},
++	.s[1] = {
++		.src_sel_shift = 0,
++		.parent_map = gcc_pxo_pll8_pll14_pll18_pll0_map,
++	},
++	.p[0] = {
++		.pre_div_shift = 3,
++		.pre_div_width = 4,
++	},
++	.p[1] = {
++		.pre_div_shift = 3,
++		.pre_div_width = 4,
++	},
++	.mux_sel_bit = 0,
++	.freq_tbl = clk_tbl_nss_tcm,
++	.clkr = {
++		.enable_reg = 0x3dc0,
++		.enable_mask = BIT(1),
++		.hw.init = &(struct clk_init_data){
++			.name = "nss_tcm_src",
++			.parent_names = gcc_pxo_pll8_pll14_pll18_pll0,
++			.num_parents = 5,
++			.ops = &clk_dyn_rcg_md_ops,
++		},
++	},
++};
++
++static struct clk_branch nss_tcm_clk = {
++	.halt_reg = 0x3c20,
++	.halt_bit = 14,
++	.clkr = {
++		.enable_reg = 0x3dd0,
++		.enable_mask = BIT(6) | BIT(4),
++		.hw.init = &(struct clk_init_data){
++			.name = "nss_tcm_clk",
++			.parent_names = (const char *[]){
++				"nss_tcm_src",
++			},
++			.num_parents = 1,
++			.ops = &clk_branch_ops,
++			.flags = CLK_SET_RATE_PARENT,
++		},
++	},
++};
++
+ static const struct freq_tbl clk_tbl_nss[] = {
+ 	{ 110000000, P_PLL18, 1, 1, 5 },
+ 	{ 275000000, P_PLL18, 2, 0, 0 },
+@@ -2233,11 +2320,11 @@ static struct clk_dyn_rcg_md ubi32_core1_src_clk = {
+ 	},
+ 	.s[0] = {
+ 		.src_sel_shift = 0,
+-		.parent_map = gcc_pxo_pll8_pll14_pll18_map,
++		.parent_map = gcc_pxo_pll8_pll14_pll18_pll0_map,
+ 	},
+ 	.s[1] = {
+ 		.src_sel_shift = 0,
+-		.parent_map = gcc_pxo_pll8_pll14_pll18_map,
++		.parent_map = gcc_pxo_pll8_pll14_pll18_pll0_map,
+ 	},
+ 	.p[0] = {
+ 		.pre_div_shift = 3,
+@@ -2254,8 +2341,8 @@ static struct clk_dyn_rcg_md ubi32_core1_src_clk = {
+ 		.enable_mask = BIT(1),
+ 		.hw.init = &(struct clk_init_data){
+ 			.name = "ubi32_core1_src_clk",
+-			.parent_names = gcc_pxo_pll8_pll14_pll18,
+-			.num_parents = 4,
++			.parent_names = gcc_pxo_pll8_pll14_pll18_pll0,
++			.num_parents = 5,
+ 			.ops = &clk_dyn_rcg_md_ops,
+ 			.flags = CLK_SET_RATE_PARENT,
+ 		},
+@@ -2285,11 +2372,11 @@ static struct clk_dyn_rcg_md ubi32_core2_src_clk = {
+ 	},
+ 	.s[0] = {
+ 		.src_sel_shift = 0,
+-		.parent_map = gcc_pxo_pll8_pll14_pll18_map,
++		.parent_map = gcc_pxo_pll8_pll14_pll18_pll0_map,
+ 	},
+ 	.s[1] = {
+ 		.src_sel_shift = 0,
+-		.parent_map = gcc_pxo_pll8_pll14_pll18_map,
++		.parent_map = gcc_pxo_pll8_pll14_pll18_pll0_map,
+ 	},
+ 	.p[0] = {
+ 		.pre_div_shift = 3,
+@@ -2306,8 +2393,8 @@ static struct clk_dyn_rcg_md ubi32_core2_src_clk = {
+ 		.enable_mask = BIT(1),
+ 		.hw.init = &(struct clk_init_data){
+ 			.name = "ubi32_core2_src_clk",
+-			.parent_names = gcc_pxo_pll8_pll14_pll18,
+-			.num_parents = 4,
++			.parent_names = gcc_pxo_pll8_pll14_pll18_pll0,
++			.num_parents = 5,
+ 			.ops = &clk_dyn_rcg_md_ops,
+ 			.flags = CLK_SET_RATE_PARENT,
+ 		},
+@@ -2395,12 +2482,14 @@ static struct clk_regmap nss_core_clk = {
+ 	.hw.init = &(struct clk_init_data){
+ 		.name = "nss_core_clk",
+ 		.ops = &clk_ops_nss_core,
+-		.parent_names = gcc_pxo_pll8_pll14_pll18,
++		.parent_names = gcc_pxo_pll8_pll14_pll18_pll0,
+ 		.num_parents = 4,
+ 	},
+ };
+ 
+ static struct clk_regmap *gcc_ipq806x_clks[] = {
++	[PLL0] = &pll0.clkr,
++	[PLL0_VOTE] = &pll0_vote,
+ 	[PLL3] = &pll3.clkr,
+ 	[PLL8] = &pll8.clkr,
+ 	[PLL8_VOTE] = &pll8_vote,
+@@ -2503,6 +2592,8 @@ static struct clk_regmap *gcc_ipq806x_clks[] = {
+ 	[USB_FS1_SYSTEM_CLK] = &usb_fs1_sys_clk.clkr,
+ 	[UBI32_CORE1_CLK_SRC] = &ubi32_core1_src_clk.clkr,
+ 	[UBI32_CORE2_CLK_SRC] = &ubi32_core2_src_clk.clkr,
++	[NSSTCM_CLK_SRC] = &nss_tcm_src.clkr,
++	[NSSTCM_CLK] = &nss_tcm_clk.clkr,
+ 	[NSS_CORE_CLK] = &nss_core_clk,
+ };
+ 
+@@ -2622,13 +2713,21 @@ static const struct qcom_reset_map gcc_ipq806x_resets[] = {
+ 	[USB30_1_PHY_RESET] = { 0x3B58, 0 },
+ 	[NSSFB0_RESET] = { 0x3B60, 6 },
+ 	[NSSFB1_RESET] = { 0x3B60, 7 },
++	[UBI32_CORE1_CLKRST_CLAMP_RESET] = { 0x3D3C, 3},
++	[UBI32_CORE1_CLAMP_RESET] = { 0x3D3C, 2 },
++	[UBI32_CORE1_AHB_RESET] = { 0x3D3C, 1 },
++	[UBI32_CORE1_AXI_RESET] = { 0x3D3C, 0 },
++	[UBI32_CORE2_CLKRST_CLAMP_RESET] = { 0x3D5C, 3 },
++	[UBI32_CORE2_CLAMP_RESET] = { 0x3D5C, 2 },
++	[UBI32_CORE2_AHB_RESET] = { 0x3D5C, 1 },
++	[UBI32_CORE2_AXI_RESET] = { 0x3D5C, 0 },
+ };
+ 
+ static const struct regmap_config gcc_ipq806x_regmap_config = {
+ 	.reg_bits	= 32,
+ 	.reg_stride	= 4,
+ 	.val_bits	= 32,
+-	.max_register	= 0x3B60,
++	.max_register	= 0x3e40,
+ 	.fast_io	= true,
+ };
+ 
+diff --git a/include/dt-bindings/clock/qcom,gcc-ipq806x.h b/include/dt-bindings/clock/qcom,gcc-ipq806x.h
+index 9017dcf..0fd3e8a 100644
+--- a/include/dt-bindings/clock/qcom,gcc-ipq806x.h
++++ b/include/dt-bindings/clock/qcom,gcc-ipq806x.h
+@@ -289,6 +289,8 @@
+ #define UBI32_CORE2_CLK_SRC			277
+ #define UBI32_CORE1_CLK				278
+ #define UBI32_CORE2_CLK				279
+-#define NSS_CORE_CLK				280 /* Virtual */
++#define NSSTCM_CLK_SRC				280
++#define NSSTCM_CLK				281
++#define NSS_CORE_CLK				282 /* Virtual */
+ 
+ #endif
+diff --git a/include/dt-bindings/reset/qcom,gcc-ipq806x.h b/include/dt-bindings/reset/qcom,gcc-ipq806x.h
+index 8bd8b5f..2e0c182 100644
+--- a/include/dt-bindings/reset/qcom,gcc-ipq806x.h
++++ b/include/dt-bindings/reset/qcom,gcc-ipq806x.h
+@@ -129,4 +129,13 @@
+ #define USB30_1_PHY_RESET				112
+ #define NSSFB0_RESET					113
+ #define NSSFB1_RESET					114
++#define UBI32_CORE1_CLKRST_CLAMP_RESET			115
++#define UBI32_CORE1_CLAMP_RESET				116
++#define UBI32_CORE1_AHB_RESET				117
++#define UBI32_CORE1_AXI_RESET				118
++#define UBI32_CORE2_CLKRST_CLAMP_RESET			119
++#define UBI32_CORE2_CLAMP_RESET				120
++#define UBI32_CORE2_AHB_RESET				121
++#define UBI32_CORE2_AXI_RESET				122
++
+ #endif
+-- 
+1.7.10.4
+

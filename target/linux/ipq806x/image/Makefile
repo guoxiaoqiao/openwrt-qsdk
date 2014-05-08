@@ -14,15 +14,11 @@ define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 endef
 
-define Image/BuildKernel/zImage
-	cat $(LINUX_DIR)/arch/arm/boot/zImage $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb \
-		> $(BIN_DIR)/$(IMG_PREFIX)-$(1)-zImage_w_dtb
-endef
-
 define Image/BuildKernel
 	$(CP) $(LINUX_DIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
 	$(CP) $(LINUX_DIR)/arch/arm/boot/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
-	$(call Image/BuildKernel/zImage,qcom-ipq8064-ap148)
+	$(CP) $(LINUX_DIR)/arch/arm/boot/uImage $(BIN_DIR)/$(IMG_PREFIX)-$(KERNEL)-uImage
+	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148.dtb $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148.dtb
 endef
 
 define Image/Build
