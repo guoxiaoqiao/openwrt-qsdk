@@ -13,6 +13,10 @@ LINUX_VERSION:=3.14
 KERNELNAME="uImage dtbs"
 KERNELLOAD=0x41708000
 
+# Kernel clone path and local repository reference can be done through menu config, else we we
+# can hardcode it as below, this is just for a reference
+CONFIG_KERNEL_GIT_CLONE_URL=$(TOPDIR)/qca/src/linux
+
 include $(INCLUDE_DIR)/target.mk
 
 $(eval $(call BuildTarget))
