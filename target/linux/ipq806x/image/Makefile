@@ -9,16 +9,13 @@ UBINIZE_OPTS = -m 2048 -p 128KiB
 E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
 define Image/BuildKernel/FIT
-	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb $(BIN_DIR)/$(IMG_PREFIX)-$(1).dtb
-	$(call Image/BuildKernel/MkFIT,$(1),$(LINUX_DIR)/arch/arm/boot/zImage,$(BIN_DIR)/$(IMG_PREFIX)-$(1).dtb,none,0x40A08000,0x40A08000)
+	$(call Image/BuildKernel/MkFIT,$(1), $(LINUX_DIR)/arch/arm/boot/zImage, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb, none,0x41708000,0x41708000)
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 endef
 
 define Image/BuildKernel
 	$(CP) $(LINUX_DIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
-	$(CP) $(LINUX_DIR)/arch/arm/boot/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
-	$(CP) $(LINUX_DIR)/arch/arm/boot/uImage $(BIN_DIR)/$(IMG_PREFIX)-$(KERNEL)-uImage
-	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148.dtb $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148.dtb
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148)
 endef
 
 define Image/Build
