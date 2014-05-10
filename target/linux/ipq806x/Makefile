@@ -19,4 +19,7 @@ CONFIG_KERNEL_GIT_CLONE_URL=$(TOPDIR)/qca/src/linux
 
 include $(INCLUDE_DIR)/target.mk
 
+DEFAULT_PACKAGES += \
+	uboot-ipq806x
+
 $(eval $(call BuildTarget))
