@@ -1,0 +1,38 @@
+--- a/arch/mips/ath79/early_printk.c
++++ b/arch/mips/ath79/early_printk.c
+@@ -114,6 +114,8 @@ static void prom_putchar_init(void)
+ 	case REV_ID_MAJOR_AR9341:
+ 	case REV_ID_MAJOR_AR9342:
+ 	case REV_ID_MAJOR_AR9344:
++	case REV_ID_MAJOR_QCA9531_V1:
++	case REV_ID_MAJOR_QCA9531_V2:
+ 	case REV_ID_MAJOR_QCA9558:
+ 	case REV_ID_MAJOR_QCA9563:
+ 		_prom_putchar = prom_putchar_ar71xx;
+--- a/arch/mips/ath79/setup.c
++++ b/arch/mips/ath79/setup.c
+@@ -170,9 +170,10 @@ static void __init ath79_detect_sys_type(void)
+ 		rev = id & AR944X_REV_ID_REVISION_MASK;
+ 		break;
+ 
+-	case REV_ID_MAJOR_QCA9531:
++	case REV_ID_MAJOR_QCA9531_V1:
++	case REV_ID_MAJOR_QCA9531_V2:
+ 		ath79_soc = ATH79_SOC_QCA9531;
+-		chip = "9531";
++		chip = (major == REV_ID_MAJOR_QCA9531_V1) ? "9531 V1" : "9531 V2";
+ 		rev = id & QCA953X_REV_ID_REVISION_MASK;
+ 		break;
+ 
+--- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
++++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+@@ -756,7 +756,8 @@
+ #define REV_ID_MAJOR_AR9341		0x0120
+ #define REV_ID_MAJOR_AR9342		0x1120
+ #define REV_ID_MAJOR_AR9344		0x2120
+-#define REV_ID_MAJOR_QCA9531		0x0140
++#define REV_ID_MAJOR_QCA9531_V1	0x0140
++#define REV_ID_MAJOR_QCA9531_V2	0x0160
+ #define REV_ID_MAJOR_QCA9558		0x1130
+ #define REV_ID_MAJOR_QCA9563		0x1150
+ 
