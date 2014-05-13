@@ -25,8 +25,8 @@ Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 
 Index: linux-3.3.8/net/core/skbuff.c
 ===================================================================
---- linux-3.3.8.orig/net/core/skbuff.c	2013-08-15 09:10:00.822362163 -0500
-+++ linux-3.3.8/net/core/skbuff.c	2013-08-23 09:53:59.115388005 -0500
+--- linux-3.3.8.orig/net/core/skbuff.c	2014-05-13 09:14:29.534747715 -0500
++++ linux-3.3.8/net/core/skbuff.c	2014-05-13 09:49:18.407314629 -0500
 @@ -59,6 +59,7 @@
  #include <linux/errqueue.h>
  #include <linux/prefetch.h>
@@ -41,7 +41,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  static struct kmem_cache *skbuff_fclone_cache __read_mostly;
 +static DEFINE_PER_CPU(struct sk_buff_head, recycle_list);
 +#define SKB_RECYCLE_SIZE	2048
-+#define SKB_RECYCLE_MAX_SKBS	2048
++#define SKB_RECYCLE_MAX_SKBS	1024
  
  static void sock_pipe_buf_release(struct pipe_inode_info *pipe,
  				  struct pipe_buffer *buf)
