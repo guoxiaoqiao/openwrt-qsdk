@@ -41,11 +41,6 @@ define KernelPackage/qca-nss-ecm
 	$(PKG_BUILD_DIR)/ecm_bond_notifier.ko
 endef
 
-define KernelPackage/qca-nss-ecm/install
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/qca-nss-ecm.init $(1)/etc/init.d/qca-nss-ecm
-endef
-
 define KernelPackage/qca-nss-qdisc-basic/Description
 This package contains the Qualcomm Atheros NSS Enhanced Connection Manager
 endef
