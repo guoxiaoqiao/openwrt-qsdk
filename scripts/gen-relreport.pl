@@ -7,6 +7,7 @@ use File::Copy;
 use File::Basename;
 use Excel::Writer::XLSX;
 use Excel::Writer::XLSX::Utility;
+use XML::Simple;
 use FindBin;
 use lib "$FindBin::Bin";
 use metadata;
@@ -204,9 +205,14 @@ sub write_output_xlsx($) {
     }
 }
 
+sub write_output_xml($) {
+    XMLout( \%QSDKPKGS, OutputFile => $_, XMLDecl => 1, RootName => 'release' );
+}
+
 sub write_output() {
     for (@{$OPTS{o}}) {
         if (/^.*\.xlsx$/) { write_output_xlsx($_); next; }
+        if (/^.*\.xml$/)  { write_output_xml($_); next; }
         print("$_: file format not recognized\n");
     }
 }
