@@ -26,19 +26,7 @@ define KernelPackage/qca-nss-ecm
   SUBMENU:=Network Support
   DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv
   TITLE:=QCA NSS Enhanced Connection Manager (ECM)
-  FILES:=$(PKG_BUILD_DIR)/ecm_tracker_udp.ko \
-	$(PKG_BUILD_DIR)/ecm_tracker_tcp.ko \
-	$(PKG_BUILD_DIR)/ecm_tracker_datagram.ko \
-	$(PKG_BUILD_DIR)/ecm_tracker.ko \
-	$(PKG_BUILD_DIR)/ecm_front_end_ipv4.ko \
-	$(PKG_BUILD_DIR)/ecm_front_end_ipv6.ko \
-	$(PKG_BUILD_DIR)/ecm_db.ko \
-	$(PKG_BUILD_DIR)/ecm_classifier_default.ko \
-	$(PKG_BUILD_DIR)/ecm_conntrack_notifier.ko \
-	$(PKG_BUILD_DIR)/ecm_classifier_nl.ko \
-	$(PKG_BUILD_DIR)/ecm_classifier_hyfi.ko \
-	$(PKG_BUILD_DIR)/ecm_interface.ko \
-	$(PKG_BUILD_DIR)/ecm_bond_notifier.ko
+  FILES:=$(PKG_BUILD_DIR)/ecm.ko
 endef
 
 define KernelPackage/qca-nss-qdisc-basic/Description
