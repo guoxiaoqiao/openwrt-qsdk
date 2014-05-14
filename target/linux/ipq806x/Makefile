@@ -10,7 +10,7 @@ CPU_TYPE:=cortex-a7
 
 LINUX_VERSION:=3.14
 
-KERNELNAME="zImage dtbs"
+KERNELNAME="Image dtbs"
 
 # Kernel clone path and local repository reference can be done through menu config, else we we
 # can hardcode it as below, this is just for a reference
