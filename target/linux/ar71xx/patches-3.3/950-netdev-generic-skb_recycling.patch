@@ -26,7 +26,7 @@ Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
 Index: linux-3.3.8/net/core/skbuff.c
 ===================================================================
 --- linux-3.3.8.orig/net/core/skbuff.c	2014-05-13 09:14:29.534747715 -0500
-+++ linux-3.3.8/net/core/skbuff.c	2014-05-13 09:49:18.407314629 -0500
++++ linux-3.3.8/net/core/skbuff.c	2014-05-14 09:31:39.205101678 -0500
 @@ -59,6 +59,7 @@
  #include <linux/errqueue.h>
  #include <linux/prefetch.h>
@@ -35,17 +35,24 @@ Index: linux-3.3.8/net/core/skbuff.c
  
  #include <net/protocol.h>
  #include <net/dst.h>
-@@ -74,6 +75,9 @@
+@@ -74,6 +75,16 @@
  
  static struct kmem_cache *skbuff_head_cache __read_mostly;
  static struct kmem_cache *skbuff_fclone_cache __read_mostly;
 +static DEFINE_PER_CPU(struct sk_buff_head, recycle_list);
-+#define SKB_RECYCLE_SIZE	2048
++/*
++ * We want to ensure that we do not include >4K size SKBs on this list for
++ * memory usage reasons.  So, we do the reverse calculation done by the stack
++ * to calculate the allocation size.  We may eventually allow multiple,
++ * different-sized recycle lists, but this handles the general case for now.
++ * 4096 - aligned(skb_shared_info) = 3904
++ */
++#define SKB_RECYCLE_SIZE	(3904 - NET_SKB_PAD)
 +#define SKB_RECYCLE_MAX_SKBS	1024
  
  static void sock_pipe_buf_release(struct pipe_inode_info *pipe,
  				  struct pipe_buffer *buf)
-@@ -310,13 +314,45 @@
+@@ -310,13 +321,45 @@
  struct sk_buff *__netdev_alloc_skb(struct net_device *dev,
  		unsigned int length, gfp_t gfp_mask)
  {
@@ -95,7 +102,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  	return skb;
  }
  EXPORT_SYMBOL(__netdev_alloc_skb);
-@@ -361,11 +397,37 @@
+@@ -361,11 +404,37 @@
   */
  struct sk_buff *dev_alloc_skb(unsigned int length)
  {
@@ -134,7 +141,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  }
  EXPORT_SYMBOL(dev_alloc_skb);
  
-@@ -530,6 +592,31 @@
+@@ -530,6 +599,31 @@
  }
  EXPORT_SYMBOL(kfree_skb);
  
@@ -166,7 +173,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  /**
   *	consume_skb - free an skbuff
   *	@skb: buffer to free
-@@ -546,8 +633,46 @@
+@@ -546,8 +640,46 @@
  		smp_rmb();
  	else if (likely(!atomic_dec_and_test(&skb->users)))
  		return;
@@ -214,7 +221,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  }
  EXPORT_SYMBOL(consume_skb);
  
-@@ -2962,8 +3087,23 @@
+@@ -2962,8 +3094,23 @@
  }
  EXPORT_SYMBOL_GPL(skb_gro_receive);
  
@@ -238,7 +245,7 @@ Index: linux-3.3.8/net/core/skbuff.c
  	skbuff_head_cache = kmem_cache_create("skbuff_head_cache",
  					      sizeof(struct sk_buff),
  					      0,
-@@ -2975,6 +3115,14 @@
+@@ -2975,6 +3122,14 @@
  						0,
  						SLAB_HWCACHE_ALIGN|SLAB_PANIC,
  						NULL);
