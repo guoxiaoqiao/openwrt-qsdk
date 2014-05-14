@@ -93,7 +93,7 @@ sub write_output_xlsx($) {
     my $filename = shift;
 
     # Create a new workbook and add a worksheet
-    my $workbook = Excel::Writer::XLSX->new($filename);
+    my $workbook  = Excel::Writer::XLSX->new($filename);
     my $worksheet = $workbook->add_worksheet();
 
     # Init the worksheet (set columns width, create colors & formats)
@@ -210,9 +210,9 @@ sub write_output_xml($) {
 }
 
 sub write_output() {
-    for (@{$OPTS{o}}) {
+    for ( @{ $OPTS{o} } ) {
         if (/^.*\.xlsx$/) { write_output_xlsx($_); next; }
-        if (/^.*\.xml$/)  { write_output_xml($_); next; }
+        if (/^.*\.xml$/)  { write_output_xml($_);  next; }
         print("$_: file format not recognized\n");
     }
 }
@@ -233,15 +233,15 @@ sub show_help_and_exit($) {
 
 sub parse_command() {
     while ( my $opt = shift @ARGV ) {
-        if ( $opt =~ /^-o$/ ) { push (@{$OPTS{o}}, shift(@ARGV)) }
+        if ( $opt =~ /^-o$/ ) { push( @{ $OPTS{o} }, shift(@ARGV) ) }
         elsif ( $opt =~ /^-.*$/ ) {
             show_help_and_exit("\"$opt\" option not supported");
         }
         else { load_config($opt); }
     }
 
-    if (!defined($OPTS{o})) {
-        push (@{$OPTS{o}}, "openwrt.xlsx");
+    if ( !defined( $OPTS{o} ) ) {
+        push( @{ $OPTS{o} }, "openwrt.xlsx" );
     }
 }
 
