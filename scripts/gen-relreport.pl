@@ -67,9 +67,7 @@ sub xref_packages() {
                 variant => $package{$pkg}->{variant},
 
           # Feeds (subdir) is set to an empty string for packages in openwrt.git
-                subdir => length( $package{$pkg}->{subdir} )
-                ? basename( $package{$pkg}->{subdir} )
-                : "openwrt",
+                subdir      => $package{$pkg}->{subdir},
                 version     => $package{$pkg}->{version},
                 description => $package{$pkg}->{description},
                 source      => $package{$pkg}->{source},
@@ -164,7 +162,8 @@ sub write_output_xlsx($) {
         $worksheet->write( $row, $col++, $curpkg->{src},     $f_data );
         $worksheet->write( $row, $col++, $curpkg->{name},    $f_data );
         $worksheet->write( $row, $col++, $curpkg->{variant}, $f_data );
-        $worksheet->write( $row, $col++, $curpkg->{subdir},  $f_data );
+        $worksheet->write( $row, $col++, length( $curpkg->{subdir} )
+                ? basename( $curpkg->{subdir} ) : "openwrt", $f_data );
         $worksheet->write( $row, $col++, $curpkg->{source},  $f_data );
         $worksheet->write_string( $row, $col++, $curpkg->{version}, $f_data )
           unless !exists( $curpkg->{version} );
@@ -193,7 +192,8 @@ sub write_output_xlsx($) {
             $worksheet->merge_range( $start_merge, 0, $row - 1, 0,
                 $prevpkg->{src}, $f_data );
             $worksheet->merge_range( $start_merge, 3, $row - 1, 3,
-                $prevpkg->{subdir}, $f_data );
+                length( $curpkg->{subdir} ) ? basename( $curpkg->{subdir} )
+                : "openwrt", $f_data );
             $worksheet->merge_range( $start_merge, 4, $row - 1, 4,
                 $prevpkg->{source}, $f_data );
             $worksheet->merge_range( $start_merge, 5, $row - 1, 5,
