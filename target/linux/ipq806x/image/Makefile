@@ -9,7 +9,7 @@ UBINIZE_OPTS = -m 2048 -p 128KiB
 E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
 define Image/BuildKernel/FIT
-	$(call Image/BuildKernel/MkFIT,$(1), $(LINUX_DIR)/arch/arm/boot/zImage, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb, none,0x42208000,0x42208000)
+	$(call Image/BuildKernel/MkFIT,$(1), $(LINUX_DIR)/arch/arm/boot/Image, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb, none,0x42208000,0x42208000)
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 endef
 
