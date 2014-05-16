@@ -1,6 +1,6 @@
 --- a/arch/mips/ath79/Kconfig
 +++ b/arch/mips/ath79/Kconfig
-@@ -750,6 +750,12 @@ config SOC_QCA955X
+@@ -752,6 +752,12 @@ config SOC_QCA955X
  	select PCI_AR724X if PCI
  	def_bool n
  
@@ -13,7 +13,7 @@
  config ATH79_DEV_AP9X_PCI
  	select ATH79_PCI_ATH9K_FIXUP
  	def_bool n
-@@ -793,7 +799,7 @@ config ATH79_DEV_USB
+@@ -795,7 +801,7 @@ config ATH79_DEV_USB
  	def_bool n
  
  config ATH79_DEV_WMAC
@@ -53,13 +53,13 @@
  #define QCA955X_NFC_BASE	0x1b000200
  #define QCA955X_NFC_SIZE	0xb8
  
-+#define QCA956X_PCI_MEM_BASE0	0x12000000
++#define QCA956X_PCI_MEM_BASE1	0x12000000
 +#define QCA956X_PCI_MEM_SIZE	0x02000000
-+#define QCA956X_PCI_CFG_BASE0	0x16000000
++#define QCA956X_PCI_CFG_BASE1	0x16000000
 +#define QCA956X_PCI_CFG_SIZE	0x1000
-+#define QCA956X_PCI_CRP_BASE0	(AR71XX_APB_BASE + 0x00250000)
++#define QCA956X_PCI_CRP_BASE1	(AR71XX_APB_BASE + 0x00250000)
 +#define QCA956X_PCI_CRP_SIZE	0x1000
-+#define QCA956X_PCI_CTRL_BASE0	(AR71XX_APB_BASE + 0x00280000)
++#define QCA956X_PCI_CTRL_BASE1	(AR71XX_APB_BASE + 0x00280000)
 +#define QCA956X_PCI_CTRL_SIZE	0x100
 +
 +#define QCA956X_WMAC_BASE	(AR71XX_APB_BASE + 0x00100000)
@@ -307,7 +307,7 @@
  
 --- a/arch/mips/ath79/clock.c
 +++ b/arch/mips/ath79/clock.c
-@@ -478,6 +478,91 @@ static void __init qca955x_clocks_init(v
+@@ -446,6 +446,91 @@ static void __init qca955x_clocks_init(v
  	ath79_uart_clk.rate = ath79_ref_clk.rate;
  }
  
@@ -399,7 +399,7 @@
  void __init ath79_clocks_init(void)
  {
  	if (soc_is_ar71xx())
-@@ -494,6 +579,8 @@ void __init ath79_clocks_init(void)
+@@ -462,6 +547,8 @@ void __init ath79_clocks_init(void)
  		qca953x_clocks_init();
  	else if (soc_is_qca955x())
  		qca955x_clocks_init();
@@ -647,19 +647,51 @@
  
 --- a/arch/mips/ath79/pci.c
 +++ b/arch/mips/ath79/pci.c
-@@ -293,6 +293,15 @@ int __init ath79_register_pci(void)
+@@ -68,6 +68,21 @@ static const struct ath79_pci_irq qca955
+ 	},
+ };
+ 
++static const struct ath79_pci_irq qca956x_pci_irq_map[] __initconst = {
++        {
++                .bus    = 0,
++                .slot   = 0,
++                .pin    = 1,
++                .irq    = ATH79_PCI_IRQ(0),
++        },
++        {
++                .bus    = 1,
++                .slot   = 0,
++                .pin    = 1,
++                .irq    = ATH79_PCI_IRQ(1),
++        },
++};
++
+ int __init pcibios_map_irq(const struct pci_dev *dev, uint8_t slot, uint8_t pin)
+ {
+ 	int irq = -1;
+@@ -86,6 +101,9 @@ int __init pcibios_map_irq(const struct
+ 		} else if (soc_is_qca955x()) {
+ 			ath79_pci_irq_map = qca955x_pci_irq_map;
+ 			ath79_pci_nr_irqs = ARRAY_SIZE(qca955x_pci_irq_map);
++		} else if (soc_is_qca956x()) {
++			ath79_pci_irq_map = qca956x_pci_irq_map;
++			ath79_pci_nr_irqs = ARRAY_SIZE(qca956x_pci_irq_map);
+ 		} else {
+ 			pr_crit("pci %s: invalid irq map\n",
+ 				pci_name((struct pci_dev *) dev));
+@@ -293,6 +311,15 @@ int __init ath79_register_pci(void)
  						 QCA955X_PCI_MEM_SIZE,
  						 1,
  						 ATH79_IP3_IRQ(2));
 +	} else if (soc_is_qca956x()) {
 +		pdev = ath79_register_pci_ar724x(0,
-+						 QCA956X_PCI_CFG_BASE0,
-+						 QCA956X_PCI_CTRL_BASE0,
-+						 QCA956X_PCI_CRP_BASE0,
-+						 QCA956X_PCI_MEM_BASE0,
++						 QCA956X_PCI_CFG_BASE1,
++						 QCA956X_PCI_CTRL_BASE1,
++						 QCA956X_PCI_CRP_BASE1,
++						 QCA956X_PCI_MEM_BASE1,
 +						 QCA956X_PCI_MEM_SIZE,
-+						 0,
-+						 ATH79_IP2_IRQ(0));
++						 1,
++						 ATH79_IP3_IRQ(2));
  	} else {
  		/* No PCI support */
  		return -ENODEV;
