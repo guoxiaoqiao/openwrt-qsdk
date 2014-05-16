@@ -45,4 +45,9 @@ define Build/Compile
 		modules
 endef
 
+define KernelPackage/qca-nss-ecm/install
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) ./files/ecm_dump.sh $(1)/usr/bin/
+endef
+
 $(eval $(call KernelPackage,qca-nss-ecm))
