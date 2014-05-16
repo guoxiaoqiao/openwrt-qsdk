@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=qca-legacy-uboot
-PKG_VERSION:=10.1.389
+PKG_VERSION:=10.2.2.30
 PKG_RELEASE:=1
 
 PKG_SOURCE:=u-boot-2006-04-06-1725.tar.bz2
@@ -34,7 +34,7 @@ define qca-legacy-uboot/$(1)
 endef
 endef
 
-UBOOTS:=ap121 ap135 ap136 db12x cus227
+UBOOTS:=ap121 ap135 ap136 db12x cus227 ap152-8M ap152-16M
 
 define Package/qca-legacy-uboot/template
 define Package/qca-legacy-uboot-$(1)
