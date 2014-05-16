@@ -27,6 +27,7 @@ define KernelPackage/qca-nss-ecm
   DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv
   TITLE:=QCA NSS Enhanced Connection Manager (ECM)
   FILES:=$(PKG_BUILD_DIR)/ecm.ko
+  AUTOLOAD:=$(call AutoLoad,33,ecm)
 endef
 
 define KernelPackage/qca-nss-qdisc-basic/Description
@@ -46,8 +47,9 @@ define Build/Compile
 endef
 
 define KernelPackage/qca-nss-ecm/install
-	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/sysctl.d
 	$(INSTALL_BIN) ./files/ecm_dump.sh $(1)/usr/bin/
+	$(INSTALL_BIN) ./files/qca-nss-ecm.sysctl $(1)/etc/sysctl.d/qca-nss-ecm.conf
 endef
 
 $(eval $(call KernelPackage,qca-nss-ecm))

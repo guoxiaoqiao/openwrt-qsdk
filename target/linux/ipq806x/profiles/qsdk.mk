@@ -22,7 +22,7 @@ endef
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES+=kmod-ath9k wpad-mini \
-	  kmod-qca-nss-connmgr
+	  kmod-qca-nss-connmgr-noload
 endef
 
 define Profile/QSDK_Open/Description
@@ -37,7 +37,7 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Retail
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Retail Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-connmgr hyfi \
+	PACKAGES+=streamboost-noload kmod-qca-nss-connmgr-noload hyfi \
 		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail \
 		kmod-qca-nss-ecm
 endef
@@ -65,7 +65,7 @@ $(eval $(call Profile,QSDK_Carrier))
 define Profile/QSDK_Standard
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-connmgr hyfi \
+	PACKAGES+=streamboost-noload kmod-qca-nss-connmgr-noload hyfi \
 		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail \
 		kmod-qca-nss-ecm
 endef
