@@ -193,6 +193,10 @@ define Package/ppp/install
 	$(INSTALL_BIN) ./files/ppp.sh $(1)/lib/netifd/proto/
 	$(INSTALL_BIN) ./files/lib/netifd/ppp-up $(1)/lib/netifd/
 	$(INSTALL_BIN) ./files/lib/netifd/ppp-down $(1)/lib/netifd/
+	$(INSTALL_DIR) $(1)/etc/ppp/ip-up.d
+	$(INSTALL_DIR) $(1)/etc/ppp/ip-down.d
+	$(INSTALL_BIN) ./files/etc/ppp/ip-up.d/add-tunnel-server-blackhole $(1)/etc/ppp/ip-up.d/
+	$(INSTALL_BIN) ./files/etc/ppp/ip-down.d/clear-tunnel-server-blackhole $(1)/etc/ppp/ip-down.d/
 endef
 Package/ppp-multilink/install=$(Package/ppp/install)
 
