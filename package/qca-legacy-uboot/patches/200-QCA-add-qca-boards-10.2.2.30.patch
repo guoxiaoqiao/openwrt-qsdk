@@ -1,6 +1,6 @@
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/ap120.c u-boot_1.1//board/ar7240/ap120/ap120.c
 --- u-boot//board/ar7240/ap120/ap120.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap120/ap120.c	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap120/ap120.c	2014-05-15 00:16:41.171232201 -0700
 @@ -0,0 +1,199 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -203,7 +203,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/ap120.c u-
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/config.mk u-boot_1.1//board/ar7240/ap120/config.mk
 --- u-boot//board/ar7240/ap120/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap120/config.mk	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap120/config.mk	2014-05-15 00:16:41.171232201 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -248,7 +248,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/config.mk 
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/flash.c u-boot_1.1//board/ar7240/ap120/flash.c
 --- u-boot//board/ar7240/ap120/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap120/flash.c	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap120/flash.c	2014-05-15 00:16:41.171232201 -0700
 @@ -0,0 +1,52 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -304,7 +304,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/flash.c u-
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/Makefile u-boot_1.1//board/ar7240/ap120/Makefile
 --- u-boot//board/ar7240/ap120/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap120/Makefile	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap120/Makefile	2014-05-15 00:16:41.171232201 -0700
 @@ -0,0 +1,90 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -398,7 +398,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/Makefile u
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/ap120/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/ap120/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap120/u-boot-bootstrap.lds	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap120/u-boot-bootstrap.lds	2014-05-15 00:16:41.171232201 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -462,7 +462,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/u-boot-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/u-boot.lds u-boot_1.1//board/ar7240/ap120/u-boot.lds
 --- u-boot//board/ar7240/ap120/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap120/u-boot.lds	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap120/u-boot.lds	2014-05-15 00:16:41.171232201 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -530,8 +530,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/u-boot.lds
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/ap121.c u-boot_1.1//board/ar7240/ap121/ap121.c
 --- u-boot//board/ar7240/ap121/ap121.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap121/ap121.c	2014-02-18 01:46:24.771050902 -0800
-@@ -0,0 +1,142 @@
++++ u-boot_1.1//board/ar7240/ap121/ap121.c	2014-05-15 00:16:41.171232201 -0700
+@@ -0,0 +1,165 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +#include <common.h>
 +#include <command.h>
 +#include <asm/mipsregs.h>
@@ -542,6 +564,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/ap121.c u-
 +
 +extern void ar7240_ddr_initial_config(uint32_t refresh);
 +extern int ar7240_ddr_find_size(void);
++extern void hornet_ddr_tap_init(void);
 +
 +#ifdef CONFIG_HORNET_EMU
 +extern void ar7240_ddr_initial_config_for_fpga(void);
@@ -559,7 +582,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/ap121.c u-
 +void
 +ar7240_usb_otp_config(void)
 +{
-+    unsigned int addr, reg_val, reg_usb;
++    unsigned int addr, reg_val, reg_usb = 0;
 +    int time_out, status, usb_valid;
 +    
 +    for (addr = 0xb8114014; ;addr -= 0x10) {
@@ -676,8 +699,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/ap121.c u-
 +#endif /* #ifdef COMPRESSED_UBOOT */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/config.mk u-boot_1.1//board/ar7240/ap121/config.mk
 --- u-boot//board/ar7240/ap121/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap121/config.mk	2014-02-18 01:46:24.771050902 -0800
-@@ -0,0 +1,10 @@
++++ u-boot_1.1//board/ar7240/ap121/config.mk	2014-05-15 00:16:41.171232201 -0700
+@@ -0,0 +1,32 @@
++#
++# Copyright (c) 2014 Qualcomm Atheros, Inc.
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
 +# ROM version
 +ifeq ($(COMPRESSED_UBOOT),1)
 +TEXT_BASE = 0x80010000
@@ -690,8 +735,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/config.mk 
 +#TEXT_BASE = 0x80000000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/flash.c u-boot_1.1//board/ar7240/ap121/flash.c
 --- u-boot//board/ar7240/ap121/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap121/flash.c	2014-02-18 01:46:24.771050902 -0800
-@@ -0,0 +1,28 @@
++++ u-boot_1.1//board/ar7240/ap121/flash.c	2014-05-15 00:16:41.171232201 -0700
+@@ -0,0 +1,50 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +#include <common.h>
 +#include <config.h>
 +#include <asm/types.h>
@@ -722,8 +789,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/flash.c u-
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/hornet_pll_init.S u-boot_1.1//board/ar7240/ap121/hornet_pll_init.S
 --- u-boot//board/ar7240/ap121/hornet_pll_init.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap121/hornet_pll_init.S	2014-02-18 01:46:24.771050902 -0800
-@@ -0,0 +1,375 @@
++++ u-boot_1.1//board/ar7240/ap121/hornet_pll_init.S	2014-05-15 00:16:41.171232201 -0700
+@@ -0,0 +1,397 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +#include <config.h>
 +#include <version.h>
 +#include <asm/regdef.h>
@@ -1101,8 +1190,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/hornet_pll
 +    nop
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/Makefile u-boot_1.1//board/ar7240/ap121/Makefile
 --- u-boot//board/ar7240/ap121/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap121/Makefile	2014-02-18 01:46:24.771050902 -0800
-@@ -0,0 +1,22 @@
++++ u-boot_1.1//board/ar7240/ap121/Makefile	2014-05-15 00:16:41.171232201 -0700
+@@ -0,0 +1,44 @@
++#
++# Copyright (c) 2014 Qualcomm Atheros, Inc.
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
 +include $(TOPDIR)/config.mk
 +
 +LIB	= lib$(BOARD).a
@@ -1127,11 +1238,10 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/Makefile u
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/ap121/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/ap121/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap121/u-boot-bootstrap.lds	2014-02-18 01:46:24.771050902 -0800
-@@ -0,0 +1,62 @@
++++ u-boot_1.1//board/ar7240/ap121/u-boot-bootstrap.lds	2014-05-15 00:16:41.171232201 -0700
+@@ -0,0 +1,61 @@
 +/*
-+ * (C) Copyright 2003
-+ * Wolfgang Denk Engineering, <wd@denx.de>
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -1193,8 +1303,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/u-boot-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/u-boot.lds u-boot_1.1//board/ar7240/ap121/u-boot.lds
 --- u-boot//board/ar7240/ap121/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap121/u-boot.lds	2014-02-18 01:46:24.771050902 -0800
-@@ -0,0 +1,42 @@
++++ u-boot_1.1//board/ar7240/ap121/u-boot.lds	2014-05-15 00:16:41.171232201 -0700
+@@ -0,0 +1,64 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +OUTPUT_FORMAT("elf32-tradbigmips", "elf32-tradbigmips", "elf32-tradbigmips")
 +OUTPUT_ARCH(mips)
 +ENTRY(_start)
@@ -1239,7 +1371,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap121/u-boot.lds
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/ap123.c u-boot_1.1//board/ar7240/ap123/ap123.c
 --- u-boot//board/ar7240/ap123/ap123.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap123/ap123.c	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap123/ap123.c	2014-05-15 00:16:41.175232206 -0700
 @@ -0,0 +1,193 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -1436,7 +1568,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/ap123.c u-
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/config.mk u-boot_1.1//board/ar7240/ap123/config.mk
 --- u-boot//board/ar7240/ap123/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap123/config.mk	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap123/config.mk	2014-05-15 00:16:41.175232206 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -1481,7 +1613,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/config.mk 
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/flash.c u-boot_1.1//board/ar7240/ap123/flash.c
 --- u-boot//board/ar7240/ap123/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap123/flash.c	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap123/flash.c	2014-05-15 00:16:41.175232206 -0700
 @@ -0,0 +1,52 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -1537,7 +1669,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/flash.c u-
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/Makefile u-boot_1.1//board/ar7240/ap123/Makefile
 --- u-boot//board/ar7240/ap123/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap123/Makefile	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap123/Makefile	2014-05-15 00:16:41.171232201 -0700
 @@ -0,0 +1,90 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -1631,7 +1763,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/Makefile u
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/ap123/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/ap123/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap123/u-boot-bootstrap.lds	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap123/u-boot-bootstrap.lds	2014-05-15 00:16:41.175232206 -0700
 @@ -0,0 +1,60 @@
 +/* 
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -1695,7 +1827,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/u-boot-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/u-boot.lds u-boot_1.1//board/ar7240/ap123/u-boot.lds
 --- u-boot//board/ar7240/ap123/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/ap123/u-boot.lds	2014-02-18 01:46:24.771050902 -0800
++++ u-boot_1.1//board/ar7240/ap123/u-boot.lds	2014-05-15 00:16:41.175232206 -0700
 @@ -0,0 +1,64 @@
 +/* 
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -1763,7 +1895,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap123/u-boot.lds
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/aph126.c u-boot_1.1//board/ar7240/aph126/aph126.c
 --- u-boot//board/ar7240/aph126/aph126.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph126/aph126.c	2014-02-18 01:46:24.791050901 -0800
++++ u-boot_1.1//board/ar7240/aph126/aph126.c	2014-05-15 00:16:41.175232206 -0700
 @@ -0,0 +1,185 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -1952,7 +2084,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/aph126.c 
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/config.mk u-boot_1.1//board/ar7240/aph126/config.mk
 --- u-boot//board/ar7240/aph126/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph126/config.mk	2014-02-18 01:46:24.791050901 -0800
++++ u-boot_1.1//board/ar7240/aph126/config.mk	2014-05-15 00:16:41.175232206 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -1997,7 +2129,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/config.mk
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/flash.c u-boot_1.1//board/ar7240/aph126/flash.c
 --- u-boot//board/ar7240/aph126/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph126/flash.c	2014-02-18 01:46:24.791050901 -0800
++++ u-boot_1.1//board/ar7240/aph126/flash.c	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,50 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2051,7 +2183,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/flash.c u
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/Makefile u-boot_1.1//board/ar7240/aph126/Makefile
 --- u-boot//board/ar7240/aph126/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph126/Makefile	2014-02-18 01:46:24.791050901 -0800
++++ u-boot_1.1//board/ar7240/aph126/Makefile	2014-05-15 00:16:41.175232206 -0700
 @@ -0,0 +1,84 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2139,7 +2271,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/Makefile 
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/aph126/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/aph126/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph126/u-boot-bootstrap.lds	2014-02-18 01:46:24.791050900 -0800
++++ u-boot_1.1//board/ar7240/aph126/u-boot-bootstrap.lds	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2203,7 +2335,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/u-boot-bo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/u-boot.lds u-boot_1.1//board/ar7240/aph126/u-boot.lds
 --- u-boot//board/ar7240/aph126/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph126/u-boot.lds	2014-02-18 01:46:24.791050900 -0800
++++ u-boot_1.1//board/ar7240/aph126/u-boot.lds	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2271,7 +2403,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph126/u-boot.ld
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/aph128.c u-boot_1.1//board/ar7240/aph128/aph128.c
 --- u-boot//board/ar7240/aph128/aph128.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph128/aph128.c	2014-02-18 01:46:24.791050900 -0800
++++ u-boot_1.1//board/ar7240/aph128/aph128.c	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,197 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2472,7 +2604,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/aph128.c 
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/config.mk u-boot_1.1//board/ar7240/aph128/config.mk
 --- u-boot//board/ar7240/aph128/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph128/config.mk	2014-02-18 01:46:24.795050910 -0800
++++ u-boot_1.1//board/ar7240/aph128/config.mk	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2517,7 +2649,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/config.mk
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/flash.c u-boot_1.1//board/ar7240/aph128/flash.c
 --- u-boot//board/ar7240/aph128/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph128/flash.c	2014-02-18 01:46:24.795050910 -0800
++++ u-boot_1.1//board/ar7240/aph128/flash.c	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,50 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2571,7 +2703,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/flash.c u
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/Makefile u-boot_1.1//board/ar7240/aph128/Makefile
 --- u-boot//board/ar7240/aph128/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph128/Makefile	2014-02-18 01:46:24.791050900 -0800
++++ u-boot_1.1//board/ar7240/aph128/Makefile	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,84 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2659,7 +2791,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/Makefile 
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/aph128/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/aph128/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph128/u-boot-bootstrap.lds	2014-02-18 01:46:24.795050910 -0800
++++ u-boot_1.1//board/ar7240/aph128/u-boot-bootstrap.lds	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2723,7 +2855,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/u-boot-bo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/u-boot.lds u-boot_1.1//board/ar7240/aph128/u-boot.lds
 --- u-boot//board/ar7240/aph128/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/aph128/u-boot.lds	2014-02-18 01:46:24.795050910 -0800
++++ u-boot_1.1//board/ar7240/aph128/u-boot.lds	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2791,7 +2923,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/aph128/u-boot.ld
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_flash.c u-boot_1.1//board/ar7240/common/ar7240_flash.c
 --- u-boot//board/ar7240/common/ar7240_flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/ar7240_flash.c	2014-02-18 01:46:24.795050910 -0800
++++ u-boot_1.1//board/ar7240/common/ar7240_flash.c	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,271 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -2985,7 +3117,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_fl
 +		src = source + total;
 +		dst = addr + total;
 +		bytes_this_page =
-+		    AR7240_SPI_PAGE_SIZE - (addr & AR7240_SPI_PAGE_SIZE-1);
++		    AR7240_SPI_PAGE_SIZE - (addr & (AR7240_SPI_PAGE_SIZE-1));
 +		len_this_lp =
 +		    ((len - total) >
 +		     bytes_this_page) ? bytes_this_page : (len - total);
@@ -3066,7 +3198,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_fl
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_flash.h u-boot_1.1//board/ar7240/common/ar7240_flash.h
 --- u-boot//board/ar7240/common/ar7240_flash.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/ar7240_flash.h	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/ar7240_flash.h	2014-05-15 00:16:41.179232211 -0700
 @@ -0,0 +1,86 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -3156,7 +3288,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_fl
 +#endif /*_FLASH_H*/
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_pci.c u-boot_1.1//board/ar7240/common/ar7240_pci.c
 --- u-boot//board/ar7240/common/ar7240_pci.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/ar7240_pci.c	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/ar7240_pci.c	2014-05-15 00:16:41.195232231 -0700
 @@ -0,0 +1,574 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -3734,7 +3866,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_pc
 +#endif /* CONFIG_WASP_SUPPORT */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_s26_phy.c u-boot_1.1//board/ar7240/common/ar7240_s26_phy.c
 --- u-boot//board/ar7240/common/ar7240_s26_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/ar7240_s26_phy.c	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/ar7240_s26_phy.c	2014-05-15 00:16:41.195232231 -0700
 @@ -0,0 +1,930 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -4126,7 +4258,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_s2
 +
 +    athr26_init_flag1 = 1;
 +}
-+static unsigned int phy_val_saved = 0;
++
 +/******************************************************************************
 +*
 +* athrs26_phy_is_link_alive - test to see if the specified link is alive
@@ -4655,7 +4787,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_s2
 +}
 +
 +int
-+athrs26_mdc_check()
++athrs26_mdc_check(void)
 +{
 +    int i;
 +
@@ -4668,7 +4800,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_s2
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_s26_phy.h u-boot_1.1//board/ar7240/common/ar7240_s26_phy.h
 --- u-boot//board/ar7240/common/ar7240_s26_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/ar7240_s26_phy.h	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/ar7240_s26_phy.h	2014-05-15 00:16:41.195232231 -0700
 @@ -0,0 +1,143 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -4815,7 +4947,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ar7240_s2
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ath_nand.c u-boot_1.1//board/ar7240/common/ath_nand.c
 --- u-boot//board/ar7240/common/ath_nand.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/ath_nand.c	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/ath_nand.c	2014-05-15 00:16:41.199232236 -0700
 @@ -0,0 +1,1619 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -6438,7 +6570,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/ath_nand.
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs16_phy.c u-boot_1.1//board/ar7240/common/athrs16_phy.c
 --- u-boot//board/ar7240/common/athrs16_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athrs16_phy.c	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athrs16_phy.c	2014-05-15 00:16:41.199232236 -0700
 @@ -0,0 +1,701 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -7143,7 +7275,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs16_p
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs16_phy.h u-boot_1.1//board/ar7240/common/athrs16_phy.h
 --- u-boot//board/ar7240/common/athrs16_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athrs16_phy.h	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athrs16_phy.h	2014-05-15 00:16:41.199232236 -0700
 @@ -0,0 +1,165 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -7312,7 +7444,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs16_p
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs17_phy.c u-boot_1.1//board/ar7240/common/athrs17_phy.c
 --- u-boot//board/ar7240/common/athrs17_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athrs17_phy.c	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athrs17_phy.c	2014-05-15 00:16:41.199232236 -0700
 @@ -0,0 +1,649 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -7965,7 +8097,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs17_p
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs17_phy.h u-boot_1.1//board/ar7240/common/athrs17_phy.h
 --- u-boot//board/ar7240/common/athrs17_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athrs17_phy.h	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athrs17_phy.h	2014-05-15 00:16:41.199232236 -0700
 @@ -0,0 +1,131 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -8100,7 +8232,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs17_p
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athr_s27_phy.c u-boot_1.1//board/ar7240/common/athr_s27_phy.c
 --- u-boot//board/ar7240/common/athr_s27_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athr_s27_phy.c	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athr_s27_phy.c	2014-05-15 00:16:41.199232236 -0700
 @@ -0,0 +1,891 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -8995,7 +9127,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athr_s27_
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athr_s27_phy.h u-boot_1.1//board/ar7240/common/athr_s27_phy.h
 --- u-boot//board/ar7240/common/athr_s27_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athr_s27_phy.h	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athr_s27_phy.h	2014-05-15 00:16:41.199232236 -0700
 @@ -0,0 +1,208 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -9207,7 +9339,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athr_s27_
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrsf1_phy.c u-boot_1.1//board/ar7240/common/athrsf1_phy.c
 --- u-boot//board/ar7240/common/athrsf1_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athrsf1_phy.c	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athrsf1_phy.c	2014-05-15 00:16:41.207232246 -0700
 @@ -0,0 +1,434 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -9645,7 +9777,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrsf1_p
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrsf1_phy.h u-boot_1.1//board/ar7240/common/athrsf1_phy.h
 --- u-boot//board/ar7240/common/athrsf1_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athrsf1_phy.h	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athrsf1_phy.h	2014-05-15 00:16:41.207232246 -0700
 @@ -0,0 +1,26 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -9675,7 +9807,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrsf1_p
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrsf2_phy.c u-boot_1.1//board/ar7240/common/athrsf2_phy.c
 --- u-boot//board/ar7240/common/athrsf2_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athrsf2_phy.c	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athrsf2_phy.c	2014-05-15 00:16:41.207232246 -0700
 @@ -0,0 +1,377 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -10056,7 +10188,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrsf2_p
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs_vir_phy.c u-boot_1.1//board/ar7240/common/athrs_vir_phy.c
 --- u-boot//board/ar7240/common/athrs_vir_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/athrs_vir_phy.c	2014-02-18 01:46:24.799050917 -0800
++++ u-boot_1.1//board/ar7240/common/athrs_vir_phy.c	2014-05-15 00:16:41.199232236 -0700
 @@ -0,0 +1,123 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -10183,7 +10315,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/athrs_vir
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/lowlevel_init_934x-1.1.S u-boot_1.1//board/ar7240/common/lowlevel_init_934x-1.1.S
 --- u-boot//board/ar7240/common/lowlevel_init_934x-1.1.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/lowlevel_init_934x-1.1.S	2014-02-18 01:46:24.827050929 -0800
++++ u-boot_1.1//board/ar7240/common/lowlevel_init_934x-1.1.S	2014-05-15 00:16:41.207232246 -0700
 @@ -0,0 +1,427 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -10614,7 +10746,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/lowlevel_
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/lowlevel_init_934x.S u-boot_1.1//board/ar7240/common/lowlevel_init_934x.S
 --- u-boot//board/ar7240/common/lowlevel_init_934x.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/lowlevel_init_934x.S	2014-02-18 01:46:24.827050929 -0800
++++ u-boot_1.1//board/ar7240/common/lowlevel_init_934x.S	2014-05-15 00:16:41.207232246 -0700
 @@ -0,0 +1,202 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -10820,7 +10952,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/lowlevel_
 +	nop
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/lowlevel_init.S u-boot_1.1//board/ar7240/common/lowlevel_init.S
 --- u-boot//board/ar7240/common/lowlevel_init.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/lowlevel_init.S	2014-02-18 01:46:24.803050920 -0800
++++ u-boot_1.1//board/ar7240/common/lowlevel_init.S	2014-05-15 00:16:41.207232246 -0700
 @@ -0,0 +1,234 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11058,7 +11190,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/lowlevel_
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/phy.h u-boot_1.1//board/ar7240/common/phy.h
 --- u-boot//board/ar7240/common/phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/common/phy.h	2014-02-18 01:46:24.827050929 -0800
++++ u-boot_1.1//board/ar7240/common/phy.h	2014-05-15 00:16:41.207232246 -0700
 @@ -0,0 +1,41 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11103,7 +11235,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/common/phy.h u-b
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/config.mk u-boot_1.1//board/ar7240/db12x/config.mk
 --- u-boot//board/ar7240/db12x/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x/config.mk	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x/config.mk	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,57 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11164,7 +11296,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/config.mk 
 +endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/db12x.c u-boot_1.1//board/ar7240/db12x/db12x.c
 --- u-boot//board/ar7240/db12x/db12x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x/db12x.c	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x/db12x.c	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,151 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11319,7 +11451,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/db12x.c u-
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/extra.c u-boot_1.1//board/ar7240/db12x/extra.c
 --- u-boot//board/ar7240/db12x/extra.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x/extra.c	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x/extra.c	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,111 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11434,7 +11566,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/extra.c u-
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/flash.c u-boot_1.1//board/ar7240/db12x/flash.c
 --- u-boot//board/ar7240/db12x/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x/flash.c	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x/flash.c	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,52 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11490,7 +11622,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/flash.c u-
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/Makefile u-boot_1.1//board/ar7240/db12x/Makefile
 --- u-boot//board/ar7240/db12x/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x/Makefile	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x/Makefile	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,100 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11594,7 +11726,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/Makefile u
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/db12x/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/db12x/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x/u-boot-bootstrap.lds	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/db12x/u-boot-bootstrap.lds	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11658,7 +11790,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/u-boot-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/u-boot.lds u-boot_1.1//board/ar7240/db12x/u-boot.lds
 --- u-boot//board/ar7240/db12x/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x/u-boot.lds	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/db12x/u-boot.lds	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11726,7 +11858,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x/u-boot.lds
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/config.mk u-boot_1.1//board/ar7240/db12x-extender/config.mk
 --- u-boot//board/ar7240/db12x-extender/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-extender/config.mk	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-extender/config.mk	2014-05-15 00:16:41.211232251 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11771,7 +11903,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/c
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/db12x-extender.c u-boot_1.1//board/ar7240/db12x-extender/db12x-extender.c
 --- u-boot//board/ar7240/db12x-extender/db12x-extender.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-extender/db12x-extender.c	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-extender/db12x-extender.c	2014-05-15 00:16:41.211232251 -0700
 @@ -0,0 +1,158 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11933,7 +12065,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/d
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/flash.c u-boot_1.1//board/ar7240/db12x-extender/flash.c
 --- u-boot//board/ar7240/db12x-extender/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-extender/flash.c	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-extender/flash.c	2014-05-15 00:16:41.211232251 -0700
 @@ -0,0 +1,50 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -11987,7 +12119,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/f
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/Makefile u-boot_1.1//board/ar7240/db12x-extender/Makefile
 --- u-boot//board/ar7240/db12x-extender/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-extender/Makefile	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-extender/Makefile	2014-05-15 00:16:41.207232246 -0700
 @@ -0,0 +1,84 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12075,7 +12207,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/M
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/db12x-extender/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/db12x-extender/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-extender/u-boot-bootstrap.lds	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-extender/u-boot-bootstrap.lds	2014-05-15 00:16:41.211232251 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12139,7 +12271,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/u
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/u-boot.lds u-boot_1.1//board/ar7240/db12x-extender/u-boot.lds
 --- u-boot//board/ar7240/db12x-extender/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-extender/u-boot.lds	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-extender/u-boot.lds	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12207,7 +12339,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-extender/u
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/config.mk u-boot_1.1//board/ar7240/db12x-hybrid/config.mk
 --- u-boot//board/ar7240/db12x-hybrid/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-hybrid/config.mk	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-hybrid/config.mk	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12252,7 +12384,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/con
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/db12x-hybrid.c u-boot_1.1//board/ar7240/db12x-hybrid/db12x-hybrid.c
 --- u-boot//board/ar7240/db12x-hybrid/db12x-hybrid.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-hybrid/db12x-hybrid.c	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-hybrid/db12x-hybrid.c	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,192 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12448,7 +12580,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/db1
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/flash.c u-boot_1.1//board/ar7240/db12x-hybrid/flash.c
 --- u-boot//board/ar7240/db12x-hybrid/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-hybrid/flash.c	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-hybrid/flash.c	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,52 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12504,7 +12636,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/fla
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/Makefile u-boot_1.1//board/ar7240/db12x-hybrid/Makefile
 --- u-boot//board/ar7240/db12x-hybrid/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-hybrid/Makefile	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-hybrid/Makefile	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,90 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12598,7 +12730,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/Mak
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/db12x-hybrid/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/db12x-hybrid/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-hybrid/u-boot-bootstrap.lds	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-hybrid/u-boot-bootstrap.lds	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12662,7 +12794,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/u-b
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/u-boot.lds u-boot_1.1//board/ar7240/db12x-hybrid/u-boot.lds
 --- u-boot//board/ar7240/db12x-hybrid/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/db12x-hybrid/u-boot.lds	2014-02-18 01:46:24.827050930 -0800
++++ u-boot_1.1//board/ar7240/db12x-hybrid/u-boot.lds	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12730,7 +12862,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/db12x-hybrid/u-b
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/config.mk u-boot_1.1//board/ar7240/dhp1565/config.mk
 --- u-boot//board/ar7240/dhp1565/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/dhp1565/config.mk	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/dhp1565/config.mk	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12775,7 +12907,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/config.m
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/dhp1565.c u-boot_1.1//board/ar7240/dhp1565/dhp1565.c
 --- u-boot//board/ar7240/dhp1565/dhp1565.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/dhp1565/dhp1565.c	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/dhp1565/dhp1565.c	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,193 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -12972,7 +13104,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/dhp1565.
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/flash.c u-boot_1.1//board/ar7240/dhp1565/flash.c
 --- u-boot//board/ar7240/dhp1565/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/dhp1565/flash.c	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/dhp1565/flash.c	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,50 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13026,7 +13158,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/flash.c 
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/Makefile u-boot_1.1//board/ar7240/dhp1565/Makefile
 --- u-boot//board/ar7240/dhp1565/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/dhp1565/Makefile	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/dhp1565/Makefile	2014-05-15 00:16:41.219232261 -0700
 @@ -0,0 +1,84 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13114,7 +13246,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/Makefile
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/dhp1565/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/dhp1565/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/dhp1565/u-boot-bootstrap.lds	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/dhp1565/u-boot-bootstrap.lds	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13178,7 +13310,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/u-boot-b
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/u-boot.lds u-boot_1.1//board/ar7240/dhp1565/u-boot.lds
 --- u-boot//board/ar7240/dhp1565/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/dhp1565/u-boot.lds	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/dhp1565/u-boot.lds	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13246,7 +13378,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/dhp1565/u-boot.l
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/config.mk u-boot_1.1//board/ar7240/reh132/config.mk
 --- u-boot//board/ar7240/reh132/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/reh132/config.mk	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/reh132/config.mk	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13291,7 +13423,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/config.mk
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/flash.c u-boot_1.1//board/ar7240/reh132/flash.c
 --- u-boot//board/ar7240/reh132/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/reh132/flash.c	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/reh132/flash.c	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,50 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13345,7 +13477,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/flash.c u
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/Makefile u-boot_1.1//board/ar7240/reh132/Makefile
 --- u-boot//board/ar7240/reh132/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/reh132/Makefile	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/reh132/Makefile	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,84 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13433,7 +13565,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/Makefile 
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/reh132.c u-boot_1.1//board/ar7240/reh132/reh132.c
 --- u-boot//board/ar7240/reh132/reh132.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/reh132/reh132.c	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/reh132/reh132.c	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,198 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13635,7 +13767,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/reh132.c 
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/u-boot-bootstrap.lds u-boot_1.1//board/ar7240/reh132/u-boot-bootstrap.lds
 --- u-boot//board/ar7240/reh132/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/reh132/u-boot-bootstrap.lds	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/reh132/u-boot-bootstrap.lds	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13699,7 +13831,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/u-boot-bo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/u-boot.lds u-boot_1.1//board/ar7240/reh132/u-boot.lds
 --- u-boot//board/ar7240/reh132/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/reh132/u-boot.lds	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/reh132/u-boot.lds	2014-05-15 00:16:41.223232266 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13767,7 +13899,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/reh132/u-boot.ld
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/config.mk u-boot_1.1//board/ar7240/wasp_emu/config.mk
 --- u-boot//board/ar7240/wasp_emu/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/wasp_emu/config.mk	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/wasp_emu/config.mk	2014-05-15 00:16:41.231232276 -0700
 @@ -0,0 +1,31 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13802,7 +13934,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/config.
 +TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/flash.c u-boot_1.1//board/ar7240/wasp_emu/flash.c
 --- u-boot//board/ar7240/wasp_emu/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/wasp_emu/flash.c	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/wasp_emu/flash.c	2014-05-15 00:16:41.235232281 -0700
 @@ -0,0 +1,50 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13856,7 +13988,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/flash.c
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/Makefile u-boot_1.1//board/ar7240/wasp_emu/Makefile
 --- u-boot//board/ar7240/wasp_emu/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/wasp_emu/Makefile	2014-02-18 01:46:24.847050957 -0800
++++ u-boot_1.1//board/ar7240/wasp_emu/Makefile	2014-05-15 00:16:41.231232276 -0700
 @@ -0,0 +1,40 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13900,7 +14032,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/Makefil
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/u-boot.lds u-boot_1.1//board/ar7240/wasp_emu/u-boot.lds
 --- u-boot//board/ar7240/wasp_emu/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/wasp_emu/u-boot.lds	2014-02-18 01:46:24.851050956 -0800
++++ u-boot_1.1//board/ar7240/wasp_emu/u-boot.lds	2014-05-15 00:16:41.235232281 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -13968,7 +14100,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/u-boot.
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/wasp_emu.c u-boot_1.1//board/ar7240/wasp_emu/wasp_emu.c
 --- u-boot//board/ar7240/wasp_emu/wasp_emu.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/ar7240/wasp_emu/wasp_emu.c	2014-02-18 01:46:24.851050956 -0800
++++ u-boot_1.1//board/ar7240/wasp_emu/wasp_emu.c	2014-05-15 00:16:41.235232281 -0700
 @@ -0,0 +1,91 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14063,28 +14195,22 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/wasp_emu/wasp_em
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/board953x.c u-boot_1.1//board/atheros/board953x/board953x.c
 --- u-boot//board/atheros/board953x/board953x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board953x/board953x.c	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board953x/board953x.c	2014-05-15 00:16:41.263232316 -0700
 @@ -0,0 +1,151 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * 
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
 + *
-+ * See file CREDITS for list of people who contributed to this
-+ * project.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-+ * MA 02111-1307 USA
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 + */
 +
 +#include <common.h>
@@ -14101,19 +14227,25 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/board
 +#ifdef COMPRESSED_UBOOT
 +#	define prmsg(...)
 +#	define args		char *s
-+#	define board_str(a)	do {			\
-+	char ver[] = "0";				\
-+	strcpy(s, a " - Honey Bee 1.");			\
-+	ver[0] += ath_reg_rd(RST_REVISION_ID_ADDRESS)	\
-+						& 0xf;	\
-+	strcat(s, ver);					\
++#	define board_str(a)	do {						\
++	char ver[] = "0";							\
++	uint32_t        revid;							\
++	if(((revid=ath_reg_rd(RST_REVISION_ID_ADDRESS))&0xff0)==0x140) 		\
++		strcpy(s, a " - Honey Bee 1.");					\
++	else			 						\
++		strcpy(s, a " - Honey Bee 2.");					\
++	ver[0] +=  (revid & 0xf) ;		 				\
++	strcat(s, ver);								\
 +} while (0)
 +#else
 +#	define prmsg	printf
 +#	define args		void
-+#	define board_str(a)				\
-+	printf(a " - Honey Bee 1.%d", ath_reg_rd	\
-+			(RST_REVISION_ID_ADDRESS) & 0xf)
++#	define board_str(a)							\
++	uint32_t        revid;							\
++	if(((revid=ath_reg_rd(RST_REVISION_ID_ADDRESS))&0xff0)==0x140) 		\
++	printf(a " - Honey Bee 1.%d", revid & 0xf);				\
++	else									\ 
++	printf(a " - Honey Bee 2.%d", revid & 0xf);
 +#endif
 +
 +void
@@ -14218,7 +14350,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/board
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/config.mk u-boot_1.1//board/atheros/board953x/config.mk
 --- u-boot//board/atheros/board953x/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board953x/config.mk	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board953x/config.mk	2014-05-15 00:16:41.263232316 -0700
 @@ -0,0 +1,45 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14267,7 +14399,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/confi
 +endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/extra.c u-boot_1.1//board/atheros/board953x/extra.c
 --- u-boot//board/atheros/board953x/extra.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board953x/extra.c	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board953x/extra.c	2014-05-15 00:16:41.263232316 -0700
 @@ -0,0 +1,77 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14348,7 +14480,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/extra
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/flash.c u-boot_1.1//board/atheros/board953x/flash.c
 --- u-boot//board/atheros/board953x/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board953x/flash.c	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board953x/flash.c	2014-05-15 00:16:41.263232316 -0700
 @@ -0,0 +1,52 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14404,7 +14536,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/flash
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/Makefile u-boot_1.1//board/atheros/board953x/Makefile
 --- u-boot//board/atheros/board953x/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board953x/Makefile	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board953x/Makefile	2014-05-15 00:16:41.263232316 -0700
 @@ -0,0 +1,90 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14498,7 +14630,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/Makef
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/u-boot-bootstrap.lds u-boot_1.1//board/atheros/board953x/u-boot-bootstrap.lds
 --- u-boot//board/atheros/board953x/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board953x/u-boot-bootstrap.lds	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board953x/u-boot-bootstrap.lds	2014-05-15 00:16:41.263232316 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14562,7 +14694,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/u-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/u-boot.lds u-boot_1.1//board/atheros/board953x/u-boot.lds
 --- u-boot//board/atheros/board953x/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board953x/u-boot.lds	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board953x/u-boot.lds	2014-05-15 00:16:41.263232316 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14630,7 +14762,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board953x/u-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/board955x.c u-boot_1.1//board/atheros/board955x/board955x.c
 --- u-boot//board/atheros/board955x/board955x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board955x/board955x.c	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board955x/board955x.c	2014-05-15 00:16:41.267232321 -0700
 @@ -0,0 +1,165 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14799,7 +14931,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/board
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/config.mk u-boot_1.1//board/atheros/board955x/config.mk
 --- u-boot//board/atheros/board955x/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board955x/config.mk	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board955x/config.mk	2014-05-15 00:16:41.267232321 -0700
 @@ -0,0 +1,57 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14860,7 +14992,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/confi
 +endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/extra.c u-boot_1.1//board/atheros/board955x/extra.c
 --- u-boot//board/atheros/board955x/extra.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board955x/extra.c	2014-02-18 01:46:24.875050968 -0800
++++ u-boot_1.1//board/atheros/board955x/extra.c	2014-05-15 00:16:41.267232321 -0700
 @@ -0,0 +1,128 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -14992,7 +15124,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/extra
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/flash.c u-boot_1.1//board/atheros/board955x/flash.c
 --- u-boot//board/atheros/board955x/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board955x/flash.c	2014-02-18 01:46:24.875050968 -0800
++++ u-boot_1.1//board/atheros/board955x/flash.c	2014-05-15 00:16:41.267232321 -0700
 @@ -0,0 +1,54 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15050,7 +15182,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/flash
 +#endif /* CONFIG_ATH_NAND_BR */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/Makefile u-boot_1.1//board/atheros/board955x/Makefile
 --- u-boot//board/atheros/board955x/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board955x/Makefile	2014-02-18 01:46:24.871050964 -0800
++++ u-boot_1.1//board/atheros/board955x/Makefile	2014-05-15 00:16:41.263232316 -0700
 @@ -0,0 +1,120 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15174,7 +15306,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/Makef
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/u-boot-bootstrap.lds u-boot_1.1//board/atheros/board955x/u-boot-bootstrap.lds
 --- u-boot//board/atheros/board955x/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board955x/u-boot-bootstrap.lds	2014-02-18 01:46:24.875050968 -0800
++++ u-boot_1.1//board/atheros/board955x/u-boot-bootstrap.lds	2014-05-15 00:16:41.267232321 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15238,7 +15370,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/u-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/u-boot.lds u-boot_1.1//board/atheros/board955x/u-boot.lds
 --- u-boot//board/atheros/board955x/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board955x/u-boot.lds	2014-02-18 01:46:24.875050968 -0800
++++ u-boot_1.1//board/atheros/board955x/u-boot.lds	2014-05-15 00:16:41.267232321 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15306,7 +15438,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board955x/u-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/board956x.c u-boot_1.1//board/atheros/board956x/board956x.c
 --- u-boot//board/atheros/board956x/board956x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board956x/board956x.c	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/board956x/board956x.c	2014-05-15 00:16:41.267232321 -0700
 @@ -0,0 +1,178 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15488,7 +15620,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/board
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/config.mk u-boot_1.1//board/atheros/board956x/config.mk
 --- u-boot//board/atheros/board956x/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board956x/config.mk	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/board956x/config.mk	2014-05-15 00:16:41.287232346 -0700
 @@ -0,0 +1,57 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15549,7 +15681,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/confi
 +endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/extra.c u-boot_1.1//board/atheros/board956x/extra.c
 --- u-boot//board/atheros/board956x/extra.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board956x/extra.c	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/board956x/extra.c	2014-05-15 00:16:41.287232346 -0700
 @@ -0,0 +1,134 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15687,7 +15819,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/extra
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/flash.c u-boot_1.1//board/atheros/board956x/flash.c
 --- u-boot//board/atheros/board956x/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board956x/flash.c	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/board956x/flash.c	2014-05-15 00:16:41.287232346 -0700
 @@ -0,0 +1,54 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15745,7 +15877,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/flash
 +#endif /* CONFIG_ATH_NAND_BR */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/Makefile u-boot_1.1//board/atheros/board956x/Makefile
 --- u-boot//board/atheros/board956x/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board956x/Makefile	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/board956x/Makefile	2014-05-15 00:16:41.267232321 -0700
 @@ -0,0 +1,120 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15869,7 +16001,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/Makef
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/u-boot-bootstrap.lds u-boot_1.1//board/atheros/board956x/u-boot-bootstrap.lds
 --- u-boot//board/atheros/board956x/u-boot-bootstrap.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board956x/u-boot-bootstrap.lds	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/board956x/u-boot-bootstrap.lds	2014-05-15 00:16:41.287232346 -0700
 @@ -0,0 +1,60 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -15933,7 +16065,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/u-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/u-boot.lds u-boot_1.1//board/atheros/board956x/u-boot.lds
 --- u-boot//board/atheros/board956x/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/board956x/u-boot.lds	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/board956x/u-boot.lds	2014-05-15 00:16:41.287232346 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -16001,7 +16133,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/board956x/u-boo
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/953x.S u-boot_1.1//board/atheros/common/953x.S
 --- u-boot//board/atheros/common/953x.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/953x.S	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/common/953x.S	2014-05-15 00:16:41.287232346 -0700
 @@ -0,0 +1,173 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -16178,7 +16310,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/953x.S u
 +	nop
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/955x.S u-boot_1.1//board/atheros/common/955x.S
 --- u-boot//board/atheros/common/955x.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/955x.S	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/common/955x.S	2014-05-15 00:16:41.287232346 -0700
 @@ -0,0 +1,175 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -16357,7 +16489,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/955x.S u
 +	nop
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/956x.S u-boot_1.1//board/atheros/common/956x.S
 --- u-boot//board/atheros/common/956x.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/956x.S	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/common/956x.S	2014-05-15 00:16:41.287232346 -0700
 @@ -0,0 +1,199 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -16560,28 +16692,22 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/956x.S u
 +	nop
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_flash.c u-boot_1.1//board/atheros/common/ath_flash.c
 --- u-boot//board/atheros/common/ath_flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/ath_flash.c	2014-02-18 01:46:24.879050972 -0800
-@@ -0,0 +1,263 @@
++++ u-boot_1.1//board/atheros/common/ath_flash.c	2014-05-15 00:16:41.287232346 -0700
+@@ -0,0 +1,267 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * 
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
 + *
-+ * See file CREDITS for list of people who contributed to this
-+ * project.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-+ * MA 02111-1307 USA
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 + */
 +
 +#include <common.h>
@@ -16642,7 +16768,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_flas
 +
 +unsigned long flash_init(void)
 +{
-+#if !(defined(CONFIG_WASP_SUPPORT) || defined(CONFIG_MACH_QCA955x) || defined(CONFIG_MACH_QCA953x) || defined(CONFIG_MACH_QCA956x))
++#if !(defined(CONFIG_WASP_SUPPORT) || defined(CONFIG_MACH_QCA955x) || defined(CONFIG_MACH_QCA956x))
 +#ifdef ATH_SST_FLASH
 +	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x3);
 +	ath_spi_flash_unblock();
@@ -16650,7 +16776,17 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_flas
 +#else
 +	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x43);
 +#endif
++#endif 
++
++#if  defined(CONFIG_MACH_QCA953x) /* Added for HB-SMIC */  
++#ifdef ATH_SST_FLASH
++	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x4);
++	ath_spi_flash_unblock();
++	ath_reg_wr(ATH_SPI_FS, 0);
++#else
++	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x44);
 +#endif
++#endif 
 +	ath_reg_rmw_set(ATH_SPI_FS, 1);
 +	ath_spi_read_id();
 +	ath_reg_rmw_clear(ATH_SPI_FS, 1);
@@ -16827,7 +16963,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_flas
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_flash.h u-boot_1.1//board/atheros/common/ath_flash.h
 --- u-boot//board/atheros/common/ath_flash.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/ath_flash.h	2014-02-18 01:46:24.879050972 -0800
++++ u-boot_1.1//board/atheros/common/ath_flash.h	2014-05-15 00:16:41.287232346 -0700
 @@ -0,0 +1,61 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -16892,7 +17028,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_flas
 +#endif /* _ATH_FLASH_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_nand.c u-boot_1.1//board/atheros/common/ath_nand.c
 --- u-boot//board/atheros/common/ath_nand.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/ath_nand.c	2014-02-18 01:46:24.883050975 -0800
++++ u-boot_1.1//board/atheros/common/ath_nand.c	2014-05-15 00:16:41.291232351 -0700
 @@ -0,0 +1,1615 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -18511,7 +18647,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_nand
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_pci.c u-boot_1.1//board/atheros/common/ath_pci.c
 --- u-boot//board/atheros/common/ath_pci.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/ath_pci.c	2014-02-18 01:46:24.883050975 -0800
++++ u-boot_1.1//board/atheros/common/ath_pci.c	2014-05-15 00:16:41.291232351 -0700
 @@ -0,0 +1,525 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -19040,7 +19176,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/ath_pci.
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athr_ar8033_phy.c u-boot_1.1//board/atheros/common/athr_ar8033_phy.c
 --- u-boot//board/atheros/common/athr_ar8033_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athr_ar8033_phy.c	2014-02-18 01:46:24.883050975 -0800
++++ u-boot_1.1//board/atheros/common/athr_ar8033_phy.c	2014-05-15 00:16:41.291232351 -0700
 @@ -0,0 +1,156 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -19200,7 +19336,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athr_ar8
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs17_lpbk.c u-boot_1.1//board/atheros/common/athrs17_lpbk.c
 --- u-boot//board/atheros/common/athrs17_lpbk.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athrs17_lpbk.c	2014-02-18 01:46:24.883050975 -0800
++++ u-boot_1.1//board/atheros/common/athrs17_lpbk.c	2014-05-15 00:16:41.295232356 -0700
 @@ -0,0 +1,312 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -19516,7 +19652,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs17_
 +#endif /* #ifdef RGMII_CAL */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs17_phy.c u-boot_1.1//board/atheros/common/athrs17_phy.c
 --- u-boot//board/atheros/common/athrs17_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athrs17_phy.c	2014-02-18 01:46:24.883050975 -0800
++++ u-boot_1.1//board/atheros/common/athrs17_phy.c	2014-05-15 00:16:41.295232356 -0700
 @@ -0,0 +1,754 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -20274,7 +20410,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs17_
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs17_phy.h u-boot_1.1//board/atheros/common/athrs17_phy.h
 --- u-boot//board/atheros/common/athrs17_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athrs17_phy.h	2014-02-18 01:46:24.895050981 -0800
++++ u-boot_1.1//board/atheros/common/athrs17_phy.h	2014-05-15 00:16:41.307232371 -0700
 @@ -0,0 +1,578 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -20856,7 +20992,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs17_
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athr_s27_phy.c u-boot_1.1//board/atheros/common/athr_s27_phy.c
 --- u-boot//board/atheros/common/athr_s27_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athr_s27_phy.c	2014-02-18 01:46:24.883050975 -0800
++++ u-boot_1.1//board/atheros/common/athr_s27_phy.c	2014-05-15 00:16:41.295232356 -0700
 @@ -0,0 +1,856 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -21716,7 +21852,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athr_s27
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athr_s27_phy.h u-boot_1.1//board/atheros/common/athr_s27_phy.h
 --- u-boot//board/atheros/common/athr_s27_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athr_s27_phy.h	2014-02-18 01:46:24.883050975 -0800
++++ u-boot_1.1//board/atheros/common/athr_s27_phy.h	2014-05-15 00:16:41.295232356 -0700
 @@ -0,0 +1,214 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -21934,7 +22070,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athr_s27
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs_ar8033_phy.h u-boot_1.1//board/atheros/common/athrs_ar8033_phy.h
 --- u-boot//board/atheros/common/athrs_ar8033_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athrs_ar8033_phy.h	2014-02-18 01:46:24.895050981 -0800
++++ u-boot_1.1//board/atheros/common/athrs_ar8033_phy.h	2014-05-15 00:16:41.307232371 -0700
 @@ -0,0 +1,87 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -22025,7 +22161,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs_ar
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrsf1_phy.c u-boot_1.1//board/atheros/common/athrsf1_phy.c
 --- u-boot//board/atheros/common/athrsf1_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athrsf1_phy.c	2014-02-18 01:46:24.895050981 -0800
++++ u-boot_1.1//board/atheros/common/athrsf1_phy.c	2014-05-15 00:16:41.311232376 -0700
 @@ -0,0 +1,440 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -22469,7 +22605,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrsf1_
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrsf1_phy.h u-boot_1.1//board/atheros/common/athrsf1_phy.h
 --- u-boot//board/atheros/common/athrsf1_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athrsf1_phy.h	2014-02-18 01:46:24.895050981 -0800
++++ u-boot_1.1//board/atheros/common/athrsf1_phy.h	2014-05-15 00:16:41.311232376 -0700
 @@ -0,0 +1,32 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -22505,7 +22641,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrsf1_
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs_vir_phy.c u-boot_1.1//board/atheros/common/athrs_vir_phy.c
 --- u-boot//board/atheros/common/athrs_vir_phy.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/athrs_vir_phy.c	2014-02-18 01:46:24.895050981 -0800
++++ u-boot_1.1//board/atheros/common/athrs_vir_phy.c	2014-05-15 00:16:41.311232376 -0700
 @@ -0,0 +1,123 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -22632,28 +22768,22 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/athrs_vi
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/init-953x.c u-boot_1.1//board/atheros/common/init-953x.c
 --- u-boot//board/atheros/common/init-953x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/init-953x.c	2014-02-18 01:46:24.895050981 -0800
-@@ -0,0 +1,397 @@
++++ u-boot_1.1//board/atheros/common/init-953x.c	2014-05-15 00:16:41.311232376 -0700
+@@ -0,0 +1,394 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * 
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
 + *
-+ * See file CREDITS for list of people who contributed to this
-+ * project.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-+ * MA 02111-1307 USA
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 + */
 +
 +#include <common.h>
@@ -22810,10 +22940,13 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/init-953
 +	int		ddr_config, ddr_config2, ddr_config3, ext_mod, mod_val,
 +			mod_val_init, cycle_val, tap_val, type, ctl_config;
 +	uint32_t	*pll = (unsigned *)PLL_CONFIG_VAL_F;
-+	uint32_t	bootstrap;
++	uint32_t	bootstrap,revid;
 +
 +	prmsg("\nsri\n");
-+	prmsg("Honey Bee 1.%d\n", ath_reg_rd(RST_REVISION_ID_ADDRESS) & 0xf);
++	if(((revid=ath_reg_rd(RST_REVISION_ID_ADDRESS))&0xff0)==0x140) 
++		prmsg("Honey Bee 1.%d\n", revid & 0xf);
++	else 
++		prmsg("Honey Bee 2.%d\n", revid & 0xf);
 +
 +	bootstrap = ath_reg_rd(RST_BOOTSTRAP_ADDRESS);
 +
@@ -22954,7 +23087,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/init-953
 +
 +	ath_reg_wr(PMU1_ADDRESS, 0x633c8178);
 +	// Set DDR2 Voltage to 1.8 volts
-+	ath_reg_wr(PMU2_ADDRESS, PMU2_SWREGMSB_SET(0x40) | PMU2_PGM_SET(0x1));
++	ath_reg_wr(PMU2_ADDRESS, PMU2_SWREGMSB_SET(0x40) | PMU2_PGM_SET(0x1) | PMU2_LDO_TUNE_SET(0x0));
 +	return type;
 +#else	// !emulation
 +	return 0;
@@ -23033,7 +23166,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/init-953
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/init-955x.c u-boot_1.1//board/atheros/common/init-955x.c
 --- u-boot//board/atheros/common/init-955x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/init-955x.c	2014-02-18 01:46:24.899050984 -0800
++++ u-boot_1.1//board/atheros/common/init-955x.c	2014-05-15 00:16:41.323232391 -0700
 @@ -0,0 +1,492 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -23529,7 +23662,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/init-955
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/init-956x.c u-boot_1.1//board/atheros/common/init-956x.c
 --- u-boot//board/atheros/common/init-956x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/init-956x.c	2014-02-18 01:46:24.899050984 -0800
++++ u-boot_1.1//board/atheros/common/init-956x.c	2014-05-15 00:16:41.323232391 -0700
 @@ -0,0 +1,679 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -24212,7 +24345,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/init-956
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/phy.h u-boot_1.1//board/atheros/common/phy.h
 --- u-boot//board/atheros/common/phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/phy.h	2014-02-18 01:46:24.899050984 -0800
++++ u-boot_1.1//board/atheros/common/phy.h	2014-05-15 00:16:41.323232391 -0700
 @@ -0,0 +1,38 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -24254,7 +24387,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/phy.h u-
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-953x.c u-boot_1.1//board/atheros/common/qca-eth-953x.c
 --- u-boot//board/atheros/common/qca-eth-953x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/qca-eth-953x.c	2014-02-18 01:46:24.903050987 -0800
++++ u-boot_1.1//board/atheros/common/qca-eth-953x.c	2014-05-15 00:16:41.323232391 -0700
 @@ -0,0 +1,706 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -24964,7 +25097,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-
 +#endif		/* CONFIG_COMMANDS & CFG_CMD_MII */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-953x.h u-boot_1.1//board/atheros/common/qca-eth-953x.h
 --- u-boot//board/atheros/common/qca-eth-953x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/qca-eth-953x.h	2014-02-18 01:46:24.903050987 -0800
++++ u-boot_1.1//board/atheros/common/qca-eth-953x.h	2014-05-15 00:16:41.323232391 -0700
 @@ -0,0 +1,371 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -25339,7 +25472,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-
 +#endif /* __QCA_ETH_953X_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-953x_phy.h u-boot_1.1//board/atheros/common/qca-eth-953x_phy.h
 --- u-boot//board/atheros/common/qca-eth-953x_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/qca-eth-953x_phy.h	2014-02-18 01:46:24.903050987 -0800
++++ u-boot_1.1//board/atheros/common/qca-eth-953x_phy.h	2014-05-15 00:16:41.335232405 -0700
 @@ -0,0 +1,95 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -25438,7 +25571,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-
 +#endif /* _QCA_ETH_953x_PHY_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-955x.c u-boot_1.1//board/atheros/common/qca-eth-955x.c
 --- u-boot//board/atheros/common/qca-eth-955x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/qca-eth-955x.c	2014-02-18 01:46:24.903050987 -0800
++++ u-boot_1.1//board/atheros/common/qca-eth-955x.c	2014-05-15 00:16:41.335232405 -0700
 @@ -0,0 +1,1005 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -26447,7 +26580,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-
 +#endif		/* CONFIG_COMMANDS & CFG_CMD_MII */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-955x.h u-boot_1.1//board/atheros/common/qca-eth-955x.h
 --- u-boot//board/atheros/common/qca-eth-955x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/qca-eth-955x.h	2014-02-18 01:46:24.903050987 -0800
++++ u-boot_1.1//board/atheros/common/qca-eth-955x.h	2014-05-15 00:16:41.335232405 -0700
 @@ -0,0 +1,429 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -26880,7 +27013,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-955x_phy.h u-boot_1.1//board/atheros/common/qca-eth-955x_phy.h
 --- u-boot//board/atheros/common/qca-eth-955x_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/qca-eth-955x_phy.h	2014-02-18 01:46:24.903050987 -0800
++++ u-boot_1.1//board/atheros/common/qca-eth-955x_phy.h	2014-05-15 00:16:41.335232405 -0700
 @@ -0,0 +1,124 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -27008,7 +27141,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-
 +#endif /* _QCA_ETH_955x_PHY_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-956x.c u-boot_1.1//board/atheros/common/qca-eth-956x.c
 --- u-boot//board/atheros/common/qca-eth-956x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/qca-eth-956x.c	2014-02-18 01:46:24.911050993 -0800
++++ u-boot_1.1//board/atheros/common/qca-eth-956x.c	2014-05-15 00:16:41.343232415 -0700
 @@ -0,0 +1,1016 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -28028,7 +28161,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-
 +#endif		/* CONFIG_COMMANDS & CFG_CMD_MII */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-956x.h u-boot_1.1//board/atheros/common/qca-eth-956x.h
 --- u-boot//board/atheros/common/qca-eth-956x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/qca-eth-956x.h	2014-02-18 01:46:24.915050996 -0800
++++ u-boot_1.1//board/atheros/common/qca-eth-956x.h	2014-05-15 00:16:41.343232415 -0700
 @@ -0,0 +1,423 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -28455,7 +28588,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-956x_phy.h u-boot_1.1//board/atheros/common/qca-eth-956x_phy.h
 --- u-boot//board/atheros/common/qca-eth-956x_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/qca-eth-956x_phy.h	2014-02-18 01:46:24.915050996 -0800
++++ u-boot_1.1//board/atheros/common/qca-eth-956x_phy.h	2014-05-15 00:16:41.343232415 -0700
 @@ -0,0 +1,167 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -28626,7 +28759,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/qca-eth-
 +#endif /* _QCA_ETH_955x_PHY_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/rgmii-cal-955x.c u-boot_1.1//board/atheros/common/rgmii-cal-955x.c
 --- u-boot//board/atheros/common/rgmii-cal-955x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/rgmii-cal-955x.c	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/common/rgmii-cal-955x.c	2014-05-15 00:16:41.347232420 -0700
 @@ -0,0 +1,626 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -29256,7 +29389,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/rgmii-ca
 +#endif /* #ifdef RGMII_CAL */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/rgmii-cal-956x.c u-boot_1.1//board/atheros/common/rgmii-cal-956x.c
 --- u-boot//board/atheros/common/rgmii-cal-956x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/rgmii-cal-956x.c	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/common/rgmii-cal-956x.c	2014-05-15 00:16:41.347232420 -0700
 @@ -0,0 +1,626 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -29886,7 +30019,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/rgmii-ca
 +#endif /* #ifdef RGMII_CAL */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/serial.c u-boot_1.1//board/atheros/common/serial.c
 --- u-boot//board/atheros/common/serial.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/serial.c	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/common/serial.c	2014-05-15 00:16:41.347232420 -0700
 @@ -0,0 +1,220 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -30110,7 +30243,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/serial.c
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/tap-953x.S u-boot_1.1//board/atheros/common/tap-953x.S
 --- u-boot//board/atheros/common/tap-953x.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/tap-953x.S	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/common/tap-953x.S	2014-05-15 00:16:41.347232420 -0700
 @@ -0,0 +1,204 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -30318,7 +30451,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/tap-953x
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/tap-955x.S u-boot_1.1//board/atheros/common/tap-955x.S
 --- u-boot//board/atheros/common/tap-955x.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/tap-955x.S	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/common/tap-955x.S	2014-05-15 00:16:41.347232420 -0700
 @@ -0,0 +1,206 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -30528,7 +30661,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/tap-955x
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/tap-956x.S u-boot_1.1//board/atheros/common/tap-956x.S
 --- u-boot//board/atheros/common/tap-956x.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/common/tap-956x.S	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/common/tap-956x.S	2014-05-15 00:16:41.347232420 -0700
 @@ -0,0 +1,204 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -30736,7 +30869,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/common/tap-956x
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/config.mk u-boot_1.1//board/atheros/scoemu/config.mk
 --- u-boot//board/atheros/scoemu/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/scoemu/config.mk	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/scoemu/config.mk	2014-05-15 00:16:41.351232425 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -30781,7 +30914,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/config.m
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/flash.c u-boot_1.1//board/atheros/scoemu/flash.c
 --- u-boot//board/atheros/scoemu/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/scoemu/flash.c	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/scoemu/flash.c	2014-05-15 00:16:41.351232425 -0700
 @@ -0,0 +1,54 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -30839,7 +30972,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/flash.c 
 +#endif /* CONFIG_ATH_NAND_BR */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/Makefile u-boot_1.1//board/atheros/scoemu/Makefile
 --- u-boot//board/atheros/scoemu/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/scoemu/Makefile	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/scoemu/Makefile	2014-05-15 00:16:41.347232420 -0700
 @@ -0,0 +1,95 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -30938,7 +31071,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/Makefile
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/scoemu.c u-boot_1.1//board/atheros/scoemu/scoemu.c
 --- u-boot//board/atheros/scoemu/scoemu.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/scoemu/scoemu.c	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/scoemu/scoemu.c	2014-05-15 00:16:41.351232425 -0700
 @@ -0,0 +1,143 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -31085,7 +31218,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/scoemu.c
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/u-boot.lds u-boot_1.1//board/atheros/scoemu/u-boot.lds
 --- u-boot//board/atheros/scoemu/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/scoemu/u-boot.lds	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/scoemu/u-boot.lds	2014-05-15 00:16:41.351232425 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -31153,7 +31286,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/scoemu/u-boot.l
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/config.mk u-boot_1.1//board/atheros/tb6xx/config.mk
 --- u-boot//board/atheros/tb6xx/config.mk	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/tb6xx/config.mk	2014-02-18 01:46:24.979051052 -0800
++++ u-boot_1.1//board/atheros/tb6xx/config.mk	2014-05-15 00:16:41.363232440 -0700
 @@ -0,0 +1,41 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -31198,7 +31331,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/config.mk
 +# TEXT_BASE = 0x80100000
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/flash.c u-boot_1.1//board/atheros/tb6xx/flash.c
 --- u-boot//board/atheros/tb6xx/flash.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/tb6xx/flash.c	2014-02-18 01:46:24.979051052 -0800
++++ u-boot_1.1//board/atheros/tb6xx/flash.c	2014-05-15 00:16:41.363232440 -0700
 @@ -0,0 +1,54 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -31256,7 +31389,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/flash.c u
 +#endif /* CONFIG_ATH_NAND_BR */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/Makefile u-boot_1.1//board/atheros/tb6xx/Makefile
 --- u-boot//board/atheros/tb6xx/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/tb6xx/Makefile	2014-02-18 01:46:24.951051016 -0800
++++ u-boot_1.1//board/atheros/tb6xx/Makefile	2014-05-15 00:16:41.351232425 -0700
 @@ -0,0 +1,95 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -31355,7 +31488,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/Makefile 
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/tb6xx.c u-boot_1.1//board/atheros/tb6xx/tb6xx.c
 --- u-boot//board/atheros/tb6xx/tb6xx.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/tb6xx/tb6xx.c	2014-02-18 01:46:24.979051052 -0800
++++ u-boot_1.1//board/atheros/tb6xx/tb6xx.c	2014-05-15 00:16:41.363232440 -0700
 @@ -0,0 +1,148 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -31507,7 +31640,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/tb6xx.c u
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/u-boot.lds u-boot_1.1//board/atheros/tb6xx/u-boot.lds
 --- u-boot//board/atheros/tb6xx/u-boot.lds	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//board/atheros/tb6xx/u-boot.lds	2014-02-18 01:46:24.979051052 -0800
++++ u-boot_1.1//board/atheros/tb6xx/u-boot.lds	2014-05-15 00:16:41.363232440 -0700
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -31575,7 +31708,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/atheros/tb6xx/u-boot.ld
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_bdr.c u-boot_1.1//common/cmd_bdr.c
 --- u-boot//common/cmd_bdr.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//common/cmd_bdr.c	2014-02-18 01:46:26.479052086 -0800
++++ u-boot_1.1//common/cmd_bdr.c	2014-05-15 00:16:42.567233945 -0700
 @@ -0,0 +1,449 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -32027,8 +32160,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_bdr.c u-boot_1.1//
 +
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_boot.c u-boot_1.1//common/cmd_boot.c
---- u-boot//common/cmd_boot.c	2014-02-18 01:46:22.483049297 -0800
-+++ u-boot_1.1//common/cmd_boot.c	2014-02-18 01:46:26.479052086 -0800
+--- u-boot//common/cmd_boot.c	2014-05-15 00:16:39.707230372 -0700
++++ u-boot_1.1//common/cmd_boot.c	2014-05-15 00:16:42.571233950 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000-2003
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -32075,8 +32208,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_boot.c u-boot_1.1/
  
  U_BOOT_CMD(
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_bootm.c u-boot_1.1//common/cmd_bootm.c
---- u-boot//common/cmd_bootm.c	2014-02-18 01:46:22.487049300 -0800
-+++ u-boot_1.1//common/cmd_bootm.c	2014-02-18 01:46:26.483052090 -0800
+--- u-boot//common/cmd_bootm.c	2014-05-15 00:16:39.707230372 -0700
++++ u-boot_1.1//common/cmd_bootm.c	2014-05-15 00:16:42.571233950 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000-2006
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -32212,7 +32345,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_bootm.c u-boot_1.1
  		ulong addr, ulong *len_ptr, int verify)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_ethreg.c u-boot_1.1//common/cmd_ethreg.c
 --- u-boot//common/cmd_ethreg.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//common/cmd_ethreg.c	2014-02-18 01:46:26.487052093 -0800
++++ u-boot_1.1//common/cmd_ethreg.c	2014-05-15 00:16:42.571233950 -0700
 @@ -0,0 +1,266 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -32481,8 +32614,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_ethreg.c u-boot_1.
 +
 +#endif	/* CONFIG_COMMANDS & CFG_CMD_ETHREG */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_flash.c u-boot_1.1//common/cmd_flash.c
---- u-boot//common/cmd_flash.c	2014-02-18 01:46:22.491049303 -0800
-+++ u-boot_1.1//common/cmd_flash.c	2014-02-18 01:46:26.487052093 -0800
+--- u-boot//common/cmd_flash.c	2014-05-15 00:16:39.715230382 -0700
++++ u-boot_1.1//common/cmd_flash.c	2014-05-15 00:16:42.571233950 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -32658,8 +32791,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_flash.c u-boot_1.1
  #undef	TMP_PROT_ON
  #undef	TMP_PROT_OFF
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_load.c u-boot_1.1//common/cmd_load.c
---- u-boot//common/cmd_load.c	2014-02-18 01:46:22.495049306 -0800
-+++ u-boot_1.1//common/cmd_load.c	2014-02-18 01:46:26.503052105 -0800
+--- u-boot//common/cmd_load.c	2014-05-15 00:16:39.727230397 -0700
++++ u-boot_1.1//common/cmd_load.c	2014-05-15 00:16:42.575233955 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000-2004
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -32686,8 +32819,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_load.c u-boot_1.1/
  
  static ulong load_serial_bin (ulong offset)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_mem.c u-boot_1.1//common/cmd_mem.c
---- u-boot//common/cmd_mem.c	2014-02-18 01:46:22.495049306 -0800
-+++ u-boot_1.1//common/cmd_mem.c	2014-02-18 01:46:26.507052108 -0800
+--- u-boot//common/cmd_mem.c	2014-05-15 00:16:39.727230397 -0700
++++ u-boot_1.1//common/cmd_mem.c	2014-05-15 00:16:42.575233955 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -33189,8 +33322,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_mem.c u-boot_1.1//
 +
  #endif	/* CFG_CMD_MEMORY */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_mii.c u-boot_1.1//common/cmd_mii.c
---- u-boot//common/cmd_mii.c	2014-02-18 01:46:22.499049309 -0800
-+++ u-boot_1.1//common/cmd_mii.c	2014-02-18 01:46:26.507052108 -0800
+--- u-boot//common/cmd_mii.c	2014-05-15 00:16:39.727230397 -0700
++++ u-boot_1.1//common/cmd_mii.c	2014-05-15 00:16:42.575233955 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2001
   * Gerald Van Baren, Custom IDEAS, vanbaren@cideas.com
@@ -33693,8 +33826,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_mii.c u-boot_1.1//
 +#endif /* BOARDCAL */
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_nand.c u-boot_1.1//common/cmd_nand.c
---- u-boot//common/cmd_nand.c	2014-02-18 01:46:22.499049309 -0800
-+++ u-boot_1.1//common/cmd_nand.c	2014-02-18 01:46:26.511052111 -0800
+--- u-boot//common/cmd_nand.c	2014-05-15 00:16:39.731230402 -0700
++++ u-boot_1.1//common/cmd_nand.c	2014-05-15 00:16:42.575233955 -0700
 @@ -6,6 +6,7 @@
   *
   * Added 16-bit nand support
@@ -33805,8 +33938,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_nand.c u-boot_1.1/
  }
  
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_net.c u-boot_1.1//common/cmd_net.c
---- u-boot//common/cmd_net.c	2014-02-18 01:46:22.499049309 -0800
-+++ u-boot_1.1//common/cmd_net.c	2014-02-18 01:46:26.511052111 -0800
+--- u-boot//common/cmd_net.c	2014-05-15 00:16:39.731230402 -0700
++++ u-boot_1.1//common/cmd_net.c	2014-05-15 00:16:42.575233955 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -33862,7 +33995,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_net.c u-boot_1.1//
  
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_pll.c u-boot_1.1//common/cmd_pll.c
 --- u-boot//common/cmd_pll.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//common/cmd_pll.c	2014-02-18 01:46:26.515052114 -0800
++++ u-boot_1.1//common/cmd_pll.c	2014-05-15 00:16:42.579233960 -0700
 @@ -0,0 +1,308 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -34173,8 +34306,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/cmd_pll.c u-boot_1.1//
 +#endif	/* CONFIG_COMMANDS & CFG_CMD_PLL */
 +#endif // CONFIG_ATH_EMULATION
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/command.c u-boot_1.1//common/command.c
---- u-boot//common/command.c	2014-02-18 01:46:22.511049318 -0800
-+++ u-boot_1.1//common/command.c	2014-02-18 01:46:26.527052121 -0800
+--- u-boot//common/command.c	2014-05-15 00:16:39.759230437 -0700
++++ u-boot_1.1//common/command.c	2014-05-15 00:16:42.587233970 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000-2003
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -34201,8 +34334,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/command.c u-boot_1.1//
  /*
   * Use puts() instead of printf() to avoid printf buffer overflow
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/env_common.c u-boot_1.1//common/env_common.c
---- u-boot//common/env_common.c	2014-02-18 01:46:22.519049322 -0800
-+++ u-boot_1.1//common/env_common.c	2014-02-18 01:46:26.539052130 -0800
+--- u-boot//common/env_common.c	2014-05-15 00:16:39.767230447 -0700
++++ u-boot_1.1//common/env_common.c	2014-05-15 00:16:42.595233980 -0700
 @@ -1,10 +1,12 @@
  /*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -34227,8 +34360,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/env_common.c u-boot_1.
  	 * The environment buffer is embedded with the text segment,
  	 * just relocate the environment pointer
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/main.c u-boot_1.1//common/main.c
---- u-boot//common/main.c	2014-02-18 01:46:22.527049328 -0800
-+++ u-boot_1.1//common/main.c	2014-02-18 01:46:26.551052139 -0800
+--- u-boot//common/main.c	2014-05-15 00:16:39.771230452 -0700
++++ u-boot_1.1//common/main.c	2014-05-15 00:16:42.615234005 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -34286,8 +34419,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/main.c u-boot_1.1//com
  	if (bootdelay >= 0 && s && !abortboot (bootdelay)) {
  # ifdef CONFIG_AUTOBOOT_KEYED
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/Makefile u-boot_1.1//common/Makefile
---- u-boot//common/Makefile	2014-02-18 01:46:22.479049294 -0800
-+++ u-boot_1.1//common/Makefile	2014-02-18 01:46:26.479052086 -0800
+--- u-boot//common/Makefile	2014-05-15 00:16:39.699230362 -0700
++++ u-boot_1.1//common/Makefile	2014-05-15 00:16:42.567233945 -0700
 @@ -2,6 +2,8 @@
  # (C) Copyright 2004
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -34365,8 +34498,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//common/Makefile u-boot_1.1//c
  
  $(LIB): .depend $(OBJS)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//config.mk u-boot_1.1//config.mk
---- u-boot//config.mk	2014-02-18 01:46:22.543049340 -0800
-+++ u-boot_1.1//config.mk	2014-02-18 01:46:26.575052155 -0800
+--- u-boot//config.mk	2014-05-15 00:16:39.775230457 -0700
++++ u-boot_1.1//config.mk	2014-05-15 00:16:42.643234039 -0700
 @@ -2,6 +2,8 @@
  # (C) Copyright 2000
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -34497,8 +34630,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//config.mk u-boot_1.1//config.
  #########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag7240.c u-boot_1.1//cpu/mips/ar7240/ag7240.c
 --- u-boot//cpu/mips/ar7240/ag7240.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/ag7240.c	2014-02-18 01:46:26.663052209 -0800
-@@ -0,0 +1,722 @@
++++ u-boot_1.1//cpu/mips/ar7240/ag7240.c	2014-05-15 00:16:42.723234138 -0700
+@@ -0,0 +1,746 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +#include <config.h>
 +#include <common.h>
 +#include <malloc.h>
@@ -34624,7 +34779,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag7240.c u-bo
 +{
 +    u32 mgmt_cfg_val;
 +    u32 cpu_freq,ddr_freq,ahb_freq;
-+    u32 check_cnt,revid_val;
++    u32 check_cnt;
 +#ifdef CFG_ATHRS27_PHY
 +    if (is_wasp()) {
 +        printf("WASP ----> S27 PHY \n");
@@ -34789,11 +34944,11 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag7240.c u-bo
 +
 +static int ag7240_check_link(ag7240_mac_t *mac)
 +{
-+    u32 link, duplex, speed, fdx;
++    u32 link, duplex, speed;
 +
-+    ag7240_phy_link(mac->mac_unit, &link);
-+    ag7240_phy_duplex(mac->mac_unit, &duplex);
-+    ag7240_phy_speed(mac->mac_unit, &speed);
++    ag7240_phy_link(mac->mac_unit, (int *)&link);
++    ag7240_phy_duplex(mac->mac_unit, (int *)&duplex);
++    ag7240_phy_speed(mac->mac_unit, (int *)&speed);
 +
 +    mac->link = link;
 +#ifdef SUPPORT_PLC
@@ -34950,7 +35105,9 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag7240.c u-bo
 +unsigned char *
 +ag7240_mac_addr_loc(void)
 +{
-+	extern flash_info_t flash_info[];
++#ifndef BOARDCAL
++    extern flash_info_t flash_info[];
++#endif
 +
 +#ifdef BOARDCAL
 +    /*
@@ -35223,8 +35380,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag7240.c u-bo
 +#endif		/* CONFIG_COMMANDS & CFG_CMD_MII */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag7240.h u-boot_1.1//cpu/mips/ar7240/ag7240.h
 --- u-boot//cpu/mips/ar7240/ag7240.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/ag7240.h	2014-02-18 01:46:26.663052209 -0800
-@@ -0,0 +1,237 @@
++++ u-boot_1.1//cpu/mips/ar7240/ag7240.h	2014-05-15 00:16:42.723234138 -0700
+@@ -0,0 +1,259 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +#ifndef _AG7240_H
 +#define _AG7240_H
 +
@@ -35464,10 +35643,39 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag7240.h u-bo
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag7240_phy.h u-boot_1.1//cpu/mips/ar7240/ag7240_phy.h
 --- u-boot//cpu/mips/ar7240/ag7240_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/ag7240_phy.h	2014-02-18 01:46:26.663052209 -0800
-@@ -0,0 +1,69 @@
++++ u-boot_1.1//cpu/mips/ar7240/ag7240_phy.h	2014-05-15 00:16:42.723234138 -0700
+@@ -0,0 +1,98 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +#ifndef _AG7240_PHY_H
 +#define _AG7240_PHY_H
++
++#ifdef CFG_ATHRS26_PHY
++extern int athrs26_phy_setup(int ethUnit);
++extern int athrs26_phy_is_up(int ethUnit);
++extern int athrs26_phy_is_fdx(int ethUnit);
++extern int athrs26_phy_speed(int ethUnit);
++#endif
 +
 +static inline void ag7240_phy_setup(int unit)
 +{
@@ -35537,7 +35745,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag7240_phy.h 
 +#endif /*_AG7240_PHY_H*/
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag934x.c u-boot_1.1//cpu/mips/ar7240/ag934x.c
 --- u-boot//cpu/mips/ar7240/ag934x.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/ag934x.c	2014-02-18 01:46:26.695052234 -0800
++++ u-boot_1.1//cpu/mips/ar7240/ag934x.c	2014-05-15 00:16:42.747234169 -0700
 @@ -0,0 +1,904 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -36445,7 +36653,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag934x.c u-bo
 +#endif		/* CONFIG_COMMANDS & CFG_CMD_MII */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag934x.h u-boot_1.1//cpu/mips/ar7240/ag934x.h
 --- u-boot//cpu/mips/ar7240/ag934x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/ag934x.h	2014-02-18 01:46:26.695052234 -0800
++++ u-boot_1.1//cpu/mips/ar7240/ag934x.h	2014-05-15 00:16:42.747234169 -0700
 @@ -0,0 +1,264 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -36713,7 +36921,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag934x.h u-bo
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag934x_phy.h u-boot_1.1//cpu/mips/ar7240/ag934x_phy.h
 --- u-boot//cpu/mips/ar7240/ag934x_phy.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/ag934x_phy.h	2014-02-18 01:46:26.695052234 -0800
++++ u-boot_1.1//cpu/mips/ar7240/ag934x_phy.h	2014-05-15 00:16:42.747234169 -0700
 @@ -0,0 +1,139 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -36856,7 +37064,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ag934x_phy.h 
 +#endif /*_AG7240_PHY_H*/
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ar7240_serial.c u-boot_1.1//cpu/mips/ar7240/ar7240_serial.c
 --- u-boot//cpu/mips/ar7240/ar7240_serial.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/ar7240_serial.c	2014-02-18 01:46:26.695052234 -0800
++++ u-boot_1.1//cpu/mips/ar7240/ar7240_serial.c	2014-05-15 00:16:42.747234169 -0700
 @@ -0,0 +1,164 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -37024,8 +37232,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/ar7240_serial
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/hornet_ag7240.c u-boot_1.1//cpu/mips/ar7240/hornet_ag7240.c
 --- u-boot//cpu/mips/ar7240/hornet_ag7240.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/hornet_ag7240.c	2014-02-18 01:46:26.695052234 -0800
-@@ -0,0 +1,662 @@
++++ u-boot_1.1//cpu/mips/ar7240/hornet_ag7240.c	2014-05-15 00:16:42.747234169 -0700
+@@ -0,0 +1,684 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +#include <config.h>
 +#include <common.h>
 +#include <malloc.h>
@@ -37690,12 +37920,10 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/hornet_ag7240
 +#endif /* CONFIG_HORNET_EMU */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/hornet_ddr_init.S u-boot_1.1//cpu/mips/ar7240/hornet_ddr_init.S
 --- u-boot//cpu/mips/ar7240/hornet_ddr_init.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/hornet_ddr_init.S	2014-02-18 01:46:26.695052234 -0800
-@@ -0,0 +1,4690 @@
++++ u-boot_1.1//cpu/mips/ar7240/hornet_ddr_init.S	2014-05-15 00:16:42.759234185 -0700
+@@ -0,0 +1,4688 @@
 +/*
-+ *  Startup Code for MIPS32 CPU-core
-+ *
-+ *  Copyright (c) 2003	Wolfgang Denk <wd@denx.de>
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
@@ -42384,8 +42612,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/hornet_ddr_in
 +/* } */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/hornet.h u-boot_1.1//cpu/mips/ar7240/hornet.h
 --- u-boot//cpu/mips/ar7240/hornet.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/hornet.h	2014-02-18 01:46:26.695052234 -0800
-@@ -0,0 +1,34 @@
++++ u-boot_1.1//cpu/mips/ar7240/hornet.h	2014-05-15 00:16:42.747234169 -0700
+@@ -0,0 +1,56 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +#ifndef _HORNET_H
 +#define _HORNET_H
 +
@@ -42422,8 +42672,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/hornet.h u-bo
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/hornet_serial.c u-boot_1.1//cpu/mips/ar7240/hornet_serial.c
 --- u-boot//cpu/mips/ar7240/hornet_serial.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/hornet_serial.c	2014-02-18 01:46:26.695052234 -0800
-@@ -0,0 +1,216 @@
++++ u-boot_1.1//cpu/mips/ar7240/hornet_serial.c	2014-05-15 00:16:42.759234185 -0700
+@@ -0,0 +1,238 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +#include <asm/addrspace.h>
 +#include <asm/types.h>
 +#include <config.h>
@@ -42642,7 +42914,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/hornet_serial
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/Makefile u-boot_1.1//cpu/mips/ar7240/Makefile
 --- u-boot//cpu/mips/ar7240/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/Makefile	2014-02-18 01:46:26.663052209 -0800
++++ u-boot_1.1//cpu/mips/ar7240/Makefile	2014-05-15 00:16:42.719234132 -0700
 @@ -0,0 +1,83 @@
 +#
 +# Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -42729,7 +43001,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/Makefile u-bo
 +#########################################################################
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/meminit.c u-boot_1.1//cpu/mips/ar7240/meminit.c
 --- u-boot//cpu/mips/ar7240/meminit.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/ar7240/meminit.c	2014-02-18 01:46:26.695052234 -0800
++++ u-boot_1.1//cpu/mips/ar7240/meminit.c	2014-05-15 00:16:42.763234190 -0700
 @@ -0,0 +1,580 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -43312,8 +43584,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/ar7240/meminit.c u-b
 +}
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/cache.S u-boot_1.1//cpu/mips/cache.S
---- u-boot//cpu/mips/cache.S	2014-02-18 01:46:22.595049375 -0800
-+++ u-boot_1.1//cpu/mips/cache.S	2014-02-18 01:46:26.699052241 -0800
+--- u-boot//cpu/mips/cache.S	2014-05-15 00:16:39.827230522 -0700
++++ u-boot_1.1//cpu/mips/cache.S	2014-05-15 00:16:42.767234195 -0700
 @@ -3,6 +3,8 @@
   *
   *  Copyright (c) 2003	Wolfgang Denk <wd@denx.de>
@@ -43550,8 +43822,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/cache.S u-boot_1.1//
 +    .end    mips_cache_lock_24k
 +
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/config.mk u-boot_1.1//cpu/mips/config.mk
---- u-boot//cpu/mips/config.mk	2014-02-18 01:46:22.595049375 -0800
-+++ u-boot_1.1//cpu/mips/config.mk	2014-02-18 01:46:26.699052241 -0800
+--- u-boot//cpu/mips/config.mk	2014-05-15 00:16:39.827230522 -0700
++++ u-boot_1.1//cpu/mips/config.mk	2014-05-15 00:16:42.767234195 -0700
 @@ -2,6 +2,8 @@
  # (C) Copyright 2003
  # Wolfgang Denk, DENX Software Engineering, <wd@denx.de>
@@ -43585,8 +43857,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/config.mk u-boot_1.1
  
  PLATFORM_CPPFLAGS += $(MIPSFLAGS)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/cpu.c u-boot_1.1//cpu/mips/cpu.c
---- u-boot//cpu/mips/cpu.c	2014-02-18 01:46:22.595049375 -0800
-+++ u-boot_1.1//cpu/mips/cpu.c	2014-02-18 01:46:26.699052241 -0800
+--- u-boot//cpu/mips/cpu.c	2014-05-15 00:16:39.827230522 -0700
++++ u-boot_1.1//cpu/mips/cpu.c	2014-05-15 00:16:42.767234195 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2003
   * Wolfgang Denk, DENX Software Engineering, <wd@denx.de>
@@ -43680,8 +43952,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/cpu.c u-boot_1.1//cp
  
  void write_one_tlb( int index, u32 pagemask, u32 hi, u32 low0, u32 low1 ){
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/Makefile u-boot_1.1//cpu/mips/Makefile
---- u-boot//cpu/mips/Makefile	2014-02-18 01:46:22.595049375 -0800
-+++ u-boot_1.1//cpu/mips/Makefile	2014-02-18 01:46:26.663052209 -0800
+--- u-boot//cpu/mips/Makefile	2014-05-15 00:16:39.823230517 -0700
++++ u-boot_1.1//cpu/mips/Makefile	2014-05-15 00:16:42.719234132 -0700
 @@ -2,6 +2,8 @@
  # (C) Copyright 2003
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -43711,7 +43983,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/Makefile u-boot_1.1/
  
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/start_bootstrap.S u-boot_1.1//cpu/mips/start_bootstrap.S
 --- u-boot//cpu/mips/start_bootstrap.S	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//cpu/mips/start_bootstrap.S	2014-02-18 01:46:26.703052246 -0800
++++ u-boot_1.1//cpu/mips/start_bootstrap.S	2014-05-15 00:16:42.799234231 -0700
 @@ -0,0 +1,700 @@
 +/*
 + *  Startup Code for MIPS32 CPU-core
@@ -44414,8 +44686,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/start_bootstrap.S u-
 +romExcHandle:
 +	b romExcHandle
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/start.S u-boot_1.1//cpu/mips/start.S
---- u-boot//cpu/mips/start.S	2014-02-18 01:46:22.599049378 -0800
-+++ u-boot_1.1//cpu/mips/start.S	2014-02-18 01:46:26.699052241 -0800
+--- u-boot//cpu/mips/start.S	2014-05-15 00:16:39.827230522 -0700
++++ u-boot_1.1//cpu/mips/start.S	2014-05-15 00:16:42.799234231 -0700
 @@ -2,7 +2,8 @@
   *  Startup Code for MIPS32 CPU-core
   *
@@ -49311,8 +49583,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//cpu/mips/start.S u-boot_1.1//
  	b romExcHandle
 +#endif /* #ifndef COMPRESSED_UBOOT */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//drivers/Makefile u-boot_1.1//drivers/Makefile
---- u-boot//drivers/Makefile	2014-02-18 01:46:22.743049480 -0800
-+++ u-boot_1.1//drivers/Makefile	2014-02-18 01:46:26.947052415 -0800
+--- u-boot//drivers/Makefile	2014-05-15 00:16:40.035230780 -0700
++++ u-boot_1.1//drivers/Makefile	2014-05-15 00:16:43.027234518 -0700
 @@ -2,6 +2,8 @@
  # (C) Copyright 2000-2004
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -49341,8 +49613,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//drivers/Makefile u-boot_1.1//
  
  $(LIB): $(OBJS)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//drivers/nand/nand_ids.c u-boot_1.1//drivers/nand/nand_ids.c
---- u-boot//drivers/nand/nand_ids.c	2014-02-18 01:46:22.775049502 -0800
-+++ u-boot_1.1//drivers/nand/nand_ids.c	2014-02-18 01:46:27.027052470 -0800
+--- u-boot//drivers/nand/nand_ids.c	2014-05-15 00:16:40.079230835 -0700
++++ u-boot_1.1//drivers/nand/nand_ids.c	2014-05-15 00:16:43.095234603 -0700
 @@ -2,8 +2,9 @@
   *  drivers/mtd/nandids.c
   *
@@ -49367,27 +49639,22 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//drivers/nand/nand_ids.c u-boo
  #endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/953x.h u-boot_1.1//include/953x.h
 --- u-boot//include/953x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/953x.h	2014-02-18 01:46:27.515052798 -0800
-@@ -0,0 +1,4461 @@
++++ u-boot_1.1//include/953x.h	2014-05-15 00:16:43.423235011 -0700
+@@ -0,0 +1,4517 @@
 +/*
-+ * QCA 953x series processor SOC registers
-+ *
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * 
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
 + *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-+ * MA 02111-1307 USA
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 + */
 +
 +#ifndef _QCA953X_H
@@ -53444,8 +53711,69 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/953x.h u-boot_1.1//in
 +#define CPU_DDR_CLOCK_CONTROL_DDR_POST_DIV	CPU_DDR_CLOCK_CONTROL_DDR_POST_DIV_SET(0)
 +#define CPU_DDR_CLOCK_CONTROL_CPU_POST_DIV	CPU_DDR_CLOCK_CONTROL_CPU_POST_DIV_SET(0)
 +
-+#else
-+#	error "CFG_PLL_FREQ not set"
++#elif (CFG_PLL_FREQ == CFG_PLL_650_400_200)
++
++#define CPU_DDR_SYNC_MODE                       DDR_CTL_CONFIG_CPU_DDR_SYNC_SET(0)
++
++#define CPU_PLL_CONFIG_NINT_VAL                 CPU_PLL_CONFIG_NINT_SET(26)
++#define CPU_PLL_CONFIG_REF_DIV_VAL              CPU_PLL_CONFIG_REFDIV_SET(1)
++#define CPU_PLL_CONFIG_RANGE_VAL                CPU_PLL_CONFIG_RANGE_SET(0)
++#define CPU_PLL_CONFIG_OUT_DIV_VAL1             CPU_PLL_CONFIG_OUTDIV_SET(0)
++#define CPU_PLL_CONFIG_OUT_DIV_VAL2             CPU_PLL_CONFIG_OUTDIV_SET(0)
++#define CPU_PLL_DITHER_VAL                      CPU_PLL_DITHER_DITHER_EN_SET(0) | \
++                                                CPU_PLL_DITHER_NFRAC_MAX_SET(0x3f) | \
++                                                CPU_PLL_DITHER_NFRAC_MIN_SET(0) | \
++                                                CPU_PLL_DITHER_NFRAC_STEP_SET(1) | \
++                                                CPU_PLL_DITHER_UPDATE_COUNT_SET(0xf)
++
++#define DDR_PLL_CONFIG_NINT_VAL                 DDR_PLL_CONFIG_NINT_SET(0xf)
++#define DDR_PLL_CONFIG_REF_DIV_VAL              DDR_PLL_CONFIG_REFDIV_SET(1)
++#define DDR_PLL_CONFIG_RANGE_VAL                DDR_PLL_CONFIG_RANGE_SET(0)
++#define DDR_PLL_CONFIG_OUT_DIV_VAL1             DDR_PLL_CONFIG_OUTDIV_SET(0)
++#define DDR_PLL_CONFIG_OUT_DIV_VAL2             DDR_PLL_CONFIG_OUTDIV_SET(0)
++#define DDR_PLL_DITHER_VAL                      DDR_PLL_DITHER_DITHER_EN_SET(1) | \
++                                                DDR_PLL_DITHER_NFRAC_MAX_SET(0x2FB) | \
++                                                DDR_PLL_DITHER_NFRAC_MIN_SET(0x27B) | \
++                                                DDR_PLL_DITHER_NFRAC_STEP_SET(1) | \
++                                                DDR_PLL_DITHER_UPDATE_COUNT_SET(0xf)
++
++#define CPU_DDR_CLOCK_CONTROL_AHB_DIV_VAL       CPU_DDR_CLOCK_CONTROL_AHB_POST_DIV_SET(2)
++#define AHB_CLK_FROM_DDR                        CPU_DDR_CLOCK_CONTROL_AHBCLK_FROM_DDRPLL_SET(0)
++#define CPU_DDR_CLOCK_CONTROL_DDR_POST_DIV      CPU_DDR_CLOCK_CONTROL_DDR_POST_DIV_SET(0)
++#define CPU_DDR_CLOCK_CONTROL_CPU_POST_DIV      CPU_DDR_CLOCK_CONTROL_CPU_POST_DIV_SET(0)
++
++
++#elif (CFG_PLL_FREQ == CFG_PLL_650_600_200)
++#define CPU_DDR_SYNC_MODE                       DDR_CTL_CONFIG_CPU_DDR_SYNC_SET(0)
++
++#define CPU_PLL_CONFIG_NINT_VAL                 CPU_PLL_CONFIG_NINT_SET(26)
++#define CPU_PLL_CONFIG_REF_DIV_VAL              CPU_PLL_CONFIG_REFDIV_SET(1)
++#define CPU_PLL_CONFIG_RANGE_VAL                CPU_PLL_CONFIG_RANGE_SET(0)
++#define CPU_PLL_CONFIG_OUT_DIV_VAL1             CPU_PLL_CONFIG_OUTDIV_SET(0)
++#define CPU_PLL_CONFIG_OUT_DIV_VAL2             CPU_PLL_CONFIG_OUTDIV_SET(0)
++#define CPU_PLL_DITHER_VAL                      CPU_PLL_DITHER_DITHER_EN_SET(0) | \
++                                                CPU_PLL_DITHER_NFRAC_MAX_SET(0x3f) | \
++                                                CPU_PLL_DITHER_NFRAC_MIN_SET(0) | \
++                                                CPU_PLL_DITHER_NFRAC_STEP_SET(1) | \
++                                                CPU_PLL_DITHER_UPDATE_COUNT_SET(0xf)
++
++#define DDR_PLL_CONFIG_NINT_VAL                 DDR_PLL_CONFIG_NINT_SET(0x17)
++#define DDR_PLL_CONFIG_REF_DIV_VAL              DDR_PLL_CONFIG_REFDIV_SET(1)
++#define DDR_PLL_CONFIG_RANGE_VAL                DDR_PLL_CONFIG_RANGE_SET(0)
++#define DDR_PLL_CONFIG_OUT_DIV_VAL1             DDR_PLL_CONFIG_OUTDIV_SET(0)
++#define DDR_PLL_CONFIG_OUT_DIV_VAL2             DDR_PLL_CONFIG_OUTDIV_SET(0)
++#define DDR_PLL_DITHER_VAL                      DDR_PLL_DITHER_DITHER_EN_SET(1) | \
++                                                DDR_PLL_DITHER_NFRAC_MAX_SET(0x3ae) | \
++                                                DDR_PLL_DITHER_NFRAC_MIN_SET(0x385) | \
++                                                DDR_PLL_DITHER_NFRAC_STEP_SET(1) | \
++                                                DDR_PLL_DITHER_UPDATE_COUNT_SET(0xf)
++
++#define CPU_DDR_CLOCK_CONTROL_AHB_DIV_VAL       CPU_DDR_CLOCK_CONTROL_AHB_POST_DIV_SET(2)
++#define AHB_CLK_FROM_DDR                        CPU_DDR_CLOCK_CONTROL_AHBCLK_FROM_DDRPLL_SET(0)
++#define CPU_DDR_CLOCK_CONTROL_DDR_POST_DIV      CPU_DDR_CLOCK_CONTROL_DDR_POST_DIV_SET(0)
++#define CPU_DDR_CLOCK_CONTROL_CPU_POST_DIV      CPU_DDR_CLOCK_CONTROL_CPU_POST_DIV_SET(0)
++#else 
++   # error "CFG_PLL_FREQ not set"
 +#endif	// CFG_PLL_FREQ
 +
 +#define CPU_CLK_FROM_DDR_PLL	CPU_DDR_CLOCK_CONTROL_CPUCLK_FROM_CPUPLL_SET(0)
@@ -53832,7 +54160,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/953x.h u-boot_1.1//in
 +#endif /* _QCA953X_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/955x.h u-boot_1.1//include/955x.h
 --- u-boot//include/955x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/955x.h	2014-02-18 01:46:27.555052814 -0800
++++ u-boot_1.1//include/955x.h	2014-05-15 00:16:43.459235060 -0700
 @@ -0,0 +1,3484 @@
 +/*
 + * QCA 955x series processor SOC registers
@@ -57320,7 +57648,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/955x.h u-boot_1.1//in
 +#endif /* _QCA955X_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/956x.h u-boot_1.1//include/956x.h
 --- u-boot//include/956x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/956x.h	2014-02-18 01:46:27.603052860 -0800
++++ u-boot_1.1//include/956x.h	2014-05-15 00:16:43.475235078 -0700
 @@ -0,0 +1,4487 @@
 +/*
 + * QCA 956x series processor SOC registers
@@ -61811,7 +62139,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/956x.h u-boot_1.1//in
 +#endif /* _QCA956X_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/ar7240_soc.h u-boot_1.1//include/ar7240_soc.h
 --- u-boot//include/ar7240_soc.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/ar7240_soc.h	2014-02-18 01:46:27.611052889 -0800
++++ u-boot_1.1//include/ar7240_soc.h	2014-05-15 00:16:43.483235088 -0700
 @@ -0,0 +1,768 @@
 +/*
 + * Atheror AR7240 series processor SOC registers
@@ -62583,7 +62911,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/ar7240_soc.h u-boot_1
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/ar934x_soc.h u-boot_1.1//include/ar934x_soc.h
 --- u-boot//include/ar934x_soc.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/ar934x_soc.h	2014-02-18 01:46:27.615052895 -0800
++++ u-boot_1.1//include/ar934x_soc.h	2014-05-15 00:16:43.499235108 -0700
 @@ -0,0 +1,3148 @@
 +/*
 + * Atheros AR924X series processor SOC registers
@@ -65734,8 +66062,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/ar934x_soc.h u-boot_1
 +
 +#endif /* _AR934X_SOC_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/asm-mips/addrspace.h u-boot_1.1//include/asm-mips/addrspace.h
---- u-boot//include/asm-mips/addrspace.h	2014-02-18 01:46:23.179049784 -0800
-+++ u-boot_1.1//include/asm-mips/addrspace.h	2014-02-18 01:46:27.971053129 -0800
+--- u-boot//include/asm-mips/addrspace.h	2014-05-15 00:16:40.363231190 -0700
++++ u-boot_1.1//include/asm-mips/addrspace.h	2014-05-15 00:16:43.691235349 -0700
 @@ -5,6 +5,7 @@
   *
   * Copyright (C) 1996 by Ralf Baechle
@@ -65756,8 +66084,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/asm-mips/addrspace.h 
  #endif	/* CONFIG_AU1X00 */
  #endif	/* __ASSEMBLY__ */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/asm-mips/bitops.h u-boot_1.1//include/asm-mips/bitops.h
---- u-boot//include/asm-mips/bitops.h	2014-02-18 01:46:23.183049787 -0800
-+++ u-boot_1.1//include/asm-mips/bitops.h	2014-02-18 01:46:27.991053140 -0800
+--- u-boot//include/asm-mips/bitops.h	2014-05-15 00:16:40.367231195 -0700
++++ u-boot_1.1//include/asm-mips/bitops.h	2014-05-15 00:16:43.711235374 -0700
 @@ -5,6 +5,7 @@
   *
   * Copyright (c) 1994 - 1997, 1999, 2000  Ralf Baechle (ralf@gnu.org)
@@ -65784,31 +66112,26 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/asm-mips/bitops.h u-b
  #endif /* _ASM_BITOPS_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/atheros.h u-boot_1.1//include/atheros.h
 --- u-boot//include/atheros.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/atheros.h	2014-02-18 01:46:28.127053237 -0800
-@@ -0,0 +1,364 @@
++++ u-boot_1.1//include/atheros.h	2014-05-15 00:16:43.803235488 -0700
+@@ -0,0 +1,361 @@
 +/*
 + * vim: tabstop=8 : noexpandtab
 + */
-+/*
++
++/* 
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * 
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
 + *
-+ * See file CREDITS for list of people who contributed to this
-+ * project.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-+ * MA 02111-1307 USA
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 + */
 +
 +#ifndef _ATHEROS_H
@@ -65968,6 +66291,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/atheros.h u-boot_1.1/
 +#define CFG_PLL_810_700_270	0x10
 +#define CFG_PLL_810_666_270	0x11
 +#define CFG_PLL_775_650_258	0x12
++#define CFG_PLL_650_400_200	0x13
++#define CFG_PLL_650_600_200	0x14
 +
 +#define UBOOT_SIZE                      (256 * 1024)
 +#define PLL_FLASH_ADDR                  (CFG_FLASH_BASE + UBOOT_SIZE)
@@ -66152,7 +66477,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/atheros.h u-boot_1.1/
 +#endif /* _ATHEROS_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/athversion.h u-boot_1.1//include/athversion.h
 --- u-boot//include/athversion.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/athversion.h	2014-02-18 01:46:28.127053237 -0800
++++ u-boot_1.1//include/athversion.h	2014-05-15 00:16:43.803235488 -0700
 @@ -0,0 +1,30 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -66185,7 +66510,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/athversion.h u-boot_1
 +
 +#endif /* __ATHVERSION_H_ */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/bmp_logo.h u-boot_1.1//include/bmp_logo.h
---- u-boot//include/bmp_logo.h	2014-02-18 01:46:23.231049820 -0800
+--- u-boot//include/bmp_logo.h	2014-05-15 00:16:40.419231260 -0700
 +++ u-boot_1.1//include/bmp_logo.h	1969-12-31 16:00:00.000000000 -0800
 @@ -1,1948 +0,0 @@
 -/*
@@ -68137,8 +68462,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/bmp_logo.h u-boot_1.1
 -
 -#endif /* __BMP_LOGO_H__ */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/cmd_confdefs.h u-boot_1.1//include/cmd_confdefs.h
---- u-boot//include/cmd_confdefs.h	2014-02-18 01:46:23.231049820 -0800
-+++ u-boot_1.1//include/cmd_confdefs.h	2014-02-18 01:46:28.151053255 -0800
+--- u-boot//include/cmd_confdefs.h	2014-05-15 00:16:40.423231265 -0700
++++ u-boot_1.1//include/cmd_confdefs.h	2014-05-15 00:16:43.823235514 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000-2002
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -68256,8 +68581,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/cmd_confdefs.h u-boot
   */
  #define CONFIG_CMD_DFL	(CFG_CMD_ALL & ~CFG_CMD_NONSTD)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/common.h u-boot_1.1//include/common.h
---- u-boot//include/common.h	2014-02-18 01:46:23.231049820 -0800
-+++ u-boot_1.1//include/common.h	2014-02-18 01:46:28.151053255 -0800
+--- u-boot//include/common.h	2014-05-15 00:16:40.423231265 -0700
++++ u-boot_1.1//include/common.h	2014-05-15 00:16:43.827235519 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000-2004
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -68301,7 +68626,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/common.h u-boot_1.1//
  #if defined (CONFIG_4xx)	|| \
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ap120.h u-boot_1.1//include/configs/ap120.h
 --- u-boot//include/configs/ap120.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/ap120.h	2014-02-18 01:46:28.595053563 -0800
++++ u-boot_1.1//include/configs/ap120.h	2014-05-15 00:16:44.123235879 -0700
 @@ -0,0 +1,498 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -68803,8 +69128,30 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ap120.h u-boo
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ap121.h u-boot_1.1//include/configs/ap121.h
 --- u-boot//include/configs/ap121.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/ap121.h	2014-02-18 01:46:28.595053563 -0800
-@@ -0,0 +1,351 @@
++++ u-boot_1.1//include/configs/ap121.h	2014-05-15 00:16:44.123235879 -0700
+@@ -0,0 +1,373 @@
++/*
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
 +/*
 + * This file contains the configuration parameters for the dbau1x00 board.
 + */
@@ -69021,7 +69368,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ap121.h u-boo
 +#define CFG_ENV_SIZE		0x10000
 +
 +#if (FLASH_SIZE == 16)
-+    #define CONFIG_BOOTCOMMAND "bootm 0x9f680000"
++    #define CONFIG_BOOTCOMMAND "bootm 0x9fe80000"
 +#elif (FLASH_SIZE == 4)
 +    #define CONFIG_BOOTCOMMAND "bootm 0x9f300000"
 +#else
@@ -69158,7 +69505,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ap121.h u-boo
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ap123.h u-boot_1.1//include/configs/ap123.h
 --- u-boot//include/configs/ap123.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/ap123.h	2014-02-18 01:46:28.595053563 -0800
++++ u-boot_1.1//include/configs/ap123.h	2014-05-15 00:16:44.123235879 -0700
 @@ -0,0 +1,496 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -69658,7 +70005,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ap123.h u-boo
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/aph126.h u-boot_1.1//include/configs/aph126.h
 --- u-boot//include/configs/aph126.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/aph126.h	2014-02-18 01:46:28.595053563 -0800
++++ u-boot_1.1//include/configs/aph126.h	2014-05-15 00:16:44.123235879 -0700
 @@ -0,0 +1,443 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -70105,7 +70452,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/aph126.h u-bo
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/aph128.h u-boot_1.1//include/configs/aph128.h
 --- u-boot//include/configs/aph128.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/aph128.h	2014-02-18 01:46:28.651053603 -0800
++++ u-boot_1.1//include/configs/aph128.h	2014-05-15 00:16:44.139235914 -0700
 @@ -0,0 +1,443 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -70552,7 +70899,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/aph128.h u-bo
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ar7240_emu.h u-boot_1.1//include/configs/ar7240_emu.h
 --- u-boot//include/configs/ar7240_emu.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/ar7240_emu.h	2014-02-18 01:46:28.651053603 -0800
++++ u-boot_1.1//include/configs/ar7240_emu.h	2014-05-15 00:16:44.139235916 -0700
 @@ -0,0 +1,199 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -70755,7 +71102,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ar7240_emu.h 
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ar7240.h u-boot_1.1//include/configs/ar7240.h
 --- u-boot//include/configs/ar7240.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/ar7240.h	2014-02-18 01:46:28.651053603 -0800
++++ u-boot_1.1//include/configs/ar7240.h	2014-05-15 00:16:44.139235916 -0700
 @@ -0,0 +1,175 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -70934,8 +71281,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/ar7240.h u-bo
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/board953x.h u-boot_1.1//include/configs/board953x.h
 --- u-boot//include/configs/board953x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/board953x.h	2014-02-18 01:46:28.691053630 -0800
-@@ -0,0 +1,356 @@
++++ u-boot_1.1//include/configs/board953x.h	2014-05-15 00:16:44.163235929 -0700
+@@ -0,0 +1,368 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
 + *
@@ -70978,13 +71325,16 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/board953x.h u
 +#define CFG_MAX_FLASH_BANKS	1	/* max number of memory banks */
 +#if (FLASH_SIZE == 16)
 +#define CFG_MAX_FLASH_SECT	256	/* max number of sectors on one chip */
-+#define ATH_MTDPARTS_MIB0	"8256k(mib0)"
++#define ATH_MTDPARTS_MIB0	"64k(mib0)"
++#define ATH_ROOTFS_SIZE		"14528k(rootfs)"
 +#elif (FLASH_SIZE == 8)
 +#define CFG_MAX_FLASH_SECT	128	/* max number of sectors on one chip */
 +#define ATH_MTDPARTS_MIB0	"64k(mib0)"
++#define ATH_ROOTFS_SIZE		"6336k(rootfs)"
 +#else
 +#define CFG_MAX_FLASH_SECT	64	/* max number of sectors on one chip */
 +#define ATH_MTDPARTS_MIB0	"64k(mib0)"
++#define ATH_ROOTFS_SIZE		"6336k(rootfs)"
 +#endif
 +
 +#define CFG_FLASH_SECTOR_SIZE	(64*1024)
@@ -71121,11 +71471,16 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/board953x.h u
 +#		define MTDPARTS_DEFAULT	"mtdparts=ath-nor0:32k(u-boot1),32k(u-boot2),3008k(rootfs),896k(uImage),64k(mib0),64k(ART)"
 +#	else
 +#		define ATH_F_FILE		fs_name(${bc}-jffs2)
++#	if (FLASH_SIZE == 16)
++#		define ATH_F_LEN		0xE30000
++#		define ATH_K_ADDR		0x9fE80000
++#	else
 +#		define ATH_F_LEN		0x630000
++#		define ATH_K_ADDR		0x9f680000
++# 	endif
 +#		define ATH_F_ADDR		0x9f050000
 +#		define ATH_K_FILE		vmlinux${bc}.lzma.uImage
-+#		define ATH_K_ADDR		0x9f680000
-+#		define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),6336k(rootfs),1408k(uImage)," ATH_MTDPARTS_MIB0 ",64k(ART)"
++#		define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env)," ATH_ROOTFS_SIZE ",1408k(uImage)," ATH_MTDPARTS_MIB0 ",64k(ART)"
 +#	endif
 +#endif /*CONFIG_MI124*/
 +
@@ -71175,7 +71530,11 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/board953x.h u
 +#	ifdef COMPRESSED_UBOOT
 +#		define CONFIG_BOOTCOMMAND	"bootm 0x9f300000"
 +#	else
-+#		define CONFIG_BOOTCOMMAND	"bootm 0x9f680000"
++#		if (FLASH_SIZE == 16)
++#			define CONFIG_BOOTCOMMAND	"bootm 0x9fE80000"
++#		else
++#			define CONFIG_BOOTCOMMAND	"bootm 0x9f680000"
++#		endif
 +#	endif
 +#endif
 +
@@ -71294,7 +71653,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/board953x.h u
 +#endif	/* __BOARD_955X_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/board955x.h u-boot_1.1//include/configs/board955x.h
 --- u-boot//include/configs/board955x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/board955x.h	2014-02-18 01:46:28.691053630 -0800
++++ u-boot_1.1//include/configs/board955x.h	2014-05-15 00:16:44.163235929 -0700
 @@ -0,0 +1,332 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -71630,7 +71989,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/board955x.h u
 +#endif	/* __BOARD_955X_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/board956x.h u-boot_1.1//include/configs/board956x.h
 --- u-boot//include/configs/board956x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/board956x.h	2014-02-18 01:46:28.691053630 -0800
++++ u-boot_1.1//include/configs/board956x.h	2014-05-15 00:16:44.163235929 -0700
 @@ -0,0 +1,377 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -72011,7 +72370,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/board956x.h u
 +#endif	/* __BOARD_956X_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/db12x-extender.h u-boot_1.1//include/configs/db12x-extender.h
 --- u-boot//include/configs/db12x-extender.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/db12x-extender.h	2014-02-18 01:46:28.807053712 -0800
++++ u-boot_1.1//include/configs/db12x-extender.h	2014-05-15 00:16:44.255236052 -0700
 @@ -0,0 +1,441 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -72456,7 +72815,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/db12x-extende
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/db12x.h u-boot_1.1//include/configs/db12x.h
 --- u-boot//include/configs/db12x.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/db12x.h	2014-02-18 01:46:28.807053712 -0800
++++ u-boot_1.1//include/configs/db12x.h	2014-05-15 00:16:44.267236067 -0700
 @@ -0,0 +1,506 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -72966,7 +73325,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/db12x.h u-boo
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/db12x-hybrid.h u-boot_1.1//include/configs/db12x-hybrid.h
 --- u-boot//include/configs/db12x-hybrid.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/db12x-hybrid.h	2014-02-18 01:46:28.807053712 -0800
++++ u-boot_1.1//include/configs/db12x-hybrid.h	2014-05-15 00:16:44.263236062 -0700
 @@ -0,0 +1,517 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -73487,7 +73846,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/db12x-hybrid.
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/dhp1565.h u-boot_1.1//include/configs/dhp1565.h
 --- u-boot//include/configs/dhp1565.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/dhp1565.h	2014-02-18 01:46:28.819053722 -0800
++++ u-boot_1.1//include/configs/dhp1565.h	2014-05-15 00:16:44.271236072 -0700
 @@ -0,0 +1,442 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -73933,7 +74292,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/dhp1565.h u-b
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/reh132.h u-boot_1.1//include/configs/reh132.h
 --- u-boot//include/configs/reh132.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/reh132.h	2014-02-18 01:46:28.927053797 -0800
++++ u-boot_1.1//include/configs/reh132.h	2014-05-15 00:16:44.375236203 -0700
 @@ -0,0 +1,445 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -74382,7 +74741,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/reh132.h u-bo
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/scoemu.h u-boot_1.1//include/configs/scoemu.h
 --- u-boot//include/configs/scoemu.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/scoemu.h	2014-02-18 01:46:28.935053803 -0800
++++ u-boot_1.1//include/configs/scoemu.h	2014-05-15 00:16:44.383236213 -0700
 @@ -0,0 +1,461 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -74847,7 +75206,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/scoemu.h u-bo
 +#endif	/* __SCOEMU_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/tb6xx.h u-boot_1.1//include/configs/tb6xx.h
 --- u-boot//include/configs/tb6xx.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/tb6xx.h	2014-02-18 01:46:28.947053812 -0800
++++ u-boot_1.1//include/configs/tb6xx.h	2014-05-15 00:16:44.395236228 -0700
 @@ -0,0 +1,364 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -75215,7 +75574,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/tb6xx.h u-boo
 +#endif	/* __TB6XX_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/wah132.h u-boot_1.1//include/configs/wah132.h
 --- u-boot//include/configs/wah132.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/wah132.h	2014-02-18 01:46:28.963053822 -0800
++++ u-boot_1.1//include/configs/wah132.h	2014-05-15 00:16:44.403236238 -0700
 @@ -0,0 +1,444 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -75663,7 +76022,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/wah132.h u-bo
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/wasp_emu.h u-boot_1.1//include/configs/wasp_emu.h
 --- u-boot//include/configs/wasp_emu.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/configs/wasp_emu.h	2014-02-18 01:46:28.963053822 -0800
++++ u-boot_1.1//include/configs/wasp_emu.h	2014-05-15 00:16:44.403236238 -0700
 @@ -0,0 +1,201 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -75868,7 +76227,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/configs/wasp_emu.h u-
 +#endif	/* __CONFIG_H */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/defines.h u-boot_1.1//include/defines.h
 --- u-boot//include/defines.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/defines.h	2014-02-18 01:46:28.995053843 -0800
++++ u-boot_1.1//include/defines.h	2014-05-15 00:16:44.431236271 -0700
 @@ -0,0 +1,122 @@
 +/*
 + * Copyright (c) 2013 Qualcomm Atheros, Inc.
@@ -75993,8 +76352,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/defines.h u-boot_1.1/
 +#define Hit_Set_Virtual_SI	0x1e
 +#define Hit_Set_Virtual_SD	0x1f
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/flash.h u-boot_1.1//include/flash.h
---- u-boot//include/flash.h	2014-02-18 01:46:23.519050021 -0800
-+++ u-boot_1.1//include/flash.h	2014-02-18 01:46:29.051053884 -0800
+--- u-boot//include/flash.h	2014-05-15 00:16:40.603231491 -0700
++++ u-boot_1.1//include/flash.h	2014-05-15 00:16:44.447236293 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000-2005
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -76015,12 +76374,12 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/flash.h u-boot_1.1//i
  
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/hornet_soc.h u-boot_1.1//include/hornet_soc.h
 --- u-boot//include/hornet_soc.h	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//include/hornet_soc.h	2014-02-18 01:46:29.059053888 -0800
++++ u-boot_1.1//include/hornet_soc.h	2014-05-15 00:16:44.459236308 -0700
 @@ -0,0 +1,293 @@
 +/*
-+ * Atheror Hornet series processor SOC registers
++ * Atheros Hornet series processor SOC registers
 + *
-+ * (C) Copyright 2010 Atheros Communications, Inc.
++ * Copyright (c) 2014 Qualcomm Atheros, Inc.
 + *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of the GNU General Public License as
@@ -76311,8 +76670,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/hornet_soc.h u-boot_1
 +
 +#endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/image.h u-boot_1.1//include/image.h
---- u-boot//include/image.h	2014-02-18 01:46:23.519050021 -0800
-+++ u-boot_1.1//include/image.h	2014-02-18 01:46:29.063053891 -0800
+--- u-boot//include/image.h	2014-05-15 00:16:40.607231496 -0700
++++ u-boot_1.1//include/image.h	2014-05-15 00:16:44.463236313 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000-2005
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -76332,8 +76691,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/image.h u-boot_1.1//i
  #define IH_MAGIC	0x27051956	/* Image Magic Number		*/
  #define IH_NMLEN		32	/* Image Name Length		*/
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/linux/mtd/mtd.h u-boot_1.1//include/linux/mtd/mtd.h
---- u-boot//include/linux/mtd/mtd.h	2014-02-18 01:46:23.527050026 -0800
-+++ u-boot_1.1//include/linux/mtd/mtd.h	2014-02-18 01:46:29.075053900 -0800
+--- u-boot//include/linux/mtd/mtd.h	2014-05-15 00:16:40.611231501 -0700
++++ u-boot_1.1//include/linux/mtd/mtd.h	2014-05-15 00:16:44.471236323 -0700
 @@ -1,7 +1,8 @@
  /*
 - * $Id: mtd.h,v 1.56 2004/08/09 18:46:04 dmarlin Exp $
@@ -76356,8 +76715,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/linux/mtd/mtd.h u-boo
  	/* Kernel-only stuff starts here. */
  	char *name;
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/linux/mtd/nand.h u-boot_1.1//include/linux/mtd/nand.h
---- u-boot//include/linux/mtd/nand.h	2014-02-18 01:46:23.527050026 -0800
-+++ u-boot_1.1//include/linux/mtd/nand.h	2014-02-18 01:46:29.075053900 -0800
+--- u-boot//include/linux/mtd/nand.h	2014-05-15 00:16:40.611231501 -0700
++++ u-boot_1.1//include/linux/mtd/nand.h	2014-05-15 00:16:44.471236323 -0700
 @@ -5,7 +5,9 @@
   *                     Steven J. Hill <sjhill@realitydiluted.com>
   *		       Thomas Gleixner <tglx@linutronix.de>
@@ -76381,8 +76740,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/linux/mtd/nand.h u-bo
  /**
   * struct nand_flash_dev - NAND Flash Device ID Structure
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/nand.h u-boot_1.1//include/nand.h
---- u-boot//include/nand.h	2014-02-18 01:46:23.543050038 -0800
-+++ u-boot_1.1//include/nand.h	2014-02-18 01:46:29.139053946 -0800
+--- u-boot//include/nand.h	2014-05-15 00:16:40.623231516 -0700
++++ u-boot_1.1//include/nand.h	2014-05-15 00:16:44.499236358 -0700
 @@ -3,6 +3,8 @@
   * 2N Telekomunikace, a.s. <www.2n.cz>
   * Ladislav Michl <michl@2n.cz>
@@ -76414,8 +76773,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/nand.h u-boot_1.1//in
  	return info->block_isbad(info, ofs);
  }
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/net.h u-boot_1.1//include/net.h
---- u-boot//include/net.h	2014-02-18 01:46:23.543050038 -0800
-+++ u-boot_1.1//include/net.h	2014-02-18 01:46:29.139053946 -0800
+--- u-boot//include/net.h	2014-05-15 00:16:40.627231521 -0700
++++ u-boot_1.1//include/net.h	2014-05-15 00:16:44.499236358 -0700
 @@ -4,6 +4,7 @@
   *	Copyright 1994 - 2000 Neil Russell.
   *	(See License)
@@ -76449,8 +76808,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/net.h u-boot_1.1//inc
  /* from net/net.c */
  extern char	BootFile[128];			/* Boot File name		*/
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/version.h u-boot_1.1//include/version.h
---- u-boot//include/version.h	2014-02-18 01:46:23.583050066 -0800
-+++ u-boot_1.1//include/version.h	2014-02-18 01:46:29.255054027 -0800
+--- u-boot//include/version.h	2014-05-15 00:16:40.655231556 -0700
++++ u-boot_1.1//include/version.h	2014-05-15 00:16:44.647236540 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2000-2006
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -76469,7 +76828,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//include/version.h u-boot_1.1/
  #endif	/* __VERSION_H__ */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_bootstrap/bootstrap_board.c u-boot_1.1//lib_bootstrap/bootstrap_board.c
 --- u-boot//lib_bootstrap/bootstrap_board.c	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//lib_bootstrap/bootstrap_board.c	2014-02-18 01:46:29.271054037 -0800
++++ u-boot_1.1//lib_bootstrap/bootstrap_board.c	2014-05-15 00:16:44.691236598 -0700
 @@ -0,0 +1,479 @@
 +/*
 + * (C) Copyright 2003
@@ -76951,8 +77310,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_bootstrap/bootstrap_board
 +	for (;;);
 +}
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_bootstrap/Makefile u-boot_1.1//lib_bootstrap/Makefile
---- u-boot//lib_bootstrap/Makefile	2014-02-18 01:46:23.599050077 -0800
-+++ u-boot_1.1//lib_bootstrap/Makefile	2014-02-18 01:46:29.271054037 -0800
+--- u-boot//lib_bootstrap/Makefile	2014-05-15 00:16:40.671231576 -0700
++++ u-boot_1.1//lib_bootstrap/Makefile	2014-05-15 00:16:44.691236598 -0700
 @@ -1,6 +1,7 @@
  #
  # (C) Copyright 2003
@@ -76986,8 +77345,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_bootstrap/Makefile u-boot
  
  $(LIB):	$(OBJS)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_generic/LzmaDecode.c u-boot_1.1//lib_generic/LzmaDecode.c
---- u-boot//lib_generic/LzmaDecode.c	2014-02-18 01:46:23.603050079 -0800
-+++ u-boot_1.1//lib_generic/LzmaDecode.c	2014-02-18 01:46:29.275054040 -0800
+--- u-boot//lib_generic/LzmaDecode.c	2014-05-15 00:16:40.675231581 -0700
++++ u-boot_1.1//lib_generic/LzmaDecode.c	2014-05-15 00:16:44.703236613 -0700
 @@ -19,8 +19,6 @@
    to this file, however, are subject to the LGPL or CPL terms.
  */
@@ -76998,8 +77357,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_generic/LzmaDecode.c u-bo
  
  #include "LzmaDecode.h"
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_generic/Makefile u-boot_1.1//lib_generic/Makefile
---- u-boot//lib_generic/Makefile	2014-02-18 01:46:23.603050079 -0800
-+++ u-boot_1.1//lib_generic/Makefile	2014-02-18 01:46:29.275054040 -0800
+--- u-boot//lib_generic/Makefile	2014-05-15 00:16:40.675231581 -0700
++++ u-boot_1.1//lib_generic/Makefile	2014-05-15 00:16:44.703236613 -0700
 @@ -2,6 +2,8 @@
  # (C) Copyright 2000-2002
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -77030,8 +77389,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_generic/Makefile u-boot_1
  $(LIB):	.depend $(OBJS)
  	$(AR) crv $@ $(OBJS)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_generic/zlib.c u-boot_1.1//lib_generic/zlib.c
---- u-boot//lib_generic/zlib.c	2014-02-18 01:46:23.615050088 -0800
-+++ u-boot_1.1//lib_generic/zlib.c	2014-02-18 01:46:29.331054076 -0800
+--- u-boot//lib_generic/zlib.c	2014-05-15 00:16:40.683231591 -0700
++++ u-boot_1.1//lib_generic/zlib.c	2014-05-15 00:16:44.751236674 -0700
 @@ -16,6 +16,8 @@
  /* zutil.h -- internal interface and configuration of the compression library
   * Copyright (C) 1995 Jean-loup Gailly.
@@ -77052,8 +77411,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_generic/zlib.c u-boot_1.1
  char *z_errmsg[] = {
  "stream end",          /* Z_STREAM_END    1 */
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_mips/board.c u-boot_1.1//lib_mips/board.c
---- u-boot//lib_mips/board.c	2014-02-18 01:46:23.623050094 -0800
-+++ u-boot_1.1//lib_mips/board.c	2014-02-18 01:46:29.411054132 -0800
+--- u-boot//lib_mips/board.c	2014-05-15 00:16:40.695231606 -0700
++++ u-boot_1.1//lib_mips/board.c	2014-05-15 00:16:44.787236718 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2003
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -77187,8 +77546,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_mips/board.c u-boot_1.1//
  	for (;;) {
  		main_loop ();
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_mips/mips_linux.c u-boot_1.1//lib_mips/mips_linux.c
---- u-boot//lib_mips/mips_linux.c	2014-02-18 01:46:23.623050094 -0800
-+++ u-boot_1.1//lib_mips/mips_linux.c	2014-02-18 01:46:29.411054132 -0800
+--- u-boot//lib_mips/mips_linux.c	2014-05-15 00:16:40.695231606 -0700
++++ u-boot_1.1//lib_mips/mips_linux.c	2014-05-15 00:16:44.787236718 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2003
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -77326,8 +77685,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//lib_mips/mips_linux.c u-boot_
  	linux_env[0] = 0;
  	linux_env_p = (char *) (linux_env + LINUX_MAX_ENVS);
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//MAKEALL u-boot_1.1//MAKEALL
---- u-boot//MAKEALL	2014-02-18 01:46:21.355048508 -0800
-+++ u-boot_1.1//MAKEALL	2014-02-18 01:46:23.739050176 -0800
+--- u-boot//MAKEALL	2014-05-15 00:16:38.571228951 -0700
++++ u-boot_1.1//MAKEALL	2014-05-15 00:16:40.759231686 -0700
 @@ -228,7 +228,10 @@
  
  LIST_au1xx0="dbau1000 dbau1100 dbau1500 dbau1550 dbau1550_el"
@@ -77341,8 +77700,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//MAKEALL u-boot_1.1//MAKEALL
  #########################################################################
  ## MIPS Systems		(little endian)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//Makefile u-boot_1.1//Makefile
---- u-boot//Makefile	2014-02-18 01:46:21.355048508 -0800
-+++ u-boot_1.1//Makefile	2014-02-18 01:46:23.759050188 -0800
+--- u-boot//Makefile	2014-05-15 00:16:38.571228951 -0700
++++ u-boot_1.1//Makefile	2014-05-15 00:16:40.759231686 -0700
 @@ -2,6 +2,8 @@
  # (C) Copyright 2000-2006
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -77507,7 +77866,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//Makefile u-boot_1.1//Makefile
  version:
  		@echo -n "#define U_BOOT_VERSION \"U-Boot " > $(VERSION_FILE); \
  		echo -n "$(U_BOOT_VERSION)" >> $(VERSION_FILE); \
-@@ -1799,6 +1863,1526 @@
+@@ -1799,6 +1863,1530 @@
  purple_config :		unconfig
  	@./mkconfig $(@:_config=) mips mips purple
  
@@ -77691,7 +78050,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//Makefile u-boot_1.1//Makefile
 +ifdef pll
 +	@echo '#define CFG_PLL_FREQ		$(pll)'	>>include/config.h
 +else
-+	@echo '#define CFG_PLL_FREQ		CFG_PLL_550_400_200'	>>include/config.h
++	@echo '#define CFG_PLL_FREQ		CFG_PLL_650_400_200'	>>include/config.h
 +endif
 +
 +ifeq ($(ETH_CONFIG), _f1e)
@@ -78956,6 +79315,10 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//Makefile u-boot_1.1//Makefile
 +	@echo '#define CONFIG_ATHRS17_PHY	1'	>>include/config.h
 +endif
 +
++ifeq ($(ETH_CONFIG), _s17_hwaccel)
++	@echo '#define CONFIG_ATHRS17_PHY	1'	>>include/config.h
++endif
++
 +ifeq ($(ATH_SGMII_FORCED),1)
 +	@echo '#define ATH_SGMII_FORCED_MODE    1'	>>include/config.h
 +endif
@@ -79034,7 +79397,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//Makefile u-boot_1.1//Makefile
  #========================================================================
  # Nios
  #========================================================================
-@@ -1903,37 +3487,44 @@
+@@ -1903,37 +3491,44 @@
  #########################################################################
  
  clean:
@@ -79100,8 +79463,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//Makefile u-boot_1.1//Makefile
  mrproper \
  distclean:	clobber unconfig
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//mips_config.mk u-boot_1.1//mips_config.mk
---- u-boot//mips_config.mk	2014-02-18 01:46:23.627050097 -0800
-+++ u-boot_1.1//mips_config.mk	2014-02-18 01:46:29.455054165 -0800
+--- u-boot//mips_config.mk	2014-05-15 00:16:40.699231611 -0700
++++ u-boot_1.1//mips_config.mk	2014-05-15 00:16:44.811236748 -0700
 @@ -2,6 +2,8 @@
  # (C) Copyright 2003
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -79124,8 +79487,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//mips_config.mk u-boot_1.1//mi
 +   PLATFORM_CPPFLAGS += -D$(FLASH_TYPE)
 +endif
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//net/eth.c u-boot_1.1//net/eth.c
---- u-boot//net/eth.c	2014-02-18 01:46:23.627050097 -0800
-+++ u-boot_1.1//net/eth.c	2014-02-18 01:46:29.463054171 -0800
+--- u-boot//net/eth.c	2014-05-15 00:16:40.703231616 -0700
++++ u-boot_1.1//net/eth.c	2014-05-15 00:16:44.811236748 -0700
 @@ -2,6 +2,8 @@
   * (C) Copyright 2001-2004
   * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -79179,8 +79542,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//net/eth.c u-boot_1.1//net/eth
  			eth_current->state = ETH_STATE_ACTIVE;
  
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//net/Makefile u-boot_1.1//net/Makefile
---- u-boot//net/Makefile	2014-02-18 01:46:23.627050097 -0800
-+++ u-boot_1.1//net/Makefile	2014-02-18 01:46:29.455054165 -0800
+--- u-boot//net/Makefile	2014-05-15 00:16:40.699231611 -0700
++++ u-boot_1.1//net/Makefile	2014-05-15 00:16:44.811236748 -0700
 @@ -2,6 +2,8 @@
  # (C) Copyright 2000
  # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -79205,8 +79568,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//net/Makefile u-boot_1.1//net/
  
  $(LIB):	$(START) $(OBJS)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//net/net.c u-boot_1.1//net/net.c
---- u-boot//net/net.c	2014-02-18 01:46:23.631050100 -0800
-+++ u-boot_1.1//net/net.c	2014-02-18 01:46:29.463054171 -0800
+--- u-boot//net/net.c	2014-05-15 00:16:40.703231616 -0700
++++ u-boot_1.1//net/net.c	2014-05-15 00:16:44.819236758 -0700
 @@ -6,6 +6,7 @@
   *	Copyright 2000 Roland Borde
   *	Copyright 2000 Paolo Scaffardi
@@ -79419,7 +79782,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//net/net.c u-boot_1.1//net/net
  	if (len < ETHER_HDR_SIZE)
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//Notice.txt u-boot_1.1//Notice.txt
 --- u-boot//Notice.txt	1969-12-31 16:00:00.000000000 -0800
-+++ u-boot_1.1//Notice.txt	2014-02-18 01:46:23.759050188 -0800
++++ u-boot_1.1//Notice.txt	2014-05-15 00:16:40.759231686 -0700
 @@ -0,0 +1,407 @@
 +This Notice.txt file contains certain notices of software components  
 +included with the software that QUALCOMM ATHEROS Incorporated (“Qualcomm Atheros”)  
@@ -79829,8 +80192,8 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//Notice.txt u-boot_1.1//Notice
 +
 +		     END OF TERMS AND CONDITIONS
 diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//tools/mkimage.c u-boot_1.1//tools/mkimage.c
---- u-boot//tools/mkimage.c	2014-02-18 01:46:23.671050128 -0800
-+++ u-boot_1.1//tools/mkimage.c	2014-02-18 01:46:29.583054255 -0800
+--- u-boot//tools/mkimage.c	2014-05-15 00:16:40.735231656 -0700
++++ u-boot_1.1//tools/mkimage.c	2014-05-15 00:16:44.887236842 -0700
 @@ -4,6 +4,8 @@
   * Wolfgang Denk, wd@denx.de
   * All rights reserved.
