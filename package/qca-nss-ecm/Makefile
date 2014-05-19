@@ -47,9 +47,11 @@ define Build/Compile
 endef
 
 define KernelPackage/qca-nss-ecm/install
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/sysctl.d
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/sysctl.d $(1)/etc/firewall.d $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/ecm_dump.sh $(1)/usr/bin/
 	$(INSTALL_BIN) ./files/qca-nss-ecm.sysctl $(1)/etc/sysctl.d/qca-nss-ecm.conf
+	$(INSTALL_DATA) ./files/qca-nss-ecm.firewall $(1)/etc/firewall.d/qca-nss-ecm
+	$(INSTALL_DATA) ./files/qca-nss-ecm.defaults $(1)/etc/uci-defaults/99-qca-nss-ecm
 endef
 
 $(eval $(call KernelPackage,qca-nss-ecm))
