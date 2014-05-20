@@ -338,8 +338,8 @@
 +	       QCA956X_PLL_CPU_CONFIG1_NFRAC_L_MASK;
 +
 +	cpu_pll = nint * ath79_ref_clk.rate / ref_div;
-+	cpu_pll += (lfrac * ath79_ref_clk.rate) / (ref_div * (25 << 13));
-+	cpu_pll += (hfrac * ath79_ref_clk.rate) / (ref_div << 13);
++	cpu_pll += (lfrac * ath79_ref_clk.rate) / ((ref_div * 25) << 13);
++	cpu_pll += (hfrac >> 13) * ath79_ref_clk.rate / ref_div;
 +	cpu_pll /= (1 << out_div);
 +
 +	pll = ath79_pll_rr(QCA956X_PLL_DDR_CONFIG_REG);
@@ -356,8 +356,8 @@
 +	       QCA956X_PLL_DDR_CONFIG1_NFRAC_L_MASK;
 +
 +	ddr_pll = nint * ath79_ref_clk.rate / ref_div;
-+	ddr_pll += (lfrac * ath79_ref_clk.rate) / (ref_div * (25 << 13));
-+	ddr_pll += (hfrac * ath79_ref_clk.rate) / (ref_div << 13);
++	ddr_pll += (lfrac * ath79_ref_clk.rate) / ((ref_div * 25) << 13);
++	ddr_pll += (hfrac >> 13) * ath79_ref_clk.rate / ref_div;
 +	ddr_pll /= (1 << out_div);
 +
 +	clk_ctrl = ath79_pll_rr(QCA956X_PLL_CLK_CTRL_REG);
