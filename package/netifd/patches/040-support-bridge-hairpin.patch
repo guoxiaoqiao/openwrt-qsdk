@@ -1,0 +1,85 @@
+diff --git a/bridge.c b/bridge.c
+index 7409a50..be74464 100644
+--- a/bridge.c
++++ b/bridge.c
+@@ -31,6 +31,7 @@ enum {
+ 	BRIDGE_ATTR_AGEING_TIME,
+ 	BRIDGE_ATTR_HELLO_TIME,
+ 	BRIDGE_ATTR_MAX_AGE,
++	BRIDGE_ATTR_HAIRPIN,
+ 	__BRIDGE_ATTR_MAX
+ };
+ 
+@@ -43,6 +44,7 @@ static const struct blobmsg_policy bridge_attrs[__BRIDGE_ATTR_MAX] = {
+ 	[BRIDGE_ATTR_HELLO_TIME] = { "hello_time", BLOBMSG_TYPE_INT32 },
+ 	[BRIDGE_ATTR_MAX_AGE] = { "max_age", BLOBMSG_TYPE_INT32 },
+ 	[BRIDGE_ATTR_IGMP_SNOOP] = { "igmp_snooping", BLOBMSG_TYPE_BOOL },
++	[BRIDGE_ATTR_HAIRPIN] = { "hairpin", BLOBMSG_TYPE_BOOL },
+ };
+ 
+ static const union config_param_info bridge_attr_info[__BRIDGE_ATTR_MAX] = {
+@@ -160,6 +162,8 @@ bridge_enable_member(struct bridge_member *bm)
+ 		goto error;
+ 	}
+ 
++	system_bridge_set_hairpin(bm->dev.dev, bst->config.hairpin);
++
+ 	return 0;
+ 
+ error:
+@@ -465,6 +469,7 @@ bridge_apply_settings(struct bridge_state *bst, struct blob_attr **tb)
+ 	cfg->forward_delay = 2;
+ 	cfg->igmp_snoop = false;
+ 	cfg->priority = 0x7FFF;
++	cfg->hairpin = false;
+ 
+ 	if ((cur = tb[BRIDGE_ATTR_STP]))
+ 		cfg->stp = blobmsg_get_bool(cur);
+@@ -492,6 +497,9 @@ bridge_apply_settings(struct bridge_state *bst, struct blob_attr **tb)
+ 		cfg->max_age = blobmsg_get_u32(cur);
+ 		cfg->flags |= BRIDGE_OPT_MAX_AGE;
+ 	}
++
++	if ((cur = tb[BRIDGE_ATTR_HAIRPIN]))
++		cfg->hairpin = blobmsg_get_bool(cur);
+ }
+ 
+ enum dev_change_type
+diff --git a/system-linux.c b/system-linux.c
+index 5e60e0b..33c97b1 100644
+--- a/system-linux.c
++++ b/system-linux.c
+@@ -415,6 +415,13 @@ int system_bridge_delif(struct device *bridge, struct device *dev)
+ 	return system_bridge_if(bridge->ifname, dev, SIOCBRDELIF, NULL);
+ }
+ 
++void system_bridge_set_hairpin(struct device *dev, int enable)
++{
++	char mode[4];
++	snprintf(mode, sizeof(mode), "%d", !!enable);
++	system_set_dev_sysctl("/sys/class/net/%s/brport/hairpin_mode", dev->ifname, mode);
++}
++
+ int system_bonding_addif(struct device *bonding, struct device *dev)
+ {
+ 	char cmd[32];
+diff --git a/system.h b/system.h
+index a4c32e3..3bd0cbd 100644
+--- a/system.h
++++ b/system.h
+@@ -51,6 +51,7 @@ struct bridge_config {
+ 	int ageing_time;
+ 	int hello_time;
+ 	int max_age;
++	int hairpin;
+ };
+ 
+ struct bonding_config {
+@@ -80,6 +81,7 @@ int system_bridge_addbr(struct device *bridge, struct bridge_config *cfg);
+ int system_bridge_delbr(struct device *bridge);
+ int system_bridge_addif(struct device *bridge, struct device *dev);
+ int system_bridge_delif(struct device *bridge, struct device *dev);
++void system_bridge_set_hairpin(struct device *dev, int enable);
+ 
+ int system_bonding_addbonding(struct device *bonding, struct bonding_config *cfg);
+ int system_bonding_delbonding(struct device *bonding);
