@@ -71,6 +71,10 @@ wpa_supplicant_setup_vif() {
 				passphrase="psk=\"${key}\""
 			fi
 			case "$enc" in
+				*mixed)
+					proto='proto=WPA RSN'
+					config_get ieee80211w "$vif" ieee80211w
+				;;
 				*psk2*)
 					proto='proto=RSN'
 					config_get ieee80211w "$vif" ieee80211w
