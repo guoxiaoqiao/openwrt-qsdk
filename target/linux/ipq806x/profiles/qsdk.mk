@@ -3,9 +3,7 @@
 #
 
 NSS_STANDARD:= \
-	qca-nss-fw-retail \
-	kmod-qca-nss-drv \
-	kmod-qca-nss-gmac
+	qca-nss-fw-retail
 
 SSDK_PKGS:= kmod-qca-ssdk-nohnat swconfig
 
