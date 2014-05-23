@@ -44,15 +44,15 @@ module_state_mount() {
 		return 0
 	fi
 
-	echo "Mount state file for $module_name ..."
+	#echo "Mount state file for $module_name ..."
 	if [ ! -e "$state_file" ]
 	then
-		echo "... $module_name does not support state"
+		#echo "... $module_name does not support state"
 		return 1
 	fi
 
 	local major="`cat $state_file`"
-	echo "... Mounting state $state_file with major: $major"
+	#echo "... Mounting state $state_file with major: $major"
 	mknod "${mount_dir}/${module_name}" c $major 0
 }
 
@@ -60,7 +60,7 @@ module_state_mount() {
 # main
 #
 ecm_is_ready || {
-	echo "ECM is not running"
+	#echo "ECM is not running"
 	exit 1
 }
 
