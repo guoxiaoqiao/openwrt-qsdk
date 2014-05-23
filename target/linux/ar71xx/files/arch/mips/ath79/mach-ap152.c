@@ -46,6 +46,9 @@
 #define AP152_GPIO_LED_LAN3             14
 #define AP152_GPIO_LED_LAN4             11
 
+#define AP152_GPIO_LED_USB0		7
+#define AP152_GPIO_LED_USB1		8
+
 #define AP152_GPIO_BTN_WPS              17
 #define AP152_KEYS_POLL_INTERVAL        20     /* msecs */
 #define AP152_KEYS_DEBOUNCE_INTERVAL    (3 * AP152_KEYS_POLL_INTERVAL)
@@ -56,6 +59,19 @@
 
 #define AP152_GPIO_MDC			3
 #define AP152_GPIO_MDIO			4
+
+static struct gpio_led ap152_leds_gpio[] __initdata = {
+	{
+		.name		= "ap152:green:usb0",
+		.gpio		= AP152_GPIO_LED_USB0,
+		.active_low	= 1,
+	},
+	{
+		.name		= "ap152:green:usb1",
+		.gpio		= AP152_GPIO_LED_USB1,
+		.active_low	= 1,
+	},
+};
 
 static struct ar8327_pad_cfg ap152_ar8337_pad0_cfg = {
 	.mode = AR8327_PAD_MAC_SGMII,
@@ -95,6 +111,11 @@ static void __init ap152_setup(void)
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
 
 	ath79_register_m25p80(NULL);
+
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(ap152_leds_gpio),
+			ap152_leds_gpio);
+
+	ath79_register_usb();
 
 	ap152_mdio_setup();
 

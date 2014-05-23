@@ -143,7 +143,7 @@
  #define AR934X_PCIE_WMAC_INT_WMAC_MISC		BIT(0)
  #define AR934X_PCIE_WMAC_INT_WMAC_TX		BIT(1)
  #define AR934X_PCIE_WMAC_INT_WMAC_RXLP		BIT(2)
-@@ -648,6 +714,36 @@
+@@ -648,6 +714,37 @@
  	 QCA955X_EXT_INT_PCIE_RC2_INT1 | QCA955X_EXT_INT_PCIE_RC2_INT2 | \
  	 QCA955X_EXT_INT_PCIE_RC2_INT3)
  
@@ -162,6 +162,7 @@
 +#define QCA956X_EXT_INT_PCIE_RC2_INT2		BIT(15)
 +#define QCA956X_EXT_INT_PCIE_RC2_INT3		BIT(16)
 +#define QCA956X_EXT_INT_USB1			BIT(24)
++#define QCA956X_EXT_INT_USB2			BIT(28)
 +
 +#define QCA956X_EXT_INT_WMAC_ALL \
 +	(QCA956X_EXT_INT_WMAC_MISC | QCA956X_EXT_INT_WMAC_TX | \
@@ -420,7 +421,7 @@
  		ath79_misc_irq_chip.irq_ack = ar724x_misc_irq_ack;
  	else
  		BUG();
-@@ -269,6 +270,94 @@ static void qca955x_irq_init(void)
+@@ -269,6 +270,99 @@ static void qca955x_irq_init(void)
  	irq_set_chained_handler(ATH79_CPU_IRQ_IP3, qca955x_ip3_irq_dispatch);
  }
  
@@ -460,7 +461,7 @@
 +
 +	status = ath79_reset_rr(QCA956X_RESET_REG_EXT_INT_STATUS);
 +	status &= QCA956X_EXT_INT_PCIE_RC2_ALL |
-+		  QCA956X_EXT_INT_USB1;
++		  QCA956X_EXT_INT_USB1 | QCA956X_EXT_INT_USB2;
 +
 +	if (status == 0) {
 +		spurious_interrupt();
@@ -470,6 +471,11 @@
 +	if (status & QCA956X_EXT_INT_USB1) {
 +		/* TODO: flush DDR? */
 +		generic_handle_irq(ATH79_IP3_IRQ(0));
++	}
++
++	if (status & QCA956X_EXT_INT_USB2) {
++		/* TODO: flush DDR? */
++		generic_handle_irq(ATH79_IP3_IRQ(1));
 +	}
 +
 +	if (status & QCA956X_EXT_INT_PCIE_RC2_ALL) {
