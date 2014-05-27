@@ -1,7 +1,7 @@
 Index: linux-3.3.8/net/core/dev.c
 ===================================================================
---- linux-3.3.8.orig/net/core/dev.c	2013-10-25 12:12:06.078321501 -0500
-+++ linux-3.3.8/net/core/dev.c	2013-10-25 12:12:08.001745414 -0500
+--- linux-3.3.8.orig/net/core/dev.c	2014-05-27 14:55:17.041250979 -0500
++++ linux-3.3.8/net/core/dev.c	2014-05-27 14:57:51.081879137 -0500
 @@ -3183,6 +3183,9 @@
  }
  EXPORT_SYMBOL_GPL(netdev_rx_handler_unregister);
@@ -20,13 +20,22 @@ Index: linux-3.3.8/net/core/dev.c
  
  	net_timestamp_check(!netdev_tstamp_prequeue, skb);
  
-@@ -3209,10 +3213,18 @@
+@@ -3209,10 +3213,10 @@
  	skb_reset_transport_header(skb);
  	skb_reset_mac_len(skb);
  
 -	pt_prev = NULL;
 -
  	rcu_read_lock();
+ 
++	pt_prev = NULL;
++
+ another_round:
+ 
+ 	__this_cpu_inc(softnet_data.processed);
+@@ -3223,6 +3227,14 @@
+ 			goto out;
+ 	}
  
 +	fast_recv = rcu_dereference(athrs_fast_nat_recv);
 +	if (fast_recv) {
@@ -36,15 +45,13 @@ Index: linux-3.3.8/net/core/dev.c
 +		}
 +	}
 +
-+	pt_prev = NULL;
-+
- another_round:
- 
- 	__this_cpu_inc(softnet_data.processed);
+ #ifdef CONFIG_NET_CLS_ACT
+ 	if (skb->tc_verd & TC_NCLS) {
+ 		skb->tc_verd = CLR_TC_NCLS(skb->tc_verd);
 Index: linux-3.3.8/net/netfilter/nf_conntrack_proto_tcp.c
 ===================================================================
---- linux-3.3.8.orig/net/netfilter/nf_conntrack_proto_tcp.c	2013-10-25 12:12:32.508393502 -0500
-+++ linux-3.3.8/net/netfilter/nf_conntrack_proto_tcp.c	2013-10-25 12:12:38.538749521 -0500
+--- linux-3.3.8.orig/net/netfilter/nf_conntrack_proto_tcp.c	2014-05-27 14:55:27.861878195 -0500
++++ linux-3.3.8/net/netfilter/nf_conntrack_proto_tcp.c	2014-05-27 14:55:28.351878783 -0500
 @@ -30,12 +30,14 @@
  #include <net/netfilter/ipv6/nf_conntrack_ipv6.h>
  
