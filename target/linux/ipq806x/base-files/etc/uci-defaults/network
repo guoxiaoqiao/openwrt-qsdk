@@ -16,14 +16,18 @@ ucidef_set_interface_loopback
 board=$(ipq806x_board_name)
 
 case "$board" in
-db149)
+db149|\
+db149_1xx|\
+db149_2xx)
 	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3" "eth0"
 	ucidef_add_switch "switch0" "1" "1"
 	ucidef_add_switch_vlan "switch0" "1" "6 1 2 3 4"
 	ucidef_add_switch_vlan "switch0" "2" "0 5"
 	;;
 ap148|\
-ap145)
+ap148_1xx|\
+ap145|\
+ap145_1xx)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	ucidef_add_switch "switch0" "1" "1"
 	ucidef_add_switch_vlan "switch0" "1" "6 1 2 3 4"
