@@ -18,6 +18,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
+include $(INCLUDE_DIR)/package-version-override.mk
 include $(INCLUDE_DIR)/package.mk
 
 define KernelPackage/qca-nss-ecm
@@ -44,6 +45,11 @@ define Build/Compile
 		SUBDIRS="$(PKG_BUILD_DIR)" \
 		EXTRA_CFLAGS="$(EXTRA_CFLAGS)" \
 		modules
+endef
+
+define KernelPackage/qca-nss-ecm/config/Default
+$(call Package/$(PKG_NAME)/override_source_path,kmod-$(PKG_NAME))
+$(call Package/$(PKG_NAME)/override_version,kmod-$(PKG_NAME),$(PKG_SUPPORTED_VERSION))
 endef
 
 define KernelPackage/qca-nss-ecm/install
