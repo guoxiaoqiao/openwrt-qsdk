@@ -3,7 +3,7 @@ diff -I '$[^ ]*:.*\$' -u -r -N -a --binary u-boot//board/ar7240/ap120/ap120.c u-
 +++ u-boot_1.1//board/ar7240/ap120/ap120.c	2014-05-15 00:16:41.171232201 -0700
 @@ -0,0 +1,199 @@
 +/*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013, The Linux Foundation. All rights reserved.
 + *
 + * See file CREDITS for list of people who contributed to this
 + * project.
