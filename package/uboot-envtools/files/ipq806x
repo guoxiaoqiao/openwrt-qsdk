@@ -16,17 +16,20 @@ board=$(ipq806x_board_name)
 
 default_uboot_env () {
 	UBOOTENV_PART=$(cat /proc/mtd | grep APPSBLENV)
-	echo $UBOOTENV_PART | sed \
-		's/^\(mtd[0-9]*\): \([0-9]*\) \([0-9]*\) \"APPSBLENV\"/\/dev\/\1\t0x00000000\t0x\2\t0x\3/g'
+	mtd_dev=$(echo $UBOOTENV_PART | awk '{print $1}' | sed 's/:$//')
+	mtd_size=0x$(echo $UBOOTENV_PART | awk '{print $2}')
+	mtd_erase=0x$(echo $UBOOTENV_PART | awk '{print $3}')
+	# size is hardcoded to 0x40000 in u-boot
+	uboot_env_size=0x40000
+	sectors=$(( $uboot_env_size / $mtd_erase ))
+
+	echo /dev/$mtd_dev 0x0 $uboot_env_size $mtd_erase $sectors
 }
 
 case "$board" in
 ap148 | \
 db149 | \
 db147)
-	ubootenv_add_uci_config "/dev/mtd0" "0x0" "0x40000" "0x20000" "2"
-	;;
-*)
 	env=$(default_uboot_env)
 	[ -n "${env}" ] && ubootenv_add_uci_config $env
 	;;
