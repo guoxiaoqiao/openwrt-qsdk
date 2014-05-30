@@ -11,7 +11,8 @@
 board=$(ipq806x_board_name)
 
 case "$board" in
-ap148)
+ap148|\
+ap148_1xx)
 	ucidef_set_led_usbdev "0" "USB1" "ap148:green:usb_1" "1-1"
 	ucidef_set_led_usbdev "1" "USB3" "ap148:green:usb_3" "3-1"
 	;;
