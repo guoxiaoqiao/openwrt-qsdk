@@ -187,3 +187,12 @@ endef
 $(eval $(call Require,getopt-extended, \
 	Please install an extended getopt version that supports --long \
 ))
+
+define Require/ocamlc
+	ocamlc -v | grep version | sed 's,.*version \(.*\),\1,' | \
+		awk '($$$$1 >= "3.12") { print "ok" }' | grep ok > /dev/null
+endef
+
+$(eval $(call Require,ocalmc, \
+	Please install the Objective Caml compiler (ocaml-nox) v3.12 or later \
+))
