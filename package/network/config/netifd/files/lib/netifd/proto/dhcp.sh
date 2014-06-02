@@ -68,4 +68,3 @@ proto_dhcp_teardown() {
 }
 
 add_protocol dhcp
-
