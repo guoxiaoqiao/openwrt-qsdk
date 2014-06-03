@@ -36,16 +36,17 @@ define Profile/QSDK_Open_Router/Description
 endef
 $(eval $(call Profile,QSDK_Open_Router))
 
-define Profile/QSDK_Wired_Router
+define Profile/QSDK_Wireless_Router
 	$(Profile/QSDK_Base)
-	NAME:=Qualcomm-Atheros SDK Wired Router Profile
+	NAME:=Qualcomm-Atheros SDK Wireless Router Profile
 	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos \
 	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat qca-ssdk-shell kmod-shortcut-fe-cm \
+	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-cli \
 	  qca-legacy-uboot-ap152-8M
 endef
 
-define Profile/QSDK_Wired_Router/Description
-  QSDK Wired Router package set configuration.
+define Profile/QSDK_Wireless_Router/Description
+  QSDK Wireless Router package set configuration.
   This profile is designed to fit in a 8M flash and supports the following features:
   - Bridging and routing networking
   - LuCI web configuration interface
@@ -53,9 +54,9 @@ define Profile/QSDK_Wired_Router/Description
   - Samba
   - IPv4/IPv6
   - DynDns
-  It doens't provide any WiFi driver.
+  - qca-wifi driver
 endef
-$(eval $(call Profile,QSDK_Wired_Router))
+$(eval $(call Profile,QSDK_Wireless_Router))
 
 define Profile/QSDK_Premium_Router
 	$(Profile/QSDK_Base)
