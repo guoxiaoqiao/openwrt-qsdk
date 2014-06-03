@@ -1005,7 +1005,7 @@ define Image/Build/Profile/CUS227
 endef
 SINGLE_PROFILES += CUS227
 
-define Image/Build/Profile/QSDK_Wired_Router
+define Image/Build/Profile/QSDK_Wireless_Router
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP136,$(1))
 	$(call Image/Build/Profile/RUBBERDUCK,$(1))
