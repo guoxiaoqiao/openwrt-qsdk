@@ -41,8 +41,8 @@ define Profile/QSDK_Wireless_Router
 	NAME:=Qualcomm-Atheros SDK Wireless Router Profile
 	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos \
 	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat qca-ssdk-shell kmod-shortcut-fe-cm \
-	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-cli \
-	  qca-legacy-uboot-ap152-8M
+	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
+	  qca-wpa-cli qca-legacy-uboot-ap152-8M kmod-art2
 endef
 
 define Profile/QSDK_Wireless_Router/Description
@@ -63,8 +63,8 @@ define Profile/QSDK_Premium_Router
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  streamboost hyfi alljoyn kmod-fast-classifier \
-	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-cli \
-	  qca-wpa-supplicant qca-legacy-uboot-ap135 kmod-art2 sigma-dut \
+	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
+	  qca-wpa-cli qca-legacy-uboot-ap135 kmod-art2 sigma-dut \
 	  qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell
 endef
 
