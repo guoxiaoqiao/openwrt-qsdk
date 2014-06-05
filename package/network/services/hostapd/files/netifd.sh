@@ -162,7 +162,7 @@ hostapd_set_bss_options() {
 		maxassoc max_inactivity disassoc_low_ack isolate auth_cache \
 		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 require_ht \
 		wps_device_type wps_device_name wps_manufacturer wps_pin \
-		macfilter ssid wmm hidden short_preamble uapsd vht_2g_enabled \
+		macfilter ssid wmm hidden short_preamble rsn_preauth uapsd vht_2g_enabled \
 		vendor_vht_2g_enabled wep_key_len_broadcast wep_key_len_unicast \
 		wpa_strict_rekey wps_config wps_model_name wps_model_number \
 		wps_serial_number vendor_elements
@@ -237,8 +237,8 @@ hostapd_set_bss_options() {
 				auth_server auth_secret auth_port \
 				acct_server acct_secret acct_port \
 				dae_client dae_secret dae_port \
-				nasid rsn_preauth iapp_interface \
-				ownip eap_reauth_period
+				nasid iapp_interface ownip \
+				eap_reauth_period
 
 			# legacy compatibility
 			[ -n "$auth_server" ] || json_get_var auth_server server
