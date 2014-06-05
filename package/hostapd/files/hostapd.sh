@@ -202,6 +202,7 @@ hostapd_set_bss_options() {
 		config_get device_name "$vif" wps_device_name "OpenWrt AP"
 		config_get manufacturer "$vif" wps_manufacturer "openwrt.org"
 		config_get wps_pin "$vif" wps_pin "12345670"
+		config_get wps_pbc_in_m1 "$vif" wps_pbc_in_m1 "0"
 
 		config_get_bool ext_registrar "$vif" ext_registrar 0
 		[ "$ext_registrar" -gt 0 -a -n "$bridge" ] && append "$var" "upnp_iface=$bridge" "$N"
@@ -214,6 +215,8 @@ hostapd_set_bss_options() {
 		append "$var" "device_name=$device_name" "$N"
 		append "$var" "manufacturer=$manufacturer" "$N"
 		append "$var" "config_methods=$config_methods" "$N"
+
+		[ "$wps_pbc_in_m1" -gt 0 ] && append "$var" "pbc_in_m1=1" "$N"
 	}
 
 	append "$var" "ssid=$ssid" "$N"
