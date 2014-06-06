@@ -34,6 +34,11 @@ define KernelPackage/qca-nss-drv/Description
 This package contains a NSS driver for QCA chipset
 endef
 
+define KernelPackage/qca-nss-drv/install
+	$(INSTALL_DIR) $(1)/lib/debug
+	$(INSTALL_BIN) ./files/qca-nss-drv.debug $(1)/lib/debug/qca-nss-drv
+endef
+
 define KernelPackage/qca-nss-connmgr/Default
   SECTION:=kernel
   CATEGORY:=Kernel modules
