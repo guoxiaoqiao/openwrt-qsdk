@@ -65,9 +65,8 @@ $(eval $(call Profile,QSDK_Carrier))
 define Profile/QSDK_Standard
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-connmgr-noload hyfi \
-		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail \
-		kmod-qca-nss-ecm
+	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi \
+		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail
 endef
 
 define Profile/QSDK_Standard/Description
@@ -82,7 +81,7 @@ $(eval $(call Profile,QSDK_Standard))
 define Profile/QSDK_Enterprise
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
-	PACKAGES+=kmod-qca-nss-connmgr-noload luci-app-qos \
+	PACKAGES+=kmod-qca-nss-ecm-noload luci-app-qos \
 	  kmod-openswan-nss openswan-nss luci-app-openswan \
 	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 	  qca-nss-fw-enterprise
