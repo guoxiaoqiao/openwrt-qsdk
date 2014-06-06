@@ -1,0 +1,4 @@
+#!/bin/sh /sbin/sysdebug
+
+log cat /sys/devices/platform/msm_rpm/fw_version
+log cat /proc/msm_pm_stats
