@@ -65,7 +65,8 @@ static struct mtd_part_parser mtdsplit_squashfs_parser = {
 static int
 mtdsplit_squashfs_init(void)
 {
-	return register_mtd_parser(&mtdsplit_squashfs_parser);
+	register_mtd_parser(&mtdsplit_squashfs_parser);
+	return 0;
 }
 
 subsys_initcall(mtdsplit_squashfs_init);
