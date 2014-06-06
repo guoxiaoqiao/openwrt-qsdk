@@ -1,3 +1,2 @@
-net.bridge.bridge-nf-call-ip6tables=1
-net.bridge.bridge-nf-call-iptables=1
+# enable bridge nf options so the nss conntrack can detect these
 dev.nss.general.redirect=1
