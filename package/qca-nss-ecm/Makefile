@@ -25,7 +25,7 @@ define KernelPackage/qca-nss-ecm/Default
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Support
-  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv
+  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +kmod-qca-hyfi-bridge
   TITLE:=QCA NSS Enhanced Connection Manager (ECM)
   FILES:=$(PKG_BUILD_DIR)/ecm.ko
   KCONFIG:=CONFIG_BRIDGE_NETFILTER=y
@@ -76,6 +76,7 @@ $(call KernelPackage/qca-nss-ecm/Default/install, $(1))
 endef
 
 EXTRA_CFLAGS+= \
+	-I$(STAGING_DIR)/usr/include/hyfibr \
 	-I$(STAGING_DIR)/usr/include/qca-nss-drv
 
 define Build/Compile
