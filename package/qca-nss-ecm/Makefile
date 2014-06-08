@@ -21,18 +21,58 @@ PKG_SOURCE_VERSION:=$(PKG_VERSION)
 include $(INCLUDE_DIR)/package-version-override.mk
 include $(INCLUDE_DIR)/package.mk
 
-define KernelPackage/qca-nss-ecm
+define KernelPackage/qca-nss-ecm/Default
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Support
   DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv
   TITLE:=QCA NSS Enhanced Connection Manager (ECM)
   FILES:=$(PKG_BUILD_DIR)/ecm.ko
-  AUTOLOAD:=$(call AutoLoad,50,ecm)
+  KCONFIG:=CONFIG_BRIDGE_NETFILTER=y
 endef
 
-define KernelPackage/qca-nss-qdisc-basic/Description
+define KernelPackage/qca-nss-ecm/Description/Default
 This package contains the Qualcomm Atheros NSS Enhanced Connection Manager
+endef
+
+define KernelPackage/qca-nss-ecm/Default/install
+	$(INSTALL_DIR) $(1)/etc/firewall.d $(1)/etc/init.d $(1)/usr/bin
+	$(INSTALL_DATA) ./files/qca-nss-ecm.firewall $(1)/etc/firewall.d/qca-nss-ecm
+	$(INSTALL_BIN) ./files/qca-nss-ecm.init $(1)/etc/init.d/qca-nss-ecm
+	$(INSTALL_BIN) ./files/ecm_dump.sh $(1)/usr/bin/
+endef
+
+define KernelPackage/qca-nss-ecm
+  $(call KernelPackage/qca-nss-ecm/Default)
+endef
+
+define KernelPackage/qca-nss-ecm/Description
+  $(call KernelPackage/qca-nss-ecm/Description/Default)
+endef
+
+define KernelPackage/qca-nss-ecm/install
+$(call KernelPackage/qca-nss-ecm/Default/install, $(1))
+	$(INSTALL_DIR) $(1)/etc/uci-defaults $(1)/etc/sysctl.d
+	$(INSTALL_DATA) ./files/qca-nss-ecm.defaults $(1)/etc/uci-defaults/99-qca-nss-ecm
+	$(INSTALL_BIN) ./files/qca-nss-ecm.sysctl $(1)/etc/sysctl.d/qca-nss-ecm.conf
+
+	# install service by default
+	$(INSTALL_DIR) $(1)/etc/rc.d
+	$(LN) ../init.d/qca-nss-ecm $(1)/etc/rc.d/S70qca-nss-ecm
+endef
+
+define KernelPackage/qca-nss-ecm-noload
+  $(call KernelPackage/qca-nss-ecm/Default)
+  PROVIDES:=kmod-qca-nss-ecm
+endef
+
+define KernelPackage/qca-nss-ecm-noload/Description
+  $(call KernelPackage/qca-nss-ecm/Description/Default)
+  When selected, this package installs the driver but does not load it at init.
+endef
+
+define KernelPackage/qca-nss-ecm-noload/install
+$(call KernelPackage/qca-nss-ecm/Default/install, $(1))
 endef
 
 EXTRA_CFLAGS+= \
@@ -52,12 +92,5 @@ $(call Package/$(PKG_NAME)/override_source_path,kmod-$(PKG_NAME))
 $(call Package/$(PKG_NAME)/override_version,kmod-$(PKG_NAME),$(PKG_SUPPORTED_VERSION))
 endef
 
-define KernelPackage/qca-nss-ecm/install
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/sysctl.d $(1)/etc/firewall.d $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/ecm_dump.sh $(1)/usr/bin/
-	$(INSTALL_BIN) ./files/qca-nss-ecm.sysctl $(1)/etc/sysctl.d/qca-nss-ecm.conf
-	$(INSTALL_DATA) ./files/qca-nss-ecm.firewall $(1)/etc/firewall.d/qca-nss-ecm
-	$(INSTALL_DATA) ./files/qca-nss-ecm.defaults $(1)/etc/uci-defaults/99-qca-nss-ecm
-endef
-
 $(eval $(call KernelPackage,qca-nss-ecm))
+$(eval $(call KernelPackage,qca-nss-ecm-noload))
