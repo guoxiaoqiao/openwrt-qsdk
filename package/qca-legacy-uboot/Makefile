@@ -9,16 +9,20 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=qca-legacy-uboot
-PKG_VERSION:=10.2.2.30
+PKG_SOURCE_PROTO:=git
+PKG_BRANCH:=1.1
 PKG_RELEASE:=1
 
-PKG_SOURCE:=u-boot-2006-04-06-1725.tar.bz2
-PKG_SOURCE_URL:=ftp://ftp.denx.de/pub/u-boot/OLD
-PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_SOURCE:.tar.bz2=)
+include $(INCLUDE_DIR)/local-development.mk
+ifeq ($(DUMP)$(PKG_VERSION),)
+  PKG_VERSION:=$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
+endif
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
-PKG_MD5SUM:=a54a91fc21854bffd927975579f77fdb
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)/$(BUILD_VARIANT)
 
-include $(INCLUDE_DIR)/package-version-override.mk
 include $(INCLUDE_DIR)/package.mk
 
 define qca-legacy-uboot/Default
