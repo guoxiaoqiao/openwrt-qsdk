@@ -401,11 +401,12 @@ swconfig_get_dev(struct genl_info *info)
 		dev = p;
 		break;
 	}
+	swconfig_unlock();
+
 	if (dev)
 		mutex_lock(&dev->sw_mutex);
 	else
 		DPRINTF("device %d not found\n", id);
-	swconfig_unlock();
 done:
 	return dev;
 }
