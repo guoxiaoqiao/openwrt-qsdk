@@ -13,11 +13,11 @@ Signed-off-by: Ben Menchaca <ben.menchaca@codeaurora.org>
  drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c | 102 +++++++++++-----------
  2 files changed, 68 insertions(+), 60 deletions(-)
 
-diff --git a/drivers/net/ethernet/atheros/ag71xx/ag71xx.h b/drivers/net/ethernet/atheros/ag71xx/ag71xx.h
-index e79e8f9..c0f0ad1 100644
---- a/drivers/net/ethernet/atheros/ag71xx/ag71xx.h
-+++ b/drivers/net/ethernet/atheros/ag71xx/ag71xx.h
-@@ -92,20 +92,30 @@ struct ag71xx_desc {
+Index: linux-3.3.8/drivers/net/ethernet/atheros/ag71xx/ag71xx.h
+===================================================================
+--- linux-3.3.8.orig/drivers/net/ethernet/atheros/ag71xx/ag71xx.h	2014-06-13 14:17:39.795658701 -0500
++++ linux-3.3.8/drivers/net/ethernet/atheros/ag71xx/ag71xx.h	2014-06-13 14:35:50.405049841 -0500
+@@ -92,20 +92,30 @@
  struct ag71xx_buf {
  	struct sk_buff		*skb;
  	struct ag71xx_desc	*desc;
@@ -56,11 +56,11 @@ index e79e8f9..c0f0ad1 100644
  };
  
  struct ag71xx_mdio {
-diff --git a/drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c b/drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c
-index f685da7..b6355b5 100644
---- a/drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c
-+++ b/drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c
-@@ -131,8 +131,7 @@ static void ag71xx_ring_tx_clean(struct ag71xx *ag)
+Index: linux-3.3.8/drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c
+===================================================================
+--- linux-3.3.8.orig/drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c	2014-06-13 14:17:39.805658547 -0500
++++ linux-3.3.8/drivers/net/ethernet/atheros/ag71xx/ag71xx_main.c	2014-06-13 14:29:19.785658441 -0500
+@@ -135,8 +135,7 @@
  	struct net_device *dev = ag->dev;
  	unsigned int bytes_compl = 0;
  	unsigned int pkts_compl = 0;
@@ -70,7 +70,7 @@ index f685da7..b6355b5 100644
  	unsigned int used = ring->used;
  
  	if (!ring->buf) {
-@@ -140,8 +139,7 @@ static void ag71xx_ring_tx_clean(struct ag71xx *ag)
+@@ -144,8 +143,7 @@
  	}
  
  	while (used) {
@@ -80,7 +80,7 @@ index f685da7..b6355b5 100644
  		struct sk_buff *skb;
  
  		/*
-@@ -153,16 +151,14 @@ static void ag71xx_ring_tx_clean(struct ag71xx *ag)
+@@ -157,16 +155,14 @@
  			dev->stats.tx_errors++;
  		}
  
@@ -100,7 +100,7 @@ index f685da7..b6355b5 100644
  		used--;
  	}
  
-@@ -188,10 +184,11 @@ static void ag71xx_ring_tx_init(struct ag71xx *ag)
+@@ -192,10 +188,11 @@
  
  		desc->ctrl = DESC_EMPTY;
  		buf->skb = NULL;
@@ -114,7 +114,7 @@ index f685da7..b6355b5 100644
  	ring->used = 0;
  	netdev_reset_queue(ag->dev);
  }
-@@ -245,6 +242,7 @@ static int ag71xx_ring_rx_init(struct ag71xx *ag)
+@@ -249,6 +246,7 @@
  		skb_reserve(skb, rx_buf_offset);
  
  		buf->skb = skb;
@@ -122,7 +122,7 @@ index f685da7..b6355b5 100644
  		buf->dma_addr = dma_map_single(&dev->dev, skb->data,
  					       rx_buf_size, DMA_FROM_DEVICE);
  
-@@ -252,8 +250,8 @@ static int ag71xx_ring_rx_init(struct ag71xx *ag)
+@@ -256,8 +254,8 @@
  		desc->ctrl = DESC_EMPTY;
  	}
  
@@ -133,7 +133,7 @@ index f685da7..b6355b5 100644
  	ring->used = size;
  
  	return 0;
-@@ -653,12 +651,10 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
+@@ -657,12 +655,10 @@
  {
  	struct ag71xx *ag = netdev_priv(dev);
  	struct ag71xx_ring *ring = &ag->tx_ring;
@@ -148,7 +148,7 @@ index f685da7..b6355b5 100644
  	unsigned int len;
  	dma_addr_t dma_addr;
  
-@@ -685,15 +681,14 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
+@@ -689,15 +685,14 @@
  	dma_addr = dma_map_single(&dev->dev, skb->data, len, DMA_TO_DEVICE);
  
  	netdev_sent_queue(dev, len);
@@ -167,7 +167,7 @@ index f685da7..b6355b5 100644
  	ring->curr = curr;
  
  	used++;
-@@ -825,20 +820,18 @@ static int ag71xx_tx_packets(struct ag71xx *ag, struct net_device *dev)
+@@ -829,20 +824,18 @@
  	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
  	unsigned int sent = 0;
  	unsigned int bytes_compl = 0;
@@ -191,7 +191,7 @@ index f685da7..b6355b5 100644
  					schedule_work(&ag->restart_work);
  				}
  			}
-@@ -847,16 +840,19 @@ static int ag71xx_tx_packets(struct ag71xx *ag, struct net_device *dev)
+@@ -851,16 +844,19 @@
  
  		ag71xx_wr(ag, AG71XX_REG_TX_STATUS, TX_STATUS_PS);
  
@@ -216,7 +216,7 @@ index f685da7..b6355b5 100644
  		used--;
  	}
  
-@@ -888,13 +884,13 @@ static int ag71xx_tx_packets(struct ag71xx *ag, struct net_device *dev)
+@@ -892,13 +888,13 @@
  
  static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limit)
  {
@@ -234,7 +234,7 @@ index f685da7..b6355b5 100644
  	unsigned int size = ring->size;
  	int done = 0;
  
-@@ -912,8 +908,6 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
+@@ -916,8 +912,6 @@
  	 * Process newly received packets.
  	 */
  	while (done < limit) {
@@ -243,7 +243,7 @@ index f685da7..b6355b5 100644
  		u32 desc_ctrl;
  		struct sk_buff *skb;
  		int pktlen;
-@@ -931,15 +925,21 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
+@@ -935,15 +929,21 @@
  		pktlen = desc_ctrl & DESC_PKTLEN_M;
  		pktlen -= ETH_FCS_LEN;
  
@@ -269,7 +269,7 @@ index f685da7..b6355b5 100644
  
  		/*
  		 * Set up the offset and length of the skb.
-@@ -965,9 +965,6 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
+@@ -969,9 +969,6 @@
  		netif_receive_skb(skb);
  
  next:
@@ -279,7 +279,7 @@ index f685da7..b6355b5 100644
  		done++;
  	}
  
-@@ -978,8 +975,6 @@ next:
+@@ -982,8 +979,6 @@
  	 * Replenish the RX buffer entries.
  	 */
  	while (used < size) {
@@ -288,7 +288,7 @@ index f685da7..b6355b5 100644
  		struct sk_buff *skb;
  
  		skb = dev_alloc_skb(rx_buf_size);
-@@ -989,15 +984,18 @@ next:
+@@ -993,15 +988,18 @@
  
  		skb_reserve(skb, rx_buf_offset);
  
@@ -313,6 +313,53 @@ index f685da7..b6355b5 100644
  
  		used++;
  	}
--- 
-1.8.1.2
-
+Index: linux-3.3.8/drivers/net/ethernet/atheros/ag71xx/ag71xx_debugfs.c
+===================================================================
+--- linux-3.3.8.orig/drivers/net/ethernet/atheros/ag71xx/ag71xx_debugfs.c	2014-06-13 14:29:33.855658779 -0500
++++ linux-3.3.8/drivers/net/ethernet/atheros/ag71xx/ag71xx_debugfs.c	2014-06-13 14:42:18.385049362 -0500
+@@ -162,8 +162,6 @@
+ 	unsigned int len = 0;
+ 	unsigned long flags;
+ 	ssize_t ret;
+-	int curr;
+-	int dirty;
+ 	u32 desc_hw;
+ 	int i;
+ 
+@@ -173,30 +171,27 @@
+ 		return -ENOMEM;
+ 
+ 	len += snprintf(buf + len, buflen - len,
+-			"Idx ... %-8s %-8s %-8s %-8s . %-10s\n",
+-			"desc", "next", "data", "ctrl", "timestamp");
++			"Idx ... %-8s %-8s %-8s %-8s\n",
++			"desc", "next", "data", "ctrl");
+ 
+ 	spin_lock_irqsave(&ag->lock, flags);
+ 
+-	curr = (ring->curr % ring->size);
+-	dirty = (ring->dirty % ring->size);
+ 	desc_hw = ag71xx_rr(ag, desc_reg);
+ 	for (i = 0; i < ring->size; i++) {
+ 		struct ag71xx_buf *ab = &ring->buf[i];
+ 		u32 desc_dma = ((u32) ring->descs_dma) + i * ring->desc_size;
+ 
+ 		len += snprintf(buf + len, buflen - len,
+-			"%3d %c%c%c %08x %08x %08x %08x %c %10lu\n",
++			"%3d %c%c%c %08x %08x %08x %08x %c\n",
+ 			i,
+-			(i == curr) ? 'C' : ' ',
+-			(i == dirty) ? 'D' : ' ',
++			(&ring->buf[i] == ring->curr) ? 'C' : ' ',
++			(&ring->buf[i] == ring->dirty) ? 'D' : ' ',
+ 			(desc_hw == desc_dma) ? 'H' : ' ',
+ 			desc_dma,
+ 			ab->desc->next,
+ 			ab->desc->data,
+ 			ab->desc->ctrl,
+-			(ab->desc->ctrl & DESC_EMPTY) ? 'E' : '*',
+-			ab->timestamp);
++			(ab->desc->ctrl & DESC_EMPTY) ? 'E' : '*');
+ 	}
+ 
+ 	spin_unlock_irqrestore(&ag->lock, flags);
