@@ -13,7 +13,10 @@ define Profile/QSDK_Base
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
 	  luci-app-ddns ddns-scripts cups cups-client mdadm\
 	  kmod-md-mod kmod-md-linear kmod-md-raid0 kmod-md-raid1 \
-	  iputils-tracepath iputils-tracepath6 alljoyn kmod-qca-ssdk-nohnat qca-ssdk-shell \
+	  iputils-tracepath iputils-tracepath6 \
+	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
+	  alljoyn-notification alljoyn-services_common \
+	  kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  kmod-art2 file pure-ftpd kmod-qca-nss-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
 	  kmod-qca-nss-macsec kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli \
 	  qca-wpa-supplicant-macsec qca-wpa-cli qca-spectral qca-wapid sigma-dut
