@@ -193,6 +193,6 @@ define Require/ocamlc
 		awk '($$$$1 >= "3.12") { print "ok" }' | grep ok > /dev/null
 endef
 
-$(eval $(call Require,ocalmc, \
+$(eval $(call Require,ocamlc, \
 	Please install the Objective Caml compiler (ocaml-nox) v3.12 or later \
 ))
