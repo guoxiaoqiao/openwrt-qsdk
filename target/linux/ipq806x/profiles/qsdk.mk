@@ -37,34 +37,6 @@ define Profile/QSDK_Open/Description
 endef
 $(eval $(call Profile,QSDK_Open))
 
-define Profile/QSDK_Retail
-	$(Profile/QSDK_Base)
-	NAME:=Qualcomm-Atheros SDK Retail Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-connmgr-noload hyfi \
-		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail \
-		kmod-qca-nss-ecm
-endef
-
-define Profile/QSDK_Retail/Description
-	QSDK Retail package set configuration.
-	This profile provides basic Wi-Fi router features using the QCA Wi-Fi driver. It supports:
-	-Bridging and routing networking
-	-LuCI web configuration interface
-	-Integrated 11abgn/ac support using the qca-wifi driver
-endef
-$(eval $(call Profile,QSDK_Retail))
-
-define Profile/QSDK_Carrier
-	$(Profile/QSDK_Base)
-	NAME:=Qualcomm-Atheros SDK Carrier Profile
-	PACKAGES+=hyfi streamboost qca-nss-fw-carrier iptables-mod-filter
-endef
-
-define Profile/QSDK_Carrier/Description
-	QSDK Enterprise package set configuration.
-endef
-$(eval $(call Profile,QSDK_Carrier))
-
 define Profile/QSDK_Standard
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Profile
