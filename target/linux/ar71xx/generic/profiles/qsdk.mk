@@ -17,7 +17,9 @@ endef
 define Profile/QSDK_Open_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Open Router Profile
-	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini alljoyn \
+	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
+	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
+	  alljoyn-notification alljoyn-services_common \
 	  hostapd hostapd-utils iwinfo kmod-qca-ath10k kmod-qca-ath9k kmod-qca-ath \
 	  kmod-fast-classifier kmod-usb2 luci-app-qos wireless-tools \
 	  wpa-supplicant-p2p wpa-cli qca-legacy-uboot-ap121 qca-legacy-uboot-ap143
@@ -62,7 +64,9 @@ define Profile/QSDK_Premium_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
-	  streamboost hyfi alljoyn kmod-fast-classifier \
+	  streamboost hyfi kmod-fast-classifier \
+	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
+	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
 	  qca-wpa-cli qca-legacy-uboot-ap135 kmod-art2 sigma-dut \
 	  qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell
