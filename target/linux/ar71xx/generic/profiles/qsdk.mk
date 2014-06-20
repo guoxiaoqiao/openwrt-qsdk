@@ -69,7 +69,8 @@ define Profile/QSDK_Premium_Router
 	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
 	  qca-wpa-cli qca-legacy-uboot-ap135 kmod-art2 sigma-dut \
-	  qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell
+	  qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell \
+	  qca-legacy-uboot-ap147
 endef
 
 define Profile/QSDK_Premium_Router/Description
