@@ -188,9 +188,9 @@ $(eval $(call Require,getopt-extended, \
 
 define Require/ocamlc
 	ocamlc -v | grep version | sed 's,.*version \(.*\),\1,' | \
-		awk '($$$$1 >= "3.12") { print "ok" }' | grep ok > /dev/null
+		awk '($$$$1 >= "3.11") { print "ok" }' | grep ok > /dev/null
 endef
 
 $(eval $(call Require,ocamlc, \
-	Please install the Objective Caml compiler (ocaml-nox) v3.12 or later \
+	Please install the Objective Caml compiler (ocaml-nox) v3.11 or later \
 ))
