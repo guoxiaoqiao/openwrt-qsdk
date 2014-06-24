@@ -1,0 +1,13 @@
+diff --git a/Makefile b/Makefile
+index 8700df5..984cdde 100644
+--- a/Makefile
++++ b/Makefile
+@@ -114,7 +114,7 @@ EXTRA_CFLAGS=   # -static -pie -fpie -fPIE -static-libgcc
+ EXTRA_OCAML_CFLAGS=$(EXTRA_CFLAGS:%=-ccopt %)
+
+ # 'make purebytecode' unsets this definition
+-BYTECODE_EXTRA=-custom $(EXTRA_OCAML_FLAGS)
++BYTECODE_EXTRA=$(EXTRA_OCAML_FLAGS)
+
+ ##############################################################################
+ # Top rules
