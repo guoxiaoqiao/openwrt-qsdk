@@ -207,7 +207,12 @@ sub write_output_xlsx($) {
 }
 
 sub write_output_xml($) {
-    XMLout( \%QSDKPKGS, OutputFile => $_, XMLDecl => 1, RootName => 'release' );
+    my @pkgs_list = values \%QSDKPKGS;
+    my $xml_list = { package => \@pkgs_list } ;
+    XMLout( $xml_list,
+            OutputFile => $_,
+            XMLDecl => 1,
+            RootName => 'release');
 }
 
 sub write_output() {
