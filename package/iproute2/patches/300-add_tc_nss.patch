@@ -1,7 +1,7 @@
-diff -ruaN a/include/linux/pkt_sched.h b/include/linux/pkt_sched.h
---- a/include/linux/pkt_sched.h	2014-05-27 10:01:47.172157749 -0700
-+++ b/include/linux/pkt_sched.h	2014-05-27 10:02:22.180158628 -0700
-@@ -104,6 +104,126 @@
+diff -rupN a/include/linux/pkt_sched.h b/include/linux/pkt_sched.h
+--- a/include/linux/pkt_sched.h	2014-06-17 19:23:54.380660242 -0700
++++ b/include/linux/pkt_sched.h	2014-06-17 19:25:27.972662626 -0700
+@@ -104,6 +104,126 @@ enum {
  
  #define TCA_STAB_MAX (__TCA_STAB_MAX - 1)
  
@@ -128,10 +128,10 @@ diff -ruaN a/include/linux/pkt_sched.h b/include/linux/pkt_sched.h
  /* FIFO section */
  
  struct tc_fifo_qopt {
-diff -ruaN a/tc/Makefile b/tc/Makefile
---- a/tc/Makefile	2014-05-27 10:01:47.204157749 -0700
-+++ b/tc/Makefile	2014-05-27 10:02:22.184158630 -0700
-@@ -51,6 +51,7 @@
+diff -rupN a/tc/Makefile b/tc/Makefile
+--- a/tc/Makefile	2014-06-17 19:23:54.412660416 -0700
++++ b/tc/Makefile	2014-06-17 19:25:27.972662626 -0700
+@@ -51,6 +51,7 @@ TCMODULES += em_meta.o
  TCMODULES += q_mqprio.o
  TCMODULES += q_codel.o
  TCMODULES += q_fq_codel.o
@@ -139,10 +139,10 @@ diff -ruaN a/tc/Makefile b/tc/Makefile
  
  TCSO :=
  ifeq ($(TC_CONFIG_ATM),y)
-diff -ruaN a/tc/q_nss.c b/tc/q_nss.c
+diff -rupN a/tc/q_nss.c b/tc/q_nss.c
 --- a/tc/q_nss.c	1969-12-31 16:00:00.000000000 -0800
-+++ b/tc/q_nss.c	2014-05-27 10:03:06.476159746 -0700
-@@ -0,0 +1,839 @@
++++ b/tc/q_nss.c	2014-06-17 19:26:12.496663641 -0700
+@@ -0,0 +1,844 @@
 +/*
 + **************************************************************************
 + * Copyright (c) 2014, The Linux Foundation. All rights reserved.
@@ -234,11 +234,13 @@ diff -ruaN a/tc/q_nss.c b/tc/q_nss.c
 +
 +	qopt = RTA_DATA(tb[TCA_NSSFIFO_PARMS]);
 +
-+	if (strcmp(qu->id, "nssbfifo") == 0) {
-+		fprintf(f, "limit %s set_default %u", sprint_size(qopt->limit, b1), qopt->set_default);
-+	} else {
-+		fprintf(f, "limit %up set_default %u", qopt->limit, qopt->set_default);
-+	}
++	if (strcmp(qu->id, "nssbfifo") == 0)
++		fprintf(f, "limit %s ", sprint_size(qopt->limit, b1));
++	else
++		fprintf(f, "limit %up ", qopt->limit);
++
++	if (qopt->set_default)
++		fprintf(f, "set_default ");
 +
 +	return 0;
 +}
@@ -259,8 +261,7 @@ diff -ruaN a/tc/q_nss.c b/tc/q_nss.c
 +
 +static void nsscodel_explain(void)
 +{
-+	fprintf(stderr, "Usage: ... nsscodel target TIME interval TIME [ limit PACKETS ]\n");
-+	fprintf(stderr, "                    [ set_default (optional) ]");
++	fprintf(stderr, "Usage: ... nsscodel target TIME interval TIME [ limit PACKETS ] [ set_default ]\n");
 +}
 +
 +static void nsscodel_explain_err1(void)
@@ -344,10 +345,13 @@ diff -ruaN a/tc/q_nss.c b/tc/q_nss.c
 +
 +	qopt = RTA_DATA(tb[TCA_NSSCODEL_PARMS]);
 +
-+	fprintf(f, "target %s limit %up interval %s",
++	fprintf(f, "target %s limit %up interval %s ",
 +		sprint_time(qopt->target, b1),
 +		qopt->limit,
 +		sprint_time(qopt->interval, b2));
++
++	if (qopt->set_default)
++		fprintf(f, "set_default ");
 +
 +	return 0;
 +}
@@ -586,7 +590,7 @@ diff -ruaN a/tc/q_nss.c b/tc/q_nss.c
 +static void nssbf_explain_class(void)
 +{
 +	fprintf(stderr, "Usage: ... nssbf rate KBPS burst BYTES [ mtu BYTES ]\n");
-+	fprintf(stderr, "                 [ quantum BYTES ]");
++	fprintf(stderr, "                 [ quantum BYTES ]\n");
 +}
 +
 +static void nssbf_explain1(char *arg)
@@ -862,7 +866,7 @@ diff -ruaN a/tc/q_nss.c b/tc/q_nss.c
 +
 +	qopt = RTA_DATA(tb[TCA_NSSWRR_CLASS_PARMS]);
 +
-+	fprintf(f, "quantum\t:%up\n", qopt->quantum);
++	fprintf(f, "quantum %up ", qopt->quantum);
 +	return 0;
 +}
 +
@@ -957,6 +961,7 @@ diff -ruaN a/tc/q_nss.c b/tc/q_nss.c
 +{
 +	struct rtattr *tb[TCA_NSSWFQ_MAX + 1];
 +	struct tc_nsswfq_class_qopt *qopt;
++	SPRINT_BUF(b1);
 +
 +	if (opt == NULL)
 +		return 0;
@@ -971,7 +976,7 @@ diff -ruaN a/tc/q_nss.c b/tc/q_nss.c
 +
 +	qopt = RTA_DATA(tb[TCA_NSSWFQ_CLASS_PARMS]);
 +
-+	fprintf(f, "quantum\t:%ubytes\n", qopt->quantum);
++	fprintf(f, "quantum %s ", sprint_size(qopt->quantum, b1));
 +	return 0;
 +}
 +
