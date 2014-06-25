@@ -25,8 +25,6 @@ include $(INCLUDE_DIR)/package.mk
 define Package/qca-ssdk-shell
   SECTION:=QCA
   CATEGORY:=Utilities
-  URL:=http://www.qca.qualcomm.com
-  MAINTAINER:=Qualcomm Atheros
   TITLE:=Shell application for QCA SSDK
 endef
 
