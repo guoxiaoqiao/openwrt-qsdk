@@ -114,7 +114,7 @@ static void __init ap147_setup(void)
 	ath79_register_usb();
 	ath79_register_pci();
 
-	// ath79_register_wmac(art + AP147_WMAC_CALDATA_OFFSET, NULL);
+	ath79_register_wmac(art + AP147_WMAC_CALDATA_OFFSET, NULL);
 
 	ath79_register_mdio(0, 0x0);
 	ath79_register_mdio(1, 0x0);
