@@ -1,0 +1,29 @@
+--- a/arch/mips/ath79/dev-wmac.c
++++ b/arch/mips/ath79/dev-wmac.c
+@@ -94,7 +94,7 @@ static int ar933x_wmac_reset(void)
+ 	return -ETIMEDOUT;
+ }
+ 
+-static int ar933x_r1_get_wmac_revision(void)
++static int ar93xx_get_soc_revision(void)
+ {
+ 	return ath79_soc_rev;
+ }
+@@ -119,7 +119,7 @@ static void __init ar933x_wmac_setup(void)
+ 		ath79_wmac_data.is_clk_25mhz = true;
+ 
+ 	if (ath79_soc_rev == 1)
+-		ath79_wmac_data.get_mac_revision = ar933x_r1_get_wmac_revision;
++		ath79_wmac_data.get_mac_revision = ar93xx_get_soc_revision;
+ 
+ 	ath79_wmac_data.external_reset = ar933x_wmac_reset;
+ }
+@@ -158,6 +158,8 @@ static void qca953x_wmac_setup(void)
+ 		ath79_wmac_data.is_clk_25mhz = false;
+ 	else
+ 		ath79_wmac_data.is_clk_25mhz = true;
++
++	ath79_wmac_data.get_mac_revision = ar93xx_get_soc_revision;
+ }
+ 
+ static void qca955x_wmac_setup(void)
