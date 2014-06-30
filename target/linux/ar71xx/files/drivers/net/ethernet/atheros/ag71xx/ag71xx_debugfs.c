@@ -162,8 +162,6 @@ static ssize_t read_file_ring(struct file *file, char __user *user_buf,
 	unsigned int len = 0;
 	unsigned long flags;
 	ssize_t ret;
-	int curr;
-	int dirty;
 	u32 desc_hw;
 	int i;
 
@@ -173,30 +171,27 @@ static ssize_t read_file_ring(struct file *file, char __user *user_buf,
 		return -ENOMEM;
 
 	len += snprintf(buf + len, buflen - len,
-			"Idx ... %-8s %-8s %-8s %-8s . %-10s\n",
-			"desc", "next", "data", "ctrl", "timestamp");
+			"Idx ... %-8s %-8s %-8s %-8s\n",
+			"desc", "next", "data", "ctrl");
 
 	spin_lock_irqsave(&ag->lock, flags);
 
-	curr = (ring->curr % ring->size);
-	dirty = (ring->dirty % ring->size);
 	desc_hw = ag71xx_rr(ag, desc_reg);
 	for (i = 0; i < ring->size; i++) {
 		struct ag71xx_buf *ab = &ring->buf[i];
 		u32 desc_dma = ((u32) ring->descs_dma) + i * ring->desc_size;
 
 		len += snprintf(buf + len, buflen - len,
-			"%3d %c%c%c %08x %08x %08x %08x %c %10lu\n",
+			"%3d %c%c%c %08x %08x %08x %08x %c\n",
 			i,
-			(i == curr) ? 'C' : ' ',
-			(i == dirty) ? 'D' : ' ',
+			(&ring->buf[i] == ring->curr) ? 'C' : ' ',
+			(&ring->buf[i] == ring->dirty) ? 'D' : ' ',
 			(desc_hw == desc_dma) ? 'H' : ' ',
 			desc_dma,
 			ab->desc->next,
 			ab->desc->data,
 			ab->desc->ctrl,
-			(ab->desc->ctrl & DESC_EMPTY) ? 'E' : '*',
-			ab->timestamp);
+			(ab->desc->ctrl & DESC_EMPTY) ? 'E' : '*');
 	}
 
 	spin_unlock_irqrestore(&ag->lock, flags);
