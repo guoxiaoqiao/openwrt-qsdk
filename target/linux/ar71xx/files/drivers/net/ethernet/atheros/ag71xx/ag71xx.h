@@ -42,7 +42,12 @@
 #define AG71XX_DRV_NAME		"ag71xx"
 #define AG71XX_DRV_VERSION	"0.5.35"
 
-#define AG71XX_NAPI_WEIGHT	64
+/*
+ * For our NAPI weight bigger does *NOT* mean better - it means more
+ * D-cache misses and lots more wasted cycles than we'll ever
+ * possibly gain from saving instructions.
+ */
+#define AG71XX_NAPI_WEIGHT	32
 #define AG71XX_OOM_REFILL	(1 + HZ/10)
 
 #define AG71XX_INT_ERR	(AG71XX_INT_RX_BE | AG71XX_INT_TX_BE)
@@ -57,7 +62,14 @@
 	(ETH_FRAME_LEN + ETH_FCS_LEN + VLAN_HLEN)
 #define AG71XX_RX_BUF_SIZE (AG71XX_RX_PKT_SIZE + NET_SKB_PAD + NET_IP_ALIGN)
 
-#define AG71XX_TX_RING_SIZE_DEFAULT	64
+/*
+ * The 802.11n driver circa 10.1.389 requires a significant amount of headroom
+ * to avoid reallocating and copying when transmitting a buffer.  This causes
+ * this driver to pre-allocate enough headroom to avoid the reallocation later.
+ */
+#define AG71XX_HACK_WIFI_HEADROOM	128
+
+#define AG71XX_TX_RING_SIZE_DEFAULT	128
 #define AG71XX_RX_RING_SIZE_DEFAULT	128
 
 #define AG71XX_TX_RING_SIZE_MAX		256
@@ -92,20 +104,34 @@ struct ag71xx_desc {
 struct ag71xx_buf {
 	struct sk_buff		*skb;
 	struct ag71xx_desc	*desc;
-	dma_addr_t		dma_addr;
-	unsigned long		timestamp;
+	struct ag71xx_buf	*next;
+	union {
+		uint16_t		len;
+		dma_addr_t		dma_addr;
+	};
 };
 
+/*
+ * RX or TX descriptor ring.
+ */
 struct ag71xx_ring {
+	/*
+	 * "Hot" fields in the data path.
+	 */
+	struct ag71xx_buf	*curr;
+	struct ag71xx_buf	*dirty;
+	uint16_t		size;
+	uint16_t		used;
+
+	/*
+	 * "Cold" fields - not used in the data path.
+	 */
 	struct ag71xx_buf	*buf;
+	uint16_t		mask;
+	uint16_t		desc_size;
 	u8			*descs_cpu;
 	dma_addr_t		descs_dma;
-	unsigned int		desc_size;
-	unsigned int		curr;
-	unsigned int		dirty;
-	unsigned int		size;
-	unsigned int		mask;
-	unsigned int		used;
+	void __iomem		*iomem;
 };
 
 struct ag71xx_mdio {
@@ -146,23 +172,39 @@ struct ag71xx_debug {
 };
 
 struct ag71xx {
-	void __iomem		*mac_base;
+	/*
+	 * Critical data related to the per-packet data path are clustered
+	 * early in this structure to help improve the D-cache footprint.
+	 */
+	struct ag71xx_ring	rx_ring ____cacheline_aligned;
+	struct ag71xx_ring	tx_ring ____cacheline_aligned;
 
-	spinlock_t		lock;
-	struct platform_device	*pdev;
+	void __iomem		*rx_ctrl_reg;
+	void __iomem		*rx_status_reg;
+	void __iomem		*tx_ctrl_reg;
+	void __iomem		*tx_status_reg;
+	void __iomem		*int_status_reg;
+
+	unsigned int		rx_buf_offset;
+	unsigned int		rx_buf_size;
+
 	struct net_device	*dev;
+	struct platform_device	*pdev;
+	spinlock_t		lock;
 	struct napi_struct	napi;
+	unsigned int		gmac_num;
+
+	/*
+	 * From this point onwards we're not looking at per-packet fields.
+	 */
+	struct ag71xx_buf	*ring_bufs;
+	void __iomem		*mac_base;
 	u32			msg_enable;
 
 	struct ag71xx_desc	*stop_desc;
 	dma_addr_t		stop_desc_dma;
 
 	bool			tx_stopped;
-
-	struct ag71xx_ring	rx_ring;
-	struct ag71xx_ring	tx_ring;
-	unsigned int		rx_buf_offset;
-	unsigned int		rx_buf_size;
 
 	struct mii_bus		*mii_bus;
 	struct phy_device	*phy_dev;
@@ -174,7 +216,6 @@ struct ag71xx {
 
 	struct work_struct	restart_work;
 	struct delayed_work	link_work;
-	struct timer_list	oom_timer;
 
 #ifdef CONFIG_AG71XX_DEBUG_FS
 	struct ag71xx_debug	debug;
@@ -364,6 +405,16 @@ static inline void ag71xx_check_reg_offset(struct ag71xx *ag, unsigned reg)
 	}
 }
 
+static inline void ag71xx_wr_fast(void  __iomem *r, u32 value)
+{
+	__raw_writel(value, r);
+}
+
+static inline void ag71xx_wr_flush(void  __iomem *r)
+{
+	(void)__raw_readl(r);
+}
+
 static inline void ag71xx_wr(struct ag71xx *ag, unsigned reg, u32 value)
 {
 	void __iomem *r;
@@ -374,6 +425,11 @@ static inline void ag71xx_wr(struct ag71xx *ag, unsigned reg, u32 value)
 	__raw_writel(value, r);
 	/* flush write */
 	(void) __raw_readl(r);
+}
+
+static inline u32 ag71xx_rr_fast(void  __iomem *r)
+{
+	return __raw_readl(r);
 }
 
 static inline u32 ag71xx_rr(struct ag71xx *ag, unsigned reg)

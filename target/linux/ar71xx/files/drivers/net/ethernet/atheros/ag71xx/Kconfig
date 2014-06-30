@@ -8,6 +8,14 @@ config AG71XX
 
 if AG71XX
 
+config AG71XX_SRAM_DESCRIPTORS
+	bool "Atheros AR71xx built-in ethernet driver SRAM descriptor rings"
+	default n
+	help
+	  Atheros AR71xx built-in ethernet driver normally uses non-cached RAM
+	  for descriptor rings.  If set to 'y', this option puts those rings in
+	  SRAM, improving performance.
+
 config AG71XX_DEBUG
 	bool "Atheros AR71xx built-in ethernet driver debugging"
 	default n
