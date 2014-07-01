@@ -5,7 +5,7 @@
         description = "IPQ8066/NAND Sysupgrade image";
         images {
 
-                fs {
+                ubi {
                         description = "openwrt-ipq806x-ubi-root.img";
                         data = /incbin/("./openwrt-ipq806x-ubi-root.img");
                         type = "firmware";
