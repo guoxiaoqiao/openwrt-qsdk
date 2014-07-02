@@ -233,7 +233,7 @@ $(eval $(call nf_add,IPT_TEE,CONFIG_NETFILTER_XT_TARGET_TEE, $(P_XT)xt_TEE))
 $(eval $(call nf_add,IPT_U32,CONFIG_NETFILTER_XT_MATCH_U32, $(P_XT)xt_u32))
 
 # mark2prio
-$(eval $(call nf_add,IPT_MARK2PRIO,CONFIG_IP_NF_TARGET_MARK2PRIO, $(P_V4)ipt_mark2prio))
+$(eval $(call nf_add,IPT_MARK2PRIO,CONFIG_NETFILTER_XT_TARGET_MARK2PRIO, $(P_XT)xt_mark2prio))
 
 #
 # ebtables
