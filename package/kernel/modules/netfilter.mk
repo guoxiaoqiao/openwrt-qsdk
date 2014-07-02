@@ -368,11 +368,9 @@ $(eval $(call KernelPackage,ipt-u32))
 
 define KernelPackage/ipt-mark2prio
   TITLE:=mark2prio support
-  KCONFIG:= \
-  	CONFIG_IP_NF_TARGET_MARK2PRIO
-  FILES:= \
-  	$(foreach mod,$(IPT_MARK2PRIO-m),$(LINUX_DIR)/net/$(mod).ko)
-  AUTOLOAD:=$(call AutoLoad,45,$(notdir $(IPT_MARK2PRIO-m)))
+  KCONFIG:= CONFIG_NETFILTER_XT_TARGET_MARK2PRIO
+  FILES:= $(LINUX_DIR)/net/netfilter/xt_mark2prio.ko
+  AUTOLOAD:=$(call AutoLoad,50,xt_mark2prio)
   $(call AddDepends/ipt)
 endef
 
