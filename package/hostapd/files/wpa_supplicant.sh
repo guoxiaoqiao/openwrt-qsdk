@@ -128,6 +128,14 @@ wpa_supplicant_setup_vif() {
 	config_get bridge "$vif" bridge
 	config_get ssid "$vif" ssid
 	config_get bssid "$vif" bssid
+
+	config_get device_type "$vif" wps_device_type "6-0050F204-1"
+	config_get device_name "$vif" wps_device_name "OpenWrt STA"
+	config_get manufacturer "$vif" wps_manufacturer "openwrt.org"
+	config_get model_name "$vif" wps_model_name "cmodel"
+	config_get model_number "$vif" wps_model_number "123"
+	config_get serial_number "$vif" wps_serial_number "12345"
+
 	bssid1=${bssid:+"bssid=$bssid"}
 	beacon_interval=${beacon_int:+"beacon_interval=$beacon_int"}
 
@@ -157,6 +165,12 @@ wpa_supplicant_setup_vif() {
 	rm -rf /var/run/wpa_supplicant-$ifname
 	cat > /var/run/wpa_supplicant-$ifname.conf <<EOF
 ctrl_interface=/var/run/wpa_supplicant-$ifname
+device_type=$device_type
+device_name=$device_name
+manufacturer=$manufacturer
+model_name=$model_name
+model_number=$model_number
+serial_number=$serial_number
 $ap_scan
 network={
 	$modestr
