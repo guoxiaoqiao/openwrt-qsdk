@@ -135,6 +135,7 @@ wpa_supplicant_setup_vif() {
 	config_get model_name "$vif" wps_model_name "cmodel"
 	config_get model_number "$vif" wps_model_number "123"
 	config_get serial_number "$vif" wps_serial_number "12345"
+	config_get config_methods "$vif" wps_config "display push_button keypad"
 
 	bssid1=${bssid:+"bssid=$bssid"}
 	beacon_interval=${beacon_int:+"beacon_interval=$beacon_int"}
@@ -171,6 +172,7 @@ manufacturer=$manufacturer
 model_name=$model_name
 model_number=$model_number
 serial_number=$serial_number
+config_methods=$config_methods
 $ap_scan
 network={
 	$modestr
