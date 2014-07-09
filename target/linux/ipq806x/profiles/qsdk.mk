@@ -7,7 +7,7 @@ NSS_STANDARD:= \
 	kmod-qca-nss-drv \
 	kmod-qca-nss-gmac
 
-SSDK_PKGS:= kmod-qca-ssdk-nohnat swconfig
+SSDK_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell  swconfig
 
 WIFI_OPEN_PKGS:= kmod-qca-ath9k kmod-qca-ath10k wpad
 
