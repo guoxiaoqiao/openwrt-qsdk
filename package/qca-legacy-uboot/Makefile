@@ -38,7 +38,7 @@ define qca-legacy-uboot/$(1)
 endef
 endef
 
-UBOOTS:=ap121 ap135 ap136 db12x cus227 ap152-8M ap152-16M ap143 ap147 ap151
+UBOOTS:=ap121 ap135 ap136 db12x cus227 ap152-8M ap152-16M ap143 ap147 ap151-8M ap151-16M
 
 define Package/qca-legacy-uboot/template
 define Package/qca-legacy-uboot-$(1)

@@ -179,6 +179,7 @@ ap147_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(root
 ap152_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1472k(kernel),64k(art)ro,7744k@0x50000(firmware)
 ap152_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 ap151_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1472k(kernel),64k(art)ro,7744k@0x50000(firmware)
+ap151_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 cameo7240_mtdlayout=mtdparts=spi0.0:192k(u-boot)ro,64k(nvram)ro,960k(kernel),2752k(rootfs),64k(mac)ro,64k(art)ro,3712k@0x40000(firmware)
 cameo913x_mtdlayout=mtdparts=spi0.0:128k(u-boot)ro,64k(config)ro,960k(kernel),2880k(rootfs),64k(art)ro,3840k@0x30000(firmware)
 cameo933x_mtdlayout=mtdparts=spi0.0:64k(u-boot)ro,64k(art)ro,64k(mac)ro,64k(nvram)ro,192k(language)ro,896k(kernel),2752k(rootfs),3648k@0x70000(firmware)
@@ -818,6 +819,7 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_16M,ap143-16M,AP143,ttyS0,11
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP147_8M,ap147-8M,AP147,ttyS0,115200,$$(ap147_mtdlayout_8M),1441792,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP147_16M,ap147-16M,AP147,ttyS0,115200,$$(ap147_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP151_8M,ap151-8M,AP151,ttyS0,115200,$$(ap151_mtdlayout_8M),1507328,6488064,RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),AP151_16M,ap151-16M,AP151,ttyS0,115200,$$(ap151_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP152_8M,ap152-8M,AP152,ttyS0,115200,$$(ap152_mtdlayout_8M),1507328,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP152_16M,ap152-16M,AP152,ttyS0,115200,$$(ap152_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),RUBBERDUCK,rubberduck,RUBBERDUCK,ttyS0,115200,$$(rubberduck_mtdlayout),1507328,14876672,RKuImage))
@@ -1025,6 +1027,7 @@ define Image/Build/Profile/QSDK_Premium_Router
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/AP152_16M,$(1))
+	$(call Image/Build/Profile/AP151_16M,$(1))
 	$(call Image/Build/Profile/AP147_16M,$(1))
 endef
 
