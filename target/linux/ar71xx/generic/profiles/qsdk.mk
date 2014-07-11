@@ -44,7 +44,7 @@ define Profile/QSDK_Wireless_Router
 	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos \
 	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat qca-ssdk-shell kmod-shortcut-fe-cm \
 	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
-	  qca-wpa-cli qca-wrapd qca-legacy-uboot-ap152-8M
+	  qca-wpa-cli qca-wrapd qca-legacy-uboot-ap152-8M qca-legacy-uboot-ap151
 endef
 
 define Profile/QSDK_Wireless_Router/Description
