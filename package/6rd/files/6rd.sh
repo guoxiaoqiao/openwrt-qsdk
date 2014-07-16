@@ -58,6 +58,8 @@ proto_6rd_setup() {
 	json_add_int mtu "${mtu:-1280}"
 	json_add_int ttl "${ttl:-64}"
 	json_add_string local "$ipaddr"
+	json_add_string remote "$peeraddr"
+
 	json_add_string 6rd-prefix "$ip6prefix/$ip6prefixlen"
 	json_add_string 6rd-relay-prefix "$ip4prefix/$ip4prefixlen"
 	proto_close_tunnel
