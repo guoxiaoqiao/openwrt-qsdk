@@ -1016,6 +1016,7 @@ SINGLE_PROFILES += CUS227
 
 define Image/Build/Profile/QSDK_Wireless_Router
 	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/AP136,$(1))
 	$(call Image/Build/Profile/RUBBERDUCK,$(1))
 	$(call Image/Build/Profile/AP147_8M,$(1))
@@ -1034,6 +1035,7 @@ endef
 define Image/Build/Profile/QSDK_Open_Router
 	$(call Image/Build/Profile/AP121_16M,$(1))
 	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/AP143_16M,$(1))
 endef
 
