@@ -117,9 +117,11 @@ endef
 
 define CatFiles
 	if [ `stat -c%s "$(1)"` -gt $(2) ]; then \
-		echo "Warning: $(1) is too big"; \
+		echo "Error: $(1) is too big (Max=$(2) Current=`stat -c%s "$(1)"`)"; \
+		exit 1; \
 	else if [ `stat -c%s $(3)` -gt $(4) ]; then \
-		echo "Warning: $(3) is too big"; \
+		echo "Error: $(3) is too big (Max=$(4) Current=`stat -c%s "$(3)"`)"; \
+		exit 1; \
 	else \
 		( dd if=$(1) bs=$(2) conv=sync; dd if=$(3) ) > $(5); \
 	fi; fi
