@@ -25,38 +25,6 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)/$(BUILD_VARIANT)
 
 include $(INCLUDE_DIR)/package.mk
 
-define qca-legacy-uboot/Default
-  TITLE:=
-  CONFIG:=
-  IMAGE:=
-endef
-
-define qca-legacy-uboot/template
-define qca-legacy-uboot/$(1)
-  TITLE:=U-boot for the board $(1)
-  DEPENDS:=@TARGET_ar71xx
-endef
-endef
-
-UBOOTS:=ap121 ap135 ap136 db12x cus227 ap152-8M ap152-16M ap143 ap147 ap151-8M ap151-16M
-
-define Package/qca-legacy-uboot/template
-define Package/qca-legacy-uboot-$(1)
-  SECTION:=boot
-  CATEGORY:=Boot Loaders
-  TITLE:=$(2)
-  DEPENDS:=$(3)
-  URL:=http://www.denx.de/wiki/U-Boot
-  VARIANT:=$(1)
-endef
-endef
-
-define BuildQcaLegacyUbootPackage
-	$(eval $(qca-legacy-uboot/Default))
-	$(eval $(qca-legacy-uboot/$(1)))
-	$(call Package/qca-legacy-uboot/template,$(1),$(TITLE),$(DEPENDS))
-endef
-
 UBOOT_MAKE_OPTS:= \
     LZMA=$(STAGING_DIR_HOST)/bin/lzma \
     ARCH=mips \
@@ -92,26 +60,50 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/$(UBOOT_IMAGE)
 endef
 
-define Package/qca-legacy-uboot/config/template
-define Package/qca-legacy-uboot-$(1)/config
-  $(call Package/$(PKG_NAME)-$$(1)/override_version,$(PKG_NAME)-$$(1))
-  $(call Package/$(PKG_NAME)-$$(1)/override_source_path,$(PKG_NAME)-$$(1))
-endef
-endef
-
-define Package/qca-legacy-uboot/install/template
-define Package/qca-legacy-uboot-$(1)/install
-  true
-endef
+define Package/qca-legacy-uboot/common
+  define Package/qca-legacy-uboot-$(1)
+    SECTION:=boot
+    CATEGORY:=Boot Loaders
+    TITLE:=U-boot for $(1)
+    DEPENDS:=@TARGET_ar71xx $(2)
+    URL:=http://www.denx.de/wiki/U-Boot
+    VARIANT:=$(1)
+  endef
 endef
 
-$(foreach u,$(UBOOTS), \
-	$(eval $(call qca-legacy-uboot/template,$(u))) \
-	$(eval $(call Package/qca-legacy-uboot/install/template,$(u))) \
-	$(eval $(call Package/qca-legacy-uboot/config/template,$(u))) \
-	$(eval $(call BuildQcaLegacyUbootPackage,$(u))) \
-	$(eval $(call BuildPackage,qca-legacy-uboot-$(u))) \
-)
+define Package/qca-legacy-uboot/nor
+  $(call Package/qca-legacy-uboot/common,$(1),$(2))
+
+  define Package/qca-legacy-uboot-$(1)/install
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/$(UBOOT_IMAGE)
+  endef
+
+  $$(eval $$(call BuildPackage,qca-legacy-uboot-$(1)))
+endef
+
+define Package/qca-legacy-uboot/nand
+  $(call Package/qca-legacy-uboot/common,$(1),+qca-romboot-$(2))
+
+  define Package/qca-legacy-uboot-$(1)/install
+	UTILPATH=$(STAGING_DIR_HOST)/bin $(STAGING_DIR_HOST)/bin/mk2stage-$(2) \
+		-1 $(STAGING_DIR)/boot/openwrt-$(BOARD)-$(2)-rombootdrv.bin \
+		-2 $(PKG_BUILD_DIR)/u-boot.bin \
+		-o $(BIN_DIR)/$(patsubst %.bin,%.2fw,$(UBOOT_IMAGE))
+  endef
+
+  $$(eval $$(call BuildPackage,qca-legacy-uboot-$(1)))
+endef
+
+$(eval $(call Package/qca-legacy-uboot/nor,ap121))
+$(eval $(call Package/qca-legacy-uboot/nor,ap135))
+$(eval $(call Package/qca-legacy-uboot/nor,ap136))
+$(eval $(call Package/qca-legacy-uboot/nor,db12x))
+$(eval $(call Package/qca-legacy-uboot/nand,cus227,ar934x))
+$(eval $(call Package/qca-legacy-uboot/nor,ap143))
+$(eval $(call Package/qca-legacy-uboot/nor,ap147))
+$(eval $(call Package/qca-legacy-uboot/nor,ap151-8M))
+$(eval $(call Package/qca-legacy-uboot/nor,ap151-16M))
+$(eval $(call Package/qca-legacy-uboot/nor,ap152-8M))
+$(eval $(call Package/qca-legacy-uboot/nor,ap152-16M))
