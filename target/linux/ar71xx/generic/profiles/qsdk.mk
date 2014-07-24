@@ -5,17 +5,21 @@
 define Profile/QSDK_Base
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp kmod-fs-ext4 \
 	  kmod-usb-storage kmod-usb2 kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
-	  ntfs-3g dosfsck e2fsprogs fdisk mkdosfs \
-	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat mcproxy kmod-ipt-nathelper-rtsp \
-	  kmod-ipv6 iperf devmem2 ip ethtool ip6tables \
+	  ntfs-3g kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa mcproxy \
+	  kmod-ipt-nathelper-rtsp kmod-ipv6 \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
-	  luci-app-ddns ddns-scripts \
-	  iputils-tracepath iputils-tracepath6
+	  luci-app-ddns ddns-scripts
+endef
+
+define Profile/QSDK_Test
+	PACKAGES+=dosfsck e2fsprogs fdisk mkdosfs sysstat iperf devmem2 ip \
+	  ethtool ip6tables iputils-tracepath iputils-tracepath6
 endef
 
 define Profile/QSDK_Open_Router
 	$(Profile/QSDK_Base)
+	$(Profile/QSDK_Test)
 	NAME:=Qualcomm-Atheros SDK Open Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
@@ -62,6 +66,7 @@ $(eval $(call Profile,QSDK_Wireless_Router))
 
 define Profile/QSDK_Premium_Router
 	$(Profile/QSDK_Base)
+	$(Profile/QSDK_Test)
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  streamboost hyfi kmod-fast-classifier \
