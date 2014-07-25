@@ -106,6 +106,9 @@ platform_check_image() {
 		}
 		return 0
 		;;
+	ap147 |\
+	ap151 |\
+	ap152 |\
 	ap135)
 		platform_check_image_ap135 "$1" && return 0
 		return 1
@@ -306,6 +309,9 @@ platform_do_upgrade() {
 	cus227)
 		platform_do_upgrade_cus227 "$ARGV"
 		;;
+	ap147 |\
+	ap151 |\
+	ap152 |\
 	ap135)
 		platform_do_upgrade_ap135 "0x9f050000" "$ARGV"
 		;;
