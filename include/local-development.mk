@@ -6,6 +6,7 @@ LOCAL_SRC ?= $(TOPDIR)/qca/src/$(PKG_NAME)
 ifeq (exists, $(shell [ -d $(LOCAL_SRC) ] && echo exists))
 PKG_REV=$(shell cd $(LOCAL_SRC)/; git describe --dirty --long --always | sed 's/.*-g//g')
 PKG_VERSION:=g$(PKG_REV)
+PKG_REV_DATE:=$(shell cd $(LOCAL_SRC); git log --format="%ci" -1 | sed 's/-\|:\| //g' | cut -b -14)
 PKG_SOURCE_URL:=
 PKG_UNPACK=mkdir -p $(PKG_BUILD_DIR); $(CP) $(LOCAL_SRC)/* $(PKG_BUILD_DIR)/
 endif
