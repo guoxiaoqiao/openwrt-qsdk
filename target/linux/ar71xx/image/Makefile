@@ -1039,6 +1039,7 @@ define Image/Build/Profile/QSDK_Open_Router
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/AP143_16M,$(1))
+	$(call Image/Build/Profile/AP152_16M,$(1))
 endef
 
 $(eval $(call BuildImage))
