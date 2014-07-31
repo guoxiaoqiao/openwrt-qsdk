@@ -24,9 +24,13 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148)
 endef
 
+define Image/Build/squashfs
+	$(call prepare_generic_squashfs,$(KDIR)/root.squashfs)
+endef
+
 define Image/Build
 	$(call Image/Build/$(1),$(1))
-	dd if=$(KDIR)/root.$(1) of=$(BIN_DIR)/$(IMG_PREFIX)-$(1)-root.img bs=2k conv=sync
+	dd if=$(KDIR)/root.$(1) of=$(BIN_DIR)/$(IMG_PREFIX)-$(1)-root.img bs=128k conv=sync
 endef
 
 $(eval $(call BuildImage))
