@@ -1,0 +1,19 @@
+diff --git a/arch/mips/kernel/machine_kexec.c b/arch/mips/kernel/machine_kexec.c
+index 9114109..c3445ed 100644
+--- a/arch/mips/kernel/machine_kexec.c
++++ b/arch/mips/kernel/machine_kexec.c
+@@ -190,8 +190,12 @@ machine_kexec(struct kimage *image)
+ 	pr_info("kexec_start_address(entry point of new kernel) = %p\n",
+ 			(void *)kexec_start_address);
+ 
+-	kexec_indirection_page =
+-		(unsigned long) phys_to_virt(image->head & PAGE_MASK);
++	if (image->type == KEXEC_TYPE_DEFAULT) {
++		kexec_indirection_page =
++			(unsigned long) phys_to_virt(image->head & PAGE_MASK);
++	} else {
++		kexec_indirection_page = (unsigned long)&image->head;
++	}
+ 	pr_info("kexec_indirection_page = %p\n",
+ 			(void *)kexec_indirection_page);
+ 
