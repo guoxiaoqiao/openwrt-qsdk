@@ -144,6 +144,25 @@ endef
 $(eval $(call KernelPackage,usb-phy-am335x))
 
 
+define KernelPackage/usb-phy-dwc3-qcom
+  TITLE:=DWC3 USB QCOM PHY driver
+  DEPENDS:=@TARGET_ipq806x
+  KCONFIG:= CONFIG_USB_QCOM_DWC3_PHY
+  FILES:= \
+	$(LINUX_DIR)/drivers/usb/phy/phy-qcom-hsusb.ko \
+	$(LINUX_DIR)/drivers/usb/phy/phy-qcom-ssusb.ko
+  AUTOLOAD:=$(call AutoLoad,45,phy-qcom-hsusb phy-qcom-ssusb,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-phy-dwc3-qcom/description
+ This driver provides support for the integrated DesignWare
+ USB3 IP Core within the QCOM SoCs.
+endef
+
+$(eval $(call KernelPackage,usb-phy-dwc3-qcom))
+
+
 define KernelPackage/usb-phy-omap-usb2
   TITLE:=Support for OMAP2 USB PHY
   KCONFIG:= \
@@ -426,6 +445,42 @@ define KernelPackage/usb-dwc2/description
 endef
 
 $(eval $(call KernelPackage,usb-dwc2))
+
+
+define KernelPackage/usb-dwc3
+  TITLE:=DWC3 USB controller driver
+  KCONFIG:= \
+	CONFIG_USB_DWC3 \
+	CONFIG_USB_DWC3_DEBUG=n \
+	CONFIG_USB_DWC3_VERBOSE=n
+  FILES:= $(LINUX_DIR)/drivers/usb/dwc3/dwc3.ko
+  AUTOLOAD:=$(call AutoLoad,54,dwc3,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-dwc3/description
+ This driver provides support for the Dual Role SuperSpeed
+ USB Controller based on the Synopsys DesignWare USB3 IP Core
+endef
+
+$(eval $(call KernelPackage,usb-dwc3))
+
+
+define KernelPackage/usb-dwc3-qcom
+  TITLE:=DWC3 USB QCOM controller driver
+  DEPENDS:=@TARGET_ipq806x +kmod-usb-dwc3 +kmod-usb-phy-dwc3-qcom
+  KCONFIG:= CONFIG_USB_DWC3_QCOM
+  FILES:= $(LINUX_DIR)/drivers/usb/dwc3/dwc3-qcom.ko
+  AUTOLOAD:=$(call AutoLoad,55,dwc3-qcom,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-dwc3-qcom/description
+ This driver provides support for the integrated DesignWare
+ USB3 IP Core within the QCOM SoCs.
+endef
+
+$(eval $(call KernelPackage,usb-dwc3-qcom))
 
 
 define KernelPackage/usb-acm
