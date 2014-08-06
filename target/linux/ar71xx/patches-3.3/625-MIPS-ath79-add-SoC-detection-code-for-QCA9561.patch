@@ -748,8 +748,8 @@
 +	ath79_wmac_resources[1].start = ATH79_IP2_IRQ(1);
 +	ath79_wmac_resources[1].end = ATH79_IP2_IRQ(1);
 +
-+	t = ath79_reset_rr(QCA955X_RESET_REG_BOOTSTRAP);
-+	if (t & QCA955X_BOOTSTRAP_REF_CLK_40)
++	t = ath79_reset_rr(QCA956X_RESET_REG_BOOTSTRAP);
++	if (t & QCA956X_BOOTSTRAP_REF_CLK_40)
 +		ath79_wmac_data.is_clk_25mhz = false;
 +	else
 +		ath79_wmac_data.is_clk_25mhz = true;
