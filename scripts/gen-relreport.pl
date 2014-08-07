@@ -31,10 +31,9 @@ sub load_config($) {
     # Create a temporary file and extrapolate it with default values
     copy( $defconfig, $dotconfig ) or die "Error when copying $defconfig: $!";
     system( "./scripts/config/conf "
-          . "-D $dotconfig "
+          . "--defconfig=$dotconfig "
           . "-w $dotconfig "
-          . "Config.in "
-          . "> /dev/null 2>&1" );
+          . "Config.in " );
 
     # Load the content in a config hash
     my %config;
