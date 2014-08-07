@@ -15,12 +15,6 @@ SUBTARGETS:=generic nand mikrotik
 
 LINUX_VERSION:=3.14
 
-# Kernel clone path and local repository reference can be done through menu config, else we we
-# can hardcode it as below, this is just for a reference
-CONFIG_KERNEL_GIT_CLONE_URI:=$(TOPDIR)/qca/src/linux
-CONFIG_KERNEL_GIT_BRANCH:=""
-CONFIG_KERNEL_GIT_LOCAL_REPOSITORY:=""
-
 include $(INCLUDE_DIR)/target.mk
 
 DEFAULT_PACKAGES += \
