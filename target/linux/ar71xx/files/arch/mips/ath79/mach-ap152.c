@@ -49,7 +49,8 @@
 #define AP152_GPIO_LED_USB0		7
 #define AP152_GPIO_LED_USB1		8
 
-#define AP152_GPIO_BTN_WPS              17
+#define AP152_GPIO_BTN_RESET            2
+#define AP152_GPIO_BTN_WPS              1
 #define AP152_KEYS_POLL_INTERVAL        20     /* msecs */
 #define AP152_KEYS_DEBOUNCE_INTERVAL    (3 * AP152_KEYS_POLL_INTERVAL)
 
@@ -71,6 +72,25 @@ static struct gpio_led ap152_leds_gpio[] __initdata = {
 		.gpio		= AP152_GPIO_LED_USB1,
 		.active_low	= 1,
 	},
+};
+
+static struct gpio_keys_button ap152_gpio_keys[] __initdata = {
+        {
+                .desc           = "WPS button",
+                .type           = EV_KEY,
+                .code           = KEY_WPS_BUTTON,
+                .debounce_interval = AP152_KEYS_DEBOUNCE_INTERVAL,
+                .gpio           = AP152_GPIO_BTN_WPS,
+                .active_low     = 1,
+        },
+        {
+                .desc           = "Reset button",
+                .type           = EV_KEY,
+                .code           = KEY_RESTART,
+                .debounce_interval = AP152_KEYS_DEBOUNCE_INTERVAL,
+                .gpio           = AP152_GPIO_BTN_RESET,
+                .active_low     = 1,
+        },
 };
 
 static struct ar8327_pad_cfg ap152_ar8337_pad0_cfg = {
@@ -114,6 +134,9 @@ static void __init ap152_setup(void)
 
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(ap152_leds_gpio),
 			ap152_leds_gpio);
+        ath79_register_gpio_keys_polled(-1, AP152_KEYS_POLL_INTERVAL,
+                                        ARRAY_SIZE(ap152_gpio_keys),
+                                        ap152_gpio_keys);
 
 	ath79_register_usb();
 
