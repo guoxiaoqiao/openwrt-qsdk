@@ -145,6 +145,22 @@ endef
 $(eval $(call KernelPackage,swconfig))
 
 
+define KernelPackage/switch-ar8216
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Qualcomm Atheros AR82XX/AR83XX switch support
+  DEPENDS:=+kmod-swconfig
+  KCONFIG:=CONFIG_AR8216_PHY
+  FILES:=$(LINUX_DIR)/drivers/net/phy/ar8216.ko
+  AUTOLOAD:=$(call AutoLoad,42,ar8216)
+endef
+
+define KernelPackage/switch-ar8216/description
+ Qualcomm atheros AR82XX/AR83XX switch support
+endef
+
+$(eval $(call KernelPackage,switch-ar8216))
+
+
 define KernelPackage/switch-ip17xx
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=IC+ IP17XX switch support
