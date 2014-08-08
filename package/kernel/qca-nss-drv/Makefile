@@ -27,7 +27,7 @@ define KernelPackage/qca-nss-drv
   DEPENDS:=@TARGET_ipq806x qca-nss-fw
   TITLE:=Kernel driver for NSS (core driver)
   FILES:=$(PKG_BUILD_DIR)/qca-nss-drv.ko
-  AUTOLOAD:=$(call AutoLoad,31,qca-nss-drv)
+  AUTOLOAD:=$(call AutoLoad,50,qca-nss-drv)
 endef
 
 define KernelPackage/qca-nss-drv/Description
@@ -94,7 +94,7 @@ define KernelPackage/qca-nss-tun6rd
   TITLE:=Kernel driver for NSS (connection manager) - tun6rd
   DEPENDS:=kmod-qca-nss-drv +kmod-qca-nss-connmgr +kmod-sit
   FILES:=$(PKG_BUILD_DIR)/qca-nss-tun6rd.ko
-  AUTOLOAD:=$(call AutoLoad,51,qca-nss-tun6rd)
+  AUTOLOAD:=$(call AutoLoad,60,qca-nss-tun6rd)
 endef
 
 define KernelPackage/qca-nss-tun6rd/Description
@@ -108,7 +108,7 @@ define KernelPackage/qca-nss-tunipip6
   TITLE:=Kernel driver for NSS (connection manager) - DS-lite and ipip6 Tunnel
   DEPENDS:=kmod-qca-nss-drv +kmod-qca-nss-connmgr +kmod-iptunnel6 +kmod-ip6-tunnel
   FILES:=$(PKG_BUILD_DIR)/qca-nss-tunipip6.ko
-  AUTOLOAD:=$(call AutoLoad,51,qca-nss-tunipip6)
+  AUTOLOAD:=$(call AutoLoad,60,qca-nss-tunipip6)
 endef
 
 define KernelPackage/qca-nss-tunipip6/Description

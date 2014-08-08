@@ -27,7 +27,7 @@ define KernelPackage/qca-nss-macsec
   DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-gmac +libpthread
   TITLE:=Kernel driver for NSS macsec
   FILES:=$(PKG_BUILD_DIR)/qca-nss-macsec.ko
-  AUTOLOAD:=$(call AutoLoad,33,qca-nss-macsec)
+  AUTOLOAD:=$(call AutoLoad,52,qca-nss-macsec)
 endef
 
 define KernelPackage/qca-nss-macsec/Description
