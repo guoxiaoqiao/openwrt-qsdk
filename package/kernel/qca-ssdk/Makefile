@@ -27,7 +27,7 @@ define KernelPackage/qca-ssdk/default-nohnat
   SUBMENU:=Network Devices
   TITLE:=Kernel driver for QCA SSDK
   FILES:=$(PKG_BUILD_DIR)/build/bin/qca-ssdk.ko
-  AUTOLOAD:=$(call AutoLoad,10,qca-ssdk)
+  AUTOLOAD:=$(call AutoLoad,42,qca-ssdk)
   PROVIDES:=qca-ssdk
 endef
 
