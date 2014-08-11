@@ -312,6 +312,16 @@ $(call Package/iptables/Module, +kmod-ipt-mark2prio)
   TITLE:=mark2prio extension
 endef
 
+define Package/iptables-mod-ct-sctp
+$(call Package/iptables/Module, +kmod-ipt-ct-sctp)
+  TITLE:=SCTP conntrack extension
+endef
+
+define Package/iptables-mod-sctp
+$(call Package/iptables/Module, +kmod-ipt-sctp)
+  TITLE:=SCTP iptables extension
+endef
+
 define Package/ip6tables
 $(call Package/iptables/Default)
   DEPENDS:=+kmod-ip6tables +libip6tc +libxtables
@@ -484,6 +494,8 @@ $(eval $(call BuildPlugin,iptables-mod-tproxy,$(IPT_TPROXY-m)))
 $(eval $(call BuildPlugin,iptables-mod-tee,$(IPT_TEE-m)))
 $(eval $(call BuildPlugin,iptables-mod-u32,$(IPT_U32-m)))
 $(eval $(call BuildPlugin,iptables-mod-mark2prio,$(IPT_MARK2PRIO-m)))
+$(eval $(call BuildPlugin,iptables-mod-ct-sctp,$(IPT_CT_SCTP-m)))
+$(eval $(call BuildPlugin,iptables-mod-sctp,$(IPT_SCTP-m)))
 $(eval $(call BuildPackage,ip6tables))
 $(eval $(call BuildPackage,libiptc))
 $(eval $(call BuildPackage,libip4tc))
