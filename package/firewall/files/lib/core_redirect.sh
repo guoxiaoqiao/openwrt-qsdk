@@ -23,7 +23,7 @@ fw_config_get_redirect() {
 }
 
 fw_load_redirect() {
-	fw_config_get_redirect "$1"
+	fw_config_get_redirect "$1" || return
 
 	fw_callback pre redirect
 
