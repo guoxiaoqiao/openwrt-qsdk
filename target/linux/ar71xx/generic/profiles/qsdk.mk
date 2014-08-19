@@ -14,7 +14,7 @@ endef
 
 define Profile/QSDK_Test
 	PACKAGES+=dosfsck e2fsprogs fdisk mkdosfs sysstat iperf devmem2 ip \
-	  ethtool ip6tables iputils-tracepath iputils-tracepath6
+	  ethtool ip6tables iputils-tracepath iputils-tracepath6 iozone
 endef
 
 define Profile/QSDK_Open_Router
