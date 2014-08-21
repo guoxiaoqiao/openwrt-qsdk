@@ -19,7 +19,8 @@ define Profile/QSDK_Base
 	  kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  kmod-art2 file pure-ftpd kmod-qca-nss-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
 	  kmod-qca-nss-macsec kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli \
-	  qca-wpa-supplicant-macsec qca-wpa-cli qca-spectral qca-wapid sigma-dut qca-acfg
+	  qca-wpa-supplicant-macsec qca-wpa-cli qca-spectral qca-wapid sigma-dut qca-acfg \
+	  qca-wifi-fw
 endef
 
 define Profile/QSDK_Open
