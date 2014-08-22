@@ -59,7 +59,7 @@ define Profile/QSDK_Enterprise
 	PACKAGES+=kmod-qca-nss-ecm-noload luci-app-qos \
 	  kmod-openswan-nss openswan-nss luci-app-openswan \
 	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
-	  qca-nss-fw-enterprise
+	  qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr
 endef
 
 define Profile/QSDK_Enterprise/Description

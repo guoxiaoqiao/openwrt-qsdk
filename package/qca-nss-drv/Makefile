@@ -100,6 +100,20 @@ define KernelPackage/qca-nss-qdisc/Description
 Linux qdisc that aids in configuring shapers in the NSS
 endef
 
+define KernelPackage/qca-nss-ipsecmgr
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  TITLE:=Kernel driver for NSS (ipsec manager) - ipsecmgr
+  DEPENDS:=kmod-qca-nss-drv
+  FILES:=$(PKG_BUILD_DIR)/qca-nss-ipsecmgr.ko
+  AUTOLOAD:=$(call AutoLoad,34,qca-nss-ipsecmgr)
+endef
+
+define KernelPackage/qca-nss-ipsecmgr/Description
+Kernel module for NSS IPsec offload manager
+endef
+
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
@@ -114,3 +128,4 @@ $(eval $(call KernelPackage,qca-nss-drv))
 $(eval $(call KernelPackage,qca-nss-tun6rd))
 $(eval $(call KernelPackage,qca-nss-tunipip6))
 $(eval $(call KernelPackage,qca-nss-qdisc))
+$(eval $(call KernelPackage,qca-nss-ipsecmgr))
