@@ -35,6 +35,7 @@
 
 #define AR7240_REG_FLOOD_MASK		0x2c
 #define AR7240_FLOOD_MASK_BROAD_TO_CPU	BIT(26)
+#define AR7240_FLOOD_MASK_UNICAST_TO_CPU	BIT(0)
 
 #define AR7240_REG_GLOBAL_CTRL		0x30
 #define AR7240_GLOBAL_CTRL_MTU_M	BITM(12)
@@ -214,6 +215,7 @@
 #define   AR934X_FLOOD_MASK_MC_DP(_p)	BIT(16 + (_p))
 #define   AR934X_FLOOD_MASK_MC		BITS(16, 7)
 #define   AR934X_FLOOD_MASK_BC_DP(_p)	BIT(25 + (_p))
+#define   AR934X_FLOOD_MASK_UC_DP(_p)	BIT(0 + (_p))
 
 #define AR934X_REG_QM_CTRL		0x3c
 #define   AR934X_IGMP_COPY_EN		BIT(11)
@@ -598,6 +600,9 @@ static void ar7240sw_setup(struct ar7240sw *as)
 		/* Enable Multicast frames transmitted to the CPU */
 		ar7240sw_reg_set(mii, AR934X_REG_FLOOD_MASK,
 				 AR934X_FLOOD_MASK_MC_DP(0));
+		/* Enable Unicast frames transmitted to the CPU */
+		ar7240sw_reg_set(mii, AR934X_REG_FLOOD_MASK,
+				 AR934X_FLOOD_MASK_UC_DP(0));
 
 		/* Enable MIB counters */
 		ar7240sw_reg_set(mii, AR7240_REG_MIB_FUNCTION0,
@@ -614,6 +619,9 @@ static void ar7240sw_setup(struct ar7240sw *as)
 		/* Enable Broadcast frames transmitted to the CPU */
 		ar7240sw_reg_set(mii, AR7240_REG_FLOOD_MASK,
 				 AR7240_FLOOD_MASK_BROAD_TO_CPU);
+		/* Enable Unicast frames transmitted to the CPU */
+		ar7240sw_reg_set(mii, AR7240_REG_FLOOD_MASK,
+				 AR7240_FLOOD_MASK_UNICAST_TO_CPU);
 	}
 
 	/* setup MTU */
