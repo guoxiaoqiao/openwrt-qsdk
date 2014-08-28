@@ -63,6 +63,19 @@ endef
 
 $(eval $(call Profile,AP135DUAL))
 
+define Profile/AP135NAND
+	NAME:=Atheros AP135 Nand reference board
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+endef
+
+define Profile/AP135NAND/Description
+	Package set optimized for the Atheros AP135 reference board.
+	This profile differs from the original AP135 profile as it is configured
+	to boot entirely from NAND flash.
+endef
+
+$(eval $(call Profile,AP135NAND))
+
 define Profile/AP136
 	NAME:=Atheros AP136 reference board
 	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
