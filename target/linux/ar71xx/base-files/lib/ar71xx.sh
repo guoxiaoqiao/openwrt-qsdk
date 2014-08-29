@@ -179,7 +179,10 @@ ar71xx_board_detect() {
 		name="ap135"
 		;;
 	*"AP135 Dual flash reference board")
-		name="ap135-dual"
+		root_mtd=$(cat /proc/mtd  | grep rootfs\" | sed 's/:.*//g')
+		root_type=$(cat /sys/class/mtd/$root_mtd/type)
+
+		[ "$root_type" = "nand" ] && name="ap135-nand" || name="ap135-dual"
 		;;
 	*"AP136 reference board")
 		name="ap136"
