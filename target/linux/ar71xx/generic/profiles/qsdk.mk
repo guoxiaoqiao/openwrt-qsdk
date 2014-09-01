@@ -49,8 +49,8 @@ define Profile/QSDK_Wireless_Router
 	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos \
 	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat qca-ssdk-shell kmod-shortcut-fe-cm \
 	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
-	  qca-wpa-cli qca-wrapd qca-wapid qca-legacy-uboot-ap152-8M qca-legacy-uboot-ap151-8M \
-	  qca-legacy-uboot-ap147-8M
+	  qca-wpa-cli qca-wrapd qca-wapid qca-acfg qca-legacy-uboot-ap152-8M \
+	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M
 endef
 
 define Profile/QSDK_Wireless_Router/Description
@@ -76,7 +76,7 @@ define Profile/QSDK_Premium_Router
 	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
 	  qca-wpa-cli qca-legacy-uboot-ap135 kmod-art2 sigma-dut qca-wrapd qca-wapid \
-	  qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell \
+	  qca-acfg qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M
 endef
 
