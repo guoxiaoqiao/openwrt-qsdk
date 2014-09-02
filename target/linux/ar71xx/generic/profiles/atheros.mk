@@ -65,7 +65,8 @@ $(eval $(call Profile,AP135DUAL))
 
 define Profile/AP135NAND
 	NAME:=Atheros AP135 Nand reference board
-	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage mtd-utils \
+		mtd-utils-nandwrite
 endef
 
 define Profile/AP135NAND/Description
