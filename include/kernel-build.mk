@@ -54,7 +54,7 @@ ifdef CONFIG_COLLECT_KERNEL_DEBUG
 		$(STAGING_DIR_ROOT)/lib/modules/$(LINUX_VERSION)/* \
 		$(KERNEL_BUILD_DIR)/debug/modules/
 	$(FIND) $(KERNEL_BUILD_DIR)/debug -type f | $(XARGS) $(KERNEL_CROSS)strip --only-keep-debug
-	$(TAR) c -C $(KERNEL_BUILD_DIR) debug | bzip2 -c -9 > $(BIN_DIR)/kernel-debug.tar.bz2
+	$(CP) $(KERNEL_BUILD_DIR)/debug $(BIN_DIR)/
   endef
 endif
 
