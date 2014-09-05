@@ -305,6 +305,7 @@ struct ar7240sw {
 	struct ag71xx_switch_platform_data *swdata;
 	struct switch_dev swdev;
 	int num_ports;
+	int num_ports_linkup;
 	u8 ver;
 	bool vlan;
 	u16 vlan_id[AR7240_MAX_VLANS];
@@ -1227,7 +1228,7 @@ static void link_function(struct work_struct *work) {
 	unsigned long flags;
 	u8 mask;
 	int i;
-	int status = 0;
+	int status = 0, link_up_count = 0;
 
 	mask = ~as->swdata->phy_poll_mask;
 	for (i = 0; i < AR7240_NUM_PHYS; i++) {
@@ -1239,8 +1240,22 @@ static void link_function(struct work_struct *work) {
 		link = ar7240sw_phy_read(ag->mii_bus, i, MII_BMSR);
 		if (link & BMSR_LSTATUS) {
 			status = 1;
-			break;
+			link_up_count++;
 		}
+	}
+
+	if (link_up_count != 0 && as->num_ports_linkup != link_up_count) {
+
+		/* Set flowcontrol threshold based on linkup count */
+
+		if (link_up_count == 1)
+			ar7240sw_reg_write(as->mii_bus, 0x34, 0x16602090);
+		else if (link_up_count == 2)
+			ar7240sw_reg_write(as->mii_bus, 0x34, 0x90bcc0ff);
+		else if (link_up_count > 2)
+			ar7240sw_reg_write(as->mii_bus, 0x34, 0xb0c0c0ff);
+
+		as->num_ports_linkup = link_up_count;
 	}
 
 	spin_lock_irqsave(&ag->lock, flags);
