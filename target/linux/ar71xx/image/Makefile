@@ -791,6 +791,10 @@ define Image/Build/Template/128k/jffs2-128k
 	$(call Image/Build/$(1),jffs2-128k,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
 endef
 
+define Image/Build/Template/128k/jffs2-nand-2048-128k
+	$(call Image/Build/$(1),jffs2-nand-2048-128k,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
+endef
+
 define Image/Build/Template/256k/squashfs
 	$(call Image/Build/$(1),squashfs,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
 endef
@@ -817,7 +821,7 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP121_16M,ap121-16M,AP121,ttyATH0,
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP121MINI,ap121-mini,AP121-MINI,ttyATH0,115200,$$(ap121_mtdlayout_4M),917504,2818048,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP135,ap135,AP135,ttyS0,115200,$$(ap135_mtdlayout),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP135DUAL,ap135-dual,AP135-DUAL,ttyS0,115200,$$(ap135dual_mtdlayout),1507328,14876672,KRuImage))
-$(eval $(call SingleProfile,AthLzma,$(fs_64k),AP135NAND,ap135-nand,AP135-DUAL,ttyS0,115200,$$(ap135nand_mtdlayout),6291456,31457280,RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_128k),AP135NAND,ap135-nand,AP135-DUAL,ttyS0,115200,$$(ap135nand_mtdlayout),6291456,31457280,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP136,ap136,AP136,ttyS0,115200,$$(ap136_mtdlayout),1507328,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(ap143_mtdlayout_8M),1441792,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),1507328,14876672,RKuImage))

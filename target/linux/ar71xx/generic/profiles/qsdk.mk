@@ -77,7 +77,8 @@ define Profile/QSDK_Premium_Router
 	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
 	  qca-wpa-cli qca-legacy-uboot-ap135 kmod-art2 sigma-dut qca-wrapd qca-wapid \
 	  qca-acfg qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell \
-	  qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M
+	  qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
+	  mtd-utils mtd-utils-nandwrite
 endef
 
 define Profile/QSDK_Premium_Router/Description

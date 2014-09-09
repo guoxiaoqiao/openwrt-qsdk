@@ -1,11 +1,8 @@
 # copied from allnet.sh
 
 # make sure we got uboot-envtools and fw_env.config copied over to the ramfs
-platform_add_ramfs_ubootenv() {
-	[ -e /usr/sbin/fw_printenv ] && install_bin /usr/sbin/fw_printenv /usr/sbin/fw_setenv
-	[ -e /etc/fw_env.config ] && install_file /etc/fw_env.config
-}
-append sysupgrade_pre_upgrade platform_add_ramfs_ubootenv
+RAMFS_COPY_BIN="/usr/sbin/fw_printenv /usr/sbin/nandwrite /usr/sbin/fw_setenv"
+RAMFS_COPY_DATA="/etc/fw_env.config"
 
 # determine size of the main firmware partition
 platform_get_firmware_size() {
@@ -60,26 +57,47 @@ platform_get_offset() {
 					return
 				fi
 			;;
+			"1985"*)
+				# JFFS2 magic
+				if [ "$2" = "jffs-rootfs" ]; then
+					echo $offsetcount
+					return
+				fi
+			;;
+
 		esac
 		offsetcount=$(( $offsetcount + 1 ))
 	done
 }
 
 platform_check_image_ap135() {
+	case "$(ar71xx_board_name)" in
+	"ap135")
+		local image_size=$( get_filesize "$1" )
+		local firmware_size=$( platform_get_firmware_size )
+		[ $image_size -ge $firmware_size ] &&
+		{
+			echo "upgrade image is too big (${image_size}b > ${firmware_size}b)"
+		}
 
-
-	local image_size=$( get_filesize "$1" )
-	local firmware_size=$( platform_get_firmware_size )
-	[ $image_size -ge $firmware_size ] &&
-	{
-		echo "upgrade image is too big (${image_size}b > ${firmware_size}b)"
-	}
-
-	local rootfs_blockoffset=$( platform_get_offset "$1" rootfs )
-	[ -z $rootfs_blockoffset ] && {
-		echo "missing rootfs"
+		local rootfs_blockoffset=$( platform_get_offset "$1" rootfs )
+		[ -z $rootfs_blockoffset ] && {
+			echo "missing rootfs"
+			return 1
+		}
+		;;
+	"ap135-nand")
+		local rootfs_blockoffset=$( platform_get_offset "$1" jffs-rootfs )
+		[ -z $rootfs_blockoffset ] && {
+			echo "missing jffs-rootfs"
+			return 1
+		}
+		;;
+	*)
+		echo "Unsupported board type!"
 		return 1
-	}
+		;;
+	esac
 
 	local data_blockoffset=$( platform_get_offset "$1" rootfs-data "$rootfs_blockoffset" )
 	[ -z $data_blockoffset ] && {
@@ -97,35 +115,55 @@ platform_check_image_ap135() {
 }
 
 platform_do_upgrade_ap135() {
-	local firmware_base_addr=$( printf "%d" "$1" )
-	local vmlinux_blockoffset=$( platform_get_offset "$2" uImage )
-	if [ ! -n "$vmlinux_blockoffset" ]; then
-		echo "can't determine new kernel address"
+	case "$(ar71xx_board_name)" in
+	"ap135")
+		local firmware_base_addr=$( printf "%d" "0x9f050000" )
+		local vmlinux_blockoffset=$( platform_get_offset "$1" uImage )
+		if [ ! -n "$vmlinux_blockoffset" ]; then
+			echo "can't determine new kernel address"
+			return 1
+		fi
+		local vmlinux_offset=$(( $vmlinux_blockoffset * $CI_BLKSZ ))
+		local vmlinux_addr=$(( $firmware_base_addr + $vmlinux_offset ))
+		local vmlinux_hexaddr=0x$( printf "%08x" "$vmlinux_addr" )
+
+		local curr_linux_addr=$(fw_printenv bootcmd | sed 's/.*0x/0x/g')
+		[ $(printf "0x%x\n" $curr_linux_addr) != $vmlinux_hexaddr ] && {
+			local fw_printenv=/usr/sbin/fw_printenv
+			[ ! -x "$fw_printenv" ] && {
+				echo "Please install uboot-envtools, aborting!"
+				return 1
+			}
+
+			[ ! -r "/etc/fw_env.config" ] && {
+				echo "/etc/fw_env.config is missing, aborting!"
+				return 1
+			}
+
+			echo "Updating boot command to: bootm $vmlinux_hexaddr"
+			fw_setenv bootcmd "bootm $vmlinux_hexaddr" || {
+				echo "failed to	update U-Boot environment, aborting!"
+				return 1
+			}
+		}
+		shift
+		default_do_upgrade "$@"
+		;;
+	"ap135-nand")
+		local sysupgrade_f=$1
+		local vmlinux_blockoffset=$( platform_get_offset "$1" uImage )
+
+		mtd erase mtd4
+		dd if=$sysupgrade_f bs=$CI_BLKSZ skip=$vmlinux_blockoffset | \
+			nandwrite -p /dev/mtd4 -
+
+		mtd erase mtd5
+		dd if=$sysupgrade_f bs=$CI_BLKSZ count=$vmlinux_blockoffset | \
+			nandwrite -p /dev/mtd5 -
+		;;
+	*)
+		echo "Unsupported board type!"
 		return 1
-	fi
-	local vmlinux_offset=$(( $vmlinux_blockoffset * $CI_BLKSZ ))
-	local vmlinux_addr=$(( $firmware_base_addr + $vmlinux_offset ))
-	local vmlinux_hexaddr=0x$( printf "%08x" "$vmlinux_addr" )
-
-	local curr_linux_addr=$(fw_printenv bootcmd | sed 's/.*0x/0x/g')
-	[ $(printf "0x%x\n" $curr_linux_addr) != $vmlinux_hexaddr ] && {
-		local fw_printenv=/usr/sbin/fw_printenv
-		[ ! -x "$fw_printenv" ] && { 
-			echo "Please install uboot-envtools, aborting!"
-			return 1
-		}
-
-		[ ! -r "/etc/fw_env.config" ] && {
-			echo "/etc/fw_env.config is missing, aborting!"
-			return 1
-		}
-
-		echo "Updating boot command to: bootm $vmlinux_hexaddr"
-		fw_setenv bootcmd "bootm $vmlinux_hexaddr" || {
-			echo "failed to	update U-Boot environment, aborting!"
-			return 1
-		}
-	}
-	shift
-	default_do_upgrade "$@"
+		;;
+	esac
 }

@@ -109,7 +109,8 @@ platform_check_image() {
 	ap147 |\
 	ap151 |\
 	ap152 |\
-	ap135)
+	ap135 |\
+	ap135-nand)
 		platform_check_image_ap135 "$1" && return 0
 		return 1
 		;;
@@ -312,8 +313,9 @@ platform_do_upgrade() {
 	ap147 |\
 	ap151 |\
 	ap152 |\
-	ap135)
-		platform_do_upgrade_ap135 "0x9f050000" "$ARGV"
+	ap135 |\
+	ap135-nand)
+		platform_do_upgrade_ap135 "$ARGV"
 		;;
 	*)
 		default_do_upgrade "$ARGV"
