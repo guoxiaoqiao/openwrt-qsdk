@@ -49,6 +49,8 @@ define Build/Configure
 endef
 
 define Build/Compile
+	$(CP) $(BUILD_DIR_HOST)/firmware-utils/bin/mkmbnimg.py \
+		$(PKG_BUILD_DIR)/tools
 	VERSION_CODE='$(VERSION_NICK) $(VERSION_NUMBER)' \
 	REVISION='$(REVISION)' \
 	$(MAKE) -C $(PKG_BUILD_DIR) HOSTCC=$(TARGET_CC) \
