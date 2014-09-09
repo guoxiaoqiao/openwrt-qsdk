@@ -83,6 +83,7 @@ routerstation-pro)
 
 ap135 |\
 ap135-dual |\
+ap135-nand |\
 ap151 |\
 rubberduck)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
