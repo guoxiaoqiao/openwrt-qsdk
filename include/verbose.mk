@@ -50,7 +50,13 @@ ifeq ($(findstring s,$(OPENWRT_VERBOSE)),)
     _NULL:=$(if $(MAKECMDGOALS),$(shell \
 		$(call MESSAGE, make[$(MAKELEVEL)]$(if $(_DIR), -C $(_DIR)) $(MAKECMDGOALS)); \
     ))
-    SUBMAKE=$(MAKE)
+    ifeq ($(findstring e,$(OPENWRT_VERBOSE)),)
+      SUBMAKE=$(MAKE)
+    else
+      SUBMAKE:=cmd() { $(MAKE) $$* && \
+		  printf "$(_Y) make $$* finished$(_N)\n" >&8 || \
+		  printf "$(_Y) make $$* failed$(_N)" >&8; }; cmd
+    endif
   else
     SILENT:=>/dev/null $(if $(findstring w,$(OPENWRT_VERBOSE)),,2>&1)
     export QUIET:=1
