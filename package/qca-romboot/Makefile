@@ -1,10 +1,6 @@
 #
-# Copyright (c) 2013 Qualcomm Atheros, Inc.
+# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 #
-# All Rights Reserved.
-# Qualcomm Atheros Confidential and Proprietary.
-#
-
 
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
