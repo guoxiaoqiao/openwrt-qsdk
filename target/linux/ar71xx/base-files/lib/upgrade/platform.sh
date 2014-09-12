@@ -89,7 +89,6 @@ platform_check_image() {
 	ap113 | \
 	ap121 | \
 	ap121-mini | \
-	ap135-dual | \
 	ap136 | \
 	ap96 | \
 	aph131 |\
@@ -110,6 +109,7 @@ platform_check_image() {
 	ap151 |\
 	ap152 |\
 	ap135 |\
+	ap135-dual | \
 	ap135-nand)
 		platform_check_image_ap135 "$1" && return 0
 		return 1
@@ -314,6 +314,7 @@ platform_do_upgrade() {
 	ap151 |\
 	ap152 |\
 	ap135 |\
+	ap135-dual |\
 	ap135-nand)
 		platform_do_upgrade_ap135 "$ARGV"
 		;;

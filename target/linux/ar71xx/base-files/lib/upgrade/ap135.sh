@@ -72,7 +72,8 @@ platform_get_offset() {
 
 platform_check_image_ap135() {
 	case "$(ar71xx_board_name)" in
-	"ap135")
+	"ap135" |\
+	"ap135-dual")
 		local image_size=$( get_filesize "$1" )
 		local firmware_size=$( platform_get_firmware_size )
 		[ $image_size -ge $firmware_size ] &&
@@ -116,7 +117,8 @@ platform_check_image_ap135() {
 
 platform_do_upgrade_ap135() {
 	case "$(ar71xx_board_name)" in
-	"ap135")
+	"ap135" |\
+	"ap135-dual")
 		local firmware_base_addr=$( printf "%d" "0x9f050000" )
 		local vmlinux_blockoffset=$( platform_get_offset "$1" uImage )
 		if [ ! -n "$vmlinux_blockoffset" ]; then
@@ -146,7 +148,6 @@ platform_do_upgrade_ap135() {
 				return 1
 			}
 		}
-		shift
 		default_do_upgrade "$@"
 		;;
 	"ap135-nand")
