@@ -17,11 +17,13 @@ define Profile/QSDK_Base
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
 	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-ssdk-nohnat qca-ssdk-shell \
-	  kmod-art2 file pure-ftpd kmod-qca-nss-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
-	  kmod-qca-nss-macsec kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli \
-	  qca-wpa-cli qca-spectral qca-wapid sigma-dut qca-acfg \
-	  qca-wrapd qca-wifi-fw qca-thermald
+	  file pure-ftpd kmod-qca-nss-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
+	  kmod-qca-nss-macsec qca-thermald
 endef
+
+PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd-cli \
+	  qca-wpa-supplicant-macsec qca-wpa-cli qca-spectral qca-wapid sigma-dut qca-acfg \
+	  qca-wrapd qca-wifi-fw
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
@@ -42,7 +44,8 @@ define Profile/QSDK_Standard
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi \
-		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail
+		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail \
+		$(PACKAGES_WIFI_10_2)
 endef
 
 define Profile/QSDK_Standard/Description
@@ -60,7 +63,8 @@ define Profile/QSDK_Enterprise
 	PACKAGES+=kmod-qca-nss-ecm-noload luci-app-qos \
 	  kmod-openswan-nss openswan-nss luci-app-openswan \
 	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
-	  qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr
+	  qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr \
+	  $(PACKAGES_WIFI_10_2)
 endef
 
 define Profile/QSDK_Enterprise/Description
