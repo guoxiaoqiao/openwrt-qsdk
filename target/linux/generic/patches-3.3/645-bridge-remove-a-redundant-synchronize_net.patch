@@ -1,0 +1,33 @@
+From 4a0b5ec12f0ffc3024616e6dc62cf8a04c54edcd Mon Sep 17 00:00:00 2001
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 2 Apr 2013 05:45:00 +0000
+Subject: [PATCH] bridge: remove a redundant synchronize_net()
+
+commit 00cfec37484761 (net: add a synchronize_net() in
+netdev_rx_handler_unregister())
+allows us to remove the synchronized_net() call from del_nbp()
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Veaceslav Falico <vfalico@redhat.com>
+Cc: Stephen Hemminger <stephen@networkplumber.org>
+Acked-by: Veaceslav Falico <vfalico@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ net/bridge/br_if.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+index ef1b914..f17fcb3 100644
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -148,7 +148,6 @@ static void del_nbp(struct net_bridge_port *p)
+ 	dev->priv_flags &= ~IFF_BRIDGE_PORT;
+ 
+ 	netdev_rx_handler_unregister(dev);
+-	synchronize_net();
+ 
+ 	netdev_upper_dev_unlink(dev, br->dev);
+ 
+-- 
+2.0.1
+

@@ -430,7 +430,8 @@ static void ag71xx_dma_reset(struct ag71xx *ag)
 }
 
 #define MAC_CFG1_INIT	(MAC_CFG1_RXE | MAC_CFG1_TXE | \
-			 MAC_CFG1_SRX | MAC_CFG1_STX)
+			 MAC_CFG1_SRX | MAC_CFG1_STX | \
+			 MAC_CFG1_TFC | MAC_CFG1_RFC)
 
 #define FIFO_CFG0_INIT	(FIFO_CFG0_ALL << FIFO_CFG0_ENABLE_SHIFT)
 
