@@ -362,7 +362,6 @@ hostapd_set_bss_options() {
 		set_default wps_model_name "WAP"
 		set_default wps_model_number "123"
 		set_default wps_serial_number "12345"
-		set_default wps_pin "12345670"
 
 		wps_state=2
 		[ -n "$wps_configured" ] && wps_state=1
@@ -370,7 +369,7 @@ hostapd_set_bss_options() {
 		[ "$ext_registrar" -gt 0 -a -n "$network_bridge" ] && append bss_conf "upnp_iface=$network_bridge" "$N"
 
 		append bss_conf "eap_server=1" "$N"
-		append bss_conf "ap_pin=$wps_pin" "$N"
+		[ -n "$wps_pin" ] && append bss_conf "ap_pin=$wps_pin" "$N"
 		append bss_conf "wps_state=$wps_state" "$N"
 		append bss_conf "ap_setup_locked=0" "$N"
 		append bss_conf "device_type=$wps_device_type" "$N"
