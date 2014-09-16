@@ -20,7 +20,7 @@ define Profile/QSDK_Base
 	  kmod-art2 file pure-ftpd kmod-qca-nss-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
 	  kmod-qca-nss-macsec kmod-qca-wifi-akronite-perf qca-hostap qca-hostapd-cli \
 	  qca-wpa-cli qca-spectral qca-wapid sigma-dut qca-acfg \
-	  qca-wrapd qca-wifi-fw
+	  qca-wrapd qca-wifi-fw qca-thermald
 endef
 
 define Profile/QSDK_Open
