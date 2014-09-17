@@ -16,23 +16,22 @@ OPENWRT_STANDARD:= \
 
 STORAGE:=kmod-scsi-core kmod-usb-storage \
 	kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
-	kmod-nls-cp437 kmod-nls-iso8859-1
+	kmod-nls-cp437 kmod-nls-iso8859-1 kmod-fs-ext4 \
+	mdadm
 
-# TODO: trim to separate packages for features, or cdrouter, etc
-QSDK_BASE:=kmod-ipt-nathelper-extra luci-app-upnp kmod-fs-ext4 \
-          kmod-ipt-ipopt kmod-ipt-conntrack-qos kmod-nls-cp437 kmod-nls-iso8859-1 \
-	  tftp-hpa sysstat mcproxy kmod-ipt-nathelper-rtsp \
-          kmod-ipv6 iperf devmem2 ip ethtool ip6tables ds-lite \
-          quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh rp-pppoe-relay \
-          -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
-          luci-app-ddns ddns-scripts mdadm\
-          iputils-tracepath iputils-tracepath6 \
-          file pure-ftpd xl2tpd ppp-mod-pptp flock pm-utils \
+CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
+	kmod-ipt-conntrack-qos mcproxy kmod-ipt-nathelper-rtsp kmod-ipv6 \
+	ip6tables ds-lite quagga quagga-ripd quagga-zebra quagga-watchquagga \
+	quagga-vtysh rp-pppoe-relay -dnsmasq dnsmasq-dhcpv6 radvd \
+	wide-dhcpv6-client bridge luci-app-ddns ddns-scripts xl2tpd ppp-mod-pptp
+
+UTILS:=tftp-hpa sysstat iperf devmem2 ip ethtool iputils-tracepath \
+	iputils-tracepath6 file pure-ftpd pm-utils
 
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SSDK_PKGS) \
-		$(WIFI_OPEN_PKGS) $(STORAGE) $(QSDK_BASE)
+		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS)
 endef
 
 define Profile/QSDK_Standard/Description
