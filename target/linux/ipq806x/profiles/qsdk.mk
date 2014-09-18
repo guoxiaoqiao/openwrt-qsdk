@@ -25,13 +25,17 @@ CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	quagga-vtysh rp-pppoe-relay -dnsmasq dnsmasq-dhcpv6 radvd \
 	wide-dhcpv6-client bridge luci-app-ddns ddns-scripts xl2tpd ppp-mod-pptp
 
+ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
+	alljoyn-controlpanel alljoyn-notification alljoyn-services_common
+
 UTILS:=tftp-hpa sysstat iperf devmem2 ip ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils
 
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SSDK_PKGS) \
-		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS)
+		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
+		$(ALLJOYN_PKGS)
 endef
 
 define Profile/QSDK_Standard/Description
