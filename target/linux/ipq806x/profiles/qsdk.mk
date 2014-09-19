@@ -25,6 +25,12 @@ PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd
 	  qca-wpa-supplicant-macsec qca-wpa-cli qca-spectral qca-wapid sigma-dut qca-acfg \
 	  qca-wrapd qca-wifi-fw
 
+PACKAGES_WIFI_10_4:=qca-wifi-fw-10.4-asic qcmbr-10.4 qca-acfg-10.4 \
+	qca-wrapd-10.4 qca-wpc-10.4 whc kmod-qca-wifi-10.4-akronite-perf \
+	kmod-art2-10.4 qca-hostap-10.4 qca-hostapd-cli-10.4 \
+	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wapid-10.4 sigma-dut-10.4 \
+	qca-acfg-10.4 qca-wrapd-10.4 qca-wpa-supplicant-10.4
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES+=kmod-ath9k wpad-mini \
@@ -50,12 +56,29 @@ endef
 
 define Profile/QSDK_Standard/Description
 	QSDK Standard package set configuration.
-	This profile provides basic Wi-Fi router features using the QCA Wi-Fi driver. It supports:
+	This profile provides basic Wi-Fi router features using the QCA 10.2 Wi-Fi driver. It supports:
 	-Bridging and routing networking
 	-LuCI web configuration interface
 	-Integrated 11abgn/ac support using the qca-wifi driver
 endef
 $(eval $(call Profile,QSDK_Standard))
+
+define Profile/QSDK_Standard_Beeliner
+	$(Profile/QSDK_Base)
+	NAME:=Qualcomm-Atheros SDK Standard Beeliner Profile
+	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi \
+		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail \
+		$(PACKAGES_WIFI_10_4)
+endef
+
+define Profile/QSDK_Standard_Beeliner/Description
+	QSDK Standard package set configuration.
+	This profile provides basic Wi-Fi router features using the QCA 10.4 Wi-Fi driver. It supports:
+	-Bridging and routing networking
+	-LuCI web configuration interface
+	-Integrated 11abgn/ac support using the qca-wifi driver
+endef
+$(eval $(call Profile,QSDK_Standard_Beeliner))
 
 define Profile/QSDK_Enterprise
 	$(Profile/QSDK_Base)
