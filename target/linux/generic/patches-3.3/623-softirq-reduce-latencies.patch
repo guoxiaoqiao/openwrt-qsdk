@@ -1,0 +1,67 @@
+From 00a5be1adbbb4886803597dee58cc14af8d4b354 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Mon, 30 Sep 2013 10:46:09 +0200
+Subject: [PATCH] - patches.fixes/softirq-reduce-latencies.patch: softirq: reduce
+   latencies (bnc#797526).
+ - patches.fixes/Fix-lockup-related-to-stop_machine-being-stuck-in-__.patch:
+   Fix lockup related to stop_machine being stuck in __do_softirq
+   (bnc#797526).
+
+suse-commit: a4240640b4e07b607003a1bfe9988005817b5db7
+---
+ kernel/softirq.c |   23 ++++++++++++++++-------
+ 1 files changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index f773afe..21a8574 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -194,22 +194,28 @@ void local_bh_enable_ip(unsigned long ip)
+ EXPORT_SYMBOL(local_bh_enable_ip);
+ 
+ /*
+- * We restart softirq processing MAX_SOFTIRQ_RESTART times,
+- * and we fall back to softirqd after that.
++ * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
++ * but break the loop if need_resched() is set or after 2 ms.
++ * The MAX_SOFTIRQ_TIME provides a nice upper bound in most cases, but in
++ * certain cases, such as stop_machine(), jiffies may cease to
++ * increment and so we need the MAX_SOFTIRQ_RESTART limit as
++ * well to make sure we eventually return from this method.
+  *
+- * This number has been established via experimentation.
++ * These limits have been established via experimentation.
+  * The two things to balance is latency against fairness -
+  * we want to handle softirqs as soon as possible, but they
+  * should not be able to lock up the box.
+  */
++#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
+ #define MAX_SOFTIRQ_RESTART 10
+ 
+ asmlinkage void __do_softirq(void)
+ {
+ 	struct softirq_action *h;
+ 	__u32 pending;
+-	int max_restart = MAX_SOFTIRQ_RESTART;
++	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
+ 	int cpu;
++	int max_restart = MAX_SOFTIRQ_RESTART;
+ 
+ 	pending = local_softirq_pending();
+ 	account_system_vtime(current);
+@@ -257,11 +264,13 @@ restart:
+ 	local_irq_disable();
+ 
+ 	pending = local_softirq_pending();
+-	if (pending && --max_restart)
+-		goto restart;
++	if (pending) {
++		if (time_before(jiffies, end) && !need_resched() &&
++		    --max_restart)
++			goto restart;
+ 
+-	if (pending)
+ 		wakeup_softirqd();
++	}
+ 
+ 	lockdep_softirq_exit();
