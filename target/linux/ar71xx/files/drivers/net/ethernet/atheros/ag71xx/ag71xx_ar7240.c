@@ -193,7 +193,6 @@
 
 #define AR7240_PORT_CPU		0
 #define AR7240_NUM_PORTS	6
-#define AR7240_NUM_PHYS		5
 
 #define AR7240_PHY_ID1		0x004d
 #define AR7240_PHY_ID2		0xd041
