@@ -136,7 +136,7 @@ static int ag71xx_mdio_read(struct mii_bus *bus, int addr, int reg)
 {
 	struct ag71xx_mdio *am = bus->priv;
 
-	if (am->pdata->builtin_switch)
+	if ((am->pdata->builtin_switch) && (addr < AR7240_NUM_PHYS))
 		return ar7240sw_phy_read(bus, addr, reg);
 	else
 		return ag71xx_mdio_mii_read(am, addr, reg);
@@ -146,7 +146,7 @@ static int ag71xx_mdio_write(struct mii_bus *bus, int addr, int reg, u16 val)
 {
 	struct ag71xx_mdio *am = bus->priv;
 
-	if (am->pdata->builtin_switch)
+	if ((am->pdata->builtin_switch) && (addr < AR7240_NUM_PHYS))
 		ar7240sw_phy_write(bus, addr, reg, val);
 	else
 		ag71xx_mdio_mii_write(am, addr, reg, val);
