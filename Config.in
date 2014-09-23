@@ -255,6 +255,10 @@ menu "Global build settings"
 		depends on KERNEL_DEBUG_INFO
 		default y
 
+	config KERNEL_DEBUG_KMEMLEAK
+		bool "Compile the kernel with memory leak detector"
+		default n
+
 	config KERNEL_DEBUG_LL_UART_NONE
 		bool
 		default n
