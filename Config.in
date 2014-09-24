@@ -272,6 +272,10 @@ menu "Global build settings"
 		help
 		  ARM low level debugging
 
+	config KERNEL_KPROBES
+		bool "Compile the kernel with kprobes support"
+		default n
+
 	config KERNEL_EARLY_PRINTK
 		bool "Compile the kernel with early printk"
 		default n
