@@ -55,10 +55,6 @@ $(call KernelPackage/qca-nss-ecm/Default/install, $(1))
 	$(INSTALL_DIR) $(1)/etc/uci-defaults $(1)/etc/sysctl.d
 	$(INSTALL_DATA) ./files/qca-nss-ecm.defaults $(1)/etc/uci-defaults/99-qca-nss-ecm
 	$(INSTALL_BIN) ./files/qca-nss-ecm.sysctl $(1)/etc/sysctl.d/qca-nss-ecm.conf
-
-	# install service by default
-	$(INSTALL_DIR) $(1)/etc/rc.d
-	$(LN) ../init.d/qca-nss-ecm $(1)/etc/rc.d/S70qca-nss-ecm
 endef
 
 define KernelPackage/qca-nss-ecm-noload
