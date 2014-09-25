@@ -22,11 +22,13 @@ proto_6rd_setup() {
 	local mtu ttl ipaddr peeraddr ip6prefix ip6prefixlen ip4prefixlen
 	json_get_vars mtu ttl ipaddr peeraddr ip6prefix ip6prefixlen ip4prefixlen
 
-	[ -z "$ip6prefix" -o -z "$peeraddr" ] && {
+	[ -z "$ip6prefix" ] && {
 		proto_notify_error "$cfg" "MISSING_ADDRESS"
 		proto_block_restart "$cfg"
 		return
 	}
+
+	[ -z "$peeraddr" ] && peeraddr="0.0.0.0"
 
 	( proto_add_host_dependency "$cfg" 0.0.0.0 )
 
@@ -47,7 +49,7 @@ proto_6rd_setup() {
 	local ip6subnet=$(6rdcalc "$ip6prefix/$ip6prefixlen" "$ipaddr/$ip4prefixlen")
 	local ip6addr="${ip6subnet%%::*}:0::1"
 	local lanip6addr="${ip6subnet%%::*}:1::1"
-	local lanip6len=$(expr $ip6prefixlen + 32 - $ip4prefixlen)
+	local lanip6len=$(expr $ip6prefixlen + 32 + 16 - $ip4prefixlen)
 
 	proto_init_update "$link" 1
 	proto_add_ipv6_address "$ip6addr" "$ip6prefixlen"
@@ -65,11 +67,9 @@ proto_6rd_setup() {
 	proto_close_tunnel
 
 	proto_send_update "$cfg"
-
-    uci set network.lan.ip6addr="$lanip6addr/$lanip6len"
-    uci commit
-    ubus call network reload
-
+	uci set network.lan.ip6addr="$lanip6addr/$lanip6len"
+	uci commit
+	ubus call network reload
 	[ -f /etc/config/radvd ] && /etc/init.d/radvd enabled && {
 	    config_load radvd
 		local section=$(config_foreach is_section_prefix_lan prefix "lan")
