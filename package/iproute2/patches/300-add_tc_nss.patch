@@ -1,6 +1,6 @@
 --- a/include/linux/pkt_sched.h
 +++ b/include/linux/pkt_sched.h
-@@ -104,6 +104,151 @@ enum {
+@@ -104,6 +104,165 @@ enum {
  
  #define TCA_STAB_MAX (__TCA_STAB_MAX - 1)
  
@@ -149,6 +149,20 @@
 +	__u32	r2q;		/* Rate to quantum ratio */
 +};
 +
++/* NSSBLACKHOLE section */
++
++enum {
++	TCA_NSSBLACKHOLE_UNSPEC,
++	TCA_NSSBLACKHOLE_PARMS,
++	__TCA_NSSBLACKHOLE_MAX
++};
++
++#define TCA_NSSBLACKHOLE_MAX	(__TCA_NSSBLACKHOLE_MAX - 1)
++
++struct tc_nssblackhole_qopt {
++	__u8	set_default;	/* Sets qdisc to be the default qdisc for enqueue */
++};
++
  /* FIFO section */
  
  struct tc_fifo_qopt {
@@ -164,7 +178,7 @@
  ifeq ($(TC_CONFIG_ATM),y)
 --- /dev/null
 +++ b/tc/q_nss.c
-@@ -0,0 +1,1083 @@
+@@ -0,0 +1,1148 @@
 +/*
 + **************************************************************************
 + * Copyright (c) 2014, The Linux Foundation. All rights reserved.
@@ -1248,3 +1262,68 @@
 +	.print_copt	= nsshtb_print_class_opt,
 +};
 +
++/* ======================== NSSBLACKHOLE ======================= */
++
++static void nssblackhole_explain(void)
++{
++	fprintf(stderr, "Usage: ...  nssblackhole [ set_default ]\n");
++}
++
++static int nssblackhole_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	struct rtattr *tail;
++	struct tc_nssblackhole_qopt opt;
++
++	memset(&opt, 0, sizeof(opt));
++
++	while (argc > 0) {
++		if (strcmp(*argv, "set_default") == 0) {
++			opt.set_default = 1;
++		} else if (strcmp(*argv, "help") == 0) {
++			nssblackhole_explain();
++			return -1;
++		} else {
++			fprintf(stderr, "What is \"%s\"?\n", *argv);
++			nssblackhole_explain();
++			return -1;
++		}
++		argc--; argv++;
++	}
++
++	tail = NLMSG_TAIL(n);
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 1024, TCA_NSSBLACKHOLE_PARMS, &opt, sizeof(opt));
++	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++	return 0;
++}
++
++static int nssblackhole_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
++{
++	struct rtattr *tb[TCA_NSSBLACKHOLE_MAX + 1];
++	struct tc_nssblackhole_qopt *qopt;
++	SPRINT_BUF(b1);
++
++	if (opt == NULL)
++		return 0;
++
++	parse_rtattr_nested(tb, TCA_NSSBLACKHOLE_MAX, opt);
++
++	if (tb[TCA_NSSBLACKHOLE_PARMS] == NULL)
++		return -1;
++
++	if (RTA_PAYLOAD(tb[TCA_NSSBLACKHOLE_PARMS]) < sizeof(*qopt))
++		return -1;
++
++	qopt = RTA_DATA(tb[TCA_NSSBLACKHOLE_PARMS]);
++
++	if (qopt->set_default)
++		fprintf(f, "set_default ");
++
++	return 0;
++}
++
++struct qdisc_util nssblackhole_qdisc_util = {
++	.id		= "nssblackhole",
++	.parse_qopt	= nssblackhole_parse_opt,
++	.print_qopt	= nssblackhole_print_opt,
++};
