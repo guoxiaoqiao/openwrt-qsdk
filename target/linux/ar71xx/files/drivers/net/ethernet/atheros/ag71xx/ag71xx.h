@@ -42,6 +42,8 @@
 #define AG71XX_DRV_NAME		"ag71xx"
 #define AG71XX_DRV_VERSION	"0.5.35"
 
+#define AR7240_NUM_PHYS        5
+
 /*
  * For our NAPI weight bigger does *NOT* mean better - it means more
  * D-cache misses and lots more wasted cycles than we'll ever
