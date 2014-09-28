@@ -270,6 +270,9 @@ $(eval $(call nf_add,EBTABLES_WATCHERS,CONFIG_BRIDGE_EBT_LOG, $(P_EBT)ebt_log))
 $(eval $(call nf_add,EBTABLES_WATCHERS,CONFIG_BRIDGE_EBT_ULOG, $(P_EBT)ebt_ulog))
 $(eval $(call nf_add,EBTABLES_WATCHERS,CONFIG_BRIDGE_EBT_NFLOG, $(P_EBT)ebt_nflog))
 
+# SCTP
+$(eval $(call nf_add,IPT_CT_SCTP,CONFIG_NF_CT_PROTO_SCTP, $(P_XT)nf_conntrack_proto_sctp))
+$(eval $(call nf_add,IPT_SCTP,CONFIG_NF_NAT_PROTO_SCTP, $(P_V4)nf_nat_proto_sctp))
 
 # userland only
 IPT_BUILTIN += $(IPT_CORE-y) $(IPT_CORE-m)
