@@ -197,6 +197,7 @@ define BuildImage
 		$(call Image/mkfs/jffs2_nand)
 		$(call Image/mkfs/squashfs)
 		$(call Image/mkfs/ubifs)
+		$(call Image/mkfs/customfs)
 		$(call Image/Checksum)
   else
     install: compile install-targets
@@ -209,6 +210,7 @@ define BuildImage
 		$(call Image/mkfs/jffs2_nand)
 		$(call Image/mkfs/squashfs)
 		$(call Image/mkfs/ubifs)
+		$(call Image/mkfs/customfs)
 		$(call Image/Checksum)
   endif
 

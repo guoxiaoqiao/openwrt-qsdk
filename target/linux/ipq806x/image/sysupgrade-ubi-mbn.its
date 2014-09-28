@@ -1,0 +1,19 @@
+
+/dts-v1/;
+
+/ {
+        description = "IPQ8066/NAND Sysupgrade image";
+        images {
+
+                ubi {
+                        description = "openwrt-ipq806x-ubi-mbn-root.img";
+                        data = /incbin/("./openwrt-ipq806x-ubi-mbn-root.img");
+                        type = "firmware";
+                        arch = "arm";
+                        compression = "none";
+                        hash@1 { algo = "crc32"; };
+                };
+
+        };
+};
+

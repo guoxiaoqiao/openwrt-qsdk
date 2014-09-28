@@ -66,6 +66,7 @@ endef
 
 define Host/Install
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/bin/* $(STAGING_DIR_HOST)/bin/
+	$(CP) src/mkmbnimg.py $(HOST_BUILD_DIR)/bin/
 endef
 
 $(eval $(call HostBuild))
