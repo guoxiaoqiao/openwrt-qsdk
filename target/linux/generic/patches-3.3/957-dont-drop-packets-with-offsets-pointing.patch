@@ -1,0 +1,13 @@
+Index: linux-3.3.8/net/netfilter/nf_conntrack_sip.c
+===================================================================
+--- linux-3.3.8.orig/net/netfilter/nf_conntrack_sip.c	2014-09-30 11:34:27.339005682 +0530
++++ linux-3.3.8/net/netfilter/nf_conntrack_sip.c	2014-09-30 11:35:16.700379246 +0530
+@@ -1485,7 +1485,7 @@
+ 
+ 		msglen = origlen = end - dptr;
+ 		if (msglen > datalen)
+-			return NF_DROP;
++			return NF_ACCEPT;
+ 
+ 		ret = process_sip_msg(skb, ct, dataoff, &dptr, &msglen);
+ 		if (ret != NF_ACCEPT)
