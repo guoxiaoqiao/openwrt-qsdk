@@ -55,7 +55,7 @@ ifeq ($(findstring s,$(OPENWRT_VERBOSE)),)
     else
       SUBMAKE:=cmd() { $(MAKE) $$* && \
 		  printf "$(_Y) make $$* finished$(_N)\n" >&8 || \
-		  printf "$(_Y) make $$* failed$(_N)" >&8; }; cmd
+		  printf "$(_Y) make $$* failed$(_N)\n" >&8; }; cmd
     endif
   else
     SILENT:=>/dev/null $(if $(findstring w,$(OPENWRT_VERBOSE)),,2>&1)
