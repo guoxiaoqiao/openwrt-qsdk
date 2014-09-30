@@ -1,0 +1,14 @@
+Index: linux-3.3.8/include/net/netfilter/xt_log.h
+===================================================================
+--- linux-3.3.8.orig/include/net/netfilter/xt_log.h	2014-09-30 11:38:09.645178701 +0530
++++ linux-3.3.8/include/net/netfilter/xt_log.h	2014-09-30 11:38:38.575979628 +0530
+@@ -8,6 +8,9 @@
+ 
+ static int sb_add(struct sbuff *m, const char *f, ...)
+ {
++#if 1
++	return 0;
++#endif
+ 	va_list args;
+ 	int len;
+ 
