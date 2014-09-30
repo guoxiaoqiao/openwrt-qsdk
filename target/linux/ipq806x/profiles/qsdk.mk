@@ -29,7 +29,7 @@ ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	alljoyn-controlpanel alljoyn-notification alljoyn-services_common
 
 UTILS:=tftp-hpa sysstat iperf devmem2 ip ethtool iputils-tracepath \
-	iputils-tracepath6 file pure-ftpd pm-utils
+	iputils-tracepath6 file pure-ftpd pm-utils kmod-art2-netlink
 
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
