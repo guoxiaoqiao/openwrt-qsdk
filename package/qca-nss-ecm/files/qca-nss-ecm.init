@@ -1,6 +1,10 @@
-#!/bin/sh /etc/rc.common
+#!/bin/sh  /etc/rc.common
 #
 # Copyright (c) 2014 The Linux Foundation. All rights reserved.
+#
+# The shebang above has an extra space intentially to avoid having
+# openwrt build scripts automatically enable this package starting
+# at boot.
 
 START=70
 
