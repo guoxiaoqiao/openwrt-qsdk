@@ -242,7 +242,7 @@ hostapd_set_bss_options() {
 				dae_client dae_secret dae_port \
 				nasid iapp_interface ownip \
 				eap_reauth_period dynamic_vlan \
-				vlan_tagged_interface
+				vlan_naming vlan_tagged_interface
 
 			# legacy compatibility
 			[ -n "$auth_server" ] || json_get_var auth_server server
