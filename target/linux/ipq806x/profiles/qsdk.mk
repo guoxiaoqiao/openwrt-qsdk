@@ -11,6 +11,12 @@ SSDK_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell  swconfig
 
 WIFI_OPEN_PKGS:= kmod-qca-ath9k kmod-qca-ath10k wpad
 
+WIFI_10_4_PKGS:=qca-wifi-fw-10.4-asic qcmbr-10.4 qca-acfg-10.4 \
+	qca-wrapd-10.4 qca-wpc-10.4 whc kmod-qca-wifi-10.4-akronite-perf \
+	kmod-art2-10.4 qca-hostap-10.4 qca-hostapd-cli-10.4 \
+	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wapid-10.4 sigma-dut-10.4 \
+	qca-acfg-10.4 qca-wrapd-10.4 qca-wpa-supplicant-10.4
+
 OPENWRT_STANDARD:= \
 	luci
 
@@ -40,5 +46,20 @@ endef
 
 define Profile/QSDK_Open/Description
 	QSDK Open package set configuration.
+	Enables wifi open source packages
 endef
 $(eval $(call Profile,QSDK_Open))
+
+define Profile/QSDK_Standard
+	NAME:=Qualcomm-Atheros SDK Standard Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SSDK_PKGS) \
+		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
+		$(ALLJOYN_PKGS)
+endef
+
+define Profile/QSDK_Standard/Description
+	QSDK Standard package set configuration.
+	Enables qca-wifi 10.4 packages
+endef
+
+$(eval $(call Profile,QSDK_Standard))
