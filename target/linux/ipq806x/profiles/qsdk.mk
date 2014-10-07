@@ -31,14 +31,14 @@ ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 UTILS:=tftp-hpa sysstat iperf devmem2 ip ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils kmod-art2-netlink trace-cmd
 
-define Profile/QSDK_Standard
-	NAME:=Qualcomm-Atheros SDK Standard Profile
+define Profile/QSDK_Open
+	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SSDK_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
 		$(ALLJOYN_PKGS)
 endef
 
-define Profile/QSDK_Standard/Description
-	QSDK Standard package set configuration.
+define Profile/QSDK_Open/Description
+	QSDK Open package set configuration.
 endef
-$(eval $(call Profile,QSDK_Standard))
+$(eval $(call Profile,QSDK_Open))
