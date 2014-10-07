@@ -13,7 +13,7 @@ config BUSYBOX_CONFIG_IOSTAT
 	  Report CPU and I/O statistics
 config BUSYBOX_CONFIG_MPSTAT
 	bool "mpstat"
-	default n
+	default y
 	help
 	  Per-processor statistics
 config BUSYBOX_CONFIG_NMETER
