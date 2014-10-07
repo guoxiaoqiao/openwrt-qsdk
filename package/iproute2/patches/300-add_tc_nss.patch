@@ -1,6 +1,6 @@
 --- a/include/linux/pkt_sched.h
 +++ b/include/linux/pkt_sched.h
-@@ -104,6 +104,165 @@ enum {
+@@ -104,6 +104,211 @@ enum {
  
  #define TCA_STAB_MAX (__TCA_STAB_MAX - 1)
  
@@ -17,6 +17,52 @@
 +struct tc_nssfifo_qopt {
 +	__u32	limit;		/* Queue length: bytes for bfifo, packets for pfifo */
 +	__u8	set_default;	/* Sets qdisc to be the default qdisc for enqueue */
++};
++
++/* NSSWRED section */
++
++enum {
++	TCA_NSSWRED_UNSPEC,
++	TCA_NSSWRED_PARMS,
++	__TCA_NSSWRED_MAX
++};
++
++#define TCA_NSSWRED_MAX (__TCA_NSSWRED_MAX - 1)
++#define NSSWRED_CLASS_MAX 6
++struct tc_red_alg_parameter {
++	__u32	min;			/* qlen_avg < min: all pkts are enqueued */
++	__u32	max;			/* qlen_avg > max: all pkts are dropped */
++	__u32	probability;		/* Drop probability at qlen_avg = max */
++	__u32	exp_weight_factor;	/* exp_weight_factor for calculate qlen_avg */
++};
++
++struct tc_nsswred_traffic_class {
++	__u32 limit;			/* Queue length */
++	__u32 weight_mode_value;	/* Weight mode value */
++	struct tc_red_alg_parameter rap;/* Parameters for RED alg */
++};
++
++/*
++ * Weight modes for WRED
++ */
++enum tc_nsswred_weight_modes {
++	TC_NSSWRED_WEIGHT_MODE_DSCP = 0,	/* Weight mode is DSCP */
++	TC_NSSWRED_WEIGHT_MODES,		/* Must be last */
++};
++typedef enum tc_nsswred_weight_modes tc_nsswred_weight_mode_t;
++
++struct tc_nsswred_qopt {
++	__u32	limit;				/* Queue length */
++	tc_nsswred_weight_mode_t weight_mode;	/* Weight mode */
++	__u32	traffic_classes;		/* How many traffic classes: DPs */
++	__u32	def_traffic_class;		/* Default traffic if no match: def_DP */
++	__u32	traffic_id;			/* The traffic id to be configured */
++	__u32	weight_mode_value;		/* Weight mode value */
++	struct tc_red_alg_parameter rap;	/* RED algorithm parameters */
++	struct tc_nsswred_traffic_class tntc[NSSWRED_CLASS_MAX];
++						/* Traffic settings for dumpping */
++	__u8	ecn;				/* Setting ECN bit or dropping */
++	__u8	set_default;			/* Sets qdisc to be the default for enqueue */
 +};
 +
 +/* NSSCODEL section */
@@ -178,7 +224,7 @@
  ifeq ($(TC_CONFIG_ATM),y)
 --- /dev/null
 +++ b/tc/q_nss.c
-@@ -0,0 +1,1148 @@
+@@ -0,0 +1,1413 @@
 +/*
 + **************************************************************************
 + * Copyright (c) 2014, The Linux Foundation. All rights reserved.
@@ -206,9 +252,274 @@
 +#include <netinet/in.h>
 +#include <arpa/inet.h>
 +#include <string.h>
++#include <math.h>
 +
 +#include "utils.h"
 +#include "tc_util.h"
++#include "tc_red.h"
++
++/* ======================== NSSWRED =======================*/
++
++static void nssred_explain(void)
++{
++	fprintf(stderr, "Usage: ...  nssred limit BYTES avpkt BYTES [ min BYTES ] [ max BYTES ] [ probability VALUE ]\n");
++	fprintf(stderr, "                   [ burst PACKETS ] [ecn] [ set_default ]\n");
++}
++
++static void nsswred_explain(void)
++{
++	fprintf(stderr, "Usage: ...  nsswred setup DPs NUMBER dp_default NUMBER [ weight_mode dscp ] [ecn] [ set_default ]\n");
++	fprintf(stderr, "            nsswred limit BYTES DP NUMBER min BYTES max BYTES avpkt BYTES dscp NUMBER [ probability VALUE ] [ burst PACKETS ]\n");
++}
++
++static int nsswred_setup(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	struct rtattr *tail;
++	struct tc_nsswred_qopt opt;
++
++	memset(&opt, 0, sizeof(opt));
++	unsigned int dps = 0;
++	unsigned int def_dp = 0;
++
++	while (argc > 0) {
++		if (strcmp(*argv, "DPs") == 0) {
++			NEXT_ARG();
++			if (get_unsigned(&dps, *argv, 0) || dps > NSSWRED_CLASS_MAX) {
++
++				fprintf(stderr, "NSSWRED: DPs should be between 1 - %d\n", NSSWRED_CLASS_MAX);
++				return -1;
++			}
++		} else if (strcmp(*argv, "weight_mode") == 0) {
++			NEXT_ARG();
++			if (strcmp(*argv, "dscp") == 0) {
++				opt.weight_mode = TC_NSSWRED_WEIGHT_MODE_DSCP;
++			} else {
++				fprintf(stderr, "Illegal \"weight_mode\", we only support dscp at this moment\n");
++			}
++		} else if (strcmp(*argv, "ecn") == 0) {
++			opt.ecn = 1;
++		} else if (strcmp(*argv, "dp_default") == 0) {
++			NEXT_ARG();
++			if (get_unsigned(&def_dp, *argv, 0) || def_dp > dps) {
++				fprintf(stderr, "NSSWRED: Illegal dp_default value\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "help") == 0) {
++			nsswred_explain();
++			return -1;
++		} else if (strcmp(*argv, "set_default") == 0) {
++			opt.set_default = 1;
++		} else {
++			fprintf(stderr, "What is \"%s\"?\n", *argv);
++			nsswred_explain();
++			return -1;
++		}
++		argc--; argv++;
++	}
++
++	if (!dps || !def_dp) {
++		fprintf(stderr, "NSSWRED: Illegal nsswred setup parameters\n");
++		return -1;
++	}
++	opt.traffic_classes = dps;
++	opt.def_traffic_class = def_dp;
++
++	tail = NLMSG_TAIL(n);
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 1024, TCA_NSSWRED_PARMS, &opt, sizeof(opt));
++	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++	return 0;
++}
++
++static int nsswred_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	struct rtattr *tail;
++	struct tc_nsswred_qopt opt;
++
++	int total_args = argc;
++	unsigned burst = 0;
++	unsigned avpkt = 0;
++	double probability = 0.0;
++	unsigned char weighted = (strcmp(qu->id, "nsswred") == 0);
++
++	memset(&opt, 0, sizeof(opt));
++
++	while (argc > 0) {
++		if (strcmp(*argv, "limit") == 0) {
++			NEXT_ARG();
++			if (get_size(&opt.limit, *argv)) {
++				fprintf(stderr, "Illegal \"limit\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "set_default") == 0) {
++			opt.set_default = 1;
++		} else if (strcmp(*argv, "min") == 0) {
++			NEXT_ARG();
++			if (get_size(&opt.rap.min, *argv)) {
++				fprintf(stderr, "Illegal \"min\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "max") == 0) {
++			NEXT_ARG();
++			if (get_size(&opt.rap.max, *argv)) {
++				fprintf(stderr, "Illegal \"max\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "burst") == 0) {
++			NEXT_ARG();
++			if (get_unsigned(&burst, *argv, 0)) {
++				fprintf(stderr, "Illegal \"burst\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "avpkt") == 0) {
++			NEXT_ARG();
++			if (get_size(&avpkt, *argv)) {
++				fprintf(stderr, "Illegal \"avpkt\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "probability") == 0) {
++			NEXT_ARG();
++			if (sscanf(*argv, "%lg", &probability) != 1) {
++				fprintf(stderr, "Illegal \"probability\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "ecn") == 0) {
++			opt.ecn = 1;
++		} else if (strcmp(*argv, "help") == 0) {
++			if (weighted) {
++				nsswred_explain();
++			} else {
++				nssred_explain();
++			}
++			return -1;
++		} else if (weighted) {
++			if (strcmp(*argv, "setup") == 0) {
++				if (argc != total_args) {
++					fprintf(stderr, "Setup command must be the first parameter\n");
++					return -1;
++				}
++				return nsswred_setup(qu, argc-1, argv+1, n);
++			} else if (strcmp(*argv, "DP") == 0) {
++				NEXT_ARG();
++				if (get_unsigned(&opt.traffic_id, *argv, 0)) {
++					fprintf(stderr, "Illegal \"DP\"");
++					return -1;
++				}
++			} else if (strcmp(*argv, "dscp") == 0) {
++				NEXT_ARG();
++				if (get_unsigned(&opt.weight_mode_value, *argv, 0)) {
++					fprintf(stderr, "Illegal \"dscp\" value\n");
++					return -1;
++				}
++			}
++		} else {
++			fprintf(stderr, "What is \"%s\"?\n", *argv);
++			if (weighted) {
++				nsswred_explain();
++			} else {
++				nssred_explain();
++			}
++			return -1;
++		}
++		argc--; argv++;
++	}
++
++	if (weighted) {
++		if (!opt.limit || !opt.rap.min || !opt.rap.max || !opt.traffic_id || !avpkt || !opt.weight_mode_value) {
++			fprintf(stderr, "NSSWRED: Require limit, min, max, avpkt, DP, weight_mode_value\n");
++			return -1;
++		}
++	} else {
++		if (!opt.limit || !avpkt) {
++			fprintf(stderr, "NSSRED: Require limit, avpkt");
++			return -1;
++		}
++	}
++
++	/*
++	 * Compute default min/max thresholds based on
++	 * Sally Floyd's recommendations:
++	 * http://www.icir.org/floyd/REDparameters.txt
++	 */
++	if (!opt.rap.max)
++		opt.rap.max = opt.rap.min ? opt.rap.min * 3 : opt.limit / 4;
++	if (!opt.rap.min)
++		opt.rap.min = opt.rap.max / 3;
++	if (!burst)
++		burst = (2 * opt.rap.min + opt.rap.max) / (3 * avpkt);
++	if ((opt.rap.exp_weight_factor = tc_red_eval_ewma(opt.rap.min, burst, avpkt)) < 0) {
++		fprintf(stderr, "RED: failed to calculate EWMA constant.\n");
++		return -1;
++	}
++
++	/*
++	 * project [0.0-1.0] to [0-255] to avoid floating point calculation
++	 */
++	opt.rap.probability = probability * (pow(2, 8)-1);
++
++	tail = NLMSG_TAIL(n);
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 1024, TCA_NSSWRED_PARMS, &opt, sizeof(opt));
++	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++	return 0;
++}
++
++static int nsswred_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
++{
++	struct rtattr *tb[TCA_NSSWRED_MAX + 1];
++	struct tc_nsswred_qopt *qopt;
++	int i;
++
++	if (opt == NULL)
++		return 0;
++
++	parse_rtattr_nested(tb, TCA_NSSWRED_MAX, opt);
++
++	if (tb[TCA_NSSWRED_PARMS] == NULL)
++		return -1;
++
++	if (RTA_PAYLOAD(tb[TCA_NSSWRED_PARMS]) < sizeof(*qopt))
++		return -1;
++
++	qopt = RTA_DATA(tb[TCA_NSSWRED_PARMS]);
++
++	if (strcmp(qu->id, "nsswred") == 0) {
++		fprintf(f, "DPs %d def_DP %d weight mode: " , qopt->traffic_classes, qopt->def_traffic_class);
++		if (qopt->weight_mode == TC_NSSWRED_WEIGHT_MODE_DSCP)
++			fprintf(f, "DSCP\n");
++		else
++			fprintf(f, "Unknown\n");
++		for (i = 0;i < qopt->traffic_classes; i ++) {
++			if (qopt->tntc[i].rap.exp_weight_factor) {
++				double prob = (double)qopt->tntc[i].rap.probability;
++				fprintf(f, "DP %d: limit %d, weight mode value: %d min: %d max: %d exp_weight_factor: %d probability %.2f\n", i+1, qopt->tntc[i].limit, qopt->tntc[i].weight_mode_value
++						, qopt->tntc[i].rap.min,qopt->tntc[i].rap.max,qopt->tntc[i].rap.exp_weight_factor,prob/255);
++			}
++		}
++	} else {
++		double prob = (double)qopt->rap.probability;
++		fprintf(f, "limit %d, min: %d max: %d exp_weight_factor: %d probability %.2f\n", qopt->limit, qopt->rap.min,qopt->rap.max,qopt->rap.exp_weight_factor,prob/255);
++	}
++
++	if (qopt->ecn)
++		fprintf(f, "ECN enabled ");
++        if (qopt->set_default)
++                fprintf(f, "set_default ");
++
++	return 0;
++}
++
++struct qdisc_util nssred_qdisc_util = {
++	.id		= "nssred",
++	.parse_qopt	= nsswred_parse_opt,
++	.print_qopt	= nsswred_print_opt,
++};
++
++struct qdisc_util nsswred_qdisc_util = {
++	.id		= "nsswred",
++	.parse_qopt	= nsswred_parse_opt,
++	.print_qopt	= nsswred_print_opt,
++};
 +
 +/* ======================== NSSFIFO =======================*/
 +
