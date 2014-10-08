@@ -1,0 +1,17 @@
+Index: linux-3.3.8/net/8021q/vlan_core.c
+===================================================================
+--- linux-3.3.8.orig/net/8021q/vlan_core.c	2014-10-06 21:29:30.833019868 +0530
++++ linux-3.3.8/net/8021q/vlan_core.c	2014-10-06 21:30:20.774238595 +0530
+@@ -102,8 +102,11 @@
+ 
+ static struct sk_buff *vlan_reorder_header(struct sk_buff *skb)
+ {
+-	if (skb_cow(skb, skb_headroom(skb)) < 0)
++	if (skb_cow(skb, skb_headroom(skb)) < 0) {
++                kfree_skb(skb);
+ 		return NULL;
++	}
++
+ 	memmove(skb->data - ETH_HLEN, skb->data - VLAN_ETH_HLEN, 2 * ETH_ALEN);
+ 	skb->mac_header += VLAN_HLEN;
+ 	skb_reset_mac_len(skb);
