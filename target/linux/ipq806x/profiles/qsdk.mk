@@ -93,3 +93,18 @@ define Profile/QSDK_Enterprise/Description
 	QSDK Enterprise package set configuration.
 endef
 $(eval $(call Profile,QSDK_Enterprise))
+
+define Profile/QSDK_Enterprise_Beeliner
+	$(Profile/QSDK_Base)
+	NAME:=Qualcomm-Atheros SDK Enterprise Profile
+	PACKAGES+=kmod-qca-nss-ecm-noload luci-app-qos \
+	  kmod-openswan-nss openswan-nss luci-app-openswan \
+	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
+	  qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr \
+	  $(PACKAGES_WIFI_10_4)
+endef
+
+define Profile/QSDK_Enterprise_Beeliner/Description
+	QSDK Enterprise package set configuration with Beeliner wifi support.
+endef
+$(eval $(call Profile,QSDK_Enterprise_Beeliner))
