@@ -219,7 +219,7 @@ Available Options:
 EOF
 }
 
-sub show_help_and_exit {
+sub show_help_and_exit($) {
     print "Error: $_[0]\n" if defined $_[0];
     show_help();
     exit 1;
