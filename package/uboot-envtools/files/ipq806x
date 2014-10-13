@@ -27,9 +27,7 @@ default_uboot_env () {
 }
 
 case "$board" in
-ap148 | \
-db149 | \
-db147)
+db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | db147)
 	env=$(default_uboot_env)
 	[ -n "${env}" ] && ubootenv_add_uci_config $env
 	;;
