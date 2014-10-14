@@ -5,7 +5,7 @@ include $(INCLUDE_DIR)/image.mk
 
 UBIFS_OPTS = -m 2048 -e 124KiB -c 4096 -U -F
 UBINIZE_OPTS = -m 2048 -p 128KiB
-MBN_APPS_IMG = 0x6
+MBN_APPS_IMG = 0x13
 
 # MBN uImage will be loaded at 0x44000000, 0x28 = size of MBN header
 MBN_LOAD_ADDR = 0x44000028
