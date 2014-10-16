@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2012 OpenWrt.org
+# Copyright (C) 2006-2014 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssl
-PKG_VERSION:=1.0.1f
+PKG_VERSION:=1.0.1j
 PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 
@@ -18,7 +18,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.openssl.org/source/ \
 	ftp://ftp.funet.fi/pub/crypt/mirrors/ftp.openssl.org/source \
 	ftp://ftp.sunet.se/pub/security/tools/net/openssl/source/
-PKG_MD5SUM:=f26b09c028a0541cab33da697d522b25
+PKG_MD5SUM:=f7175c9cd3c39bb1907ac8bba9df8ed3
 
 PKG_LICENSE:=SSLEAY OPENSSL
 PKG_LICENSE_FILES:=LICENSE
