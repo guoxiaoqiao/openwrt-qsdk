@@ -120,7 +120,7 @@ endef
 endif
 
 $(STAGING_DIR_HOST)/bin/stat: $(STAGING_DIR)/.prepared
-	@rm -f $@
+	@mkdir -p "$(dir $@)"; rm -f $@
 	@if stat --version > /dev/null 2>&1; then \
 		ln -s `which stat` $@; \
 	elif gstat --version > /dev/null 2>&1; then \
