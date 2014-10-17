@@ -1,0 +1,34 @@
+diff --git a/uhttpd.c b/uhttpd.c
+index f9ac3db..9295f73 100644
+--- a/uhttpd.c
++++ b/uhttpd.c
+@@ -33,7 +33,7 @@
+ #endif
+ 
+ 
+-const char * http_methods[] = { "GET", "POST", "HEAD", "PUT", };
++const char * http_methods[] = { "GET", "POST", "HEAD", "PUT", "DELETE", };
+ const char * http_versions[] = { "HTTP/0.9", "HTTP/1.0", "HTTP/1.1", };
+ 
+ static int run = 1;
+@@ -286,6 +286,8 @@ static struct http_request * uh_http_header_parse(struct client *cl,
+ 			req->method = UH_HTTP_MSG_HEAD;
+ 		else if (method && !strcmp(method, "PUT"))
+ 			req->method = UH_HTTP_MSG_PUT;
++		else if (method && !strcmp(method, "DELETE"))
++			req->method = UH_HTTP_MSG_DELETE;
+ 		else
+ 		{
+ 			/* invalid method */
+diff --git a/uhttpd.h b/uhttpd.h
+index e4e726b..8e4a463 100644
+--- a/uhttpd.h
++++ b/uhttpd.h
+@@ -129,6 +129,7 @@ enum http_method {
+ 	UH_HTTP_MSG_POST,
+ 	UH_HTTP_MSG_HEAD,
+ 	UH_HTTP_MSG_PUT,
++	UH_HTTP_MSG_DELETE,
+ };
+ 
+ extern const char *http_methods[];
