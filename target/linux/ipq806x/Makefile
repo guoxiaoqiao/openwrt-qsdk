@@ -7,7 +7,7 @@ BOARD:=ipq806x
 BOARDNAME:=QCA IPQ806X
 FEATURES:=ubifs targz squashfs usb usbgadget dtc
 
-LINUX_VERSION:=3.4.0
+LINUX_VERSION:=3.4.103
 KERNELNAME:="uImage"
 
 # Kernel clone path and local repository reference can be done through menu config, else we we
