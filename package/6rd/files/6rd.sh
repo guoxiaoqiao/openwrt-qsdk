@@ -8,12 +8,7 @@
 	. ../netifd-proto.sh
 	init_proto "$@"
 }
-is_section_prefix_lan(){
-	local config=$1
-	local ifname
-	config_get ifname "$config" interface
-	[ "${ifname}" = "$2" ] && echo ${config}
-}
+
 proto_6rd_setup() {
 	local cfg="$1"
 	local iface="$2"
@@ -47,9 +42,7 @@ proto_6rd_setup() {
 
 	# Determine our IPv6 address.
 	local ip6subnet=$(6rdcalc "$ip6prefix/$ip6prefixlen" "$ipaddr/$ip4prefixlen")
-	local ip6addr="${ip6subnet%%::*}:0::1"
-	local lanip6addr="${ip6subnet%%::*}:1::1"
-	local lanip6len=$(expr $ip6prefixlen + 32 + 16 - $ip4prefixlen)
+	local ip6addr="${ip6subnet%%::*}::1"
 
 	proto_init_update "$link" 1
 	proto_add_ipv6_address "$ip6addr" "$ip6prefixlen"
@@ -67,17 +60,6 @@ proto_6rd_setup() {
 	proto_close_tunnel
 
 	proto_send_update "$cfg"
-	uci set network.lan.ip6addr="$lanip6addr/$lanip6len"
-	uci commit
-	ubus call network reload
-	[ -f /etc/config/radvd ] && /etc/init.d/radvd enabled && {
-	    config_load radvd
-		local section=$(config_foreach is_section_prefix_lan prefix "lan")
-		uci set radvd.$section.prefix=$ip6subnet
-		uci commit radvd
-	    /etc/init.d/radvd restart
-	}
-
 }
 
 proto_6rd_teardown() {
