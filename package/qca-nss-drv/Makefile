@@ -24,10 +24,10 @@ define KernelPackage/qca-nss-drv
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
-  DEPENDS:=@TARGET_ipq806x qca-nss-fw
+  DEPENDS:=@TARGET_ipq806x qca-nss-fw +kmod-qca-nss-gmac
   TITLE:=Kernel driver for NSS (core driver)
   FILES:=$(PKG_BUILD_DIR)/qca-nss-drv.ko
-  AUTOLOAD:=$(call AutoLoad,31,qca-nss-drv)
+  AUTOLOAD:=$(call AutoLoad,32,qca-nss-drv)
 endef
 
 define KernelPackage/qca-nss-drv/Description
@@ -116,6 +116,8 @@ endef
 define KernelPackage/qca-nss-ipsecmgr/Description
 Kernel module for NSS IPsec offload manager
 endef
+
+EXTRA_CFLAGS+= -I$(STAGING_DIR)/usr/include/qca-nss-gmac
 
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \

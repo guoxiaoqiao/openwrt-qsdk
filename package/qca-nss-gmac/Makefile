@@ -24,19 +24,23 @@ define KernelPackage/qca-nss-gmac
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
-  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv
+  DEPENDS:=@TARGET_ipq806x
   TITLE:=Kernel driver for NSS gmac
   FILES:=$(PKG_BUILD_DIR)/ipq806x/qca-nss-gmac.ko
-  AUTOLOAD:=$(call AutoLoad,32,qca-nss-gmac)
+  AUTOLOAD:=$(call AutoLoad,31,qca-nss-gmac)
 endef
 
 define KernelPackage/qca-nss-gmac/Description
 This package contains a NSS driver for QCA chipset
 endef
 
+define Build/InstallDev
+	mkdir -p $(1)/usr/include/qca-nss-gmac
+	$(CP) $(PKG_BUILD_DIR)/ipq806x/exports/* $(1)/usr/include/qca-nss-gmac/
+endef
+
 EXTRA_CFLAGS+= \
 	-DCONFIG_NSS_DEBUG_LEVEL=4 \
-	-I$(STAGING_DIR)/usr/include/qca-nss-drv \
 	-I$(PKG_BUILD_DIR)/nss_hal/include \
 	-I$(PKG_BUILD_DIR)/nss_hal/$(BOARD)
 
