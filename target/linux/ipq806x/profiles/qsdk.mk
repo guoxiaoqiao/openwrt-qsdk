@@ -29,7 +29,8 @@ PACKAGES_WIFI_10_4:=qca-wifi-fw-10.4-asic qcmbr-10.4 qca-acfg-10.4 \
 	qca-wrapd-10.4 qca-wpc-10.4 whc kmod-qca-wifi-10.4-akronite-perf \
 	kmod-art2-10.4 qca-hostap-10.4 qca-hostapd-cli-10.4 \
 	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wapid-10.4 sigma-dut-10.4 \
-	qca-acfg-10.4 qca-wrapd-10.4 qca-wpa-supplicant-10.4
+	qca-acfg-10.4 qca-wrapd-10.4 qca-wpa-supplicant-10.4 \
+	qca-wifi-fw-hw1-10.4-asic qca-wifi-fw-hw2-10.4-asic
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
