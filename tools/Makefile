@@ -110,7 +110,7 @@ $(STAGING_DIR_HOST)/.prepared: $(TMP_DIR)/.build
 
 
 define PrepareCommand
-$(STAGING_DIR_HOST)/bin/$(1): $(STAGING_DIR)/.prepared
+$(STAGING_DIR_HOST)/bin/$(1): $(STAGING_DIR)/.prepared $(if $(findstring grep,$(1)),,$(STAGING_HOST_DIR)/bin/grep)
 	@mkdir -p "$$(dir $$@)"; rm -f "$$@"
 	@export FILE="$$$$(which $(2) 2>/dev/null | grep -v 'not found' | head -n1)"; [ -n "$$$$FILE" ] || { \
 		echo "Command $(1) not found."; false; \
