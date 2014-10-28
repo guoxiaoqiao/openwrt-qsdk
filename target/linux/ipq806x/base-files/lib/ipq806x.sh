@@ -35,6 +35,9 @@ ipq806x_board_detect() {
 	*"AP148-1XX reference board")
 		name="ap148_1xx"
 		;;
+	*"AP160 reference board")
+		name="ap160"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"
