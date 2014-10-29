@@ -37,9 +37,11 @@ endef
 define KernelPackage/qca-nss-drv/install
 	$(INSTALL_DIR) $(1)/lib/debug
 	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/etc/sysctl.d
 
 	$(INSTALL_BIN) ./files/qca-nss-drv.debug $(1)/lib/debug/qca-nss-drv
 	$(INSTALL_BIN) ./files/qca-nss-drv.init $(1)/etc/init.d/qca-nss-drv
+	$(INSTALL_BIN) ./files/qca-nss-drv.sysctl $(1)/etc/sysctl.d/qca-nss-drv.conf
 endef
 
 define KernelPackage/qca-nss-tun6rd
