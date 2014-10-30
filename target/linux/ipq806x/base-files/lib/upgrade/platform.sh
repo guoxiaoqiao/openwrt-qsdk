@@ -23,7 +23,6 @@ get_full_section_name() {
 image_contains() {
 	local img=$1
 	local sec=$2
-
 	dumpimage -l ${img} | grep -q "^ Image.*(${sec}.*)" || return 1
 }
 
@@ -92,12 +91,52 @@ do_flash_mtd() {
 	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
 }
 
-do_flash_ubi() {
+do_flash_appsbl() {
+	local bin=$1
+	local mtdname=$2
+
+	# Fail safe upgrade
+	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
+	[ -f /proc/boot_info/0\:$mtdname/upgraded ] && echo 1 > /proc/boot_info/0\:$mtdname/upgraded
+
+	grep 'APPSBL_1' /proc/mtd >/dev/null 2>&1
+	[ $? -eq 0 ] && mtdname="APPSBL_1"
+
+	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
+
+
+	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+}
+
+do_flash_bootconfig() {
 	local bin=$1
 	local mtdname=$2
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
+
+	# Fail safe upgrade
+	if [ -f /proc/boot_info/getbinary ]; then
+		cat /proc/boot_info/getbinary > /tmp/${bin}.bin
+		dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+	fi
+}
+
+do_flash_ubi() {
+	local bin=$1
+	local mtdname=$2
+
+	# Fail safe upgrade
+	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
+	[ -f /proc/boot_info/$mtdname/upgraded ] && echo 1 > /proc/boot_info/$mtdname/upgraded
+
+	cat /proc/mtd | grep rootfs_1 >/dev/null 2>&1
+	[ $? -eq 0 ] && mtdname="rootfs_1"
+
+	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
+
 	ubidetach -f -p /dev/${mtdpart}
 	ubiformat /dev/${mtdpart} -y -f /tmp/${bin}.bin
 }
@@ -113,7 +152,7 @@ flash_section() {
 		sbl1*) switch_layout boot; do_flash_mtd ${sec} "SBL1";;
 		sbl2*) switch_layout boot; do_flash_mtd ${sec} "SBL2";;
 		sbl3*) switch_layout boot; do_flash_mtd ${sec} "SBL3";;
-		u-boot*) switch_layout boot; do_flash_mtd ${sec} "APPSBL";;
+		u-boot*) switch_layout boot; do_flash_appsbl ${sec} "APPSBL";;
 		ddr-${board}*) switch_layout boot; do_flash_mtd ${sec} "DDRCONFIG";;
 		ssd*) switch_layout boot; do_flash_mtd ${sec} "SSD";;
 		tz*) switch_layout boot; do_flash_mtd ${sec} "TZ";;
@@ -131,7 +170,7 @@ platform_check_image() {
 	local mandatory_nor="hlos fs"
 	local mandatory_section_found=0
 	local optional="sbl1 sbl2 sbl3 u-boot ddr-${board} ssd tz rpm"
-	local ignored="mibib"
+	local ignored="mibib bootconfig"
 
 	image_is_FIT $1 || return 1
 
@@ -187,6 +226,10 @@ platform_do_upgrade() {
 		for sec in $(print_sections $1); do
 			flash_section ${sec}
 		done
+
+		switch_layout boot
+		# update bootconfig to register that fw upgrade has been done
+		do_flash_bootconfig bootconfig "BOOTCONFIG"
 		switch_layout linux
 
 		return 0;
