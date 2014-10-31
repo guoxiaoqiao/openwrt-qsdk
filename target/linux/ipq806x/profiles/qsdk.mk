@@ -18,19 +18,19 @@ define Profile/QSDK_Base
 	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  file pure-ftpd kmod-qca-nss-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
-	  kmod-qca-nss-macsec qca-thermald rng-tools
+	  kmod-qca-nss-macsec rng-tools
 endef
 
 PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd-cli \
 	  qca-wpa-cli qca-spectral qca-wapid sigma-dut qca-acfg qca-wrapd qca-wifi-fw \
 	  whc
 
-PACKAGES_WIFI_10_4:=qca-wifi-fw-10.4-asic qcmbr-10.4 qca-acfg-10.4 \
+PACKAGES_WIFI_10_4:=qcmbr-10.4 qca-acfg-10.4 \
 	qca-wrapd-10.4 qca-wpc-10.4 whc kmod-qca-wifi-10.4-akronite-perf \
 	kmod-art2-10.4 qca-hostap-10.4 qca-hostapd-cli-10.4 \
 	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wapid-10.4 sigma-dut-10.4 \
 	qca-acfg-10.4 qca-wrapd-10.4 qca-wpa-supplicant-10.4 \
-	qca-wifi-fw-hw1-10.4-asic qca-wifi-fw-hw2-10.4-asic
+	qca-wifi-fw-hw1-10.4-asic qca-wifi-fw-hw2-10.4-asic qca-thermald-10.4
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
