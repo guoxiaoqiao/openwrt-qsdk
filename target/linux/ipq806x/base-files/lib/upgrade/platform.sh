@@ -227,10 +227,9 @@ platform_do_upgrade() {
 			flash_section ${sec}
 		done
 
-		switch_layout boot
+		switch_layout linux
 		# update bootconfig to register that fw upgrade has been done
 		do_flash_bootconfig bootconfig "BOOTCONFIG"
-		switch_layout linux
 
 		return 0;
 		;;
