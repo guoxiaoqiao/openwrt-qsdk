@@ -1,0 +1,33 @@
+#!/bin/sh /etc/rc.common
+#
+# Copyright (c) 2014 The Linux Foundation. All rights reserved.
+# Copyright (C) 2011 OpenWrt.org
+
+START=99
+
+do_flash_bootconfig() {
+	local bin=$1
+	local mtdname=$2
+
+	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
+
+	# Fail safe upgrade
+	if [ -f /proc/boot_info/getbinary ]; then
+		cat /proc/boot_info/getbinary > /tmp/${bin}.bin
+		dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+	fi
+}
+
+start() {
+	local upgrade_in_progress
+
+	upgrade_in_progress=/proc/boot_info/upgradeinprogress
+	[ -f $upgrade_in_progress ] && upgrade_in_progress=`cat $upgrade_in_progress`
+
+	if [ $upgrade_in_progress -eq 1 ]; then
+		echo 0 > /proc/boot_info/upgradeinprogress
+		# update bootconfig
+		do_flash_bootconfig bootconfig "BOOTCONFIG"
+	fi
+}
