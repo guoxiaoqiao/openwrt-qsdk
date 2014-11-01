@@ -10,7 +10,7 @@ define Profile/QSDK_Base
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat mcproxy kmod-ipt-nathelper-rtsp \
 	  kmod-ipv6 iperf devmem2 ip ethtool ip6tables ds-lite rstp \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh rp-pppoe-relay \
-	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba bridge \
+	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client luci-app-samba luci-proto-6x4 bridge \
 	  luci-app-ddns ddns-scripts cups cups-client mdadm\
 	  kmod-md-mod kmod-md-linear kmod-md-raid0 kmod-md-raid1 \
 	  iputils-tracepath iputils-tracepath6 \
