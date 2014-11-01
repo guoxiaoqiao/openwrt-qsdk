@@ -25,12 +25,12 @@ PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd
 	  qca-wpa-supplicant-macsec qca-wpa-cli qca-spectral qca-wapid sigma-dut \
 	  qca-acfg qca-wrapd qca-wifi-fw whc
 
-PACKAGES_WIFI_10_4:=qcmbr-10.4 qca-acfg-10.4 \
-	qca-wrapd-10.4 qca-wpc-10.4 whc kmod-qca-wifi-10.4-akronite-perf \
-	kmod-art2-10.4 qca-hostap-10.4 qca-hostapd-cli-10.4 \
-	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wapid-10.4 sigma-dut-10.4 \
-	qca-acfg-10.4 qca-wrapd-10.4 qca-wpa-supplicant-10.4 \
-	qca-wifi-fw-hw1-10.4-asic qca-wifi-fw-hw2-10.4-asic qca-thermald-10.4
+PACKAGES_WIFI_10_4:=qcmbr qca-acfg \
+	qca-wrapd qca-wpc whc kmod-qca-wifi-akronite-perf \
+	kmod-art2 qca-hostap qca-hostapd-cli \
+	qca-wpa-cli qca-spectral qca-wapid sigma-dut \
+	qca-acfg qca-wrapd qca-wpa-supplicant \
+	qca-wifi-fw-hw1-10.4-asic qca-wifi-fw-hw2-10.4-asic qca-thermald
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
@@ -52,7 +52,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi \
 		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail \
-		$(PACKAGES_WIFI_10_2)
+		$(PACKAGES_WIFI_10_4)
 endef
 
 define Profile/QSDK_Standard/Description
@@ -88,7 +88,7 @@ define Profile/QSDK_Enterprise
 	  kmod-openswan-nss openswan-nss luci-app-openswan \
 	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 	  qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr \
-	  $(PACKAGES_WIFI_10_2)
+	  $(PACKAGES_WIFI_10_4)
 endef
 
 define Profile/QSDK_Enterprise/Description
