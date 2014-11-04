@@ -12,12 +12,14 @@ MBN_LOAD_ADDR = 0x44000028
 
 E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
-define Image/mkfs/customfs
+ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
+  define Image/mkfs/customfs
 	$(CP) ./ubinize-mbn.cfg $(KDIR)
 	(cd $(KDIR); \
 	$(STAGING_DIR_HOST)/bin/ubinize $(UBINIZE_OPTS) -o $(KDIR)/root.ubi-mbn ubinize-mbn.cfg)
 	$(call Image/Build,ubi,-mbn)
-endef
+  endef
+endif
 
 define Image/BuildKernel
 	$(CP) $(LINUX_DIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
