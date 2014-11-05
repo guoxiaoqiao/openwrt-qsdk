@@ -65,6 +65,309 @@ image_is_FIT() {
 	return 0
 }
 
+VERSION_FILE="/sys/devices/system/qfprom/qfprom0/version"
+TMP_VERSION_FILE="/etc/config/version"
+unsecure_version=0x0
+local_version_string=0x0
+
+# get_local_image_version() check the version file & if it exists, read the
+# hexadecimal value & save it into global variable local_version_string
+get_local_image_version() {
+	if [ -e $VERSION_FILE ]; then
+		read local_version_string < $VERSION_FILE
+		return 1
+	fi
+	echo "Returning 0 from get_local_image_version"
+	return 0
+}
+
+# is_local_image_secure() checks whether installed image is
+# secure(non-zero value) or not
+is_local_image_secure() {
+	get_local_image_version && return 0
+	if [ "$local_version_string" == "$unsecure_version" ]; then
+		echo "Returning 0 from is_local_image_secure because \
+			$local_version_string is ZERO"
+		return 0
+	else
+		echo "Returning 1 from is_local_image_secure because \
+			$local_version_string is non-ZERO"
+		return 1
+	fi
+}
+
+sw_id=0
+# get_sw_id_from_component_bin() parses the MBN header & checks total size v/s
+# actual component size. If both differ, it means signature & certificates are
+# appended at end.
+# Extract the attestation certificate & read the Subject & retreive the SW_ID.
+get_sw_id_from_component_bin() {
+	sw_id=100
+	component_size=`hexdump -n 4 -s 16 $1 | awk '{print $3 $2}'`
+	code_size=`hexdump -n 4 -s 20 $1 | awk '{print $3 $2}'`
+	echo $1
+	echo "Total size=" $component_size
+	echo "Actual code size=" $code_size
+	if [ "$component_size" != "$code_size" ]; then
+		echo "Image with version information"
+		sw_id=0
+		dd if=$1 of=temp_cert_file bs=1 count=1536 skip=`printf "%d\n" \
+			$((0x$code_size + 0x128))`
+		sw_id=`openssl x509 -in temp_cert_file -noout -text -inform der \
+			| grep "SW_ID" | awk -v \
+		FS="(OU=01 |SW_ID)" '{print $2}' | cut -c-8`
+
+		echo "SW ID=" $sw_id
+	else
+		echo "Image without version information"
+		return 0
+	fi
+	return 1
+}
+
+max_failsafe_version=43
+max_nonfailsafe_version=20
+failsafe_version=0
+nonfailsafe_version=0
+failsafe_sw_id=0
+nonfailsafe_sw_id=0
+is_sw_version_present=0
+
+# Local image version string stores the version information as below.
+# Bit 0: Installed image is secure. Check Version
+# Bit 1 to 20: Number of bits set specifies the version of non-failsafe
+#              image. Max version stored can be 20
+# Bit 21 to 63: Number of bits set specifies the version of failsafe
+#              image. Max version stored can be 43
+decode_local_image_version() {
+	failsafe_version=0
+	nonfailsafe_version=0
+	get_local_image_version
+	versionD=`printf "%d" $local_version_string`
+	Bit=$(expr $versionD % 2)
+	if [ "$Bit" == "0" ]; then
+		echo "Local image is not Secure image, return SUCCESS"
+		return 1
+	fi
+	versionD=$(expr $versionD / 2)
+	nonfailsafe_version=0
+	while [ $nonfailsafe_version -le $max_nonfailsafe_version ]
+	do
+		Bit=$(expr $versionD % 2)
+		versionD=$(expr $versionD / 2)
+
+		if [ "$Bit" == "0" ]; then
+			break;
+		fi
+		nonfailsafe_version=`expr $nonfailsafe_version + 1`
+	done
+	failsafe_version=0
+	while [ $failsafe_version -le $max_failsafe_version ]
+	do
+		Bit=$(expr $versionD % 2)
+		versionD=$(expr $versionD / 2)
+
+		if [ "$Bit" == "0" ]; then
+			break;
+		fi
+		failsafe_version=`expr $failsafe_version + 1`
+	done
+	return 1
+}
+
+temp_kernel_path=/tmp/tmp_kernel.bin
+# In case of NAND image, Kernel image is ubinized & version information is
+# part of Kernel image. Hence need to un-ubinize the image.
+# To get the kernel image, Find the volume with volume id 0. Kernel image
+# is fragmented and hence to assemble it to get complete image.
+# In UBI image, first look for UBI#, which is magic number used to identify
+# each eraseble block. Parse the UBI header, which starts with UBI# & get
+# the VID(volume ID) header offset as well as Data offset.
+# Traverse to VID heade offset & check the volume ID. If it is ZERO, Kernel
+# image is stored in this volume. Use Data offset to extract the Kernel image.
+# Since Kernel image has MBN header, use Total component size from MBN header
+# to copy the exact kernel image to a temporary location.
+extract_kernel_binary() {
+	leb_sizeD=0
+	hexdump -C -n 1000000 $1 | grep "UBI#" | awk '{print $1 }' | while read -r line_no
+	do
+		line_noD=`printf "%d" 0x$line_no`
+		n_line_no=$(expr $line_noD + 16)
+
+		if [[ "$line_noD" -ne "0" ]] && [[ "$leb_sizeD" -eq "0" ]]; then
+			leb_sizeD=$line_noD
+		fi
+
+		echo LEB_SIZE=$leb_sizeD
+		vid_hdr_offset=`hexdump -C -s $n_line_no -n 8 $1 | awk '{print $2$3$4$5}'`
+		vid_hdr_offsetD=`printf "%d" 0x$vid_hdr_offset`
+		vid_hdr_locationD=$(expr $line_noD + $vid_hdr_offsetD)
+
+		data_offset=`hexdump -C -s $n_line_no -n 8 $1 | awk '{print $6$7$8$9}'`
+
+		volume_id=`hexdump -C -s $vid_hdr_locationD -n 16 $1 | awk '{print $10$11$12$13}'`
+		volume_idD=`printf "%d" 0x$volume_id`
+
+		lnum=`hexdump -C -s $vid_hdr_locationD -n 16 $1 | awk '{print $14$15$16$17}'`
+		lnumD=`printf "%d" 0x$lnum`
+
+		if [ $(expr $volume_idD + 0) -eq 0 ] && [ $(expr $lnumD + 0) -eq 0 ]; then
+			data_offsetD=`printf "%d" 0x$data_offset`
+			data_locationD=$(expr $line_noD + $data_offsetD)
+			#hexdump -C -s $data_locationD -n 40 $1
+			component_addressD=$(expr $data_locationD + 16)
+			component_size=`hexdump -n 4 -s $component_addressD $1 | \
+				awk '{print $3 $2}'`
+			component_sizeD=`printf "%d" 0x$component_size`
+			component_sizeD=$(expr $component_sizeD + 40)
+			echo component_addressD=$component_addressD, component_size=$component_size
+			maxCopyLenD=$(expr $leb_sizeD - $data_offsetD)
+			dataCopiedD=0
+			echo maxCopyLenD=$maxCopyLenD, dataCopiedD=$dataCopiedD
+			while [ $(expr $component_sizeD + 0) -gt 0 ]
+			do
+				echo component_sizeD=$component_sizeD, maxCopyLenD=$maxCopyLenD, \
+					dataCopiedD=$dataCopiedD, data_locationD=$data_locationD
+				if [ $(expr $component_sizeD + 0) -lt $(expr $maxCopyLenD + 0) ]; then
+					maxCopyLenD=$component_sizeD
+				fi
+				dd if=$1 of=$temp_kernel_path bs=1 count=$maxCopyLenD \
+					skip=$data_locationD seek=$dataCopiedD
+				dataCopiedD=$(expr $dataCopiedD + $maxCopyLenD)
+				component_sizeD=$(expr $component_sizeD - $maxCopyLenD)
+				data_locationD=$(expr $data_locationD + $leb_sizeD)
+			done
+			break
+		fi
+	done
+	return 1
+}
+
+# is_image_version_higher() iterates through each component and check
+# failsafe & non-failsafe versions against locally installed version.
+# If newer component version is lower than locally insatlled image,
+# abort the FW upgrade process.
+# In case of NAND image, Kernel is ubinized, first extract the kernel
+# image out of it & then check against failsafe version.
+is_image_version_higher() {
+	local img=$1
+	decode_local_image_version
+
+	for sec in $(print_sections ${img}); do
+		local fullname=$(get_full_section_name ${img} ${sec})
+		sw_id=0
+
+	case "${fullname}" in
+		hlos* | u-boot* )
+			get_sw_id_from_component_bin /tmp/${fullname}.bin && { \
+				echo "Error while extracting version information from \
+					/tmp/${fullname}.bin"
+				return 0
+			}
+			if [ "$failsafe_version" -gt "$sw_id" ]; then
+				echo "Version of Fail safe image ${fullname}($sw_id) is lower than \
+					minimal supported version($failsafe_version)"
+				return 0
+			fi
+			failsafe_sw_id=$sw_id
+			is_sw_version_present=`expr $is_sw_version_present + 1`
+			echo is_sw_version_present=$is_sw_version_present
+			;;
+		sbl2* | sbl3* | tz* | rpm* )
+			get_sw_id_from_component_bin /tmp/${fullname}.bin && { \
+				echo "Error while extracting version information from \
+					/tmp/${fullname}.bin"
+				return 0
+			}
+			if [ "$nonfailsafe_version" -gt "$sw_id" ]; then
+				echo "Version of NON-Fail safe image ${fullname}($sw_id) is lower \
+					than minimal supported version($nonfailsafe_version)"
+				return 0
+			fi
+			nonfailsafe_sw_id=$sw_id
+			is_sw_version_present=`expr $is_sw_version_present + 1`
+			echo is_sw_version_present=$is_sw_version_present
+			;;
+		ubi* )
+			#Extract Kernel image from UBI first
+			extract_kernel_binary  /tmp/${fullname}.bin && { \
+				echo "Unable to extract Kernel image from /tmp/${fullname}.bin"
+				return 0
+			}
+			get_sw_id_from_component_bin $temp_kernel_path && { \
+				echo "Error while extracting version information from \
+			       		/tmp/${fullname}.bin"
+				return 0
+			}
+			if [ "$failsafe_version" -gt "$sw_id" ]; then
+				echo "Version of Fail safe image ${fullname}($sw_id) is lower \
+					than minimal supported version($failsafe_version)"
+				return 0
+			fi
+			failsafe_sw_id=$sw_id
+			is_sw_version_present=`expr $is_sw_version_present + 1`
+			echo is_sw_version_present=$is_sw_version_present
+			;;
+		*) #echo "Component ${fullname} ignored"
+			;;
+	esac
+	done
+	echo "Returning SUCCESS(1) from is_image_version_higher"
+	return 1
+}
+
+check_image_version() {
+	is_local_image_secure && {\
+		echo "Local image is not secured image, upgrade to continue !!!"
+		is_image_version_higher $1
+		update_tmp_version
+		return 1
+	}
+	echo "Local image is SECURE image, check individual image version"
+	is_image_version_higher $1 && {\
+		echo "New image versions are lower than existing image, upgrade to STOP !!!"
+		return 0
+	}
+	update_tmp_version
+	echo "New image versions are upgradeable, upgrade to proceed !!!"
+	return 1
+}
+
+# Update the version information file based on currently SW_ID being installed.
+# Write version information temporarily to /etc/config/version file before going
+# for reboot. After reboot, once Kernel loads, update the actual version
+# information file inside preini RC script.
+update_tmp_version() {
+	echo nonfailsafe_version=$nonfailsafe_sw_id, failsafe_version=$failsafe_sw_id
+	if [ `expr $is_sw_version_present + 0` -eq 0 ]; then
+		echo "Image doesn't have valid SW Versions. Do not update the version file"
+		return 0
+	fi
+	new_versionD=0
+	i=1
+	while [ $i -le $max_failsafe_version ]
+	do
+		if [ $(expr $max_failsafe_version - $i) -lt $(expr $failsafe_sw_id + 0) ]; then
+			new_versionD=$(expr $new_versionD + 1)
+		fi
+		new_versionD=$(expr $new_versionD \* 2)
+		i=`expr $i + 1`
+	done
+	i=1
+	while [ $i -le $max_nonfailsafe_version ]
+	do
+		if [ $(expr $max_nonfailsafe_version - $i) -lt $(expr $nonfailsafe_sw_id + 0) ]; then
+			new_versionD=$(expr $new_versionD + 1)
+		fi
+		new_versionD=$(expr $new_versionD \* 2)
+		i=`expr $i + 1`
+	done
+	new_versionD=`expr $new_versionD + 1`
+	echo new_version=`printf "0x%x" $new_versionD`
+	echo `printf "0x%x" $new_versionD` > "$TMP_VERSION_FILE"
+	return 1
+}
+
 switch_layout() {
 	local layout=$1
 
@@ -203,6 +506,12 @@ platform_check_image() {
 		echo "Error: \"$1\" couldn't be extracted. Abort..."
 		return 1
 	}
+
+	check_image_version $1 && {\
+		echo "Error: \"$1\" couldn't be upgraded. Abort..."
+		return 1
+	}
+	return 0
 }
 
 platform_do_upgrade() {
