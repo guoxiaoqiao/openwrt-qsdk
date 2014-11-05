@@ -552,7 +552,12 @@ platform_do_upgrade() {
 
 platform_copy_config() {
 	local mtdname=rootfs
-	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+	local mtdpart
+
+	cat /proc/mtd | grep rootfs_1 >/dev/null 2>&1
+	[ $? -eq 0 ] && mtdname="rootfs_1"
+
+	mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 
 	ubiattach -p /dev/${mtdpart}
 	mount -t ubifs ubi0:ubi_rootfs_data /tmp/overlay
