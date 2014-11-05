@@ -7,7 +7,8 @@ NSS_STANDARD:= \
 	kmod-qca-nss-drv \
 	kmod-qca-nss-gmac
 
-SSDK_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell  swconfig
+SWITCH_SSDK_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell  swconfig
+SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
 WIFI_OPEN_PKGS:= kmod-qca-ath9k kmod-qca-ath10k wpad kmod-art2-netlink
 
@@ -41,7 +42,7 @@ UTILS:=tftp-hpa sysstat iperf devmem2 ip ethtool iputils-tracepath \
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SSDK_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
 		$(ALLJOYN_PKGS)
 endef
@@ -54,7 +55,7 @@ $(eval $(call Profile,QSDK_Open))
 
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SSDK_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
 		$(ALLJOYN_PKGS)
 endef
