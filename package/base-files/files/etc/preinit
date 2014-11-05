@@ -38,6 +38,7 @@ boot_run_hook preinit_essential
 
 pi_mount_skip_next=false
 pi_jffs2_mount_success=false
+pi_ext4_mount_success=false
 pi_ubifs_mount_success=false
 pi_failsafe_net_message=false
 
