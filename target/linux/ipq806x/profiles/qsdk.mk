@@ -9,7 +9,7 @@ NSS_STANDARD:= \
 
 SSDK_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell  swconfig
 
-WIFI_OPEN_PKGS:= kmod-qca-ath9k kmod-qca-ath10k wpad kmod-art2-netlink
+WIFI_OPEN_PKGS:= kmod-qca-ath9k kmod-qca-ath10k wpad kmod-art2-netlink sigma-dut-open
 
 WIFI_10_4_PKGS:=qca-wifi-fw-10.4-asic qcmbr-10.4 qca-acfg-10.4 \
 	qca-wrapd-10.4 qca-wpc-10.4 whc kmod-qca-wifi-10.4-akronite-perf \
