@@ -6,6 +6,7 @@
 USE_REFRESH=1
 
 . /lib/ipq806x.sh
+. /lib/upgrade/common.sh
 
 RAMFS_COPY_DATA=/lib/ipq806x.sh
 RAMFS_COPY_BIN="/usr/bin/dumpimage /bin/mktemp /usr/sbin/mkfs.ubifs
@@ -551,15 +552,15 @@ platform_do_upgrade() {
 }
 
 platform_copy_config() {
-	local mtdname=rootfs
-	local mtdpart
+	local part="$(find_mtd_part "ubi_rootfs_data")"
 
-	cat /proc/mtd | grep rootfs_1 >/dev/null 2>&1
-	[ $? -eq 0 ] && mtdname="rootfs_1"
-
-	mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
-
-	ubiattach -p /dev/${mtdpart}
-	mount -t ubifs ubi0:ubi_rootfs_data /tmp/overlay
-	tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
+	if [ -e "$part" ]; then
+		local mtdname=rootfs
+		local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+		ubiattach -p /dev/${mtdpart}
+		mount -t ubifs ubi0:ubi_rootfs_data /tmp/overlay
+		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
+	else
+		jffs2_copy_config
+	fi
 }
