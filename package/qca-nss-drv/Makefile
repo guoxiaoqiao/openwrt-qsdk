@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013 The Linux Foundation. All rights reserved.
+# Copyright (c) 2014 The Linux Foundation. All rights reserved.
 #
 
 include $(TOPDIR)/rules.mk
@@ -86,6 +86,19 @@ define KernelPackage/qca-nss-profile-drv/Description
 This package contains a NSS driver profiler for QCA chipset
 endef
 
+define KernelPackage/qca-nss-capwapmgr
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  DEPENDS:=kmod-qca-nss-drv
+  TITLE:=NSS CAPWAP Manager for QCA NSS driver (IPQ806x)
+  FILES:=$(PKG_BUILD_DIR)/capwapmgr/qca-nss-capwapmgr.ko
+endef
+
+define KernelPackage/qca-nss-capwapmgr/Description
+This package contains a NSS CAPWAP Manager
+endef
+
 define Build/InstallDev
 	mkdir -p $(1)/usr/include/qca-nss-drv
 	$(CP) $(PKG_BUILD_DIR)/exports/* $(1)/usr/include/qca-nss-drv/
@@ -129,6 +142,7 @@ define Build/Compile
 endef
 
 $(eval $(call KernelPackage,qca-nss-profile-drv))
+$(eval $(call KernelPackage,qca-nss-capwapmgr))
 $(eval $(call KernelPackage,qca-nss-drv))
 $(eval $(call KernelPackage,qca-nss-tun6rd))
 $(eval $(call KernelPackage,qca-nss-tunipip6))
