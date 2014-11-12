@@ -67,7 +67,7 @@ image_is_FIT() {
 }
 
 VERSION_FILE="/sys/devices/system/qfprom/qfprom0/version"
-TMP_VERSION_FILE="/etc/config/version"
+TMP_VERSION_FILE="/etc/config/sysupgrade_version"
 unsecure_version=0x0
 local_version_string=0x0
 
