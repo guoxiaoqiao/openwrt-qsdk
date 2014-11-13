@@ -117,6 +117,7 @@ get_sw_id_from_component_bin() {
 		sw_id=`openssl x509 -in temp_cert_file -noout -text -inform der \
 			| grep "SW_ID" | awk -v \
 		FS="(OU=01 |SW_ID)" '{print $2}' | cut -c-8`
+		sw_id=`printf "%d" 0x$sw_id`
 
 		echo "SW ID=" $sw_id
 	else
