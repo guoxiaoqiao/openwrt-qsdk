@@ -229,6 +229,15 @@ find_mtd_part() {
 	echo "${PART:+$PREFIX$PART}"
 }
 
+find_mmc_part() {
+	local DEVNAME PARTNAME
+
+	for DEVNAME in $(find /sys/block/mmcblk*/ -name 'mmcblk*p*'); do
+		PARTNAME=$(grep PARTNAME ${DEVNAME}/uevent | cut -f2 -d'=')
+		[ "$PARTNAME" = "$1" ] && echo "/dev/$(basename $DEVNAME)" && return 0
+	done
+}
+
 strtok() { # <string> { <variable> [<separator>] ... }
 	local tmp
 	local val="$1"
