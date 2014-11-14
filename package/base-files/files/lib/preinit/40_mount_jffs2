@@ -19,9 +19,10 @@ jffs2_not_mounted() {
 do_mount_jffs2() {
     # skip jffs2 mounting even if it's there if we have volume named
     # ubi_rootfs_data
-    check_skip || grep -qs ubi_rootfs_data /sys/class/ubi/ubi0/ubi0_1/name || {
-	find_mount_jffs2 && pi_jffs2_mount_success=true
-    }
+    check_skip && return
+    grep -wqs rootfs_data /proc/mtd || return 1
+
+    find_mount_jffs2 && pi_jffs2_mount_success=true
 }
 
 boot_hook_add preinit_mount_root do_mount_jffs2
