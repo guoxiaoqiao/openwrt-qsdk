@@ -474,7 +474,7 @@ platform_check_image() {
 	local board=$(ipq806x_board_name)
 
 	local mandatory_nand="ubi"
-	local mandatory_nor="hlos fs"
+	local mandatory_nor_emmc="hlos fs"
 	local mandatory_section_found=0
 	local optional="sbl1 sbl2 sbl3 u-boot ddr-${board} ssd tz rpm"
 	local ignored="mibib bootconfig"
@@ -485,7 +485,7 @@ platform_check_image() {
 		mandatory_section_found=1
 	}
 
-	image_has_mandatory_section $1 ${mandatory_nor} && {\
+	image_has_mandatory_section $1 ${mandatory_nor_emmc} && {\
 		mandatory_section_found=1
 	}
 
