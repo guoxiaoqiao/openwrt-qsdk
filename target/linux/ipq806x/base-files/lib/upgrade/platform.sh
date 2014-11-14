@@ -67,7 +67,7 @@ image_is_FIT() {
 }
 
 VERSION_FILE="/sys/devices/system/qfprom/qfprom0/version"
-TMP_VERSION_FILE="/etc/config/version"
+TMP_VERSION_FILE="/etc/config/sysupgrade_version"
 unsecure_version=0x0
 local_version_string=0x0
 
@@ -402,9 +402,9 @@ do_flash_appsbl() {
 	# Fail safe upgrade
 	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
 	[ -f /proc/boot_info/0\:$mtdname/upgraded ] && echo 1 > /proc/boot_info/0\:$mtdname/upgraded
-
-	grep 'APPSBL_1' /proc/mtd >/dev/null 2>&1
-	[ $? -eq 0 ] && mtdname="APPSBL_1"
+	[ -f /proc/boot_info/0\:$mtdname/upgradepartition ] && {
+		mtdname=$(cat /proc/boot_info/0\:$mtdname/upgradepartition)
+	}
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
@@ -439,8 +439,9 @@ do_flash_ubi() {
 	mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	ubidetach -f -p /dev/${mtdpart}
 
-	cat /proc/mtd | grep rootfs_1 >/dev/null 2>&1
-	[ $? -eq 0 ] && mtdname="rootfs_1"
+	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+	}
 
 	mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 
