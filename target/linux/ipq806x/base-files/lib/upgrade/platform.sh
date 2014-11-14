@@ -392,39 +392,53 @@ do_flash_mtd() {
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
+
 	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
 }
 
-do_flash_appsbl() {
+do_flash_emmc() {
+	local bin=$1
+	local emmcblock=$2
+
+	dd if=/dev/zero of=${emmcblock}
+	dd if=/tmp/${bin}.bin of=${emmcblock}
+}
+
+do_flash_partition() {
 	local bin=$1
 	local mtdname=$2
+	local emmcblock="$(find_mmc_part "0:$mtdname")"
 
-	# Fail safe upgrade
-	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
-	[ -f /proc/boot_info/0\:$mtdname/upgraded ] && echo 1 > /proc/boot_info/0\:$mtdname/upgraded
-	[ -f /proc/boot_info/0\:$mtdname/upgradepartition ] && {
-		mtdname=$(cat /proc/boot_info/0\:$mtdname/upgradepartition)
-	}
-
-	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
-	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
-
-
-	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+	if [ -e $emmcblock ]; then
+		do_flash_emmc $bin $emmcblock
+	else
+		do_flash_mtd $bin $mtdname
+	fi
 }
 
 do_flash_bootconfig() {
 	local bin=$1
 	local mtdname=$2
 
-	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
-	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
-
 	# Fail safe upgrade
 	if [ -f /proc/boot_info/getbinary ]; then
 		cat /proc/boot_info/getbinary > /tmp/${bin}.bin
-		dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+		do_flash_partition $bin $mtdname
 	fi
+}
+
+do_flash_failsafe_partition() {
+	local bin=$1
+	local mtdname=$2
+
+	# Fail safe upgrade
+	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
+	[ -f /proc/boot_info/$mtdname/upgraded ] && echo 1 > /proc/boot_info/$mtdname/upgraded
+	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+	}
+
+	do_flash_partition $bin $mtdname
 }
 
 do_flash_ubi() {
@@ -453,17 +467,17 @@ flash_section() {
 
 	local board=$(ipq806x_board_name)
 	case "${sec}" in
-		hlos*) switch_layout linux; do_flash_mtd ${sec} "kernel";;
-		fs*) switch_layout linux; do_flash_mtd ${sec} "rootfs";;
+		hlos*) switch_layout linux; do_flash_failsafe_partition ${sec} "kernel";;
+		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
-		sbl1*) switch_layout boot; do_flash_mtd ${sec} "SBL1";;
-		sbl2*) switch_layout boot; do_flash_mtd ${sec} "SBL2";;
-		sbl3*) switch_layout boot; do_flash_mtd ${sec} "SBL3";;
-		u-boot*) switch_layout boot; do_flash_appsbl ${sec} "APPSBL";;
-		ddr-${board}*) switch_layout boot; do_flash_mtd ${sec} "DDRCONFIG";;
-		ssd*) switch_layout boot; do_flash_mtd ${sec} "SSD";;
-		tz*) switch_layout boot; do_flash_mtd ${sec} "TZ";;
-		rpm*) switch_layout boot; do_flash_mtd ${sec} "RPM";;
+		sbl1*) switch_layout boot; do_flash_partition ${sec} "SBL1";;
+		sbl2*) switch_layout boot; do_flash_partition ${sec} "SBL2";;
+		sbl3*) switch_layout boot; do_flash_partition ${sec} "SBL3";;
+		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "APPSBL";;
+		ddr-${board}*) switch_layout boot; do_flash_partition ${sec} "DDRCONFIG";;
+		ssd*) switch_layout boot; do_flash_partition ${sec} "SSD";;
+		tz*) switch_layout boot; do_flash_partition ${sec} "TZ";;
+		rpm*) switch_layout boot; do_flash_partition ${sec} "RPM";;
 		*) echo "Section ${sec} ignored"; return 1;;
 	esac
 
