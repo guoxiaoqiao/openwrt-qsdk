@@ -15,7 +15,7 @@ do_mount_ext4() {
     grep -wqs rootfs_data /sys/block/mmcblk*/*/uevent || return 1
 
     mkdir -p /tmp/overlay
-    mount "$(find_mmc_part rootfs_data)" /tmp/overlay -t ext4 && 
+    mount "$(find_mmc_part rootfs_data)" /tmp/overlay -t ext4 &&
         pi_ext4_mount_success=true
 }
 
