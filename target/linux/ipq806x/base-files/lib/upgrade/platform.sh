@@ -478,6 +478,9 @@ is_image_authenticated() {
 					src sig cert && { \
 				echo "Error while splitting code/signature/Certificate from \
 					/tmp/${fullname}.bin"
+				is_local_image_secure && {\
+					continue;
+				}
 				return 0
 			}
 			is_component_authenticated src sig cert || { \
@@ -496,6 +499,9 @@ is_image_authenticated() {
 					src sig cert && { \
 				echo "Error while splitting code/signature/Certificate from \
 					/tmp/tmp_kernel.bin"
+				is_local_image_secure && {\
+					continue;
+				}
 				return 0
 			}
 			is_component_authenticated src sig cert || { \
