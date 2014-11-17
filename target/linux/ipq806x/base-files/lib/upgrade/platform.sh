@@ -112,11 +112,12 @@ get_sw_id_from_component_bin() {
 	if [ "$component_size" != "$code_size" ]; then
 		echo "Image with version information"
 		sw_id=0
-		dd if=$1 of=temp_cert_file bs=1 count=1536 skip=`printf "%d\n" \
+		dd if=$1 of=temp_cert_file bs=1 count=2048 skip=`printf "%d\n" \
 			$((0x$code_size + 0x128))`
 		sw_id=`openssl x509 -in temp_cert_file -noout -text -inform der \
 			| grep "SW_ID" | awk -v \
 		FS="(OU=01 |SW_ID)" '{print $2}' | cut -c-8`
+		sw_id=`printf "%d" 0x$sw_id`
 
 		echo "SW ID=" $sw_id
 	else
@@ -369,6 +370,147 @@ update_tmp_version() {
 	return 1
 }
 
+# split_code_signature_cert_from_component_bin splits the component
+# binary by splitting into code(including MBN header), signature file &
+# attenstation certificate. Save them into $2 $3 & $4.
+split_code_signature_cert_from_component_bin() {
+	component_size=`hexdump -n 4 -s 16 $1 | awk '{print $3 $2}'`
+	code_size=`hexdump -n 4 -s 20 $1 | awk '{print $3 $2}'`
+	echo "Total size=" $component_size
+	echo "Actual code size=" $code_size
+	if [ "$component_size" != "$code_size" ]; then
+		echo "Image with version information"
+		dd if=$1 of=$2 bs=1 count=`printf "%d\n" $((0x$code_size + 0x28))`
+		dd if=$1 of=$3 bs=1 count=256 skip=`printf "%d\n" \
+			$((0x$code_size + 0x28))`
+		dd if=$1 of=$4 bs=1 count=2048 skip=`printf "%d\n" \
+			$((0x$code_size + 0x128))`
+		return 1
+	else
+		echo "Error: Image without version information"
+		return 0
+	fi
+}
+
+#being used to calculate the image hash
+generate_swid_ipad() {
+	swid_xor_ipad=${swid_xor_ipad}`printf "%x" $(($1 ^ $2))`
+}
+
+#being used to calculate the image hash
+generate_hwid_opad() {
+	hwid_xor_opad=${hwid_xor_opad}`printf "%x" $(($1 ^ $2))`
+}
+
+SW_MASK=3636363636363636
+HW_MASK=5c5c5c5c
+
+# is_component_authenticated() usage the code, signature & public key retrieved
+# for each component.
+is_component_authenticated() {
+	openssl x509 -in $3 -pubkey -inform DER  -noout > /tmp/pub_key
+	sw_id=`openssl x509 -in $3 -noout -text -inform der | grep "SW_ID" | awk -v \
+		FS="(OU=01 |SW_ID)" '{print $2}' | cut -c-16`
+	hw_id=`openssl x509 -in $3 -noout -text -inform der | grep "SW_ID" | awk -v \
+		FS="(OU=02 |HW_ID)" '{print $2}' | cut -c-8`
+	oem_id=`openssl x509 -in $3 -noout -text -inform der | grep "SW_ID" | awk -v \
+		FS="(OU=04 |OEM_ID)" '{print $2}' | cut -c-4`
+	oem_model_id=`openssl x509 -in $3 -noout -text -inform der | grep "SW_ID" | awk -v \
+		FS="(OU=06 |MODEL_ID)" '{print $2}' | cut -c-4`
+	echo "SW=$sw_id, HW=$hw_id, OEM=$oem_id, model_id=$oem_model_id"
+
+	swid_xor_ipad=""
+	len=${#sw_id}
+	for i in $(seq 0 $(expr $len - 1)); do
+		generate_swid_ipad `printf "%d" 0x${sw_id:$i:1}` `printf "%d" 0x${SW_MASK:$i:1}`
+	done
+	rm -f /tmp/swid_xor_ipad
+	len=${#swid_xor_ipad}
+	for i in $(seq 0 2 $(expr $len - 1)); do
+		echo -n -e \\x${swid_xor_ipad:$i:2} >> /tmp/swid_xor_ipad
+	done
+
+	hwid_xor_opad=""
+	len=${#hw_id}
+	for i in $(seq 0 $(expr $len - 1)); do
+		generate_hwid_opad `printf "%d" 0x${hw_id:$i:1}` `printf "%d" 0x${HW_MASK:$i:1}`
+	done
+
+	len=${#oem_id}
+	for i in $(seq 0 $(expr $len - 1)); do
+		generate_hwid_opad `printf "%d" 0x${oem_id:$i:1}` `printf "%d" 0x${HW_MASK:$i:1}`
+	done
+
+	len=${#oem_model_id}
+	for i in $(seq 0 $(expr $len - 1)); do
+		generate_hwid_opad `printf "%d" 0x${oem_model_id:$i:1}` `printf "%d" 0x${HW_MASK:$i:1}`
+	done
+	rm -f /tmp/hwid_xor_opad
+	len=${#hwid_xor_opad}
+	for i in $(seq 0 2 $(expr $len - 1)); do
+		echo -n -e \\x${hwid_xor_opad:$i:2} >> /tmp/hwid_xor_opad
+	done
+
+	openssl dgst -sha256 -binary -out code_hash $1
+
+	cat /tmp/swid_xor_ipad code_hash | openssl dgst -sha256 -binary -out tmp_hash
+	cat /tmp/hwid_xor_opad tmp_hash | openssl dgst -sha256 -binary -out computed_hash
+	openssl rsautl -in $2 -pubin -inkey /tmp/pub_key -verify > reference_hash
+
+	cmp computed_hash reference_hash
+	return $?
+}
+
+# is_image_authenticated() iterates through each component and check
+# whether individual component is authenticated. If not, abort the FW
+# upgrade process. In case of NAND image, Kernel is ubinized, first
+# extract the kernel image out of it & then verify
+is_image_authenticated() {
+	local img=$1
+
+	for sec in $(print_sections ${img}); do
+		local fullname=$(get_full_section_name ${img} ${sec})
+		sw_id=0
+
+	case "${fullname}" in
+		hlos* | u-boot* | sbl2* | sbl3* | tz* | rpm* )
+			split_code_signature_cert_from_component_bin /tmp/${fullname}.bin \
+					src sig cert && { \
+				echo "Error while splitting code/signature/Certificate from \
+					/tmp/${fullname}.bin"
+				return 0
+			}
+			is_component_authenticated src sig cert || { \
+				echo "Error while authenticating /tmp/${fullname}.bin"
+				return 0
+			}
+			;;
+		ubi* )
+			#Extract Kernel image from UBI first
+			extract_kernel_binary  /tmp/${fullname}.bin \
+					src sig cert && { \
+				echo "Unable to extract Kernel image from /tmp/${fullname}.bin"
+				return 0
+			}
+			split_code_signature_cert_from_component_bin $temp_kernel_path \
+					src sig cert && { \
+				echo "Error while splitting code/signature/Certificate from \
+					/tmp/tmp_kernel.bin"
+				return 0
+			}
+			is_component_authenticated src sig cert || { \
+				echo "Error while authenticating $temp_kernel_path"
+				return 0
+			}
+			;;
+		*) #echo "Component ${fullname} ignored"
+			;;
+	esac
+	done
+	echo "Returning SUCCESS(1) from is_image_authenticated"
+	return 1
+}
+
 switch_layout() {
 	local layout=$1
 
@@ -392,39 +534,53 @@ do_flash_mtd() {
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
+
 	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
 }
 
-do_flash_appsbl() {
+do_flash_emmc() {
+	local bin=$1
+	local emmcblock=$2
+
+	dd if=/dev/zero of=${emmcblock}
+	dd if=/tmp/${bin}.bin of=${emmcblock}
+}
+
+do_flash_partition() {
 	local bin=$1
 	local mtdname=$2
+	local emmcblock="$(find_mmc_part "0:$mtdname")"
 
-	# Fail safe upgrade
-	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
-	[ -f /proc/boot_info/0\:$mtdname/upgraded ] && echo 1 > /proc/boot_info/0\:$mtdname/upgraded
-	[ -f /proc/boot_info/0\:$mtdname/upgradepartition ] && {
-		mtdname=$(cat /proc/boot_info/0\:$mtdname/upgradepartition)
-	}
-
-	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
-	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
-
-
-	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+	if [ -e $emmcblock ]; then
+		do_flash_emmc $bin $emmcblock
+	else
+		do_flash_mtd $bin $mtdname
+	fi
 }
 
 do_flash_bootconfig() {
 	local bin=$1
 	local mtdname=$2
 
-	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
-	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
-
 	# Fail safe upgrade
 	if [ -f /proc/boot_info/getbinary ]; then
 		cat /proc/boot_info/getbinary > /tmp/${bin}.bin
-		dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+		do_flash_partition $bin $mtdname
 	fi
+}
+
+do_flash_failsafe_partition() {
+	local bin=$1
+	local mtdname=$2
+
+	# Fail safe upgrade
+	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
+	[ -f /proc/boot_info/$mtdname/upgraded ] && echo 1 > /proc/boot_info/$mtdname/upgraded
+	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+	}
+
+	do_flash_partition $bin $mtdname
 }
 
 do_flash_ubi() {
@@ -453,17 +609,17 @@ flash_section() {
 
 	local board=$(ipq806x_board_name)
 	case "${sec}" in
-		hlos*) switch_layout linux; do_flash_mtd ${sec} "kernel";;
-		fs*) switch_layout linux; do_flash_mtd ${sec} "rootfs";;
+		hlos*) switch_layout linux; do_flash_failsafe_partition ${sec} "kernel";;
+		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
-		sbl1*) switch_layout boot; do_flash_mtd ${sec} "SBL1";;
-		sbl2*) switch_layout boot; do_flash_mtd ${sec} "SBL2";;
-		sbl3*) switch_layout boot; do_flash_mtd ${sec} "SBL3";;
-		u-boot*) switch_layout boot; do_flash_appsbl ${sec} "APPSBL";;
-		ddr-${board}*) switch_layout boot; do_flash_mtd ${sec} "DDRCONFIG";;
-		ssd*) switch_layout boot; do_flash_mtd ${sec} "SSD";;
-		tz*) switch_layout boot; do_flash_mtd ${sec} "TZ";;
-		rpm*) switch_layout boot; do_flash_mtd ${sec} "RPM";;
+		sbl1*) switch_layout boot; do_flash_partition ${sec} "SBL1";;
+		sbl2*) switch_layout boot; do_flash_partition ${sec} "SBL2";;
+		sbl3*) switch_layout boot; do_flash_partition ${sec} "SBL3";;
+		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "APPSBL";;
+		ddr-${board}*) switch_layout boot; do_flash_partition ${sec} "DDRCONFIG";;
+		ssd*) switch_layout boot; do_flash_partition ${sec} "SSD";;
+		tz*) switch_layout boot; do_flash_partition ${sec} "TZ";;
+		rpm*) switch_layout boot; do_flash_partition ${sec} "RPM";;
 		*) echo "Section ${sec} ignored"; return 1;;
 	esac
 
@@ -474,7 +630,7 @@ platform_check_image() {
 	local board=$(ipq806x_board_name)
 
 	local mandatory_nand="ubi"
-	local mandatory_nor="hlos fs"
+	local mandatory_nor_emmc="hlos fs"
 	local mandatory_section_found=0
 	local optional="sbl1 sbl2 sbl3 u-boot ddr-${board} ssd tz rpm"
 	local ignored="mibib bootconfig"
@@ -485,7 +641,7 @@ platform_check_image() {
 		mandatory_section_found=1
 	}
 
-	image_has_mandatory_section $1 ${mandatory_nor} && {\
+	image_has_mandatory_section $1 ${mandatory_nor_emmc} && {\
 		mandatory_section_found=1
 	}
 
@@ -511,6 +667,10 @@ platform_check_image() {
 		return 1
 	}
 
+	is_image_authenticated $1 && {\
+		echo "Error: \"$1\" couldn't be authenticated. Abort..."
+		return 1
+	}
 	check_image_version $1 && {\
 		echo "Error: \"$1\" couldn't be upgraded. Abort..."
 		return 1
