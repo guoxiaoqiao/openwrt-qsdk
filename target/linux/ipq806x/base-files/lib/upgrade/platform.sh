@@ -578,6 +578,7 @@ do_flash_bootconfig() {
 do_flash_failsafe_partition() {
 	local bin=$1
 	local mtdname=$2
+	local emmcblock
 
 	# Fail safe upgrade
 	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
@@ -586,7 +587,14 @@ do_flash_failsafe_partition() {
 		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
 	}
 
-	do_flash_partition $bin $mtdname
+	emmcblock="$(find_mmc_part "$mtdname")"
+
+	if [ -e "$emmcblock" ]; then
+		do_flash_emmc $bin $emmcblock
+	else
+		do_flash_mtd $bin $mtdname
+	fi
+
 }
 
 do_flash_ubi() {
