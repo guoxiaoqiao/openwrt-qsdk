@@ -1,208 +1,173 @@
-diff --git a/src/ap/ap_drv_ops.c b/src/ap/ap_drv_ops.c
-index 6d3ae5a..9298ad5 100644
---- a/src/ap/ap_drv_ops.c
-+++ b/src/ap/ap_drv_ops.c
-@@ -191,6 +191,17 @@ int hostapd_build_ap_extra_ies(struct hostapd_data *hapd,
- 			wpabuf_put_buf(proberesp, hapd->conf->vendor_elements);
- 	}
+--- a/hostapd/config_file.c
++++ b/hostapd/config_file.c
+@@ -3156,6 +3156,10 @@ static int hostapd_config_fill(struct ho
+ 		conf->local_pwr_constraint = val;
+ 	} else if (os_strcmp(buf, "spectrum_mgmt_required") == 0) {
+ 		conf->spectrum_mgmt_required = atoi(pos);
++	} else if (os_strcmp(buf, "vht_2g_enabled") == 0) {
++		bss->vht_2g_enabled = atoi(pos);
++	} else if (os_strcmp(buf, "vendor_vht_2g_enabled") == 0) {
++		bss->vendor_vht_2g_enabled = atoi(pos);
+ 	} else {
+ 		wpa_printf(MSG_ERROR,
+ 			   "Line %d: unknown configuration item '%s'",
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -512,6 +512,8 @@ struct hostapd_bss_config {
+ 	u8 bss_load_test[5];
+ 	u8 bss_load_test_set;
+ #endif /* CONFIG_TESTING_OPTIONS */
++	int vht_2g_enabled;
++	int vendor_vht_2g_enabled;
+ };
  
-+	if (hapd->iface->drv_flags & WPA_DRIVER_FLAGS_2G_256QAM_CAP) {
-+		struct ieee80211_ie_2g_vhtcap vht_2g_cap;
-+		size_t add = sizeof(vht_2g_cap);
-+
-+		hostapd_eid_vendor_2g_vhtcap(hapd, (u8 *)&vht_2g_cap);
-+		if (wpabuf_resize(&beacon, add) == 0)
-+			wpabuf_put_data(beacon, &vht_2g_cap, add);
-+		if (wpabuf_resize(&proberesp, add) == 0)
-+			wpabuf_put_data(proberesp, &vht_2g_cap, add);
-+	}
-+
- 	*beacon_ret = beacon;
- 	*proberesp_ret = proberesp;
- 	*assocresp_ret = assocresp;
-diff --git a/src/ap/beacon.c b/src/ap/beacon.c
-index 3f399c3..b0977c3 100644
+ 
 --- a/src/ap/beacon.c
 +++ b/src/ap/beacon.c
-@@ -346,6 +346,8 @@ static u8 * hostapd_gen_probe_resp(struct hostapd_data *hapd,
+@@ -346,6 +346,12 @@ static u8 * hostapd_gen_probe_resp(struc
  #endif /* CONFIG_P2P */
  	if (hapd->conf->vendor_elements)
  		buflen += wpabuf_len(hapd->conf->vendor_elements);
-+	if (hapd->iface->drv_flags & WPA_DRIVER_FLAGS_2G_256QAM_CAP)
-+		buflen += sizeof(struct ieee80211_ie_2g_vhtcap);
++	if (hapd->conf->vht_2g_enabled)
++		buflen += (sizeof(struct ieee80211_vht_capabilities) + 2 +
++			   sizeof(struct ieee80211_vht_operation) + 2);
++	if (hapd->conf->vendor_vht_2g_enabled)
++		buflen += (sizeof(struct ieee80211_vht_capabilities) + 2 +
++			   sizeof(struct ieee80211_vht_operation) + 2 + 7);
  	resp = os_zalloc(buflen);
  	if (resp == NULL)
  		return NULL;
-@@ -451,6 +453,9 @@ static u8 * hostapd_gen_probe_resp(struct hostapd_data *hapd,
- 		pos += wpabuf_len(hapd->conf->vendor_elements);
- 	}
- 
-+	if (hapd->iface->drv_flags & WPA_DRIVER_FLAGS_2G_256QAM_CAP)
-+		pos = hostapd_eid_vendor_2g_vhtcap(hapd, pos);
+@@ -411,8 +417,15 @@ static u8 * hostapd_gen_probe_resp(struc
+ 	pos = hostapd_add_csa_elems(hapd, pos, (u8 *)resp,
+ 				    &hapd->iface->cs_c_off_proberesp);
+ #ifdef CONFIG_IEEE80211AC
+-	pos = hostapd_eid_vht_capabilities(hapd, pos);
+-	pos = hostapd_eid_vht_operation(hapd, pos);
++	if ((hapd->iconf->ieee80211ac && !hapd->conf->disable_11ac) ||
++		hapd->conf->vht_2g_enabled) {
++		pos = hostapd_eid_vht_capabilities(hapd, pos);
++		pos = hostapd_eid_vht_operation(hapd, pos);
++	}
 +
- 	*resp_len = pos - (u8 *) resp;
- 	return (u8 *) resp;
- }
-@@ -756,6 +761,10 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
++	if (hapd->conf->vendor_vht_2g_enabled)
++		pos = hostapd_eid_vendor_vht_2g_cap(hapd, pos);
++
+ #endif /* CONFIG_IEEE80211AC */
+ 
+ 	/* Wi-Fi Alliance WMM */
+@@ -756,6 +769,15 @@ int ieee802_11_build_ap_params(struct ho
  #endif /* CONFIG_P2P */
  	if (hapd->conf->vendor_elements)
  		tail_len += wpabuf_len(hapd->conf->vendor_elements);
 +
-+	if (hapd->iface->drv_flags & WPA_DRIVER_FLAGS_2G_256QAM_CAP)
-+		tail_len += sizeof(struct ieee80211_ie_2g_vhtcap);
++	if (hapd->conf->vht_2g_enabled)
++		tail_len += (sizeof(struct ieee80211_vht_capabilities) + 2 +
++			     sizeof(struct ieee80211_vht_operation) + 2);
++
++	if (hapd->conf->vendor_vht_2g_enabled)
++		tail_len += (sizeof(struct ieee80211_vht_capabilities) + 2 +
++			     sizeof(struct ieee80211_vht_operation) + 2 + 7);
 +
  	tailpos = tail = os_malloc(tail_len);
  	if (head == NULL || tail == NULL) {
  		wpa_printf(MSG_ERROR, "Failed to set beacon data");
-@@ -880,6 +889,9 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
- 		tailpos += wpabuf_len(hapd->conf->vendor_elements);
- 	}
+@@ -841,8 +863,13 @@ int ieee802_11_build_ap_params(struct ho
+ 	tailpos = hostapd_add_csa_elems(hapd, tailpos, tail,
+ 					&hapd->iface->cs_c_off_beacon);
+ #ifdef CONFIG_IEEE80211AC
+-	tailpos = hostapd_eid_vht_capabilities(hapd, tailpos);
+-	tailpos = hostapd_eid_vht_operation(hapd, tailpos);
++	if ((hapd->iconf->ieee80211ac && !hapd->conf->disable_11ac) ||
++		hapd->conf->vht_2g_enabled) {
++		tailpos = hostapd_eid_vht_capabilities(hapd, tailpos);
++		tailpos = hostapd_eid_vht_operation(hapd, tailpos);
++	}
++	if (hapd->conf->vendor_vht_2g_enabled)
++		tailpos = hostapd_eid_vendor_vht_2g_cap(hapd, tailpos);
+ #endif /* CONFIG_IEEE80211AC */
  
-+	if (hapd->iface->drv_flags & WPA_DRIVER_FLAGS_2G_256QAM_CAP)
-+		tailpos = hostapd_eid_vendor_2g_vhtcap(hapd, tailpos);
-+
- 	tail_len = tailpos > tail ? tailpos - tail : 0;
- 
- 	resp = hostapd_probe_resp_offloads(hapd, &resp_len);
-diff --git a/src/ap/hostapd.h b/src/ap/hostapd.h
-index e6ffee2..a94b1d8 100644
---- a/src/ap/hostapd.h
-+++ b/src/ap/hostapd.h
-@@ -284,7 +284,7 @@ struct hostapd_iface {
- 	struct ap_info *ap_list; /* AP info list head */
- 	struct ap_info *ap_hash[STA_HASH_SIZE];
- 
--	unsigned int drv_flags;
-+	u64 drv_flags;
- 
- 	/*
- 	 * A bitmap of supported protocols for probe response offload. See
-diff --git a/src/ap/ieee802_11.c b/src/ap/ieee802_11.c
-index edbe1d0..90c5547 100644
+ 	/* Wi-Fi Alliance WMM */
 --- a/src/ap/ieee802_11.c
 +++ b/src/ap/ieee802_11.c
-@@ -947,6 +947,14 @@ static u16 check_assoc_ies(struct hostapd_data *hapd, struct sta_info *sta,
+@@ -947,6 +947,14 @@ static u16 check_assoc_ies(struct hostap
  			       "mandatory VHT PHY - reject association");
  		return WLAN_STATUS_ASSOC_DENIED_NO_VHT;
  	}
 +
-+	if (hapd->iface->drv_flags & WPA_DRIVER_FLAGS_2G_256QAM_CAP) {
-+		resp = copy_sta_2g_vht_capab(hapd, sta,
-+					     elems.vendor_vht_cap,
-+					     elems.vendor_vht_cap_len);
++	if (hapd->conf->vendor_vht_2g_enabled) {
++		resp = copy_sta_vendor_vht_2g_cap(hapd, sta,
++						  elems.vendor_vht_2g_cap,
++						  elems.vendor_vht_2g_cap_len);
 +		if (resp != WLAN_STATUS_SUCCESS)
 +			return resp;
 +	}
  #endif /* CONFIG_IEEE80211AC */
  
  #ifdef CONFIG_P2P
-@@ -1278,6 +1286,10 @@ static void send_assoc_resp(struct hostapd_data *hapd, struct sta_info *sta,
- 		p = hostapd_eid_p2p_manage(hapd, p);
- #endif /* CONFIG_P2P_MANAGER */
+@@ -1224,8 +1232,14 @@ static void send_assoc_resp(struct hosta
+ #endif /* CONFIG_IEEE80211N */
  
-+	if ((hapd->iface->drv_flags & WPA_DRIVER_FLAGS_2G_256QAM_CAP) &&
-+	    (sta->flags & WLAN_STA_2G_VHT_ENABLED))
-+		p = hostapd_eid_vendor_2g_vhtcap(hapd, p);
-+
- 	send_len += p - reply->u.assoc_resp.variable;
+ #ifdef CONFIG_IEEE80211AC
+-	p = hostapd_eid_vht_capabilities(hapd, p);
+-	p = hostapd_eid_vht_operation(hapd, p);
++	if ((hapd->iconf->ieee80211ac && !hapd->conf->disable_11ac) ||
++		hapd->conf->vht_2g_enabled) {
++		p = hostapd_eid_vht_capabilities(hapd, p);
++		p = hostapd_eid_vht_operation(hapd, p);
++	}
++	if (hapd->conf->vendor_vht_2g_enabled &&
++	    (sta->flags & WLAN_STA_VENDOR_VHT_2G_ENABLED))
++		p = hostapd_eid_vendor_vht_2g_cap(hapd, p);
+ #endif /* CONFIG_IEEE80211AC */
  
- 	if (hostapd_drv_send_mlme(hapd, reply, send_len, 0) < 0)
-diff --git a/src/ap/ieee802_11.h b/src/ap/ieee802_11.h
-index 4fa19fc..b273b0c 100644
+ 	p = hostapd_eid_ext_capab(hapd, p);
 --- a/src/ap/ieee802_11.h
 +++ b/src/ap/ieee802_11.h
-@@ -61,6 +61,8 @@ u16 copy_sta_ht_capab(struct hostapd_data *hapd, struct sta_info *sta,
+@@ -58,6 +58,9 @@ void hostapd_get_vht_capab(struct hostap
+ 			   struct ieee80211_vht_capabilities *neg_vht_cap);
+ u16 copy_sta_ht_capab(struct hostapd_data *hapd, struct sta_info *sta,
+ 		      const u8 *ht_capab, size_t ht_capab_len);
++u16 copy_sta_vendor_vht_2g_cap(struct hostapd_data *hapd, struct sta_info *sta,
++			       const u8 *vht_capab, size_t vht_capab_len);
++
  void update_ht_state(struct hostapd_data *hapd, struct sta_info *sta);
  u16 copy_sta_vht_capab(struct hostapd_data *hapd, struct sta_info *sta,
  		       const u8 *vht_capab, size_t vht_capab_len);
-+u16 copy_sta_2g_vht_capab(struct hostapd_data *hapd, struct sta_info *sta,
-+			  const u8 *vht_capab, size_t vht_capab_len);
- u16 set_sta_vht_opmode(struct hostapd_data *hapd, struct sta_info *sta,
- 		       const u8 *vht_opmode);
- void hostapd_tx_status(struct hostapd_data *hapd, const u8 *addr,
-@@ -82,6 +84,7 @@ u8 * hostapd_eid_time_zone(struct hostapd_data *hapd, u8 *eid);
+@@ -82,6 +85,7 @@ u8 * hostapd_eid_time_zone(struct hostap
  int hostapd_update_time_adv(struct hostapd_data *hapd);
  void hostapd_client_poll_ok(struct hostapd_data *hapd, const u8 *addr);
  u8 * hostapd_eid_bss_max_idle_period(struct hostapd_data *hapd, u8 *eid);
-+u8 * hostapd_eid_vendor_2g_vhtcap(struct hostapd_data *hapd, u8 *frm);
++u8 * hostapd_eid_vendor_vht_2g_cap(struct hostapd_data *hapd, u8 *frm);
  
  #ifdef CONFIG_IEEE80211N
  void hostapd_trigger_20mhz(struct hostapd_iface *iface);
-diff --git a/src/ap/ieee802_11_vht.c b/src/ap/ieee802_11_vht.c
-index 221d9c2..287774c 100644
 --- a/src/ap/ieee802_11_vht.c
 +++ b/src/ap/ieee802_11_vht.c
-@@ -18,6 +18,28 @@
- #include "beacon.h"
- #include "ieee802_11.h"
+@@ -24,8 +24,7 @@ u8 * hostapd_eid_vht_capabilities(struct
+ 	struct ieee80211_vht_capabilities *cap;
+ 	u8 *pos = eid;
  
-+u8 * hostapd_eid_2g_vht_capabilities(struct hostapd_data *hapd, u8 *eid)
-+{
-+	struct ieee80211_vht_capabilities *cap;
-+	u8 *pos = eid;
-+
-+	*pos++ = WLAN_EID_VHT_CAP;
-+	*pos++ = sizeof(*cap);
-+
-+	cap = (struct ieee80211_vht_capabilities *) pos;
-+	os_memset(cap, 0, sizeof(*cap));
-+	cap->vht_capabilities_info = host_to_le32(
-+		hapd->iface->conf->vht_capab);
-+
-+	/* Supported MCS set comes from hw */
-+	os_memcpy(&cap->vht_supported_mcs_set,
-+		  hapd->iface->current_mode->vht_mcs_set, 8);
-+
-+	pos += sizeof(*cap);
-+
-+	return pos;
-+}
-+
+-	if (!hapd->iconf->ieee80211ac || !hapd->iface->current_mode ||
+-	    hapd->conf->disable_11ac)
++	if (!hapd->iface->current_mode)
+ 		return eid;
  
- u8 * hostapd_eid_vht_capabilities(struct hostapd_data *hapd, u8 *eid)
- {
-@@ -45,6 +67,36 @@ u8 * hostapd_eid_vht_capabilities(struct hostapd_data *hapd, u8 *eid)
- 	return pos;
+ 	*pos++ = WLAN_EID_VHT_CAP;
+@@ -51,9 +50,6 @@ u8 * hostapd_eid_vht_operation(struct ho
+ 	struct ieee80211_vht_operation *oper;
+ 	u8 *pos = eid;
+ 
+-	if (!hapd->iconf->ieee80211ac || hapd->conf->disable_11ac)
+-		return eid;
+-
+ 	*pos++ = WLAN_EID_VHT_OPERATION;
+ 	*pos++ = sizeof(*oper);
+ 
+@@ -109,6 +105,73 @@ u16 copy_sta_vht_capab(struct hostapd_da
  }
  
-+u8 * hostapd_eid_2g_vht_operation(struct hostapd_data *hapd, u8 *eid)
-+{
-+	struct ieee80211_vht_operation *oper;
-+	u8 *pos = eid;
-+
-+	*pos++ = WLAN_EID_VHT_OPERATION;
-+	*pos++ = sizeof(*oper);
-+
-+	oper = (struct ieee80211_vht_operation *) pos;
-+	os_memset(oper, 0, sizeof(*oper));
-+
-+	/*
-+	 * center freq = 5 GHz + (5 * index)
-+	 * So index 42 gives center freq 5.210 GHz
-+	 * which is channel 42 in 5G band
-+	 */
-+	oper->vht_op_info_chan_center_freq_seg0_idx =
-+		hapd->iconf->vht_oper_centr_freq_seg0_idx;
-+	oper->vht_op_info_chan_center_freq_seg1_idx =
-+		hapd->iconf->vht_oper_centr_freq_seg1_idx;
-+
-+	oper->vht_op_info_chwidth = hapd->iconf->vht_oper_chwidth;
-+
-+	/* VHT Basic MCS set comes from hw */
-+	/* Hard code 1 stream, MCS0-7 is a min Basic VHT MCS rates */
-+	oper->vht_basic_mcs_set = host_to_le16(0xfffc);
-+	pos += sizeof(*oper);
-+
-+	return pos;
-+}
  
- u8 * hostapd_eid_vht_operation(struct hostapd_data *hapd, u8 *eid)
- {
-@@ -108,6 +160,69 @@ u16 copy_sta_vht_capab(struct hostapd_data *hapd, struct sta_info *sta,
- 	return WLAN_STATUS_SUCCESS;
- }
- 
-+u16 copy_sta_2g_vht_capab(struct hostapd_data *hapd,
++u16 copy_sta_vendor_vht_2g_cap(struct hostapd_data *hapd,
 +			       struct sta_info *sta,
 +			       const u8 *vendor_vht_capab,
 +			       size_t capab_len)
@@ -218,10 +183,15 @@ index 221d9c2..287774c 100644
 +	vht_capab = vendor_vht_capab + 7;
 +	vht_capab_len = vendor_vht_capab[6];
 +
++	/* Attention: If the standard VHT IE and Vendor specific VHT IE
++	 * existed at the same time, we overwrite the standard VHT with the
++	 * content of Vendor VHT IE. The formsat of the VHT cap IE which ebeded
++	 * in the vendor IE is the same as the standard VHT cap IE
++	 */
 +	if (!vht_capab ||
 +	    vht_capab_len < sizeof(struct ieee80211_vht_capabilities)) {
 +		sta->flags &= ~WLAN_STA_VHT;
-+		sta->flags &= ~WLAN_STA_2G_VHT_ENABLED;
++		sta->flags &= ~WLAN_STA_VENDOR_VHT_2G_ENABLED;
 +		os_free(sta->vht_capabilities);
 +		sta->vht_capabilities = NULL;
 +		return WLAN_STATUS_SUCCESS;
@@ -235,78 +205,71 @@ index 221d9c2..287774c 100644
 +	}
 +
 +	sta->flags |= WLAN_STA_VHT;
-+	sta->flags |= WLAN_STA_2G_VHT_ENABLED;
++	sta->flags |= WLAN_STA_VENDOR_VHT_2G_ENABLED;
 +	os_memcpy(sta->vht_capabilities, vht_capab,
 +		  sizeof(struct ieee80211_vht_capabilities));
 +	return WLAN_STATUS_SUCCESS;
 +}
 +
-+u8 * hostapd_eid_vendor_2g_vhtcap(struct hostapd_data *hapd, u8 *frm)
++u8 * hostapd_eid_vendor_vht_2g_cap(struct hostapd_data *hapd, u8 *frm)
 +{
-+	struct ieee80211_ie_2g_vhtcap *vht_2g_cap;
-+	u32 vendor_oui;
-+	u8 *pos;
++	u8 *pos = frm;
++	u32 vendor_type;
 +
 +	if (!hapd->iface->current_mode)
 +		return frm;
 +
-+	vht_2g_cap = (struct ieee80211_ie_2g_vhtcap *)frm;
-+	vht_2g_cap->elem_id = WLAN_EID_VENDOR_SPECIFIC;
-+	vht_2g_cap->elem_len = sizeof(*vht_2g_cap) - 2;
++	*pos++ = WLAN_EID_VENDOR_SPECIFIC;
++	*pos++ = (5 +		/* The Vendor OUI, type and subtype */
++		  2 + sizeof(struct ieee80211_vht_capabilities) +
++		  2 + sizeof(struct ieee80211_vht_operation));
 +
-+	vendor_oui = host_to_be32((OUI_BROADCOM << 8) |
-+				  (VENDOR_VHT_INTEROP_TYPE));
-+	os_memcpy(&vht_2g_cap->vht_oui, &vendor_oui, 4);
-+	vht_2g_cap->sub_type = VENDOR_VHT_INTEROP_OUI_SUBTYPE;
++	vendor_type = (OUI_BROADCOM << 8) | VENDOR_VHT_2G_TYPE;
++	*((be32 *)pos) = host_to_be32(vendor_type);
++	pos += sizeof(u32);
++	*pos++ = VENDOR_VHT_2G_SUBTYPE;
 +
-+	/* 7 is the offset of vht cap in this */
-+	pos = frm + 7;
-+	pos = hostapd_eid_2g_vht_capabilities(hapd, pos);
-+	pos = hostapd_eid_2g_vht_operation(hapd, pos);
++	pos = hostapd_eid_vht_capabilities(hapd, pos);
++	pos = hostapd_eid_vht_operation(hapd, pos);
 +	return pos;
 +}
- 
++
  u16 set_sta_vht_opmode(struct hostapd_data *hapd, struct sta_info *sta,
  		       const u8 *vht_oper_notif)
-diff --git a/src/ap/sta_info.h b/src/ap/sta_info.h
-index 2dbdeb1..04e76ef 100644
+ {
 --- a/src/ap/sta_info.h
 +++ b/src/ap/sta_info.h
 @@ -28,6 +28,7 @@
  #define WLAN_STA_VHT BIT(18)
  #define WLAN_STA_WNM_SLEEP_MODE BIT(19)
  #define WLAN_STA_VHT_OPMODE_ENABLED BIT(20)
-+#define WLAN_STA_2G_VHT_ENABLED BIT(21)
++#define WLAN_STA_VENDOR_VHT_2G_ENABLED BIT(21)
  #define WLAN_STA_PENDING_DISASSOC_CB BIT(29)
  #define WLAN_STA_PENDING_DEAUTH_CB BIT(30)
  #define WLAN_STA_NONERP BIT(31)
-diff --git a/src/common/ieee802_11_common.c b/src/common/ieee802_11_common.c
-index cdee6bc..2ce29be 100644
 --- a/src/common/ieee802_11_common.c
 +++ b/src/common/ieee802_11_common.c
-@@ -128,6 +128,13 @@ static int ieee802_11_parse_vendor_specific(const u8 *pos, size_t elen,
+@@ -128,6 +128,13 @@ static int ieee802_11_parse_vendor_speci
  			elems->vendor_ht_cap = pos;
  			elems->vendor_ht_cap_len = elen;
  			break;
-+		case VENDOR_VHT_INTEROP_TYPE:
-+			if (pos[4] == VENDOR_VHT_INTEROP_OUI_SUBTYPE) {
-+				elems->vendor_vht_cap = pos;
-+				elems->vendor_vht_cap_len = elen;
++		case VENDOR_VHT_2G_TYPE:
++			if (pos[4] == VENDOR_VHT_2G_SUBTYPE) {
++				elems->vendor_vht_2g_cap = pos;
++				elems->vendor_vht_2g_cap_len = elen;
 +			} else
 +				return -1;
 +			break;
  		default:
  			wpa_printf(MSG_EXCESSIVE, "Unknown Broadcom "
  				   "information element ignored "
-diff --git a/src/common/ieee802_11_common.h b/src/common/ieee802_11_common.h
-index 9b8bbd1..5d0a332 100644
 --- a/src/common/ieee802_11_common.h
 +++ b/src/common/ieee802_11_common.h
 @@ -32,6 +32,7 @@ struct ieee802_11_elems {
  	const u8 *vht_operation;
  	const u8 *vht_opmode_notif;
  	const u8 *vendor_ht_cap;
-+	const u8 *vendor_vht_cap;
++	const u8 *vendor_vht_2g_cap;
  	const u8 *p2p;
  	const u8 *wfd;
  	const u8 *link_id;
@@ -314,90 +277,18 @@ index 9b8bbd1..5d0a332 100644
  	u8 vht_capabilities_len;
  	u8 vht_operation_len;
  	u8 vendor_ht_cap_len;
-+	u8 vendor_vht_cap_len;
++	u8 vendor_vht_2g_cap_len;
  	u8 p2p_len;
  	u8 wfd_len;
  	u8 interworking_len;
-diff --git a/src/common/ieee802_11_defs.h b/src/common/ieee802_11_defs.h
-index 6f2173d..ce50bd5 100644
 --- a/src/common/ieee802_11_defs.h
 +++ b/src/common/ieee802_11_defs.h
-@@ -632,6 +632,22 @@ struct ieee80211_vht_operation {
- 	le16 vht_basic_mcs_set;
- } STRUCT_PACKED;
- 
-+/* Vendor specific 2.4G band 256QAM VHT Capability
-+ * With VHT CAP & VHT OP IE
-+ */
-+struct ieee80211_ie_2g_vhtcap {
-+	u8 elem_id;
-+	u8 elem_len;
-+	u32 vht_oui;
-+	u8 sub_type;
-+	u8 vht_cap_elem_id;
-+	u8 vht_cap_elem_len;
-+	struct ieee80211_vht_capabilities vhtcapie;
-+	u8 vht_op_elem_id;
-+	u8 vht_op_elem_len;
-+	struct ieee80211_vht_operation vhtopie;
-+} STRUCT_PACKED;
-+
- #ifdef _MSC_VER
- #pragma pack(pop)
- #endif /* _MSC_VER */
-@@ -1067,6 +1083,8 @@ enum wifi_display_subelem {
+@@ -1067,6 +1067,8 @@ enum wifi_display_subelem {
  
  
  #define OUI_BROADCOM 0x00904c /* Broadcom (Epigram) */
-+#define VENDOR_VHT_INTEROP_TYPE         0x04
-+#define VENDOR_VHT_INTEROP_OUI_SUBTYPE  0x08
++#define VENDOR_VHT_2G_TYPE       0x04
++#define VENDOR_VHT_2G_SUBTYPE	 0x08
  
  #define VENDOR_HT_CAPAB_OUI_TYPE 0x33 /* 00-90-4c:0x33 */
  
-diff --git a/src/drivers/driver.h b/src/drivers/driver.h
-index 13d192d..6d30ac3 100644
---- a/src/drivers/driver.h
-+++ b/src/drivers/driver.h
-@@ -979,6 +979,8 @@ struct wpa_driver_capa {
- #define WPA_DRIVER_FLAGS_QOS_MAPPING			0x40000000
- /* Driver supports CSA in AP mode */
- #define WPA_DRIVER_FLAGS_AP_CSA				0x80000000
-+/* Driver supports 2G band 256QAM MCS */
-+#define WPA_DRIVER_FLAGS_2G_256QAM_CAP		0x0000000200000000ULL
- 	unsigned int flags;
- 
- 	int max_scan_ssids;
-diff --git a/src/drivers/driver_nl80211.c b/src/drivers/driver_nl80211.c
-index 3971157..a4db589 100644
---- a/src/drivers/driver_nl80211.c
-+++ b/src/drivers/driver_nl80211.c
-@@ -3611,6 +3611,9 @@ static void wiphy_info_feature_flags(struct wiphy_info_data *info,
- 
- 	if (flags & NL80211_FEATURE_NEED_OBSS_SCAN)
- 		capa->flags |= WPA_DRIVER_FLAGS_OBSS_SCAN;
-+
-+	if (flags & NL80211_FEATURE_256QAM_2G)
-+		capa->flags |= WPA_DRIVER_FLAGS_2G_256QAM_CAP;
- }
- 
- 
-diff --git a/src/drivers/nl80211_copy.h b/src/drivers/nl80211_copy.h
-index 1ba9d62..aafbaf8 100644
---- a/src/drivers/nl80211_copy.h
-+++ b/src/drivers/nl80211_copy.h
-@@ -3891,6 +3891,7 @@ enum nl80211_ap_sme_features {
-  *	interface. An active monitor interface behaves like a normal monitor
-  *	interface, but gets added to the driver. It ensures that incoming
-  *	unicast packets directed at the configured interface address get ACKed.
-+ * @NL80211_FEATURE_256QAM_2G: Device supports 256QAM on 2.4G band
-  */
- enum nl80211_feature_flags {
- 	NL80211_FEATURE_SK_TX_STATUS			= 1 << 0,
-@@ -3911,6 +3912,7 @@ enum nl80211_feature_flags {
- 	NL80211_FEATURE_FULL_AP_CLIENT_STATE		= 1 << 15,
- 	NL80211_FEATURE_USERSPACE_MPM			= 1 << 16,
- 	NL80211_FEATURE_ACTIVE_MONITOR			= 1 << 17,
-+	NL80211_FEATURE_256QAM_2G                       = 1 << 26,
- };
- 
- /**
