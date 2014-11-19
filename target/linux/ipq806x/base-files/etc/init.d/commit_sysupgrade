@@ -5,17 +5,40 @@
 
 START=99
 
-do_flash_bootconfig() {
+do_flash_mtd() {
 	local bin=$1
 	local mtdname=$2
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
 
+	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+}
+
+do_flash_emmc() {
+        local bin=$1
+        local emmcblock=$2
+
+        dd if=/dev/zero of=${emmcblock}
+        dd if=/tmp/${bin}.bin of=${emmcblock}
+}
+
+do_flash_bootconfig() {
+	local bin=$1
+	local mtdname=$2
+	local emmcblock
+
 	# Fail safe upgrade
 	if [ -f /proc/boot_info/getbinary ]; then
 		cat /proc/boot_info/getbinary > /tmp/${bin}.bin
-		dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+		emmcblock="$(find_mmc_part "0:$mtdname")"
+
+		if [ -e "$emmcblock" ]; then
+			do_flash_emmc $bin $emmcblock
+		else
+			do_flash_mtd $bin $mtdname
+		fi
+
 	fi
 }
 
