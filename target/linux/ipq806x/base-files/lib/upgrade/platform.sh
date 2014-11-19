@@ -567,7 +567,7 @@ do_flash_partition() {
 	local mtdname=$2
 	local emmcblock="$(find_mmc_part "0:$mtdname")"
 
-	if [ -e $emmcblock ]; then
+	if [ -e "$emmcblock" ]; then
 		do_flash_emmc $bin $emmcblock
 	else
 		do_flash_mtd $bin $mtdname
@@ -737,7 +737,7 @@ platform_do_upgrade() {
 }
 
 platform_copy_config() {
-	local part="$(find_mtd_part "ubi_rootfs_data")"
+	local part="$(find_mtd_part "ubi_rootfs")"
 
 	if [ -e "$part" ]; then
 		local mtdname=rootfs
