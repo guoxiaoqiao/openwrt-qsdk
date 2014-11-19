@@ -271,6 +271,11 @@ is_image_version_higher() {
 					minimal supported version($failsafe_version)"
 				return 0
 			fi
+			if [ "$sw_id" -gt "$max_failsafe_version" ]; then
+				echo "Version of Fail safe image ${fullname}($sw_id) is higher \
+					than maximum allowed version($max_failsafe_version)"
+				return 0
+			fi
 			failsafe_sw_id=$sw_id
 			is_sw_version_present=`expr $is_sw_version_present + 1`
 			echo is_sw_version_present=$is_sw_version_present
@@ -304,6 +309,11 @@ is_image_version_higher() {
 			if [ "$failsafe_version" -gt "$sw_id" ]; then
 				echo "Version of Fail safe image ${fullname}($sw_id) is lower \
 					than minimal supported version($failsafe_version)"
+				return 0
+			fi
+			if [ "$sw_id" -gt "$max_failsafe_version" ]; then
+				echo "Version of Fail safe image ${fullname}($sw_id) is higher \
+					than maximum allowed version($max_failsafe_version)"
 				return 0
 			fi
 			failsafe_sw_id=$sw_id
