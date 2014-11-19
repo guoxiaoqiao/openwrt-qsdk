@@ -741,7 +741,13 @@ platform_copy_config() {
 
 	if [ -e "$part" ]; then
 		local mtdname=rootfs
-		local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+		local mtdpart
+
+		[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+			mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+		}
+
+		mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 		ubiattach -p /dev/${mtdpart}
 		mount -t ubifs ubi0:ubi_rootfs_data /tmp/overlay
 		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
