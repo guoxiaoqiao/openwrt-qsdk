@@ -737,9 +737,10 @@ platform_do_upgrade() {
 }
 
 platform_copy_config() {
-	local part="$(find_mtd_part "ubi_rootfs")"
+	local nand_part="$(find_mtd_part "ubi_rootfs")"
+	local emmcblock="$(find_mmc_part "rootfs_data")"
 
-	if [ -e "$part" ]; then
+	if [ -e "$nand_part" ]; then
 		local mtdname=rootfs
 		local mtdpart
 
@@ -750,6 +751,9 @@ platform_copy_config() {
 		mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 		ubiattach -p /dev/${mtdpart}
 		mount -t ubifs ubi0:ubi_rootfs_data /tmp/overlay
+		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
+	elif [ -e "$emmcblock" ]; then
+		mount -t ext4 "$emmcblock" /tmp/overlay
 		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
 	else
 		jffs2_copy_config
