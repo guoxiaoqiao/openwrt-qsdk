@@ -43,10 +43,10 @@ MODULE_PARM_DESC(msg_level, "Message level (-1=defaults,0=none,...,16=all)");
 #define MAX_AG71XX_USING_SRAM		2
 #define MAX_AG71XX_SRAM_RINGS		(MAX_AG71XX_USING_SRAM) * 2
 static unsigned long ag71xx_ring_bufs[MAX_AG71XX_SRAM_RINGS] = {
-	0x1d000000UL,
-	0x1d001000UL,
-	0x1d002000UL,
-	0x1d003000UL
+	0x1d000008UL,
+	0x1d001008UL,
+	0x1d002008UL,
+	0x1d003008UL
 };
 #endif /* CONFIG_AG71XX_SRAM_DESCRIPTORS */
 

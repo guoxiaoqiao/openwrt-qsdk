@@ -271,6 +271,11 @@ is_image_version_higher() {
 					minimal supported version($failsafe_version)"
 				return 0
 			fi
+			if [ "$sw_id" -gt "$max_failsafe_version" ]; then
+				echo "Version of Fail safe image ${fullname}($sw_id) is higher \
+					than maximum allowed version($max_failsafe_version)"
+				return 0
+			fi
 			failsafe_sw_id=$sw_id
 			is_sw_version_present=`expr $is_sw_version_present + 1`
 			echo is_sw_version_present=$is_sw_version_present
@@ -304,6 +309,11 @@ is_image_version_higher() {
 			if [ "$failsafe_version" -gt "$sw_id" ]; then
 				echo "Version of Fail safe image ${fullname}($sw_id) is lower \
 					than minimal supported version($failsafe_version)"
+				return 0
+			fi
+			if [ "$sw_id" -gt "$max_failsafe_version" ]; then
+				echo "Version of Fail safe image ${fullname}($sw_id) is higher \
+					than maximum allowed version($max_failsafe_version)"
 				return 0
 			fi
 			failsafe_sw_id=$sw_id
@@ -478,6 +488,9 @@ is_image_authenticated() {
 					src sig cert && { \
 				echo "Error while splitting code/signature/Certificate from \
 					/tmp/${fullname}.bin"
+				is_local_image_secure && {\
+					continue;
+				}
 				return 0
 			}
 			is_component_authenticated src sig cert || { \
@@ -496,6 +509,9 @@ is_image_authenticated() {
 					src sig cert && { \
 				echo "Error while splitting code/signature/Certificate from \
 					/tmp/tmp_kernel.bin"
+				is_local_image_secure && {\
+					continue;
+				}
 				return 0
 			}
 			is_component_authenticated src sig cert || { \
@@ -551,7 +567,7 @@ do_flash_partition() {
 	local mtdname=$2
 	local emmcblock="$(find_mmc_part "0:$mtdname")"
 
-	if [ -e $emmcblock ]; then
+	if [ -e "$emmcblock" ]; then
 		do_flash_emmc $bin $emmcblock
 	else
 		do_flash_mtd $bin $mtdname
@@ -572,6 +588,7 @@ do_flash_bootconfig() {
 do_flash_failsafe_partition() {
 	local bin=$1
 	local mtdname=$2
+	local emmcblock
 
 	# Fail safe upgrade
 	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
@@ -580,7 +597,14 @@ do_flash_failsafe_partition() {
 		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
 	}
 
-	do_flash_partition $bin $mtdname
+	emmcblock="$(find_mmc_part "$mtdname")"
+
+	if [ -e "$emmcblock" ]; then
+		do_flash_emmc $bin $emmcblock
+	else
+		do_flash_mtd $bin $mtdname
+	fi
+
 }
 
 do_flash_ubi() {
@@ -713,11 +737,17 @@ platform_do_upgrade() {
 }
 
 platform_copy_config() {
-	local part="$(find_mtd_part "ubi_rootfs_data")"
+	local part="$(find_mtd_part "ubi_rootfs")"
 
 	if [ -e "$part" ]; then
 		local mtdname=rootfs
-		local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+		local mtdpart
+
+		[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+			mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+		}
+
+		mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 		ubiattach -p /dev/${mtdpart}
 		mount -t ubifs ubi0:ubi_rootfs_data /tmp/overlay
 		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
