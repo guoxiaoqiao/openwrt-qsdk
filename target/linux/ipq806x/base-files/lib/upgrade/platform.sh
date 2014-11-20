@@ -271,6 +271,11 @@ is_image_version_higher() {
 					minimal supported version($failsafe_version)"
 				return 0
 			fi
+			if [ "$sw_id" -gt "$max_failsafe_version" ]; then
+				echo "Version of Fail safe image ${fullname}($sw_id) is higher \
+					than maximum allowed version($max_failsafe_version)"
+				return 0
+			fi
 			failsafe_sw_id=$sw_id
 			is_sw_version_present=`expr $is_sw_version_present + 1`
 			echo is_sw_version_present=$is_sw_version_present
@@ -304,6 +309,11 @@ is_image_version_higher() {
 			if [ "$failsafe_version" -gt "$sw_id" ]; then
 				echo "Version of Fail safe image ${fullname}($sw_id) is lower \
 					than minimal supported version($failsafe_version)"
+				return 0
+			fi
+			if [ "$sw_id" -gt "$max_failsafe_version" ]; then
+				echo "Version of Fail safe image ${fullname}($sw_id) is higher \
+					than maximum allowed version($max_failsafe_version)"
 				return 0
 			fi
 			failsafe_sw_id=$sw_id
@@ -478,6 +488,9 @@ is_image_authenticated() {
 					src sig cert && { \
 				echo "Error while splitting code/signature/Certificate from \
 					/tmp/${fullname}.bin"
+				is_local_image_secure && {\
+					continue;
+				}
 				return 0
 			}
 			is_component_authenticated src sig cert || { \
@@ -496,6 +509,9 @@ is_image_authenticated() {
 					src sig cert && { \
 				echo "Error while splitting code/signature/Certificate from \
 					/tmp/tmp_kernel.bin"
+				is_local_image_secure && {\
+					continue;
+				}
 				return 0
 			}
 			is_component_authenticated src sig cert || { \
@@ -534,39 +550,61 @@ do_flash_mtd() {
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
+
 	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
 }
 
-do_flash_appsbl() {
+do_flash_emmc() {
+	local bin=$1
+	local emmcblock=$2
+
+	dd if=/dev/zero of=${emmcblock}
+	dd if=/tmp/${bin}.bin of=${emmcblock}
+}
+
+do_flash_partition() {
 	local bin=$1
 	local mtdname=$2
+	local emmcblock="$(find_mmc_part "0:$mtdname")"
 
-	# Fail safe upgrade
-	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
-	[ -f /proc/boot_info/0\:$mtdname/upgraded ] && echo 1 > /proc/boot_info/0\:$mtdname/upgraded
-	[ -f /proc/boot_info/0\:$mtdname/upgradepartition ] && {
-		mtdname=$(cat /proc/boot_info/0\:$mtdname/upgradepartition)
-	}
-
-	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
-	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
-
-
-	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+	if [ -e "$emmcblock" ]; then
+		do_flash_emmc $bin $emmcblock
+	else
+		do_flash_mtd $bin $mtdname
+	fi
 }
 
 do_flash_bootconfig() {
 	local bin=$1
 	local mtdname=$2
 
-	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
-	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
-
 	# Fail safe upgrade
 	if [ -f /proc/boot_info/getbinary ]; then
 		cat /proc/boot_info/getbinary > /tmp/${bin}.bin
-		dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
+		do_flash_partition $bin $mtdname
 	fi
+}
+
+do_flash_failsafe_partition() {
+	local bin=$1
+	local mtdname=$2
+	local emmcblock
+
+	# Fail safe upgrade
+	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
+	[ -f /proc/boot_info/$mtdname/upgraded ] && echo 1 > /proc/boot_info/$mtdname/upgraded
+	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+	}
+
+	emmcblock="$(find_mmc_part "$mtdname")"
+
+	if [ -e "$emmcblock" ]; then
+		do_flash_emmc $bin $emmcblock
+	else
+		do_flash_mtd $bin $mtdname
+	fi
+
 }
 
 do_flash_ubi() {
@@ -595,17 +633,17 @@ flash_section() {
 
 	local board=$(ipq806x_board_name)
 	case "${sec}" in
-		hlos*) switch_layout linux; do_flash_mtd ${sec} "kernel";;
-		fs*) switch_layout linux; do_flash_mtd ${sec} "rootfs";;
+		hlos*) switch_layout linux; do_flash_failsafe_partition ${sec} "kernel";;
+		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
-		sbl1*) switch_layout boot; do_flash_mtd ${sec} "SBL1";;
-		sbl2*) switch_layout boot; do_flash_mtd ${sec} "SBL2";;
-		sbl3*) switch_layout boot; do_flash_mtd ${sec} "SBL3";;
-		u-boot*) switch_layout boot; do_flash_appsbl ${sec} "APPSBL";;
-		ddr-${board}*) switch_layout boot; do_flash_mtd ${sec} "DDRCONFIG";;
-		ssd*) switch_layout boot; do_flash_mtd ${sec} "SSD";;
-		tz*) switch_layout boot; do_flash_mtd ${sec} "TZ";;
-		rpm*) switch_layout boot; do_flash_mtd ${sec} "RPM";;
+		sbl1*) switch_layout boot; do_flash_partition ${sec} "SBL1";;
+		sbl2*) switch_layout boot; do_flash_partition ${sec} "SBL2";;
+		sbl3*) switch_layout boot; do_flash_partition ${sec} "SBL3";;
+		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "APPSBL";;
+		ddr-${board}*) switch_layout boot; do_flash_partition ${sec} "DDRCONFIG";;
+		ssd*) switch_layout boot; do_flash_partition ${sec} "SSD";;
+		tz*) switch_layout boot; do_flash_partition ${sec} "TZ";;
+		rpm*) switch_layout boot; do_flash_partition ${sec} "RPM";;
 		*) echo "Section ${sec} ignored"; return 1;;
 	esac
 
@@ -699,13 +737,23 @@ platform_do_upgrade() {
 }
 
 platform_copy_config() {
-	local part="$(find_mtd_part "ubi_rootfs_data")"
+	local nand_part="$(find_mtd_part "ubi_rootfs")"
+	local emmcblock="$(find_mmc_part "rootfs_data")"
 
-	if [ -e "$part" ]; then
+	if [ -e "$nand_part" ]; then
 		local mtdname=rootfs
-		local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+		local mtdpart
+
+		[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+			mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+		}
+
+		mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 		ubiattach -p /dev/${mtdpart}
 		mount -t ubifs ubi0:ubi_rootfs_data /tmp/overlay
+		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
+	elif [ -e "$emmcblock" ]; then
+		mount -t ext4 "$emmcblock" /tmp/overlay
 		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
 	else
 		jffs2_copy_config
