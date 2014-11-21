@@ -134,6 +134,9 @@ hostapd_common_add_bss_config() {
 
 	config_add_int mcast_rate
 	config_add_array basic_rate
+
+	config_add_boolean vht_2g_enabled vendor_vht_2g_enabled
+
 }
 
 hostapd_set_bss_options() {
@@ -151,7 +154,8 @@ hostapd_set_bss_options() {
 		maxassoc max_inactivity disassoc_low_ack isolate auth_cache \
 		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 \
 		wps_device_type wps_device_name wps_manufacturer wps_pin \
-		macfilter ssid wmm hidden short_preamble uapsd
+		macfilter ssid wmm hidden short_preamble uapsd vht_2g_enabled \
+		vendor_vht_2g_enabled
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -161,6 +165,8 @@ hostapd_set_bss_options() {
 	set_default hidden 0
 	set_default wmm 1
 	set_default uapsd 0
+	set_default vht_2g_enabled 0
+	set_default vendor_vht_2g_enabled 0
 
 	append bss_conf "ctrl_interface=/var/run/hostapd"
 	if [ "$isolate" -gt 0 ]; then
@@ -171,6 +177,12 @@ hostapd_set_bss_options() {
 	fi
 	if [ "$max_inactivity" -gt 0 ]; then
 		append bss_conf "ap_max_inactivity=$max_inactivity" "$N"
+	fi
+	if [ "$vht_2g_enabled" -gt 0 ]; then
+		append bss_conf "vht_2g_enabled=$vht_2g_enabled" "$N"
+	fi
+	if [ "$vendor_vht_2g_enabled" -gt 0 ]; then
+		append bss_conf "vendor_vht_2g_enabled=$vendor_vht_2g_enabled" "$N"
 	fi
 
 	append bss_conf "disassoc_low_ack=$disassoc_low_ack" "$N"
