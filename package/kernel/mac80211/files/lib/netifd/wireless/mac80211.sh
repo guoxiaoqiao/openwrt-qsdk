@@ -92,9 +92,9 @@ mac80211_hostapd_setup_base() {
 			VHT40)
 				case "$channel" in
 					36|40) idx=38;;
-					44|48) idx=42;;
+					44|48) idx=46;;
 					52|56) idx=54;;
-					60|64) idx=58;;
+					60|64) idx=62;;
 					100|104) idx=102;;
 					108|112) idx=110;;
 					116|120) idx=118;;
