@@ -52,6 +52,7 @@ hostapd_common_add_device_config() {
 
 	config_add_string country
 	config_add_boolean country_ie doth
+	config_add_int beacon_int
 
 	hostapd_add_log_config
 }
