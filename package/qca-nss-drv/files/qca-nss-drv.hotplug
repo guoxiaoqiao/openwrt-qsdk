@@ -1,0 +1,16 @@
+#!/bin/sh
+
+source /etc/openwrt_release
+
+load_nss_fw () {
+	echo 1 > /sys/class/firmware/$DEVICENAME/loading
+	cat $1 > /sys/class/firmware/$DEVICENAME/data
+	echo 0 > /sys/class/firmware/$DEVICENAME/loading
+}
+
+[ "$ACTION" != "add" ] && exit
+
+[ "$DEVICENAME" = "qca-nss.0" ] &&
+	load_nss_fw $(ls /lib/firmware/qca-nss0*.bin | awk '{print $1}')
+[ "$DEVICENAME" = "qca-nss.1" ] &&
+	load_nss_fw $(ls /lib/firmware/qca-nss1*.bin | awk '{print $1}')
