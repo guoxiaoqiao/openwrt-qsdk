@@ -1,7 +1,3 @@
-#
-# Copyright (c) 2013 The Linux Foundation. All rights reserved.
-#
-
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
