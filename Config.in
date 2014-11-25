@@ -259,6 +259,10 @@ menu "Global build settings"
 		bool "Compile the kernel with memory leak detector"
 		default n
 
+	config KERNEL_DEBUG_KMEMLEAK_DEFAULT_OFF
+		bool "Turn kernel memory leak detector off at boot by default"
+		default n
+
 	config KERNEL_DEBUG_LL_UART_NONE
 		bool
 		default n
