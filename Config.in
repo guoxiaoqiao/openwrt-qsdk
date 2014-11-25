@@ -239,6 +239,16 @@ menu "Global build settings"
 		depends on KERNEL_FTRACE
 		default n
 
+	config KERNEL_IRQSOFF_TRACER
+		bool "Enable IRQSOFF tracer"
+		depends on KERNEL_FTRACE
+		default n
+
+	config KERNEL_PREEMPT_TRACER
+		bool "Enable PREMPTOFF tracer"
+		depends on KERNEL_FTRACE
+		default n
+
 	config KERNEL_DEBUG_KERNEL
 		bool
 		default n
