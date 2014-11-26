@@ -68,6 +68,8 @@ image_is_FIT() {
 
 VERSION_FILE="/sys/devices/system/qfprom/qfprom0/version"
 TMP_VERSION_FILE="/etc/config/sysupgrade_version"
+PRIMARY_BOOT_FILE="/proc/boot_info/rootfs/primaryboot"
+TMP_PRIMARY_BOOT_FILE="/etc/config/sysupgrade_primaryboot"
 unsecure_version=0x0
 local_version_string=0x0
 
@@ -145,35 +147,53 @@ decode_local_image_version() {
 	failsafe_version=0
 	nonfailsafe_version=0
 	get_local_image_version
-	versionD=`printf "%d" $local_version_string`
-	Bit=$(expr $versionD % 2)
-	if [ "$Bit" == "0" ]; then
-		echo "Local image is not Secure image, return SUCCESS"
-		return 1
-	fi
-	versionD=$(expr $versionD / 2)
-	nonfailsafe_version=0
-	while [ $nonfailsafe_version -le $max_nonfailsafe_version ]
-	do
-		Bit=$(expr $versionD % 2)
-		versionD=$(expr $versionD / 2)
 
-		if [ "$Bit" == "0" ]; then
-			break;
-		fi
-		nonfailsafe_version=`expr $nonfailsafe_version + 1`
+	local_version_string=`echo $local_version_string | cut -c 3-`
+	len=${#local_version_string}
+	LSBcount=0
+	for i in $(seq $(expr $len - 1) -1 0); do
+		xDigit="${local_version_string:$i:1}"
+		LSBcount=`expr $LSBcount + 1`
+		case "$LSBcount" in
+		1)
+			case "$xDigit" in
+				3)	nonfailsafe_version=`expr $nonfailsafe_version + 1`;;
+				7)	nonfailsafe_version=`expr $nonfailsafe_version + 2`;;
+				f|F)	nonfailsafe_version=`expr $nonfailsafe_version + 3`;;
+			esac;;
+		2|3|4|5)
+			case "$xDigit" in
+				1)	nonfailsafe_version=`expr $nonfailsafe_version + 1`;;
+				3)	nonfailsafe_version=`expr $nonfailsafe_version + 2`;;
+				7)	nonfailsafe_version=`expr $nonfailsafe_version + 3`;;
+				f|F)	nonfailsafe_version=`expr $nonfailsafe_version + 4`;;
+			esac;;
+		6)
+			case "$xDigit" in
+				1)	nonfailsafe_version=`expr $nonfailsafe_version + 1`;;
+				3)	nonfailsafe_version=`expr $nonfailsafe_version + 1`
+					failsafe_version=`expr $failsafe_version + 1`;;
+				7)	nonfailsafe_version=`expr $nonfailsafe_version + 1`
+					failsafe_version=`expr $failsafe_version + 2`;;
+				f|F)	nonfailsafe_version=`expr $nonfailsafe_version + 1`
+					failsafe_version=`expr $failsafe_version + 3`;;
+				2)	failsafe_version=`expr $failsafe_version + 1`;;
+				6)	failsafe_version=`expr $failsafe_version + 2`;;
+				e|E)	failsafe_version=`expr $failsafe_version + 3`;;
+			esac;;
+		7|8|9|10|11|12|13|14|15|16)
+			case "$xDigit" in
+				1)	failsafe_version=`expr $failsafe_version + 1`;;
+				3)	failsafe_version=`expr $failsafe_version + 2`;;
+				7)	failsafe_version=`expr $failsafe_version + 3`;;
+				f|F)	failsafe_version=`expr $failsafe_version + 4`;;
+			esac;;
+		*)
+			echo "Error: Too big number"
+			;;
+		esac
 	done
-	failsafe_version=0
-	while [ $failsafe_version -le $max_failsafe_version ]
-	do
-		Bit=$(expr $versionD % 2)
-		versionD=$(expr $versionD / 2)
-
-		if [ "$Bit" == "0" ]; then
-			break;
-		fi
-		failsafe_version=`expr $failsafe_version + 1`
-	done
+	echo "nonfailsafe=$nonfailsafe_version, failsafe=$failsafe_version"
 	return 1
 }
 
@@ -377,6 +397,7 @@ update_tmp_version() {
 	new_versionD=`expr $new_versionD + 1`
 	echo new_version=`printf "0x%x" $new_versionD`
 	echo `printf "0x%x" $new_versionD` > "$TMP_VERSION_FILE"
+	cat "$PRIMARY_BOOT_FILE" > "$TMP_PRIMARY_BOOT_FILE"
 	return 1
 }
 
