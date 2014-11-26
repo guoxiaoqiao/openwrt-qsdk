@@ -234,6 +234,11 @@ menu "Global build settings"
 		bool "Compile the kernel with tracing support"
 		default n
 
+	config KERNEL_DYNAMIC_FTRACE
+		bool "Enable dynamic ftrace"
+		depends on KERNEL_FTRACE
+		default n
+
 	config KERNEL_ENABLE_DEFAULT_TRACERS
 		bool "Trace process context switches and events"
 		depends on KERNEL_FTRACE
@@ -242,6 +247,16 @@ menu "Global build settings"
 	config KERNEL_FUNCTION_TRACER
 		bool "Enable function tracer"
 		depends on KERNEL_FTRACE
+		default n
+
+	config KERNEL_FUNCTION_PROFILER
+		bool "Enable function profilier"
+		depends on KERNEL_FUNCTION_TRACER
+		default n
+
+	config KERNEL_FUNCTION_GRAPH_TRACER
+		bool "Enable function graph tracer"
+		depends on KERNEL_FUNCTION_TRACER
 		default n
 
 	config KERNEL_IRQSOFF_TRACER
