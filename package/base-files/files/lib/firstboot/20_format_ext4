@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# Copyright (C) 2006-2010 OpenWrt.org
-# Copyright (C) 2010 Vertical Communications
 # Copyright (c) 2014 The Linux Foundation. All rights reserved.
 
 format_ext4() {
