@@ -13,7 +13,7 @@ SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 WIFI_OPEN_PKGS:= kmod-qca-ath9k kmod-qca-ath10k wpad hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open
 
-WIFI_10_4_PKGS:=qca-wifi-fw-10.4-asic qcmbr-10.4 qca-acfg-10.4 \
+WIFI_10_4_PKGS:=qca-wifi-fw-10.4-emu qcmbr-10.4 qca-acfg-10.4 \
 	qca-wrapd-10.4 qca-wpc-10.4 whc kmod-qca-wifi-10.4-akronite-perf \
 	kmod-art2-10.4 qca-hostap-10.4 qca-hostapd-cli-10.4 \
 	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wapid-10.4 sigma-dut-10.4 \
