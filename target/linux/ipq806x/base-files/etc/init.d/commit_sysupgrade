@@ -53,9 +53,12 @@ start() {
 		# update bootconfig
 		do_flash_bootconfig bootconfig "BOOTCONFIG"
 
-		if [ -f /etc/config/sysupgrade_version ]; then
-			cat /etc/config/sysupgrade_version > /sys/devices/system/qfprom/qfprom0/version
-			rm -f /etc/config/sysupgrade_version
-		fi
+		cmp /etc/config/sysupgrade_primaryboot /proc/boot_info/rootfs/primaryboot || {\
+			if [ -f /etc/config/sysupgrade_version ]; then
+				cat /etc/config/sysupgrade_version > /sys/devices/system/qfprom/qfprom0/version
+				rm -f /etc/config/sysupgrade_version
+			fi
+		}
+		rm -f /etc/config/sysupgrade_primaryboot
 	fi
 }
