@@ -234,8 +234,38 @@ menu "Global build settings"
 		bool "Compile the kernel with tracing support"
 		default n
 
+	config KERNEL_DYNAMIC_FTRACE
+		bool "Enable dynamic ftrace"
+		depends on KERNEL_FTRACE
+		default n
+
 	config KERNEL_ENABLE_DEFAULT_TRACERS
 		bool "Trace process context switches and events"
+		depends on KERNEL_FTRACE
+		default n
+
+	config KERNEL_FUNCTION_TRACER
+		bool "Enable function tracer"
+		depends on KERNEL_FTRACE
+		default n
+
+	config KERNEL_FUNCTION_PROFILER
+		bool "Enable function profilier"
+		depends on KERNEL_FUNCTION_TRACER
+		default n
+
+	config KERNEL_FUNCTION_GRAPH_TRACER
+		bool "Enable function graph tracer"
+		depends on KERNEL_FUNCTION_TRACER
+		default n
+
+	config KERNEL_IRQSOFF_TRACER
+		bool "Enable IRQSOFF tracer"
+		depends on KERNEL_FTRACE
+		default n
+
+	config KERNEL_PREEMPT_TRACER
+		bool "Enable PREMPTOFF tracer"
 		depends on KERNEL_FTRACE
 		default n
 
@@ -257,6 +287,10 @@ menu "Global build settings"
 
 	config KERNEL_DEBUG_KMEMLEAK
 		bool "Compile the kernel with memory leak detector"
+		default n
+
+	config KERNEL_DEBUG_KMEMLEAK_DEFAULT_OFF
+		bool "Turn kernel memory leak detector off at boot by default"
 		default n
 
 	config KERNEL_DEBUG_LL_UART_NONE
