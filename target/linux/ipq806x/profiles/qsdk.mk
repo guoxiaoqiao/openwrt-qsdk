@@ -44,11 +44,13 @@ ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 UTILS:=tftp-hpa sysstat iperf devmem2 ip ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald
 
+BLUETOOTH:=bluez kmod-bluetooth kmod-ath3k
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(ALLJOYN_PKGS)
+		$(ALLJOYN_PKGS) $(BLUETOOTH)
 endef
 
 define Profile/QSDK_Open/Description
@@ -61,7 +63,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(ALLJOYN_PKGS) $(SHORTCUT_FE)
+		$(ALLJOYN_PKGS) $(SHORTCUT_FE) $(BLUETOOTH)
 endef
 
 define Profile/QSDK_Standard/Description
