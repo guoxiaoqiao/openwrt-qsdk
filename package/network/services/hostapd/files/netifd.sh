@@ -127,7 +127,7 @@ hostapd_common_add_bss_config() {
 	config_add_string eap_type ca_cert client_cert identity auth priv_key priv_key_pwd
 
 	config_add_int dynamic_vlan vlan_naming
-	config_add_string vlan_tagged_interface
+	config_add_string vlan_tagged_interface vlan_bridge
 
 	config_add_string 'key1:wepkey' 'key2:wepkey' 'key3:wepkey' 'key4:wepkey' 'password:wpakey'
 
@@ -242,7 +242,8 @@ hostapd_set_bss_options() {
 				dae_client dae_secret dae_port \
 				nasid iapp_interface ownip \
 				eap_reauth_period dynamic_vlan \
-				vlan_naming vlan_tagged_interface
+				vlan_naming vlan_tagged_interface \
+				vlan_bridge
 
 			# legacy compatibility
 			[ -n "$auth_server" ] || json_get_var auth_server server
@@ -288,6 +289,8 @@ hostapd_set_bss_options() {
 			[ -n "$dynamic_vlan" ] && {
 				append bss_conf "dynamic_vlan=$dynamic_vlan" "$N"
 				append bss_conf "vlan_naming=$vlan_naming" "$N"
+				[ -n "$vlan_bridge" ] && \
+					append bss_conf "vlan_bridge=$vlan_bridge" "$N"
 				[ -n "$vlan_tagged_interface" ] && \
 					append bss_conf "vlan_tagged_interface=$vlan_tagged_interface" "$N"
 			}
