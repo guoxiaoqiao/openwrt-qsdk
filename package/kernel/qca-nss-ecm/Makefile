@@ -24,7 +24,7 @@ define KernelPackage/qca-nss-ecm/Default
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Support
-  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +kmod-qca-hyfi-bridge +iptables-mod-extra
+  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +kmod-qca-hyfi-bridge +iptables-mod-extra +kmod-ipt-conntrack
   TITLE:=QCA NSS Enhanced Connection Manager (ECM)
   FILES:=$(PKG_BUILD_DIR)/ecm.ko
   KCONFIG:=CONFIG_BRIDGE_NETFILTER=y
@@ -92,5 +92,5 @@ $(call Package/$(PKG_NAME)/override_source_path,kmod-$(PKG_NAME))
 $(call Package/$(PKG_NAME)/override_version,kmod-$(PKG_NAME),$(PKG_SUPPORTED_VERSION))
 endef
 
-$(eval $(call KernelPackage,qca-nss-ecm))
 $(eval $(call KernelPackage,qca-nss-ecm-noload))
+$(eval $(call KernelPackage,qca-nss-ecm))
