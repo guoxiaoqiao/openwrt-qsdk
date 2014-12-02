@@ -1,0 +1,14 @@
+#!/bin/sh
+
+load_nss_fw () {
+	echo 1 > /sys/class/firmware/$DEVICENAME/loading
+	cat $1 > /sys/class/firmware/$DEVICENAME/data
+	echo 0 > /sys/class/firmware/$DEVICENAME/loading
+}
+
+[ "$ACTION" != "add" ] && exit
+
+[ "$DEVICENAME" = "qca-nss0.bin" ] &&
+	load_nss_fw /lib/firmware/qca-nss0-retail.bin
+[ "$DEVICENAME" = "qca-nss1.bin" ] &&
+	load_nss_fw /lib/firmware/qca-nss1-retail.bin
