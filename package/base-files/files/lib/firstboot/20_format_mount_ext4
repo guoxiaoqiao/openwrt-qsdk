@@ -10,6 +10,8 @@ format_and_mount_ext4() {
 		mkfs.ext4 "$emmcblock"
 		mkdir -p /tmp/overlay
 		mount "$emmcblock" /tmp/overlay -t ext4
+		mount -o move /tmp/overlay /overlay 2>&-
+		fopivot /overlay /rom
 	fi
 }
 
