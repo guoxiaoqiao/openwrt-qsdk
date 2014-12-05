@@ -12,8 +12,10 @@ check_for_jffs2() {
     # ubi_rootfs_data
     check_skip && return
 
-    jffs2_ready || grep -wqs rootfs_data /proc/mtd && {
+    jffs2_ready || {
+        grep -wqs rootfs_data /proc/mtd && {
             mount_no_jffs2 && pi_mount_skip_next=true
+        }
     }
 }
 
