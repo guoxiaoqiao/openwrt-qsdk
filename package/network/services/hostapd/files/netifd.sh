@@ -101,7 +101,7 @@ hostapd_common_add_bss_config() {
 	config_add_boolean disassoc_low_ack isolate short_preamble
 
 	config_add_int \
-		wep_rekey eap_reauth_period \
+		wep_rekey wep_key_len_broadcast wep_key_len_unicast eap_reauth_period \
 		wpa_group_rekey wpa_pair_rekey wpa_master_rekey
 
 	config_add_boolean rsn_preauth auth_cache
@@ -148,7 +148,8 @@ hostapd_set_bss_options() {
 	wireless_vif_parse_encryption
 
 	local bss_conf
-	local wep_rekey wpa_group_rekey wpa_pair_rekey wpa_master_rekey
+	local wpa_group_rekey wpa_pair_rekey wpa_master_rekey
+	local wep_rekey wep_key_len_broadcast wep_key_len_unicast
 
 	json_get_vars \
 		wep_rekey wpa_group_rekey wpa_pair_rekey wpa_master_rekey \
@@ -156,7 +157,7 @@ hostapd_set_bss_options() {
 		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 \
 		wps_device_type wps_device_name wps_manufacturer wps_pin \
 		macfilter ssid wmm hidden short_preamble uapsd vht_2g_enabled \
-		vendor_vht_2g_enabled
+		vendor_vht_2g_enabled wep_key_len_broadcast wep_key_len_unicast
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -251,6 +252,10 @@ hostapd_set_bss_options() {
 				append bss_conf "radius_das_port=$dae_port" "$N"
 				append bss_conf "radius_das_client=$dae_client $dae_secret" "$N"
 			}
+
+			[ -n "$wep_rekey" ] && append bss_conf "wep_rekey_period=$wep_rekey" "$N"
+			[ -n "$wep_key_len_broadcast" ] && append bss_conf "wep_key_len_broadcast=$wep_key_len_broadcast" "$N"
+			[ -n "$wep_key_len_unicast" ] && append bss_conf "wep_key_len_unicast=$wep_key_len_unicast" "$N"
 
 			append bss_conf "nas_identifier=$nasid" "$N"
 			append bss_conf "eapol_key_index_workaround=1" "$N"
