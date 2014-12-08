@@ -58,7 +58,8 @@ IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6 \
 
 TEST_TOOLS:=sysstat devmem2 ethtool i2c-tools
 
-UTILS:=tftp-hpa pure-ftpd pm-utils qca-thermald-10.4 file luci-app-samba iperf
+UTILS:=tftp-hpa pure-ftpd pm-utils qca-thermald-10.4 file luci-app-samba iperf \
+	rng-tools
 
 BLUETOOTH:=bluez kmod-ath3k
 
