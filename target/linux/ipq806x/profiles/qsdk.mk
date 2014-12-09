@@ -33,7 +33,8 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-akronite-perf kmod-art2-10.4 \
 
 PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
 	openswan-nss kmod-qca-nss-crypto kmod-qca-nss-cfi \
-	qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr
+	qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr \
+	qca-nss-fw-enterprise_custA qca-nss-fw-enterprise_custC
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
