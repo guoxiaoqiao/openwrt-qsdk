@@ -31,6 +31,10 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-akronite-perf kmod-art2-10.4 \
 	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc \
 	qca-wifi-fw-hw1-10.4-asic qca-wifi-fw-hw2-10.4-asic qca-thermald-10.4
 
+PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
+	openswan-nss kmod-qca-nss-crypto kmod-qca-nss-cfi \
+	qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES+=kmod-ath9k wpad-mini \
@@ -83,11 +87,9 @@ $(eval $(call Profile,QSDK_Standard_Beeliner))
 define Profile/QSDK_Enterprise
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
-	PACKAGES+=kmod-qca-nss-ecm-noload luci-app-qos \
-	  kmod-openswan-nss openswan-nss luci-app-openswan \
-	  kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
-	  qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr \
-	  $(PACKAGES_WIFI_10_2)
+	PACKAGES+=luci-app-qos luci-app-openswan kmod-crypto-ocf \
+		$(PACKAGES_NSS_ENTERPRISE) \
+		$(PACKAGES_WIFI_10_2)
 endef
 
 define Profile/QSDK_Enterprise/Description

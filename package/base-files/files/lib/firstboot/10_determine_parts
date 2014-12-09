@@ -3,6 +3,7 @@
 set_mtd_part() {
     partname="rootfs_data"
     mtdpart="$(find_mtd_part $partname)"
+    [ -z "$mtdpart" ] && mtdpart="$(find_mmc_part $partname)"
 }
 
 set_rom_part() {
