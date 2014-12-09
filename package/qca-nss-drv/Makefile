@@ -44,92 +44,9 @@ define KernelPackage/qca-nss-drv/install
 	$(INSTALL_BIN) ./files/qca-nss-drv.conf $(1)/etc/config/nss
 endef
 
-define KernelPackage/qca-nss-tun6rd
-  SECTION:=kernel
-  CATEGORY:=Kernel modules
-  SUBMENU:=Network Devices
-  TITLE:=Kernel driver for NSS (connection manager) - tun6rd
-  DEPENDS:=kmod-qca-nss-drv +kmod-sit
-  FILES:=$(PKG_BUILD_DIR)/qca-nss-tun6rd.ko
-  AUTOLOAD:=$(call AutoLoad,51,qca-nss-tun6rd)
-endef
-
-define KernelPackage/qca-nss-tun6rd/Description
-Kernel modules for NSS connection manager - Support for 6rd tunnel
-endef
-
-define KernelPackage/qca-nss-tunipip6
-  SECTION:=kernel
-  CATEGORY:=Kernel modules
-  SUBMENU:=Network Devices
-  TITLE:=Kernel driver for NSS (connection manager) - DS-lite and ipip6 Tunnel
-  DEPENDS:=kmod-qca-nss-drv +kmod-iptunnel6 +kmod-ip6-tunnel
-  FILES:=$(PKG_BUILD_DIR)/qca-nss-tunipip6.ko
-  AUTOLOAD:=$(call AutoLoad,51,qca-nss-tunipip6)
-endef
-
-define KernelPackage/qca-nss-tunipip6/Description
-Kernel modules for NSS connection manager
-Add support for DS-lite and ipip6 tunnel
-endef
-
-define KernelPackage/qca-nss-profile-drv
-  SECTION:=kernel
-  CATEGORY:=Kernel modules
-  SUBMENU:=Network Devices
-  DEPENDS:=kmod-qca-nss-drv
-  TITLE:=Profiler for QCA NSS driver (IPQ806x)
-  FILES:=$(PKG_BUILD_DIR)/profiler/qca-nss-profile-drv.ko
-endef
-
-define KernelPackage/qca-nss-profile-drv/Description
-This package contains a NSS driver profiler for QCA chipset
-endef
-
-define KernelPackage/qca-nss-capwapmgr
-  SECTION:=kernel
-  CATEGORY:=Kernel modules
-  SUBMENU:=Network Devices
-  DEPENDS:=kmod-qca-nss-drv
-  TITLE:=NSS CAPWAP Manager for QCA NSS driver (IPQ806x)
-  FILES:=$(PKG_BUILD_DIR)/capwapmgr/qca-nss-capwapmgr.ko
-endef
-
-define KernelPackage/qca-nss-capwapmgr/Description
-This package contains a NSS CAPWAP Manager
-endef
-
 define Build/InstallDev
 	mkdir -p $(1)/usr/include/qca-nss-drv
 	$(CP) $(PKG_BUILD_DIR)/exports/* $(1)/usr/include/qca-nss-drv/
-endef
-
-define KernelPackage/qca-nss-qdisc
-  SECTION:=kernel
-  CATEGORY:=Kernel modules
-  SUBMENU:=Network Support
-  TITLE:=Qdisc for configuring shapers in NSS
-  DEPENDS:=kmod-qca-nss-drv
-  FILES:=$(PKG_BUILD_DIR)/nss_qdisc/qca-nss-qdisc.ko
-  AUTOLOAD:=$(call AutoLoad,33,qca-nss-qdisc)
-endef
-
-define KernelPackage/qca-nss-qdisc/Description
-Linux qdisc that aids in configuring shapers in the NSS
-endef
-
-define KernelPackage/qca-nss-ipsecmgr
-  SECTION:=kernel
-  CATEGORY:=Kernel modules
-  SUBMENU:=Network Devices
-  TITLE:=Kernel driver for NSS (ipsec manager) - ipsecmgr
-  DEPENDS:=kmod-qca-nss-drv
-  FILES:=$(PKG_BUILD_DIR)/qca-nss-ipsecmgr.ko
-  AUTOLOAD:=$(call AutoLoad,34,qca-nss-ipsecmgr)
-endef
-
-define KernelPackage/qca-nss-ipsecmgr/Description
-Kernel module for NSS IPsec offload manager
 endef
 
 EXTRA_CFLAGS+= -I$(STAGING_DIR)/usr/include/qca-nss-gmac
@@ -143,10 +60,4 @@ define Build/Compile
 		modules
 endef
 
-$(eval $(call KernelPackage,qca-nss-profile-drv))
-$(eval $(call KernelPackage,qca-nss-capwapmgr))
 $(eval $(call KernelPackage,qca-nss-drv))
-$(eval $(call KernelPackage,qca-nss-tun6rd))
-$(eval $(call KernelPackage,qca-nss-tunipip6))
-$(eval $(call KernelPackage,qca-nss-qdisc))
-$(eval $(call KernelPackage,qca-nss-ipsecmgr))
