@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2011 OpenWrt.org
+# Copyright (C) 2006-2015 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -503,7 +503,7 @@ define KernelPackage/pppox
   DEPENDS:=kmod-ppp
   KCONFIG:=CONFIG_PPPOE
   FILES:=$(LINUX_DIR)/drivers/net/ppp/pppox.ko
-  AUTOLOAD:=$(call AutoLoad,40,pppox)
+  AUTOLOAD:=$(call AutoLoad,31,pppox)
 endef
 
 define KernelPackage/pppox/description
@@ -519,7 +519,7 @@ define KernelPackage/pppoe
   DEPENDS:=kmod-ppp +kmod-pppox
   KCONFIG:=CONFIG_PPPOE
   FILES:=$(LINUX_DIR)/drivers/net/ppp/pppoe.ko
-  AUTOLOAD:=$(call AutoLoad,41,pppoe)
+  AUTOLOAD:=$(call AutoLoad,32,pppoe)
 endef
 
 define KernelPackage/pppoe/description
