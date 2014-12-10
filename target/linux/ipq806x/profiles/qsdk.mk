@@ -5,7 +5,8 @@
 NSS_STANDARD:= \
 	qca-nss-fw-retail \
 	kmod-qca-nss-drv \
-	kmod-qca-nss-gmac
+	kmod-qca-nss-gmac \
+	kmod-qca-edma
 
 SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm
 
