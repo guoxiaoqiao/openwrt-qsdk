@@ -123,6 +123,13 @@ ifeq ($(DUMP)$(TARGET_BUILD),)
   -include $(LINUX_DIR)/.config
 endif
 
+ifdef CONFIG_COLLECT_KERNEL_DEBUG
+  define Kernel/CollectDebugModules
+	mkdir -p $(KERNEL_BUILD_DIR)/debug/modules
+	-$(CP) $(1)/* $(KERNEL_BUILD_DIR)/debug/modules/
+  endef
+endif
+
 define KernelPackage/depends
   $(STAMP_BUILT): $(LINUX_DIR)/.config
   define KernelPackage/depends
@@ -179,6 +186,8 @@ $(call KernelPackage/$(1)/config)
 				echo "WARNING: module '$$$$$$$$mod' missing and modules.builtin not available, assuming built-in."; \
 			fi; \
 		  done;
+		  $(call Kernel/CollectDebugModules,$$(1)/$(MODULES_SUBDIR))
+		  $(RSTRIP) $$(1)/$(MODULES_SUBDUR)
 		  $(call ModuleAutoLoad,$(1),$$(1),$(AUTOLOAD))
 		  $(call KernelPackage/$(1)/install,$$(1))
       endef
