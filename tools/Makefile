@@ -22,6 +22,7 @@ tools-$(CONFIG_TARGET_orion_generic) += wrt350nv2-builder upslug2
 tools-$(CONFIG_powerpc) += upx
 tools-$(CONFIG_TARGET_x86) += qemu
 tools-$(CONFIG_TARGET_brcm2708) += mtools dosfstools
+tools-$(CONFIG_TARGET_ipq806x) += ramdump-parser
 ifneq ($(CONFIG_TARGET_ar71xx),)
 tools-y += lzma-old squashfs
 endif
