@@ -21,12 +21,24 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
 TARGET_LDFLAGS += $(if $(CONFIG_USE_EGLIBC),-lrt)
+CMAKE_OPTIONS += $(if $(CONFIG_FSTOOLS_UBIFS_EXTROOT),-DCMAKE_UBIFS_EXTROOT=y)
 
 define Package/fstools
   SECTION:=base
   CATEGORY:=Base system
   DEPENDS:=+ubox +USE_EGLIBC:librt +NAND_SUPPORT:ubi-utils
   TITLE:=OpenWrt filesystem tools
+  MENU:=1
+endef
+
+define Package/fstools/config
+	config FSTOOLS_UBIFS_EXTROOT
+		depends on PACKAGE_fstools
+		depends on NAND_SUPPORT
+		bool "Support extroot functionality with UBIFS"
+		default y
+		help
+			This option makes it possible to use extroot functionality if the root filesystem resides on an UBIFS partition
 endef
 
 define Package/block-mount
