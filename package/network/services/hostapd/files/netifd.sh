@@ -257,8 +257,10 @@ hostapd_set_bss_options() {
 			[ -n "$wep_key_len_broadcast" ] && append bss_conf "wep_key_len_broadcast=$wep_key_len_broadcast" "$N"
 			[ -n "$wep_key_len_unicast" ] && append bss_conf "wep_key_len_unicast=$wep_key_len_unicast" "$N"
 
+			[ -n "$eap_server" ] && append bss_conf "eap_server=$eap_server" "$N"
+			[ -n "$eapol_version" ] && append bss_conf "eapol_version=$eapol_version" "$N"
 			append bss_conf "nas_identifier=$nasid" "$N"
-			append bss_conf "eapol_key_index_workaround=1" "$N"
+			append bss_conf "eapol_key_index_workaround=$eapol_key_index_workaround" "$N"
 			append bss_conf "ieee8021x=1" "$N"
 			append bss_conf "wpa_key_mgmt=WPA-EAP" "$N"
 		;;
