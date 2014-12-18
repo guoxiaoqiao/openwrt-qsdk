@@ -28,6 +28,7 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-storm,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-whirlwind,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-qca961x-r3pc,0x80208000)
+	$(call Image/BuildKernel/FIT,qcom-qca961x-r3pc-wifi,0x80208000)
 endef
 
 define Image/Build/squashfs
