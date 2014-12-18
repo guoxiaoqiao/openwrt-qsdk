@@ -106,6 +106,13 @@ wifi_fixup_hwmode() {
 }
 
 _wifi_updown() {
+
+	for driver in ${DRIVERS}; do (
+		if eval "type pre_${driver}" 2>/dev/null >/dev/null; then
+			eval "pre_${driver}" ${1}
+		fi
+	); done
+
 	for device in ${2:-$DEVICES}; do (
 		config_get disabled "$device" disabled
 		[ 1 == "$disabled" ] && {
@@ -118,6 +125,12 @@ _wifi_updown() {
 			eval "${1}_$iftype '$device'" || echo "$device($iftype): ${1} failed"
 		elif [ ! -f /lib/netifd/wireless/$iftype.sh ]; then
 			echo "$device($iftype): Interface type not supported"
+		fi
+	); done
+
+	for driver in ${DRIVERS}; do (
+		if eval "type post_${driver}" 2>/dev/null >/dev/null; then
+			eval "post_${driver}" ${1}
 		fi
 	); done
 }
