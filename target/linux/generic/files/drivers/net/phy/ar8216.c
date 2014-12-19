@@ -1327,7 +1327,8 @@ ar8327_init_port(struct ar8216_priv *priv, int port)
 	    ((port == 6) && pdata->pad6_cfg)) {
 	        ar8327_init_cpuport(priv, port);
 	} else {
-		t = AR8216_PORT_STATUS_LINK_AUTO;
+		t = priv->read(priv, AR8327_REG_PORT_STATUS(port));
+		t |= AR8216_PORT_STATUS_LINK_AUTO;
 		priv->write(priv, AR8327_REG_PORT_STATUS(port), t);
 	}
 
