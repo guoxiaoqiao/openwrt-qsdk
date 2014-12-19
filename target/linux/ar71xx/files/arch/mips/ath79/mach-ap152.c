@@ -105,8 +105,8 @@ static struct ar8327_platform_data ap152_ar8337_data = {
 		.force_link = 1,
 		.speed = AR8327_PORT_SPEED_1000,
 		.duplex = 1,
-		.txpause = 0,
-		.rxpause = 0,
+		.txpause = 1,
+		.rxpause = 1,
 	},
 };
 
