@@ -70,6 +70,25 @@ endef
 $(eval $(call KernelPackage,bluetooth))
 
 
+define KernelPackage/ath3k
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=ath3k bluetooth driver
+  DEPENDS:=kmod-bluetooth
+  KCONFIG:= \
+	CONFIG_BT_ATH3K=y
+  FILES:= \
+	$(LINUX_DIR)/drivers/bluetooth/ath3k.ko
+  AUTOLOAD:=$(call AutoProbe,ath3k)
+endef
+
+define KernelPackage/ath3k/description
+ Ath3k bt firmware download
+endef
+
+$(eval $(call KernelPackage,ath3k))
+
+
+
 define KernelPackage/bluetooth-hci-h4p
   SUBMENU:=$(OTHER_MENU)
   TITLE:=HCI driver with H4 Nokia extensions
