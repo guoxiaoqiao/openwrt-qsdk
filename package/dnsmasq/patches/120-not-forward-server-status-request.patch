@@ -12,7 +12,7 @@ diff -uNr a/src/dns-protocol.h b/src/dns-protocol.h
 diff -uNr a/src/forward.c b/src/forward.c
 --- a/src/forward.c	2013-05-16 14:00:45.000000000 +0800
 +++ b/src/forward.c	2013-05-16 11:42:47.000000000 +0800
-@@ -691,7 +691,8 @@
+@@ -1079,7 +1079,8 @@
    
    if (n < (int)sizeof(struct dns_header) || 
        (msg.msg_flags & MSG_TRUNC) ||
