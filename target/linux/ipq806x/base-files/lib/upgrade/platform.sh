@@ -67,11 +67,28 @@ image_is_FIT() {
 }
 
 VERSION_FILE="/sys/devices/system/qfprom/qfprom0/version"
+AUTHENTICATE_FILE="/sys/devices/system/qfprom/qfprom0/authenticate"
 TMP_VERSION_FILE="/etc/config/sysupgrade_version"
 PRIMARY_BOOT_FILE="/proc/boot_info/rootfs/primaryboot"
 TMP_PRIMARY_BOOT_FILE="/etc/config/sysupgrade_primaryboot"
 unsecure_version=0x0
 local_version_string=0x0
+authenticate_string=0
+
+# is_authentication_check_enabled() checks whether installed image is
+# secure(1) or not(0)
+is_authentication_check_enabled() {
+	if [ -e $AUTHENTICATE_FILE ]; then
+		read authenticate_string < $AUTHENTICATE_FILE
+	fi
+	if [ "$authenticate_string" == "0" ]; then
+		echo "Returning 0 from is_authentication_check_enabled"
+		return 0
+	else
+		echo "Returning 1 from is_authentication_check_enabled"
+		return 1
+	fi
+}
 
 # get_local_image_version() check the version file & if it exists, read the
 # hexadecimal value & save it into global variable local_version_string
@@ -84,17 +101,17 @@ get_local_image_version() {
 	return 0
 }
 
-# is_local_image_secure() checks whether installed image is
-# secure(non-zero value) or not
-is_local_image_secure() {
+# is_version_check_enabled() checks whether version check is
+# enabled(non-zero value) or not
+is_version_check_enabled() {
 	get_local_image_version && return 0
 	if [ "$local_version_string" == "$unsecure_version" ]; then
-		echo "Returning 0 from is_local_image_secure because \
-			$local_version_string is ZERO"
+		echo "Returning 0 from is_version_check_enabled because "\
+			"$local_version_string is ZERO"
 		return 0
 	else
-		echo "Returning 1 from is_local_image_secure because \
-			$local_version_string is non-ZERO"
+		echo "Returning 1 from is_version_check_enabled because "\
+			"$local_version_string is non-ZERO"
 		return 1
 	fi
 }
@@ -349,10 +366,8 @@ is_image_version_higher() {
 }
 
 check_image_version() {
-	is_local_image_secure && {\
-		echo "Local image is not secured image, upgrade to continue !!!"
-		is_image_version_higher $1
-		update_tmp_version
+	is_version_check_enabled && {\
+		echo "Version check is not enabled, upgrade to continue !!!"
 		return 1
 	}
 	echo "Local image is SECURE image, check individual image version"
@@ -509,9 +524,6 @@ is_image_authenticated() {
 					src sig cert && { \
 				echo "Error while splitting code/signature/Certificate from \
 					/tmp/${fullname}.bin"
-				is_local_image_secure && {\
-					continue;
-				}
 				return 0
 			}
 			is_component_authenticated src sig cert || { \
@@ -530,9 +542,6 @@ is_image_authenticated() {
 					src sig cert && { \
 				echo "Error while splitting code/signature/Certificate from \
 					/tmp/tmp_kernel.bin"
-				is_local_image_secure && {\
-					continue;
-				}
 				return 0
 			}
 			is_component_authenticated src sig cert || { \
@@ -712,13 +721,15 @@ platform_check_image() {
 		return 1
 	}
 
-	is_image_authenticated $1 && {\
-		echo "Error: \"$1\" couldn't be authenticated. Abort..."
-		return 1
-	}
-	check_image_version $1 && {\
-		echo "Error: \"$1\" couldn't be upgraded. Abort..."
-		return 1
+	is_authentication_check_enabled || {
+		is_image_authenticated $1 && {\
+			echo "Error: \"$1\" couldn't be authenticated. Abort..."
+			return 1
+		}
+		check_image_version $1 && {\
+			echo "Error: \"$1\" couldn't be upgraded. Abort..."
+			return 1
+		}
 	}
 	return 0
 }
