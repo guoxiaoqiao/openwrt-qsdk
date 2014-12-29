@@ -670,7 +670,7 @@ flash_section() {
 		sbl2*) switch_layout boot; do_flash_partition ${sec} "SBL2";;
 		sbl3*) switch_layout boot; do_flash_partition ${sec} "SBL3";;
 		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "APPSBL";;
-		ddr-${board}*) switch_layout boot; do_flash_partition ${sec} "DDRCONFIG";;
+		ddr-${board}-*) switch_layout boot; do_flash_partition ${sec} "DDRCONFIG";;
 		ssd*) switch_layout boot; do_flash_partition ${sec} "SSD";;
 		tz*) switch_layout boot; do_flash_partition ${sec} "TZ";;
 		rpm*) switch_layout boot; do_flash_partition ${sec} "RPM";;
