@@ -17,10 +17,12 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_PACKAGE_kmod-madwifi \
 	CONFIG_PACKAGE_kmod-qca-wifi-perf \
 	CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf \
+	CONFIG_PACKAGE_kmod-qca-wifi-10.4-akronite-perf \
 	CONFIG_PACKAGE_kmod-mac80211
 
 PKG_BUILD_DEPENDS := \
-      PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf +PACKAGE_kmod-qca-wifi-perf:kmod-qca-wifi-perf
+      PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf +PACKAGE_kmod-qca-wifi-perf:kmod-qca-wifi-perf \
+      +PACKAGE_kmod-qca-wifi-10.4-akronite-perf:kmod-qca-wifi-10.4-akronite-perf
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -30,7 +32,9 @@ define Package/libiwinfo
   CATEGORY:=Libraries
   TITLE:=Generalized Wireless Information Library (iwinfo)
   DEPENDS:=+PACKAGE_kmod-mac80211:libnl-tiny \
-           +PACKAGE_kmod-qca-wifi-perf:kmod-qca-wifi-perf +CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf
+           +PACKAGE_kmod-qca-wifi-perf:kmod-qca-wifi-perf \
+	   +CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf \
+	   +PACKAGE_kmod-qca-wifi-10.4-akronite-perf:kmod-qca-wifi-10.4-akronite-perf
   MAINTAINER:=Jo-Philipp Wich <xm@subsignal.org>
 endef
 
@@ -83,6 +87,7 @@ IWINFO_BACKENDS := \
 	$(if $(CONFIG_PACKAGE_kmod-madwifi),madwifi) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-perf),qcawifi) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf),qcawifi) \
+	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-10.4-akronite-perf),qcawifi) \
 	$(if $(CONFIG_PACKAGE_kmod-mac80211),nl80211)
 
 TARGET_CFLAGS += \
