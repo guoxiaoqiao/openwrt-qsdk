@@ -102,7 +102,7 @@ hostapd_common_add_bss_config() {
 
 	config_add_int \
 		wep_rekey wep_key_len_broadcast wep_key_len_unicast eap_reauth_period \
-		wpa_group_rekey wpa_pair_rekey wpa_master_rekey
+		wpa_group_rekey wpa_pair_rekey wpa_master_rekey wpa_strict_rekey
 
 	config_add_boolean rsn_preauth auth_cache
 	config_add_int ieee80211w
@@ -148,7 +148,7 @@ hostapd_set_bss_options() {
 	wireless_vif_parse_encryption
 
 	local bss_conf
-	local wpa_group_rekey wpa_pair_rekey wpa_master_rekey
+	local wpa_group_rekey wpa_pair_rekey wpa_master_rekey wpa_strict_rekey
 	local wep_rekey wep_key_len_broadcast wep_key_len_unicast
 
 	json_get_vars \
@@ -157,7 +157,8 @@ hostapd_set_bss_options() {
 		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 \
 		wps_device_type wps_device_name wps_manufacturer wps_pin \
 		macfilter ssid wmm hidden short_preamble uapsd vht_2g_enabled \
-		vendor_vht_2g_enabled wep_key_len_broadcast wep_key_len_unicast
+		vendor_vht_2g_enabled wep_key_len_broadcast wep_key_len_unicast \
+		wpa_strict_rekey
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -197,6 +198,7 @@ hostapd_set_bss_options() {
 		[ -n "$wpa_group_rekey"  ] && append bss_conf "wpa_group_rekey=$wpa_group_rekey" "$N"
 		[ -n "$wpa_pair_rekey"   ] && append bss_conf "wpa_ptk_rekey=$wpa_pair_rekey"    "$N"
 		[ -n "$wpa_master_rekey" ] && append bss_conf "wpa_gmk_rekey=$wpa_master_rekey"  "$N"
+		[ -n "$wpa_strict_rekey"  ] && append bss_conf "wpa_strict_rekey=$wpa_strict_rekey" "$N"
 	}
 
 	case "$auth_type" in
