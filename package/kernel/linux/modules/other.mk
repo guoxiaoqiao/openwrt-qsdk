@@ -73,20 +73,17 @@ $(eval $(call KernelPackage,bluetooth))
 define KernelPackage/ath3k
   SUBMENU:=$(OTHER_MENU)
   TITLE:=ath3k bluetooth driver
-  DEPENDS:=kmod-bluetooth
-  KCONFIG:= \
-	CONFIG_BT_ATH3K=y
-  FILES:= \
-	$(LINUX_DIR)/drivers/bluetooth/ath3k.ko
+  DEPENDS:=+kmod-bluetooth +ar3k
+  KCONFIG:=CONFIG_BT_ATH3K
+  FILES:=$(LINUX_DIR)/drivers/bluetooth/ath3k.ko
   AUTOLOAD:=$(call AutoProbe,ath3k)
 endef
 
 define KernelPackage/ath3k/description
- Ath3k bt firmware download
+ Kernel support for QCA ath3k based bluetooth device
 endef
 
 $(eval $(call KernelPackage,ath3k))
-
 
 
 define KernelPackage/bluetooth-hci-h4p
