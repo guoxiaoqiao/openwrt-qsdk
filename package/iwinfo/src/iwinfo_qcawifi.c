@@ -425,14 +425,14 @@ int qcawifi_get_bitrate(const char *ifname, int *buf)
 				do {
 					si = (struct ieee80211req_sta_info *) cp;
 
-					if( si->isi_rssi > 0 )
-					{
-						rate_count++;
-						rate += ((si->isi_rates[si->isi_txrate] & IEEE80211_RATE_VAL) / 2);
-					}
+					if( si->isi_txratekbps == 0 )
+						rate = ((si->isi_rates[si->isi_txrate] & IEEE80211_RATE_VAL) / 2) * 1000;
+					else
+						rate = si->isi_txratekbps;
 
 					cp   += si->isi_len;
 					len  -= si->isi_len;
+					rate_count++;
 				} while (len >= sizeof(struct ieee80211req_sta_info));
 			}
 
@@ -746,11 +746,12 @@ int qcawifi_get_assoclist(const char *ifname, char *buf, int *len)
 			entry.rx_packets = (si->isi_rxseqs[0] & IEEE80211_SEQ_SEQ_MASK)
 				>> IEEE80211_SEQ_SEQ_SHIFT;
 
-			entry.tx_rate.rate =
-				(si->isi_rates[si->isi_txrate] & IEEE80211_RATE_VAL) * 500;
+			if(si->isi_txratekbps == 0)
+				entry.tx_rate.rate = (si->isi_rates[si->isi_txrate] & IEEE80211_RATE_VAL)/2 * 1000;
+			else
+				entry.tx_rate.rate = si->isi_txratekbps;
 
-			/* XXX: this is just a guess */
-			entry.rx_rate.rate = entry.tx_rate.rate;
+			entry.rx_rate.rate = si->isi_rxratekbps;
 
 			entry.rx_rate.mcs = -1;
 			entry.tx_rate.mcs = -1;
