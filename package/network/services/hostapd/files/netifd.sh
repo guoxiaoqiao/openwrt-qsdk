@@ -136,6 +136,7 @@ hostapd_common_add_bss_config() {
 	config_add_int mcast_rate
 	config_add_array basic_rate
 
+	config_add_boolean require_ht
 	config_add_boolean vht_2g_enabled vendor_vht_2g_enabled
 
 }
@@ -154,7 +155,7 @@ hostapd_set_bss_options() {
 	json_get_vars \
 		wep_rekey wpa_group_rekey wpa_pair_rekey wpa_master_rekey \
 		maxassoc max_inactivity disassoc_low_ack isolate auth_cache \
-		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 \
+		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 require_ht \
 		wps_device_type wps_device_name wps_manufacturer wps_pin \
 		macfilter ssid wmm hidden short_preamble uapsd vht_2g_enabled \
 		vendor_vht_2g_enabled wep_key_len_broadcast wep_key_len_unicast \
@@ -170,6 +171,7 @@ hostapd_set_bss_options() {
 	set_default uapsd 0
 	set_default vht_2g_enabled 0
 	set_default vendor_vht_2g_enabled 0
+	set_default require_ht 0
 
 	append bss_conf "ctrl_interface=/var/run/hostapd"
 	if [ "$isolate" -gt 0 ]; then
@@ -187,6 +189,10 @@ hostapd_set_bss_options() {
 	if [ "$vendor_vht_2g_enabled" -gt 0 ]; then
 		append bss_conf "vendor_vht_2g_enabled=$vendor_vht_2g_enabled" "$N"
 	fi
+	if [ "$require_ht" -gt 0 ]; then
+                append bss_conf "require_ht=$require_ht" "$N"
+        fi
+
 
 	append bss_conf "disassoc_low_ack=$disassoc_low_ack" "$N"
 	append bss_conf "preamble=$short_preamble" "$N"
