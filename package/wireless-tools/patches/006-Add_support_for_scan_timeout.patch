@@ -1,0 +1,66 @@
+--- a/iwlist.c
++++ b/iwlist.c
+@@ -618,6 +618,7 @@ print_scanning_info(int		skfd,
+   int			has_range;
+   struct timeval	tv;				/* Select timeout */
+   int			timeout = 15000000;		/* 15s */
++  int			max_timeout;
+ 
+   /* Avoid "Unused parameter" warning */
+   args = args; count = count;
+@@ -683,18 +684,37 @@ print_scanning_info(int		skfd,
+ 	  /* Scan only this ESSID */
+ 	  scanflags |= IW_SCAN_THIS_ESSID;
+ 	}
+-      else
+ 	/* Check for last scan result (do not trigger scan) */
+-	if(!strncmp(args[0], "last", 4))
+-	  {
+-	    /* Hack */
+-	    scanflags |= IW_SCAN_HACK;
+-	  }
+-	else
+-	  {
++      else if(!strncmp(args[0], "last", 4))
++      	{
++	      /* Hack */
++	      scanflags |= IW_SCAN_HACK;
++      	}
++
++      else if(!strncmp(args[0], "timeout", 7))
++	{
++	  if (count < 1)
++	    {
++	      fprintf(stderr, "Too few arguments for scanning option [%s]\n",
++		      args[0]);
++	      return(-1);
++	    }
++
++	  args++;
++	  count--;
++
++	  max_timeout = atoi(args[0]);
++
++	  /* 300 at max for optional scan timeout */
++	  if (max_timeout > 15 && max_timeout < 300)
++		timeout = max_timeout * 1000000;
++
++	}
++      else
++	{
+ 	    fprintf(stderr, "Invalid scanning option [%s]\n", args[0]);
+ 	    return(-1);
+-	  }
++	}
+ 
+       /* Next arg */
+       args++;
+@@ -2050,7 +2070,7 @@ typedef struct iwlist_entry {
+ } iwlist_cmd;
+ 
+ static const struct iwlist_entry iwlist_cmds[] = {
+-  { "scanning",		print_scanning_info,	-1, "[essid NNN] [last]" },
++  { "scanning",		print_scanning_info,	-1, "[essid NNN] [last] [timeout secs]" },
+   { "frequency",	print_freq_info,	0, NULL },
+   { "channel",		print_freq_info,	0, NULL },
+   { "bitrate",		print_bitrate_info,	0, NULL },
