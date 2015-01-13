@@ -1,0 +1,52 @@
+From 165538229435f23a82a0c27b8b1e90d0833cad6e Mon Sep 17 00:00:00 2001
+From: Helmut Schaa <helmut.schaa@googlemail.com>
+Date: Wed, 7 May 2014 09:28:31 +0200
+Subject: [PATCH 1/2] ath9k: Allow platform override without EEPROM override
+
+Add a new platform data flag "use_eeprom" that indicates that the eeprom
+found on the card itself should be used instead of the one present in
+the platform data.
+
+This allows to override the MAC address of a PCI card while preserving
+the eeprom data from the card itself.
+
+The default behavior is preserved.
+
+Change-Id: I3b57366b0db394e972fe5b71bf2fa2f61efda5d5
+Signed-off-by: Helmut Schaa <helmut.schaa@googlemail.com>
+Signed-off-by: John W. Linville <linville@tuxdriver.com>
+Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath9k/init.c |    2 +-
+ include/linux/ath9k_platform.h        |    2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath9k/init.c b/drivers/net/wireless/ath/ath9k/init.c
+index 30b039f..c1edc39 100644
+--- a/drivers/net/wireless/ath/ath9k/init.c
++++ b/drivers/net/wireless/ath/ath9k/init.c
+@@ -519,7 +519,7 @@ static int ath9k_init_softc(u16 devid, struct ath_softc *sc,
+ 	atomic_set(&ah->intr_ref_cnt, -1);
+ 	sc->sc_ah = ah;
+ 
+-	if (!pdata) {
++	if (!pdata || pdata->use_eeprom) {
+ 		ah->ah_flags |= AH_USE_EEPROM;
+ 		sc->sc_ah->led_pin = -1;
+ 	} else {
+diff --git a/include/linux/ath9k_platform.h b/include/linux/ath9k_platform.h
+index d120581..0ab0037 100644
+--- a/include/linux/ath9k_platform.h
++++ b/include/linux/ath9k_platform.h
+@@ -40,6 +40,8 @@ struct ath9k_platform_data {
+ 	int (*get_mac_revision)(void);
+ 	int (*external_reset)(void);
+ 
++	bool use_eeprom;
++
+ 	int num_leds;
+ 	const struct gpio_led *leds;
+ };
+-- 
+1.7.10.4
+
