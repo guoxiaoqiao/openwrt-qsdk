@@ -1,0 +1,32 @@
+From 9fa23aa5459c00fe0a4236051088410301fa203f Mon Sep 17 00:00:00 2001
+From: Mathieu Olivari <mathieu@codeaurora.org>
+Date: Wed, 7 Jan 2015 17:20:42 -0800
+Subject: [PATCH 2/2] include: ath9k_platform: sync status with upstream code
+
+Moving the field tx_gain_buffalo at the same place as in linus' tip
+will allow us to use the latest backports package.
+
+Change-Id: Ia72502a2a1366612428231e1cbb5334d33f8ac64
+Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
+---
+ include/linux/ath9k_platform.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/ath9k_platform.h b/include/linux/ath9k_platform.h
+index 0ab0037..9fa7016 100644
+--- a/include/linux/ath9k_platform.h
++++ b/include/linux/ath9k_platform.h
+@@ -33,9 +33,9 @@ struct ath9k_platform_data {
+ 
+ 	bool endian_check;
+ 	bool is_clk_25mhz;
++	bool tx_gain_buffalo;
+ 	bool disable_2ghz;
+ 	bool disable_5ghz;
+-	bool tx_gain_buffalo;
+ 
+ 	int (*get_mac_revision)(void);
+ 	int (*external_reset)(void);
+-- 
+1.7.10.4
+
