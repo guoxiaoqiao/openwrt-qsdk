@@ -94,6 +94,15 @@ ifneq ($(HOST_STATIC_LINKING),)
   ))
 endif
 
+define Require/ocamlc
+	ocamlc -v | grep version | sed 's,.*version \(.*\),\1,' | \
+		awk '($$$$1 >= "3.12") { print "ok" }' | grep ok > /dev/null
+endef
+
+$(eval $(call Require,ocamlc, \
+	Please install the Objective Caml compiler (ocaml-nox) v3.12 or later \
+))
+
 define Require/ncurses
 	echo 'int main(int argc, char **argv) { initscr(); return 0; }' | \
 		gcc -include ncurses.h -x c -o $(TMP_DIR)/a.out - -lncurses
@@ -186,13 +195,4 @@ endef
 
 $(eval $(call Require,getopt-extended, \
 	Please install an extended getopt version that supports --long \
-))
-
-define Require/ocamlc
-	ocamlc -v | grep version | sed 's,.*version \(.*\),\1,' | \
-		awk '($$$$1 >= "3.12") { print "ok" }' | grep ok > /dev/null
-endef
-
-$(eval $(call Require,ocamlc, \
-	Please install the Objective Caml compiler (ocaml-nox) v3.12 or later \
 ))
