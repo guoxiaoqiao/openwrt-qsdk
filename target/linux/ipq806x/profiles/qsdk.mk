@@ -10,7 +10,7 @@ NSS_STANDARD:= \
 
 SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm
 
-SWITCH_SSDK_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell  swconfig
+SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell  swconfig
 SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
 WIFI_OPEN_PKGS:= kmod-qca-ath9k kmod-qca-ath10k wpad hostapd-utils \
