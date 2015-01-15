@@ -17,8 +17,8 @@ define Profile/QSDK_Base
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
 	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-ssdk-nohnat qca-ssdk-shell \
-	  file pure-ftpd kmod-qca-nss-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
-	  kmod-qca-nss-macsec qca-thermald rng-tools perf kmod-nat-sctp
+	  file pure-ftpd kmod-qca-nss-drv-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
+	  kmod-qca-nss-macsec qca-thermald rng-tools perf iptables-mod-ct-sctp iptables-mod-sctp
 endef
 
 PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd-cli \
@@ -33,7 +33,8 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-akronite-perf kmod-art2-10.4 \
 
 PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
 	openswan-nss kmod-qca-nss-crypto kmod-qca-nss-cfi \
-	qca-nss-fw-enterprise kmod-qca-nss-ipsecmgr \
+	kmod-qca-nss-drv-profile \
+	qca-nss-fw-enterprise kmod-qca-nss-drv-ipsecmgr \
 	qca-nss-fw-enterprise_custA qca-nss-fw-enterprise_custC
 
 define Profile/QSDK_Open
@@ -54,8 +55,8 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Standard
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi \
-		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail \
+	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi kmod-qca-nss-drv-profile \
+		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		$(PACKAGES_WIFI_10_2)
 endef
 
@@ -72,7 +73,7 @@ define Profile/QSDK_Standard_Beeliner
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Beeliner Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi \
-		kmod-qca-nss-tun6rd kmod-qca-nss-tunipip6 qca-nss-fw-retail \
+		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		$(PACKAGES_WIFI_10_4)
 endef
 
