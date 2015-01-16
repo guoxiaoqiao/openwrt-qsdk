@@ -19,7 +19,7 @@ PKG_MAINTAINER:=Jo-Philipp Wich <jow@openwrt.org>
 PKG_LICENSE:=LGPL-2.1
 PKG_LICENSE_FILES:=COPYING cmd/GPL lib/LGPL
 
-PKG_FIXUP:=autoreconf
+PKG_FIXUP:=libtool
 
 PKG_INSTALL:=1
 
