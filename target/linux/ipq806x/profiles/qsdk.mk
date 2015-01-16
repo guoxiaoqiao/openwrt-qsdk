@@ -8,6 +8,8 @@ NSS_STANDARD:= \
 	kmod-qca-nss-gmac \
 	kmod-qca-edma
 
+NSS_ECM:= kmod-qca-nss-ecm
+
 SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm
 
 SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell  swconfig
@@ -48,7 +50,7 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(ALLJOYN_PKGS) $(BLUETOOTH)
+		$(ALLJOYN_PKGS) $(BLUETOOTH) $(NSS_ECM)
 endef
 
 define Profile/QSDK_Open/Description
