@@ -30,6 +30,13 @@ define KernelPackage/qca-nss-drv
   AUTOLOAD:=$(call AutoLoad,51,qca-nss-drv)
 endef
 
+define KernelPackage/qca-nss-drv/install
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/firmware/
+
+	$(INSTALL_BIN) ./files/qca-nss-drv.hotplug $(1)/etc/hotplug.d/firmware/10-qca-nss-fw
+
+endef
+
 define KernelPackage/qca-nss-drv/Description
 This package contains a NSS driver for QCA chipset
 endef
