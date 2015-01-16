@@ -217,6 +217,15 @@ ar71xx_board_detect() {
 	*"CUS227")
 		name="cus227"
 		;;
+	*"CUS531 reference board")
+		name="cus531"
+		;;
+	*"CUS531 dual reference board")
+		name="cus531-dual"
+		;;
+	*"CUS531 nand reference board")
+		name="cus531-nand"
+		;;
 	*"DB120 reference board")
 		name="db120"
 		;;
