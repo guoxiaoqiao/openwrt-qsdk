@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013 The Linux Foundation. All rights reserved.
+# Copyright (c) 2013-2015 The Linux Foundation. All rights reserved.
 #
 
 include $(TOPDIR)/rules.mk
@@ -24,7 +24,7 @@ define KernelPackage/qca-nss-drv
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
-  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-gmac
+  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-gmac +kmod-ppp +kmod-pppoe
   TITLE:=Kernel driver for NSS (core driver)
   FILES:=$(PKG_BUILD_DIR)/qca-nss-drv.ko
   AUTOLOAD:=$(call AutoLoad,51,qca-nss-drv)
