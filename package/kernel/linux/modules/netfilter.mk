@@ -366,6 +366,47 @@ endef
 
 $(eval $(call KernelPackage,ipt-u32))
 
+define KernelPackage/ipt-ct-sctp
+  TITLE:=SCTP conntrack kernel modules
+  KCONFIG:= CONFIG_NF_CT_PROTO_SCTP
+  FILES:= $(LINUX_DIR)/net/netfilter/nf_conntrack_proto_sctp.ko
+  AUTOLOAD:=$(call AutoLoad,50,nf_conntrack_proto_sctp)
+  $(call AddDepends/ipt,+kmod-ipt-conntrack)
+endef
+
+define KernelPackage/ipt-ct-sctp/description
+  Kernel modules for sctp conntrack
+endef
+
+$(eval $(call KernelPackage,ipt-ct-sctp))
+
+define KernelPackage/ipt-sctp
+  TITLE:=SCTP iptables kernel modules
+  KCONFIG:=CONFIG_NETFILTER_XT_MATCH_SCTP
+  FILES:= $(LINUX_DIR)/net/netfilter/xt_sctp.ko
+  AUTOLOAD:=$(call AutoLoad,50,xt_sctp)
+  $(call AddDepends/ipt)
+endef
+
+define KernelPackage/ipt-sctp/description
+  Kernel modules for sctp iptables rules
+endef
+
+$(eval $(call KernelPackage,ipt-sctp))
+
+define KernelPackage/nat-sctp
+  TITLE:=SCTP nat kernel modules
+  KCONFIG:=CONFIG_NF_NAT_PROTO_SCTP
+  FILES:= $(LINUX_DIR)/net/netfilter/nf_nat_proto_sctp.ko
+  AUTOLOAD:=$(call AutoLoad,51,nf_nat_proto_sctp)
+  $(call AddDepends/ipt,+kmod-ipt-ct-sctp +kmod-ipt-nat +kmod-lib-crc32c)
+endef
+
+define KernelPackage/nat-sctp/description
+  Kernel modules for sctp nat
+endef
+
+$(eval $(call KernelPackage,nat-sctp))
 
 define KernelPackage/ipt-iprange
   TITLE:=Module for matching ip ranges
