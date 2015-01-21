@@ -1,4 +1,3 @@
-
 #
 # Copyright (C) 2006-2010 OpenWrt.org
 #
@@ -259,7 +258,7 @@ define KernelPackage/ipt-ipopt
   KCONFIG:=$(KCONFIG_IPT_IPOPT)
   FILES:=$(foreach mod,$(IPT_IPOPT-m),$(LINUX_DIR)/net/$(mod).ko)
   AUTOLOAD:=$(call AutoProbe,$(notdir $(IPT_IPOPT-m)))
-  $(call AddDepends/ipt)
+  $(call AddDepends/ipt,+kmod-ipt-conntrack)
 endef
 
 define KernelPackage/ipt-ipopt/description
