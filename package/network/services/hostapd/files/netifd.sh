@@ -104,6 +104,8 @@ hostapd_common_add_bss_config() {
 		wep_rekey wep_key_len_broadcast wep_key_len_unicast eap_reauth_period \
 		wpa_group_rekey wpa_pair_rekey wpa_master_rekey wpa_strict_rekey
 
+	config_add_string wps_config
+
 	config_add_boolean rsn_preauth auth_cache
 	config_add_int ieee80211w
 
@@ -151,6 +153,7 @@ hostapd_set_bss_options() {
 	local bss_conf
 	local wpa_group_rekey wpa_pair_rekey wpa_master_rekey wpa_strict_rekey
 	local wep_rekey wep_key_len_broadcast wep_key_len_unicast
+	local wps_config
 
 	json_get_vars \
 		wep_rekey wpa_group_rekey wpa_pair_rekey wpa_master_rekey \
@@ -159,7 +162,7 @@ hostapd_set_bss_options() {
 		wps_device_type wps_device_name wps_manufacturer wps_pin \
 		macfilter ssid wmm hidden short_preamble uapsd vht_2g_enabled \
 		vendor_vht_2g_enabled wep_key_len_broadcast wep_key_len_unicast \
-		wpa_strict_rekey
+		wpa_strict_rekey wps_config
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -289,7 +292,7 @@ hostapd_set_bss_options() {
 	set_default wps_pushbutton 0
 	set_default wps_label 0
 
-	config_methods=
+	config_methods=$wps_config
 	[ "$wps_pushbutton" -gt 0 ] && append config_methods push_button
 	[ "$wps_label" -gt 0 ] && append config_methods label
 
