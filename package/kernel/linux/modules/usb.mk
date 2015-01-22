@@ -163,6 +163,25 @@ endef
 $(eval $(call KernelPackage,usb-phy-dwc3-qcom))
 
 
+define KernelPackage/usb-phy-dwc3-qca961x
+  TITLE:=DWC3 USB QCA961x PHY driver
+  DEPENDS:=@TARGET_ipq806x
+  KCONFIG:= CONFIG_USB_QCA961X_PHY
+  FILES:= \
+	$(LINUX_DIR)/drivers/usb/phy/phy-qca-baldur.ko \
+	$(LINUX_DIR)/drivers/usb/phy/phy-qca-uniphy.ko
+  AUTOLOAD:=$(call AutoLoad,45,phy-qca-baldur phy-qca-uniphy,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-phy-dwc3-qca961x/description
+ This driver provides support for the integrated DesignWare
+ USB3 IP Core within the QCA961X SoCs.
+endef
+
+$(eval $(call KernelPackage,usb-phy-dwc3-qca961x))
+
+
 define KernelPackage/usb-phy-omap-usb2
   TITLE:=Support for OMAP2 USB PHY
   KCONFIG:= \
@@ -481,6 +500,23 @@ define KernelPackage/usb-dwc3-qcom/description
 endef
 
 $(eval $(call KernelPackage,usb-dwc3-qcom))
+
+
+define KernelPackage/usb-dwc3-qca961x
+  TITLE:=DWC3 USB QCA961x controller driver
+  DEPENDS:=@TARGET_ipq806x +kmod-usb-dwc3 +kmod-usb-phy-dwc3-qca961x
+  KCONFIG:= CONFIG_USB_DWC3_QCA961X
+  FILES:= $(LINUX_DIR)/drivers/usb/dwc3/dwc3-qca961x.ko
+  AUTOLOAD:=$(call AutoLoad,53,dwc3-qca961x,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-dwc3-qca961x/description
+ This driver provides support for the integrated DesignWare
+ USB3 IP Core within the QCOM SoCs.
+endef
+
+$(eval $(call KernelPackage,usb-dwc3-qca961x))
 
 
 define KernelPackage/usb-acm
