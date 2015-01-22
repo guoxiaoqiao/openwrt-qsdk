@@ -408,6 +408,20 @@ endef
 
 $(eval $(call KernelPackage,ipt-sctp))
 
+define KernelPackage/nat-sctp
+  TITLE:=SCTP nat kernel modules
+  KCONFIG:=CONFIG_NF_NAT_PROTO_SCTP
+  FILES:= $(LINUX_DIR)/net/ipv4/netfilter/nf_nat_proto_sctp.ko
+  AUTOLOAD:=$(call AutoLoad,51,nf_nat_proto_sctp)
+  $(call AddDepends/ipt,+kmod-ipt-ct-sctp +kmod-lib-crc32c)
+endef
+
+define KernelPackage/nat-sctp/description
+  Kernel modules for sctp nat
+endef
+
+$(eval $(call KernelPackage,nat-sctp))
+
 define KernelPackage/ipt-iprange
   TITLE:=Module for matching ip ranges
   KCONFIG:=$(KCONFIG_IPT_IPRANGE)
