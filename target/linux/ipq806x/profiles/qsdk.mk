@@ -10,6 +10,8 @@ NSS_STANDARD:= \
 
 NSS_ECM:= kmod-qca-nss-ecm
 
+HW_CRYPTO:= kmod-crypto-qcrypto
+
 SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm
 
 SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell  swconfig
@@ -63,7 +65,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(ALLJOYN_PKGS) $(SHORTCUT_FE) $(BLUETOOTH)
+		$(ALLJOYN_PKGS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO)
 endef
 
 define Profile/QSDK_Standard/Description

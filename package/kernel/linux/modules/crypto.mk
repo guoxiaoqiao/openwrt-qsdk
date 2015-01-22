@@ -548,3 +548,18 @@ define KernelPackage/crypto-mv-cesa
 endef
 
 $(eval $(call KernelPackage,crypto-mv-cesa))
+
+
+define KernelPackage/crypto-qcrypto
+  TITLE:=Qualcomm crypto CE engine
+  KCONFIG:= \
+	CONFIG_CRYPTO_DEV_QCRYPTO \
+	CONFIG_CRYPTO_DEV_QCEDEV
+  FILES:= \
+	$(LINUX_DIR)/drivers/crypto/msm/qcrypto.ko \
+	$(LINUX_DIR)/drivers/crypto/msm/qcedev.ko
+  DEPENDS:=@TARGET_ipq806x +kmod-crypto-manager +kmod-crypto-aes +kmod-crypto-hash +kmod-crypto-des
+  $(call AddDepends/crypto)
+endef
+
+$(eval $(call KernelPackage,crypto-qcrypto))
