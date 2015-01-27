@@ -40,6 +40,7 @@ endef
 
 define KernelPackage/qca-nss-ecm
   $(call KernelPackage/qca-nss-ecm/Default)
+  AUTOLOAD:=$(call AutoLoad,52,ecm)
 endef
 
 define KernelPackage/qca-nss-ecm/Description
