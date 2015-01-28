@@ -7,6 +7,7 @@ start() {
 	[ -c /dev/watchdog ] || return 1
 	[ -x /sbin/watchdog ] || return 1
 	service_start /sbin/watchdog -t 5 /dev/watchdog
+	echo -17 > /proc/$(pgrep watchdog)/oom_adj
 }
 stop() {
 	service_stop /sbin/watchdog
