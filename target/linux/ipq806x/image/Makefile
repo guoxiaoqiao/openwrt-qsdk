@@ -23,7 +23,7 @@ endif
 endef
 
 define Image/BuildKernel
-	$(CP) $(LINUX_DIR)/vmlinux $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
+	$(CP) $(KDIR)/vmlinux.elf $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-v2.0-ap148,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-storm,0x42208000)
