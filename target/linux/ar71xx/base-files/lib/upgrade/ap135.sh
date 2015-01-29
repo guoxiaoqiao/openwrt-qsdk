@@ -72,6 +72,9 @@ platform_get_offset() {
 
 platform_check_image_ap135() {
 	case "$(ar71xx_board_name)" in
+	"ap147" |\
+	"ap151" |\
+	"ap152" |\
 	"ap135" |\
 	"ap135-dual")
 		local image_size=$( get_filesize "$1" )
@@ -117,6 +120,9 @@ platform_check_image_ap135() {
 
 platform_do_upgrade_ap135() {
 	case "$(ar71xx_board_name)" in
+	"ap147" |\
+	"ap151" |\
+	"ap152" |\
 	"ap135" |\
 	"ap135-dual")
 		local firmware_base_addr=$( printf "%d" "0x9f050000" )
