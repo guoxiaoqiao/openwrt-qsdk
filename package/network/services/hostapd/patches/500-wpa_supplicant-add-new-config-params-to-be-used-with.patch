@@ -22,7 +22,7 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
  #include "common/defs.h"
  #include "utils/list.h"
  
-@@ -533,6 +534,11 @@ struct wpa_driver_associate_params {
+@@ -406,6 +407,11 @@ struct wpa_driver_associate_params {
  	 * responsible for selecting with which BSS to associate. */
  	const u8 *bssid;
  
@@ -44,9 +44,9 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
  #include "config.h"
  
  
-@@ -1702,6 +1703,97 @@ static char * wpa_config_write_mesh_basi
- #endif /* CONFIG_MESH */
+@@ -1527,6 +1528,97 @@ static char * wpa_config_write_psk_list(
  
+ #endif /* CONFIG_P2P */
  
 +static int wpa_config_parse_mcast_rate(const struct parse_data *data,
 +				       struct wpa_ssid *ssid, int line,
@@ -142,16 +142,16 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
  /* Helper macros for network block parser */
  
  #ifdef OFFSET
-@@ -1926,6 +2018,9 @@ static const struct parse_data ssid_fiel
+@@ -1731,6 +1823,9 @@ static const struct parse_data ssid_fiel
  	{ INT(ap_max_inactivity) },
  	{ INT(dtim_period) },
  	{ INT(beacon_int) },
 +	{ INT_RANGE(fixed_freq, 0, 1) },
 +	{ FUNC(rates) },
 +	{ FUNC(mcast_rate) },
- #ifdef CONFIG_MACSEC
- 	{ INT_RANGE(macsec_policy, 0, 1) },
- #endif /* CONFIG_MACSEC */
+ };
+ 
+ #undef OFFSET
 --- a/wpa_supplicant/config_ssid.h
 +++ b/wpa_supplicant/config_ssid.h
 @@ -12,6 +12,7 @@
@@ -162,20 +162,20 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
  
  #define MAX_SSID_LEN 32
  
-@@ -670,6 +671,10 @@ struct wpa_ssid {
+@@ -630,6 +631,10 @@ struct wpa_ssid {
+ 	 * dereferences since it may not be updated in all cases.
  	 */
  	void *parent_cred;
- 
++
 +	int fixed_freq;
 +	unsigned char rates[NL80211_MAX_SUPP_RATES];
 +	double mcast_rate;
-+
- #ifdef CONFIG_MACSEC
- 	/**
- 	 * macsec_policy - Determines the policy for MACsec secure session
+ };
+ 
+ #endif /* CONFIG_SSID_H */
 --- a/wpa_supplicant/wpa_supplicant.c
 +++ b/wpa_supplicant/wpa_supplicant.c
-@@ -2168,6 +2168,13 @@ static void wpas_start_assoc_cb(struct w
+@@ -1788,6 +1788,13 @@ static void wpas_start_assoc_cb(struct w
  			params.beacon_int = ssid->beacon_int;
  		else
  			params.beacon_int = wpa_s->conf->beacon_int;

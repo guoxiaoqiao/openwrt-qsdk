@@ -2,7 +2,7 @@
 +++ b/src/ap/wps_hostapd.c
 @@ -1051,11 +1051,9 @@ int hostapd_init_wps(struct hostapd_data
  
- 		if (conf->rsn_pairwise & (WPA_CIPHER_CCMP | WPA_CIPHER_GCMP))
+ 		if (conf->rsn_pairwise & WPA_CIPHER_CCMP)
  			wps->encr_types |= WPS_ENCR_AES;
 -		if (conf->rsn_pairwise & WPA_CIPHER_TKIP)
 +		else if (conf->rsn_pairwise & WPA_CIPHER_TKIP)

@@ -1,6 +1,6 @@
 --- a/hostapd/config_file.c
 +++ b/hostapd/config_file.c
-@@ -1949,6 +1949,8 @@ static int hostapd_config_fill(struct ho
+@@ -1942,6 +1942,8 @@ static int hostapd_config_fill(struct ho
  		conf->ieee80211d = atoi(pos);
  	} else if (os_strcmp(buf, "ieee80211h") == 0) {
  		conf->ieee80211h = atoi(pos);
@@ -11,7 +11,7 @@
  	} else if (os_strcmp(buf, "eapol_version") == 0) {
 --- a/src/ap/ap_config.h
 +++ b/src/ap/ap_config.h
-@@ -594,6 +594,7 @@ struct hostapd_config {
+@@ -551,6 +551,7 @@ struct hostapd_config {
  	int ieee80211d;
  
  	int ieee80211h; /* DFS */
@@ -21,7 +21,7 @@
  	 * Local power constraint is an octet encoded as an unsigned integer in
 --- a/src/ap/dfs.c
 +++ b/src/ap/dfs.c
-@@ -812,6 +812,7 @@ static int hostapd_csa_in_progress(struc
+@@ -731,6 +731,7 @@ static int hostapd_dfs_start_channel_swi
  
  static int hostapd_dfs_start_channel_switch(struct hostapd_iface *iface)
  {
@@ -29,7 +29,7 @@
  	struct hostapd_channel_data *channel;
  	int secondary_channel;
  	u8 vht_oper_centr_freq_seg0_idx;
-@@ -839,6 +840,18 @@ static int hostapd_dfs_start_channel_swi
+@@ -758,6 +759,18 @@ static int hostapd_dfs_start_channel_swi
  					&vht_oper_centr_freq_seg1_idx,
  					skip_radar);
  
@@ -48,9 +48,9 @@
  	if (!channel) {
  		/*
  		 * If there is no channel to switch immediately to, check if
-@@ -944,6 +957,11 @@ int hostapd_dfs_radar_detected(struct ho
- 	set_dfs_state(iface, freq, ht_enabled, chan_offset, chan_width,
- 		      cf1, cf2, HOSTAPD_CHAN_DFS_UNAVAILABLE);
+@@ -859,6 +872,11 @@ int hostapd_dfs_radar_detected(struct ho
+ 			    chan_width, cf1, cf2,
+ 			    HOSTAPD_CHAN_DFS_UNAVAILABLE);
  
 +	if (iface->conf->dfs_test_mode)
 +		set_dfs_state(iface, freq, ht_enabled, chan_offset,
