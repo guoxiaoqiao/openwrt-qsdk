@@ -1,0 +1,29 @@
+From edeaec0b8752bbadeb5b94c2b238e07dc4a1b4e4 Mon Sep 17 00:00:00 2001
+From: Helmut Schaa <helmut.schaa@googlemail.com>
+Date: Fri, 29 Nov 2013 15:22:34 +0100
+Subject: [PATCH] netifd: Fix possible segfault in bridge code
+
+Need to check calloc result. In case of failure the bridge member will be missing.
+
+Signed-off-by: Helmut Schaa <helmut.schaa@googlemail.com>
+---
+ bridge.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/bridge.c b/bridge.c
+index 0e06cc2..4ef0d7e 100644
+--- a/bridge.c
++++ b/bridge.c
+@@ -318,6 +318,9 @@ bridge_create_member(struct bridge_state *bst, struct device *dev, bool hotplug)
+ 	struct bridge_member *bm;
+ 
+ 	bm = calloc(1, sizeof(*bm) + strlen(dev->ifname) + 1);
++	if (!bm)
++		return NULL;
++
+ 	bm->bst = bst;
+ 	bm->dev.cb = bridge_member_cb;
+ 	bm->dev.hotplug = hotplug;
+-- 
+2.2.1
+
