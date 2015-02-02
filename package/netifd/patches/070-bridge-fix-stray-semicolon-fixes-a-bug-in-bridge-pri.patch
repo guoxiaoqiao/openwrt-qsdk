@@ -1,0 +1,27 @@
+From 0bdaf23dc9fc786698787593381efefd527e5f89 Mon Sep 17 00:00:00 2001
+From: Felix Fietkau <nbd@openwrt.org>
+Date: Tue, 29 Oct 2013 16:59:05 +0100
+Subject: [PATCH] bridge: fix stray semicolon, fixes a bug in bridge primary
+ port reset
+
+Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+---
+ bridge.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bridge.c b/bridge.c
+index 01c9a2c..0e06cc2 100644
+--- a/bridge.c
++++ b/bridge.c
+@@ -178,7 +178,7 @@ bridge_remove_member(struct bridge_member *bm)
+ 	if (!bm->present)
+ 		return;
+ 
+-	if (bm == bst->primary_port);
++	if (bm == bst->primary_port)
+ 		bridge_reset_primary(bst);
+ 
+ 	if (bst->dev.active)
+-- 
+2.2.1
+

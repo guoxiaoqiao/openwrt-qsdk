@@ -23,7 +23,7 @@ endef
 
 PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd-cli \
 	  qca-wpa-supplicant-macsec qca-wpa-cli qca-spectral qca-wapid sigma-dut \
-	  qca-acfg qca-wrapd qca-wifi-fw whc qca-thermald
+	  qca-acfg qca-wrapd whc qca-thermald
 
 PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-akronite-perf kmod-art2-10.4 \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4-macsec \

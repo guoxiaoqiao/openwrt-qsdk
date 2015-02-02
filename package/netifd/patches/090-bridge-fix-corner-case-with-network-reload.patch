@@ -1,0 +1,38 @@
+From 814e09499e12edaea658f9f5594fe9917c0ecde4 Mon Sep 17 00:00:00 2001
+From: Luka Perkov <luka@openwrt.org>
+Date: Thu, 29 Aug 2013 15:28:27 +0200
+Subject: [PATCH] bridge: fix corner case with network reload
+
+After removing all ifname options from bridge interface and executing network
+reload the configuration was not applied properly on the system. With this
+change that is no longer a issue.
+
+Signed-off-by: Luka Perkov <luka@openwrt.org>
+---
+ bridge.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/bridge.c b/bridge.c
+index 05f2ad6..01c9a2c 100644
+--- a/bridge.c
++++ b/bridge.c
+@@ -454,12 +454,11 @@ bridge_config_init(struct device *dev)
+ 		device_set_present(&bst->dev, true);
+ 	}
+ 
+-	if (!bst->ifnames)
+-		return;
+-
+ 	vlist_update(&bst->members);
+-	blobmsg_for_each_attr(cur, bst->ifnames, rem) {
+-		bridge_add_member(bst, blobmsg_data(cur));
++	if (bst->ifnames) {
++		blobmsg_for_each_attr(cur, bst->ifnames, rem) {
++			bridge_add_member(bst, blobmsg_data(cur));
++		}
+ 	}
+ 	vlist_flush(&bst->members);
+ }
+-- 
+2.2.1
+

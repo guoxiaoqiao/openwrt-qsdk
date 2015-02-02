@@ -1,0 +1,33 @@
+From 145b4bdae4e71d8d304623372cf7a1e511bfe3d4 Mon Sep 17 00:00:00 2001
+From: Emanuel Taube <emanuel.taube@gmail.com>
+Date: Fri, 7 Mar 2014 10:22:12 +0100
+Subject: [PATCH] netifd: fix bridge reloading issue
+
+Check in the right order to decide if the bridge have to be set up.
+Additionally we are consistent with setting it down.
+
+Signed-off-by: Emanuel Taube <emanuel.taube@gmail.com>
+---
+ bridge.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/bridge.c b/bridge.c
+index 4ef0d7e..7bd1cf0 100644
+--- a/bridge.c
++++ b/bridge.c
+@@ -231,10 +231,10 @@ bridge_member_cb(struct device_user *dev, enum device_event ev)
+ 		bm->present = true;
+ 		bst->n_present++;
+ 
++		if (bst->n_present == 1)
++			device_set_present(&bst->dev, true);
+ 		if (bst->dev.active)
+ 			bridge_enable_member(bm);
+-		else if (bst->n_present == 1)
+-			device_set_present(&bst->dev, true);
+ 
+ 		break;
+ 	case DEV_EVENT_REMOVE:
+-- 
+2.2.1
+
