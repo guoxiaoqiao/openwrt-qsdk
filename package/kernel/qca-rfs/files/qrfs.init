@@ -17,30 +17,11 @@
 
 START=70
 
-__qrfs_get_ess_vlan() {
-	local cfg="$1"
-	local ifnames
-
-	[ "$cfg" == "lan" -o "$cfg" == "wan" ] || return
-	config_get ifnames "$cfg" device
-
-	for iface in $ifnames; do
-		echo "$cfg $iface" > /proc/qrfs/vif
-	done
-}
-
 start() {
-	local kernel_version=$(uname -r)
-
-	[ -e "/lib/modules/$kernel_version/qrfs.ko" ] || return
-	insmod /lib/modules/$kernel_version/qrfs.ko
-	[ "$?" = "0" ] || return
-
+	echo "1" > /proc/qrfs/enable
 	ip neigh flush all
-	config_load network
-	config_foreach __qrfs_get_ess_vlan interface
 }
 
 stop() {
-	[ -n "$(lsmod|grep qrfs)" ] && rmmod qrfs
+	echo "0" > /proc/qrfs/enable
 }

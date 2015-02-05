@@ -38,10 +38,11 @@ define KernelPackage/qca-rfs
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Support
-  DEPENDS:=+kmod-ipt-conntrack +kmod-qca-ssdk-hnat
+  DEPENDS:=+kmod-ipt-conntrack
   TITLE:=Kernel module for QCA Receiving Flow Steering
   FILES:=$(PKG_BUILD_DIR)/qrfs.ko
   KCONFIG:=CONFIG_NF_CONNTRACK_EVENTS=y CONFIG_NF_CONNTRACK_CHAIN_EVENTS=y
+  AUTOLOAD:=$(call AutoLoad,41,qrfs)
 endef
 
 define KernelPackage/qca-rfs/Description
@@ -58,11 +59,14 @@ define Build/Compile
 		modules
 endef
 
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/usr/include/qca-rfs
+	$(CP) -rf $(PKG_BUILD_DIR)/rfs_dev.h $(1)/usr/include/qca-rfs
+endef
+
 define KernelPackage/qca-rfs/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/qrfs.init $(1)/etc/init.d/qrfs
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
-	$(INSTALL_DATA) ./files/qrfs.hotplug $(1)/etc/hotplug.d/iface/30-qrfs
 endef
 
 $(eval $(call KernelPackage,qca-rfs))
