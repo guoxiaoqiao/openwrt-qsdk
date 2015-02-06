@@ -91,7 +91,8 @@ define KernelPackage/qca-nss-drv-qdisc
   SUBMENU:=Network Support
   TITLE:=Qdisc for configuring shapers in NSS
   DEPENDS:=kmod-qca-nss-drv
-  FILES:=$(PKG_BUILD_DIR)/qca-nss-qdisc.ko
+  FILES:=$(PKG_BUILD_DIR)/nss_qdisc/qca-nss-qdisc.ko
+  AUTOLOAD:=$(call AutoLoad,58,qca-nss-qdisc)
 endef
 
 define KernelPackage/qca-nss-drv-qdisc/Description
