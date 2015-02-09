@@ -41,7 +41,7 @@ CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	quagga-vtysh rp-pppoe-relay -dnsmasq dnsmasq-dhcpv6 radvd \
 	wide-dhcpv6-client bridge luci-app-ddns ddns-scripts xl2tpd ppp-mod-pptp \
 	iptables-mod-extra iptables-mod-ipsec iptables-mod-filter 6rd luci-proto-ipv6 \
-	kmod-bonding luci-app-qos luci-app-radvd kmod-nat-sctp openswan
+	kmod-bonding luci-app-qos luci-app-radvd kmod-nat-sctp openswan arptables
 ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	alljoyn-controlpanel alljoyn-notification alljoyn-services_common
 
