@@ -388,7 +388,7 @@ sub install_package {
 	$installed{$name} and !$override and return 0;
 	$installed{$src} = 1;
 
-	defined($override) and $override == 1
+	$override == 1
 		and warn "Overriding package '$src'\n"
 		or warn "Installing package '$src'\n";
 
