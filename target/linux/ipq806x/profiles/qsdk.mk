@@ -33,7 +33,7 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-akronite-perf kmod-art2-10.4 \
 
 PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
 	openswan-nss kmod-qca-nss-crypto kmod-qca-nss-cfi \
-	kmod-qca-nss-drv-profile \
+	kmod-qca-nss-drv-profile kmod-qca-nss-drv-capwapmgr \
 	qca-nss-fw-enterprise kmod-qca-nss-drv-ipsecmgr \
 	qca-nss-fw-enterprise_custA qca-nss-fw-enterprise_custC
 
