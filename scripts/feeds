@@ -377,15 +377,12 @@ sub install_package {
 
 	# previously installed packages set the runtime package
 	# newly installed packages set the source package
-	$installed{$src} and !is_core_package($src) and return 0;
+	$installed{$src} and return 0;
 
 	# check previously installed packages
-	$installed{$name} and !is_core_package($name) and return 0;
+	$installed{$name} and return 0;
 	$installed{$src} = 1;
-
-	is_core_package($src)
-		and warn "Overriding package '$src'\n"
-		or warn "Installing package '$src'\n";
+	warn "Installing package '$src'\n";
 
 	$install_method{$type} or do {
 		warn "Unknown installation method: '$type'\n";
