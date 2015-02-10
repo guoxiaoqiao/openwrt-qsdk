@@ -376,19 +376,14 @@ sub install_package {
 	$src or $src = $name;
 
 	# previously installed packages set the runtime package
-	# newly installed packages set the source package to 1
-	$installed{$src} and $installed{$src} == 1 and return 0;
-
-	# we'll detect an override request with the 2 conditions below:
-	# - a package with the same src exists in the core packages list
-	# - the package previously installed is not from a feed
-	my $override = 1 if (is_core_package($src) and !$installed{$src}->{feed});
+	# newly installed packages set the source package
+	$installed{$src} and !is_core_package($src) and return 0;
 
 	# check previously installed packages
-	$installed{$name} and !$override and return 0;
+	$installed{$name} and !is_core_package($name) and return 0;
 	$installed{$src} = 1;
 
-	$override == 1
+	is_core_package($src)
 		and warn "Overriding package '$src'\n"
 		or warn "Installing package '$src'\n";
 
