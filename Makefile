@@ -89,12 +89,12 @@ world: prepare $(target/stamp-compile) $(package/stamp-compile) $(package/stamp-
 # update all feeds, re-create index files, install symlinks
 package/symlinks:
 	$(SCRIPT_DIR)/feeds update -a
-	$(SCRIPT_DIR)/feeds install -a
+	$(SCRIPT_DIR)/feeds install -a -f
 
 # re-create index files, install symlinks
 package/symlinks-install:
 	$(SCRIPT_DIR)/feeds update -i
-	$(SCRIPT_DIR)/feeds install -a
+	$(SCRIPT_DIR)/feeds install -a -f
 
 # remove all symlinks, don't touch ./feeds
 package/symlinks-clean:
