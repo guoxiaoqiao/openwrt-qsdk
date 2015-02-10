@@ -972,6 +972,9 @@ static int ag71xx_tx_packets(struct ag71xx *ag, struct net_device *dev,
 
 	DBG("%s: %u packets sent out\n", dev->name, sent);
 
+	if (!sent)
+		return;
+
 	/*
 	 * Mark the amount of work we've done.
 	 */
