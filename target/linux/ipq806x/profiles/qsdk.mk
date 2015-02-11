@@ -20,7 +20,7 @@ QCA_RFS:= kmod-qca-rfs
 SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell  swconfig
 SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
-WIFI_OPEN_PKGS:= kmod-qca-ath9k kmod-qca-ath10k wpad hostapd-utils \
+WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open wpa-cli
 
 WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-akronite-perf qca-wifi-fw-10.4-emu \
