@@ -48,7 +48,7 @@ ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 
 UTILS:=tftp-hpa sysstat iperf devmem2 ip ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald \
-	luci-app-samba
+	luci-app-samba perf
 
 BLUETOOTH:=bluez kmod-ath3k
 
