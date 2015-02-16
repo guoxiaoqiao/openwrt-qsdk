@@ -78,6 +78,7 @@
 #define AG71XX_RX_RING_SIZE_MAX		256
 
 #define AG71XX_JUMBO_LEN		9000
+#define DESC_JUMBO_PKTLEN_M		0x3FFF
 
 #ifdef CONFIG_AG71XX_DEBUG
 #define DBG(fmt, args...)	pr_debug(fmt, ## args)
