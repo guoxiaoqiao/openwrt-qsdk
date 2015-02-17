@@ -157,6 +157,7 @@ config BUSYBOX_CONFIG_ARPING
 
 config BUSYBOX_CONFIG_BRCTL
 	bool "brctl"
+	default n if PACKAGE_bridge
 	default BUSYBOX_DEFAULT_BRCTL
 	select BUSYBOX_CONFIG_PLATFORM_LINUX
 	help
