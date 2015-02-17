@@ -35,6 +35,7 @@ static int ag71xx_gmac_num = 0;
 	| NETIF_MSG_TX_ERR)
 
 static int ag71xx_msg_level = -1;
+static int ag71xx_frame_len_mask = DESC_PKTLEN_M;
 
 module_param_named(msg_level, ag71xx_msg_level, int, 0);
 MODULE_PARM_DESC(msg_level, "Message level (-1=defaults,0=none,...,16=all)");
@@ -457,6 +458,38 @@ static void ag71xx_hw_stop(struct ag71xx *ag)
 	ag71xx_wr(ag, AG71XX_REG_TX_CTRL, 0);
 }
 
+static void ag71xx_enable_jumbo_frame(struct ag71xx *ag)
+{
+	void __iomem *dam = ioremap_nocache(QCA956X_DAM_RESET_OFFSET1,
+			QCA956X_DAM_RESET_SIZE);
+
+	if (!dam) {
+		dev_err(&ag->dev, "unable to ioremap DAM_RESET_OFFSET\n");
+	} else {
+		/*
+		 * can not use the wr, rr functions since this is outside of
+		 * the normal ag71xx register block
+		 */
+		__raw_writel(__raw_readl(dam) | QCA956X_JUMBO_ENABLE , dam);
+		(void)__raw_readl(dam);
+		iounmap(dam);
+	}
+
+	dam = ioremap_nocache(QCA956X_DAM_RESET_OFFSET2,
+			QCA956X_DAM_RESET_SIZE);
+	if (!dam) {
+		dev_err(&ag->dev, "unable to ioremap DAM_RESET_OFFSET\n");
+	} else {
+		/*
+		 * can not use the wr, rr functions since this is outside of
+		 * the normal ag71xx register block
+		 */
+		__raw_writel(__raw_readl(dam) | QCA956X_JUMBO_ENABLE , dam);
+		(void)__raw_readl(dam);
+		iounmap(dam);
+	}
+}
+
 static void ag71xx_hw_setup(struct ag71xx *ag)
 {
 	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
@@ -467,11 +500,21 @@ static void ag71xx_hw_setup(struct ag71xx *ag)
 	ag71xx_sb(ag, AG71XX_REG_MAC_CFG2,
 		  MAC_CFG2_PAD_CRC_EN | MAC_CFG2_LEN_CHECK);
 
+	if ((ag->dev->mtu > AG71XX_TX_MTU_LEN) &&
+	    (pdata->is_qca956x || pdata->is_ar724x)) {
+		ag71xx_sb(ag, AG71XX_REG_MAC_CFG2, MAC_CFG2_HUGE_FRAME_EN);
+	}
+
 	/* setup max frame length */
 	if(ag->dev->mtu < AG71XX_TX_MTU_LEN)
 		ag71xx_wr(ag, AG71XX_REG_MAC_MFL, AG71XX_TX_MTU_LEN);
 	else
 		ag71xx_wr(ag, AG71XX_REG_MAC_MFL, ag->dev->mtu);
+
+	if ((ag->dev->mtu > AG71XX_TX_MTU_LEN) &&
+	    (pdata->is_qca956x || pdata->is_ar724x)) {
+		ag71xx_enable_jumbo_frame(ag);
+	}
 
 	/* setup FIFO configuration registers */
 	ag71xx_wr(ag, AG71XX_REG_FIFO_CFG0, FIFO_CFG0_INIT);
@@ -558,7 +601,7 @@ static void ag71xx_hw_start(struct ag71xx *ag)
 
 static void ag71xx_disable_inline_chksum_engine(struct ag71xx *ag)
 {
-	void __iomem *dam = ioremap_nocache(QCA956X_DAM_RESET_OFFSET,
+	void __iomem *dam = ioremap_nocache(QCA956X_DAM_RESET_OFFSET1,
 			QCA956X_DAM_RESET_SIZE);
 	if (!dam) {
 		dev_err(&ag->dev, "unable to ioremap DAM_RESET_OFFSET\n");
@@ -776,7 +819,7 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
 
 	/* setup descriptor fields */
 	desc->data = (u32)dma_addr;
-	desc->ctrl = len & DESC_PKTLEN_M;
+	desc->ctrl = len & ag71xx_frame_len_mask;
 
 	curr = curr->next;
 	ring->curr = curr;
@@ -1102,7 +1145,7 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
 		/*
 		 * Determine the size of the packet we just received.
 		 */
-		pktlen = desc_ctrl & DESC_PKTLEN_M;
+		pktlen = desc_ctrl & ag71xx_frame_len_mask;
 		pktlen -= ETH_FCS_LEN;
 
 		/*
@@ -1262,6 +1305,11 @@ static int ag71xx_change_mtu(struct net_device *dev, int new_mtu)
 	ret = ag71xx_open(dev);
 	if (ret)
 		dev_close(dev);
+
+	if (new_mtu > AG71XX_TX_MTU_LEN)
+		ag71xx_frame_len_mask = DESC_JUMBO_PKTLEN_M;
+	else
+		ag71xx_frame_len_mask = DESC_PKTLEN_M;
 
 	return ret;
 }
