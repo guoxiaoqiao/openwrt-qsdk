@@ -1,0 +1,24 @@
+diff --git a/info.c b/info.c
+index 6e21e45..84db716 100644
+--- a/info.c
++++ b/info.c
+@@ -173,6 +173,18 @@ static int print_phy_handler(struct nl_msg *msg, void *arg)
+ 						goto next;
+ 					}
+ 
++					if (!tb_freq[NL80211_FREQUENCY_ATTR_NO_HT40_MINUS])
++						print_flag("HT40-", &open);
++
++					if (!tb_freq[NL80211_FREQUENCY_ATTR_NO_HT40_PLUS])
++						print_flag("HT40+", &open);
++
++					if (!tb_freq[NL80211_FREQUENCY_ATTR_NO_80MHZ])
++						print_flag("VHT80", &open);
++
++					if (!tb_freq[NL80211_FREQUENCY_ATTR_NO_160MHZ])
++						print_flag("VHT160", &open);
++
+ 					/* If both flags are set assume an new kernel */
+ 					if (tb_freq[NL80211_FREQUENCY_ATTR_NO_IR] && tb_freq[__NL80211_FREQUENCY_ATTR_NO_IBSS]) {
+ 						print_flag("no IR", &open);
+
