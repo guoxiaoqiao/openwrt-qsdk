@@ -18,7 +18,8 @@ define Profile/QSDK_Base
 	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  file pure-ftpd kmod-qca-nss-drv-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
-	  kmod-qca-nss-macsec qca-thermald rng-tools perf kmod-nat-sctp
+	  kmod-qca-nss-macsec qca-thermald rng-tools perf kmod-nat-sctp kmod-aq_phy \
+	  kmod-qca_85xx_sw
 endef
 
 PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd-cli \
