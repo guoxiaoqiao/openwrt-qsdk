@@ -34,7 +34,7 @@ OPENWRT_STANDARD:= \
 STORAGE:=kmod-scsi-core kmod-usb-storage \
 	kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	kmod-nls-cp437 kmod-nls-iso8859-1 kmod-fs-ext4 \
-	mdadm
+	mdadm ntfs-3g
 
 CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	kmod-ipt-conntrack-qos mcproxy kmod-ipt-nathelper-rtsp kmod-ipv6 \
