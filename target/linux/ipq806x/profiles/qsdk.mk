@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014 The Linux Foundation. All rights reserved.
+# Copyright (c) 2014-2015 The Linux Foundation. All rights reserved.
 #
 
 NSS_STANDARD:= \
@@ -10,7 +10,7 @@ NSS_STANDARD:= \
 
 NSS_ECM:= kmod-qca-nss-ecm
 
-NSS_CLIENTS:= kmod-qca-nss-drv-qdisc
+NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
 HW_CRYPTO:= kmod-crypto-qcrypto
 
