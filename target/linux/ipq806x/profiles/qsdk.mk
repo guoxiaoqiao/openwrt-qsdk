@@ -30,7 +30,8 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-akronite-perf kmod-art2-10.4 \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4-macsec \
 	qca-wpa-cli-10.4 qca-wapid-10.4 sigma-dut-10.4 qca-wpc-10.4 \
 	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc \
-	qca-wifi-fw-hw1-10.4-asic qca-wifi-fw-hw2-10.4-asic qca-thermald-10.4
+	qca-wifi-fw-hw1-10.4-asic qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw3-10.4-asic \
+	qca-thermald-10.4
 
 PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
 	openswan-nss kmod-qca-nss-crypto kmod-qca-nss-cfi \
