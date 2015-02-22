@@ -1,0 +1,11 @@
+--- a/fdisks/Makemodule.am
++++ b/fdisks/Makemodule.am
+@@ -59,6 +59,8 @@ cfdisk_SOURCES = fdisks/cfdisk.c
+ cfdisk_CFLAGS = $(AM_CFLAGS)
+ cfdisk_LDADD = $(LDADD) libcommon.la
+ 
++cfdisk_LDADD += -ltinfo
++
+ if BUILD_LIBBLKID
+ cfdisk_CFLAGS += -I$(ul_libblkid_incdir)
+ cfdisk_LDADD += libblkid.la
