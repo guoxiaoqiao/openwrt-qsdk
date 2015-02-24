@@ -1,0 +1,114 @@
+diff --git a/drivers/watchdog/ath79_wdt.c b/drivers/watchdog/ath79_wdt.c
+index bf79909..602f08d 100644
+--- a/drivers/watchdog/ath79_wdt.c
++++ b/drivers/watchdog/ath79_wdt.c
+@@ -31,6 +31,9 @@
+ #include <linux/watchdog.h>
+ #include <linux/clk.h>
+ #include <linux/err.h>
++#include <linux/jiffies.h>
++#include <linux/sched.h>
++#include <linux/percpu.h>
+ 
+ #include <asm/mach-ath79/ath79.h>
+ #include <asm/mach-ath79/ar71xx_regs.h>
+@@ -38,6 +41,8 @@
+ #define DRIVER_NAME	"ath79-wdt"
+ 
+ #define WDT_TIMEOUT	15	/* seconds */
++#define WDT_KLEVELPET	 0	/* Kernel pet */
++#define WDT_ULEVELPET	 1	/* User pet */
+ 
+ #define WDOG_CTRL_LAST_RESET	BIT(31)
+ #define WDOG_CTRL_ACTION_MASK	3
+@@ -56,6 +61,11 @@ module_param(timeout, int, 0);
+ MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds "
+ 			  "(default=" __MODULE_STRING(WDT_TIMEOUT) "s)");
+ 
++static int pet_source = WDT_KLEVELPET;
++module_param(pet_source, int, 0);
++MODULE_PARM_DESC(pet_source, "Watchdog pet source "
++                           "(default=" __MODULE_STRING(WDT_KLEVELPET) ")");
++
+ static unsigned long wdt_flags;
+ 
+ #define WDT_FLAGS_BUSY		0
+@@ -65,16 +75,31 @@ static struct clk *wdt_clk;
+ static unsigned long wdt_freq;
+ static int boot_status;
+ static int max_timeout;
++static unsigned long long last_pet;
++static int user_source = 0;
++
++static void ath79_wdt_timer_ping(unsigned long data) ;
++
++static DEFINE_TIMER(wd_timer, ath79_wdt_timer_ping, 0, 0);
+ 
+ static inline void ath79_wdt_keepalive(void)
+ {
+ 	ath79_reset_wr(AR71XX_RESET_REG_WDOG, wdt_freq * timeout);
+ 	/* flush write */
+ 	ath79_reset_rr(AR71XX_RESET_REG_WDOG);
++	last_pet = sched_clock();
++}
++
++static void ath79_wdt_timer_ping(unsigned long data)
++{
++	ath79_wdt_keepalive();
++	/* pet 10 secs  once  */
++	mod_timer(&wd_timer, jiffies + HZ * 10);
+ }
+ 
+ static inline void ath79_wdt_enable(void)
+ {
++	user_source = pet_source;
+ 	ath79_wdt_keepalive();
+ 
+ 	/*
+@@ -88,6 +113,8 @@ static inline void ath79_wdt_enable(void)
+ 	ath79_reset_wr(AR71XX_RESET_REG_WDOG_CTRL, WDOG_CTRL_ACTION_FCR);
+ 	/* flush write */
+ 	ath79_reset_rr(AR71XX_RESET_REG_WDOG_CTRL);
++	if(!user_source)
++		mod_timer(&wd_timer, jiffies + HZ * 10);
+ }
+ 
+ static inline void ath79_wdt_disable(void)
+@@ -155,8 +182,8 @@ static ssize_t ath79_wdt_write(struct file *file, const char *data,
+ 						&wdt_flags);
+ 			}
+ 		}
+-
+-		ath79_wdt_keepalive();
++		if(user_source)
++			ath79_wdt_keepalive();
+ 	}
+ 
+ 	return len;
+@@ -192,7 +219,8 @@ static long ath79_wdt_ioctl(struct file *file, unsigned int cmd,
+ 		break;
+ 
+ 	case WDIOC_KEEPALIVE:
+-		ath79_wdt_keepalive();
++		if(user_source)
++			ath79_wdt_keepalive();
+ 		err = 0;
+ 		break;
+ 
+@@ -200,7 +228,6 @@ static long ath79_wdt_ioctl(struct file *file, unsigned int cmd,
+ 		err = get_user(t, p);
+ 		if (err)
+ 			break;
+-
+ 		err = ath79_wdt_set_timeout(t);
+ 		if (err)
+ 			break;
+@@ -284,6 +311,8 @@ static int __devexit ath79_wdt_remove(struct platform_device *pdev)
+ 	misc_deregister(&ath79_wdt_miscdev);
+ 	clk_disable(wdt_clk);
+ 	clk_put(wdt_clk);
++	if(!pet_source)
++		del_timer(&wd_timer);
+ 	return 0;
+ }
+ 
