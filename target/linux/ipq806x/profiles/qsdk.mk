@@ -17,7 +17,7 @@ define Profile/QSDK_Base
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
 	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-ssdk-nohnat qca-ssdk-shell \
-	  file pure-ftpd kmod-qca-nss-drv-qdisc xl2tpd ppp-mod-pptp flock pm-utils \
+	  file pure-ftpd kmod-qca-nss-drv-qdisc xl2tpd ppp-mod-pptp pm-utils \
 	  kmod-qca-nss-macsec qca-thermald rng-tools perf kmod-nat-sctp kmod-aq_phy \
 	  kmod-qca_85xx_sw
 endef
