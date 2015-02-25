@@ -23,10 +23,10 @@ SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open wpa-cli
 
-WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-akronite-perf qca-wifi-fw-10.4-emu \
-	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
-	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wapid-10.4 sigma-dut-10.4 \
-	qcmbr-10.4 qca-wrapd-10.4
+WIFI_10_4_2_PKGS:=kmod-qca-wifi-10.4.2-akronite-perf qca-wifi-fw-10.4.2-emu \
+	qca-hostap-10.4.2 qca-hostapd-cli-10.4.2 qca-wpa-supplicant-10.4.2 \
+	qca-wpa-cli-10.4.2 qca-spectral-10.4.2 sigma-dut-10.4 \
+	qcmbr-10.4 qca-wrapd-10.4.2
 
 OPENWRT_STANDARD:= \
 	luci
@@ -68,13 +68,13 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
+		$(WIFI_10_4_2_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
 		$(ALLJOYN_PKGS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS)
 endef
 
 define Profile/QSDK_Standard/Description
 	QSDK Standard package set configuration.
-	Enables qca-wifi 10.4 packages
+	Enables qca-wifi 10.4.2 packages
 endef
 
 $(eval $(call Profile,QSDK_Standard))
