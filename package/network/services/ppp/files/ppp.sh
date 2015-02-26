@@ -277,6 +277,7 @@ proto_pptp_setup() {
 	[ -n "$server" ] && {
 		for ip in $(resolveip -t 5 "$server"); do
 			( proto_add_host_dependency "$config" "$ip" $interface )
+			echo "$ip" >> /tmp/server.pptp-${config}
 			serv_addr=1
 		done
 	}
@@ -302,6 +303,8 @@ proto_pptp_setup() {
 }
 
 proto_pptp_teardown() {
+	local interface="$1"
+	rm -f /tmp/server.pptp-${interface}
 	ppp_generic_teardown "$@"
 }
 
