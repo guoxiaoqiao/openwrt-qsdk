@@ -19,7 +19,7 @@ define Package/pm-utils
   CATEGORY:=Utilities
   TITLE:=Power Management Utilities
   URL:=http://pm-utils.freedesktop.org/wiki/
-  DEPENDS:=libgcc +libc +flock
+  DEPENDS:=+flock
 endef
 
 define Package/pm-utils/description
