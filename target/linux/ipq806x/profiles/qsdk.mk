@@ -26,7 +26,7 @@ WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad hostapd-utils \
 WIFI_10_4_2_PKGS:=kmod-qca-wifi-10.4.2-akronite-perf qca-wifi-fw-10.4.2-emu \
 	qca-hostap-10.4.2 qca-hostapd-cli-10.4.2 qca-wpa-supplicant-10.4.2 \
 	qca-wpa-cli-10.4.2 qca-spectral-10.4.2 sigma-dut-10.4 \
-	qcmbr-10.4 qca-wrapd-10.4.2
+	qcmbr-10.4 qca-wrapd-10.4.2 qca-wapid-10.4.2
 
 OPENWRT_STANDARD:= \
 	luci
