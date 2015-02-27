@@ -34,7 +34,7 @@ OPENWRT_STANDARD:= \
 STORAGE:=kmod-scsi-core kmod-usb-storage \
 	kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	kmod-nls-cp437 kmod-nls-iso8859-1 kmod-fs-ext4 \
-	mdadm ntfs-3g
+	mdadm ntfs-3g kmod-ebtables
 
 CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	kmod-ipt-conntrack-qos mcproxy kmod-ipt-nathelper-rtsp kmod-ipv6 \
@@ -48,7 +48,7 @@ ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 
 UTILS:=tftp-hpa sysstat iperf devmem2 ip ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald \
-	luci-app-samba perf
+	luci-app-samba perf ebtables
 
 BLUETOOTH:=bluez kmod-ath3k
 
