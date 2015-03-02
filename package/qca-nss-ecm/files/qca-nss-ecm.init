@@ -8,6 +8,8 @@
 
 START=70
 
+CONF_FILE=/etc/sysctl.d/qca-nss-ecm.conf
+
 load_ecm() {
 	[ -d /sys/module/ecm ] || insmod ecm
 
@@ -22,16 +24,31 @@ unload_ecm() {
 	sysctl -w net.bridge.bridge-nf-call-iptables=0
 }
 
+setopt() {
+	local name=$1
+	local val=$2
+
+	grep -q "^${name}" ${CONF_FILE} && \
+		sed -i "s,^${name}.*,${name}=${val}," ${CONF_FILE} || \
+		echo "${name}=${val}" >> ${CONF_FILE}
+}
+
+delopt() {
+	local name=$1
+
+	sed -i "/^${name}/d" ${CONF_FILE}
+}
+
 start() {
 	load_ecm
 
-	echo 'net.bridge.bridge-nf-call-ip6tables=1' >> /etc/sysctl.d/qca-nss-ecm.conf
-	echo 'net.bridge.bridge-nf-call-iptables=1' >> /etc/sysctl.d/qca-nss-ecm.conf
+	setopt net.bridge.bridge-nf-call-ip6tables 1
+	setopt net.bridge.bridge-nf-call-iptables 1
 }
 
 stop() {
 	unload_ecm
 
-	sed '/net.bridge.bridge-nf-call-ip6tables=1/d' -i /etc/sysctl.d/qca-nss-ecm.conf
-	sed '/net.bridge.bridge-nf-call-iptables=1/d' -i /etc/sysctl.d/qca-nss-ecm.conf
+	delopt net.bridge.bridge-nf-call-ip6tables
+	delopt net.bridge.bridge-nf-call-iptables
 }
