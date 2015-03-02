@@ -60,8 +60,7 @@ void ag71xx_phy_start(struct ag71xx *ag)
 		ag71xx_ar7240_start(ag);
 	} else {
 		ag->link = 1;
-		if (!pdata->is_qca9561)
-			ag71xx_link_adjust(ag);
+		ag71xx_link_adjust(ag);
 	}
 }
 
@@ -78,8 +77,7 @@ void ag71xx_phy_stop(struct ag71xx *ag)
 	spin_lock_irqsave(&ag->lock, flags);
 	if (ag->link) {
 		ag->link = 0;
-		if (!pdata->is_qca9561)
-			ag71xx_link_adjust(ag);
+		ag71xx_link_adjust(ag);
 	}
 	spin_unlock_irqrestore(&ag->lock, flags);
 }

@@ -2420,28 +2420,6 @@ ar8216_read_status(struct phy_device *phydev)
 	return ret;
 }
 
-u32
-ar8216_phy_read(u32 address, u32 reg)
-{
-	struct ar8216_priv *priv = (struct ar8216_priv *)address;
-
-	if (priv == NULL)
-		return 0;
-	return priv->read(priv,reg);
-}
-EXPORT_SYMBOL(ar8216_phy_read);
-
-void
-ar8216_phy_write(u32 address, u32 reg,u32 data)
-{
-	struct ar8216_priv *priv = (struct ar8216_priv *)address;
-
-	if (priv == NULL)
-		return ;
-	priv->write(priv,(int )reg,data);
-}
-EXPORT_SYMBOL(ar8216_phy_write);
-
 static int
 ar8216_config_aneg(struct phy_device *phydev)
 {
