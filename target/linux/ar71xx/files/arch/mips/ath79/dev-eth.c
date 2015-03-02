@@ -981,17 +981,6 @@ void ath79_init_eth_pdata(unsigned int id)
 		BUG();
 	}
 
-	/*
-	 * since some of patchs are applied to this file
-	 * we couldnt use the above switch statement.
-	 * it can be cleaned up later
-	 */
-	if ((id == 0)  && (ath79_soc == ATH79_SOC_QCA956X)) {
-		pdata->is_qca9561 = 1;
-	} else {
-		pdata->is_qca9561 = 0;
-	}
-
 	switch (pdata->phy_if_mode) {
 	case PHY_INTERFACE_MODE_GMII:
 	case PHY_INTERFACE_MODE_RGMII:
