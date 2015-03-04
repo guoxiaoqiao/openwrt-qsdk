@@ -43,11 +43,14 @@ CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	quagga-vtysh rp-pppoe-relay -dnsmasq dnsmasq-dhcpv6 radvd \
 	wide-dhcpv6-client bridge luci-app-ddns ddns-scripts xl2tpd ppp-mod-pptp \
 	iptables-mod-extra iptables-mod-ipsec iptables-mod-filter 6rd luci-proto-ipv6 \
-	kmod-bonding luci-app-qos luci-app-radvd kmod-nat-sctp openswan arptables alsa
+	kmod-bonding luci-app-qos luci-app-radvd kmod-nat-sctp openswan arptables alsa \
+	kmod-ipsec kmod-ipsec4 kmod-ipsec6 perl perlbase-base \
+	perlbase-config perlbase-essential perlbase-getopt\
+	perlbase-getopt
 ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	alljoyn-controlpanel alljoyn-notification alljoyn-services_common
 
-UTILS:=tftp-hpa sysstat iperf devmem2 ip ethtool iputils-tracepath \
+UTILS:=tftp-hpa sysstat iperf devmem2 ip-full ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald \
 	luci-app-samba perf ebtables
 
