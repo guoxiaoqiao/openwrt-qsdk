@@ -37,12 +37,16 @@ static int ag71xx_gmac_num = 0;
 static int ag71xx_msg_level = -1;
 static int ag71xx_frame_len_mask = DESC_PKTLEN_M;
 
+u32 ar8216_phy_read(u32 address, u32 reg);
+void ar8216_phy_write(u32 address, u32 reg,u32 data);
+
 module_param_named(msg_level, ag71xx_msg_level, int, 0);
 MODULE_PARM_DESC(msg_level, "Message level (-1=defaults,0=none,...,16=all)");
 
 #ifdef CONFIG_AG71XX_SRAM_DESCRIPTORS
 #define MAX_AG71XX_USING_SRAM		2
 #define MAX_AG71XX_SRAM_RINGS		(MAX_AG71XX_USING_SRAM) * 2
+#define AR8327_REG_PORT0_STATUS		0x7c
 static unsigned long ag71xx_ring_bufs[MAX_AG71XX_SRAM_RINGS] = {
 	0x1d000008UL,
 	0x1d001008UL,
@@ -453,6 +457,12 @@ static void ag71xx_dma_reset(struct ag71xx *ag)
 static void ag71xx_hw_stop(struct ag71xx *ag)
 {
 	/* disable all interrupts and stop the rx/tx engine */
+	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
+
+	if (pdata->is_qca9561 && ag->phy_dev) {
+		ar8216_phy_write((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS, 0x0);
+	}
+	ag71xx_wr(ag, AG71XX_REG_MAC_CFG1,0x0);
 	ag71xx_wr(ag, AG71XX_REG_INT_ENABLE, 0);
 	ag71xx_wr(ag, AG71XX_REG_RX_CTRL, 0);
 	ag71xx_wr(ag, AG71XX_REG_TX_CTRL, 0);
@@ -494,8 +504,12 @@ static void ag71xx_hw_setup(struct ag71xx *ag)
 {
 	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
 
+	if (pdata->is_qca9561 && ag->phy_dev) {
+		ar8216_phy_write((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS, 0x0);
+	}
+
 	/* setup MAC configuration registers */
-	ag71xx_wr(ag, AG71XX_REG_MAC_CFG1, MAC_CFG1_INIT);
+	ag71xx_wr(ag, AG71XX_REG_MAC_CFG1, 0x0);
 
 	ag71xx_sb(ag, AG71XX_REG_MAC_CFG2,
 		  MAC_CFG2_PAD_CRC_EN | MAC_CFG2_LEN_CHECK);
@@ -592,11 +606,19 @@ static void ag71xx_fast_reset(struct ag71xx *ag)
 
 static void ag71xx_hw_start(struct ag71xx *ag)
 {
+
+	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
 	/* start RX engine */
 	ag71xx_wr(ag, AG71XX_REG_RX_CTRL, RX_CTRL_RXE);
 
 	/* enable interrupts */
 	ag71xx_wr(ag, AG71XX_REG_INT_ENABLE, AG71XX_INT_INIT);
+
+	if(pdata->is_qca9561 &&  ag->phy_dev) {
+		/* Enable Switch Mac0's - tx,rx,flowctrl,duplx ,speed */
+		ar8216_phy_write((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS, 0xfe);
+	}
+	ag71xx_wr(ag, AG71XX_REG_MAC_CFG1, MAC_CFG1_INIT);
 }
 
 static void ag71xx_disable_inline_chksum_engine(struct ag71xx *ag)
@@ -631,7 +653,7 @@ void ag71xx_link_adjust(struct ag71xx *ag)
 		return;
 	}
 
-	if (pdata->is_ar724x)
+	if (!pdata->is_qca9561 && pdata->is_ar724x)
 		ag71xx_fast_reset(ag);
 
 	cfg2 = ag71xx_rr(ag, AG71XX_REG_MAC_CFG2);
@@ -674,12 +696,12 @@ void ag71xx_link_adjust(struct ag71xx *ag)
 	ag71xx_wr(ag, AG71XX_REG_MAC_CFG2, cfg2);
 	ag71xx_wr(ag, AG71XX_REG_FIFO_CFG5, fifo5);
 	ag71xx_wr(ag, AG71XX_REG_MAC_IFCTL, ifctl);
-	ag71xx_hw_start(ag);
 
 	if (pdata->is_qca956x) {
 		ag71xx_disable_inline_chksum_engine(ag);
 	}
 
+	ag71xx_hw_start(ag);
 	netif_carrier_on(ag->dev);
 	if (netif_msg_link(ag))
 		pr_info("%s: link up (%sMbps/%s duplex)\n",
@@ -840,6 +862,7 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
 
 	dev->trans_start = jiffies;
 
+	wmb();
 	/* enable TX engine */
 	ag71xx_wr_fast(ag->tx_ctrl_reg, TX_CTRL_TXE);
 	ag71xx_wr_flush(ag->tx_ctrl_reg);
