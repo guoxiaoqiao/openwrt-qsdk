@@ -1,10 +1,3 @@
-#
-# Copyright (c) 2013 Qualcomm Atheros, Inc..
-#
-# All Rights Reserved.
-# Qualcomm Atheros Confidential and Proprietary.
-#
-
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
@@ -109,3 +102,6 @@ $(eval $(call Package/qca-legacy-uboot/nor,ap151-8M))
 $(eval $(call Package/qca-legacy-uboot/nor,ap151-16M))
 $(eval $(call Package/qca-legacy-uboot/nor,ap152-8M))
 $(eval $(call Package/qca-legacy-uboot/nor,ap152-16M))
+$(eval $(call Package/qca-legacy-uboot/nor,cus531-16M))
+$(eval $(call Package/qca-legacy-uboot/nor,cus531-dual))
+$(eval $(call Package/qca-legacy-uboot/nor,cus531-nand))
