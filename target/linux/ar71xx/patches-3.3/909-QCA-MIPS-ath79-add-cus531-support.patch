@@ -1,0 +1,105 @@
+--- a/arch/mips/ath79/Kconfig
++++ b/arch/mips/ath79/Kconfig
+@@ -210,6 +210,49 @@ config ATH79_MACH_CUS227
+ 	  Say 'Y' here if you want your kernel to support the
+ 	  Qualcomm Atheros CUS227 board.
+ 
++config ATH79_MACH_CUS531
++	bool "Atheros CUS531 reference board"
++	select SOC_QCA953X
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_SPI
++	select ATH79_DEV_USB
++	select ATH79_DEV_WMAC
++	select ATH79_DEV_ETH
++	select ATH79_DEV_M25P80
++	help
++	  Say 'Y' here if you want your kernel to support the
++	  Qualcomm Atheros CUS531 reference board.
++
++config ATH79_MACH_CUS531_DUAL
++	bool "Atheros CUS531 dual reference board"
++	select SOC_QCA953X
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_SPI
++	select ATH79_DEV_USB
++	select ATH79_DEV_WMAC
++	select ATH79_DEV_ETH
++	select ATH79_DEV_M25P80
++	help
++	  Say 'Y' here if you want your kernel to support the
++	  Qualcomm Atheros CUS531 dual reference board.
++
++config ATH79_MACH_CUS531_NAND
++	bool "Atheros CUS531 nand reference board"
++	select SOC_QCA953X
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_SPI
++	select ATH79_DEV_NAND
++	select ATH79_DEV_USB
++	select ATH79_DEV_WMAC
++	select ATH79_DEV_ETH
++	select ATH79_DEV_M25P80
++	help
++	  Say 'Y' here if you want your kernel to support the
++	  Qualcomm Atheros CUS531 nand reference board.
++
+ config ATH79_MACH_DB120
+ 	bool "Atheros DB120 reference board"
+ 	select SOC_AR934X
+--- a/arch/mips/ath79/Makefile
++++ b/arch/mips/ath79/Makefile
+@@ -62,6 +62,9 @@ obj-$(CONFIG_ATH79_MACH_AP96)		+= mach-ap96.o
+ obj-$(CONFIG_ATH79_MACH_AW_NR580)	+= mach-aw-nr580.o
+ obj-$(CONFIG_ATH79_MACH_CAP4200AG)	+= mach-cap4200ag.o
+ obj-$(CONFIG_ATH79_MACH_CUS227)		+= mach-cus227.o
++obj-$(CONFIG_ATH79_MACH_CUS531)		+= mach-cus531.o
++obj-$(CONFIG_ATH79_MACH_CUS531_DUAL)	+= mach-cus531.o
++obj-$(CONFIG_ATH79_MACH_CUS531_NAND)	+= mach-cus531.o
+ obj-$(CONFIG_ATH79_MACH_DB120)		+= mach-db120.o
+ obj-$(CONFIG_ATH79_MACH_DB120_TB388)	+= mach-db120-tb388.o
+ obj-$(CONFIG_ATH79_MACH_DIR_600_A1)	+= mach-dir-600-a1.o
+--- a/arch/mips/ath79/machtypes.h
++++ b/arch/mips/ath79/machtypes.h
+@@ -38,6 +38,9 @@ enum ath79_mach_type {
+ 	ATH79_MACH_AW_NR580,		/* AzureWave AW-NR580 */
+ 	ATH79_MACH_CAP4200AG,		/* Senao CAP4200AG */
+ 	ATH79_MACH_CUS227,		/* Qualcomm Atheros CUS227 board */
++	ATH79_MACH_CUS531,		/* Qualcomm Atheros CUS531 board */
++	ATH79_MACH_CUS531_DUAL,		/* Qualcomm Atheros CUS531 dual board */
++	ATH79_MACH_CUS531_NAND,		/* Qualcomm Atheros CUS531 nand board */
+ 	ATH79_MACH_DB120,		/* Atheros DB120 reference board */
+ 	ATH79_MACH_DB120_TB388,		/* Atheros DB120/TB388 ref board */
+ 	ATH79_MACH_PB44,		/* Atheros PB44 reference board */
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -53,5 +53,6 @@ obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
+ obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
+ obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
+ obj-$(CONFIG_MTD_NAND_ATH79)		+= ath79_nand.o
++obj-$(CONFIG_MTD_NAND_ATH79)		+= ath79_spinand.o
+ 
+ nand-objs := nand_base.o nand_bbt.o
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -178,6 +178,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_MICRON, "Micron"},
+ 	{NAND_MFR_AMD, "AMD"},
+ 	{NAND_MFR_MACRONIX, "Macronix"},
++	{NAND_MFR_GIGADEVICE, "Giga Device"},
+ 	{0x0, "Unknown"}
+ };
+
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -556,6 +556,7 @@ struct nand_chip {
+ #define NAND_MFR_MICRON		0x2c
+ #define NAND_MFR_AMD		0x01
+ #define NAND_MFR_MACRONIX	0xc2
++#define NAND_MFR_GIGADEVICE	0xc8
+ 
+ /**
+  * struct nand_flash_dev - NAND Flash Device ID Structure
