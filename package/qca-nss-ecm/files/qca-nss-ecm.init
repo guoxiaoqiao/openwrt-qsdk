@@ -42,6 +42,7 @@ delopt() {
 start() {
 	load_ecm
 
+	setopt dev.nss.general.redirect 1
 	setopt net.bridge.bridge-nf-call-ip6tables 1
 	setopt net.bridge.bridge-nf-call-iptables 1
 }
@@ -49,6 +50,7 @@ start() {
 stop() {
 	unload_ecm
 
+	delopt dev.nss.general.redirect
 	delopt net.bridge.bridge-nf-call-ip6tables
 	delopt net.bridge.bridge-nf-call-iptables
 }
