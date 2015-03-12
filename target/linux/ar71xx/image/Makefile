@@ -1059,4 +1059,8 @@ define Image/Build/Profile/QSDK_Open_Router
 	$(call Image/Build/Profile/CUS531,$(1))
 endef
 
+define Image/Build/Profile/QSDK_IoE_Device
+	$(call Image/Build/Profile/CUS531,$(1))
+endef
+
 $(eval $(call BuildImage))
