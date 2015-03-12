@@ -1,0 +1,227 @@
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -44,6 +44,7 @@
+ #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
+ #define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
+ #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
++#define	OPCODE_WR_EXT		0xc5	/* Write extended address */
+ #define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
+ #define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips*/
+ #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
+@@ -90,6 +91,10 @@
+ #define PREFER_SMALL_SECTOR_ERASE 0
+ #endif
+ 
++#define FLASH_16M_SIZE		0x1000000
++#define GET_EXT_3BS(addr)	((addr) % FLASH_16M_SIZE)
++#define GET_EXT_4B(addr)	((addr) >> 24)
++
+ /****************************************************************************/
+ 
+ struct m25p {
+@@ -210,6 +215,24 @@ static int wait_till_ready(struct m25p *flash)
+ 	return 1;
+ }
+ 
++static inline int enter_ext_addr(struct m25p *flash, u8 addr)
++{
++	if (wait_till_ready(flash))
++		return -1;
++
++	write_enable(flash);
++
++	flash->command[0] = OPCODE_WR_EXT;
++	flash->command[1] = addr;
++
++	return spi_write(flash->spi, flash->command, 2);
++}
++
++static inline int exit_ext_addr(struct m25p *flash, bool ext)
++{
++	return ext ? enter_ext_addr(flash, 0) : 0;
++}
++
+ /*
+  * Erase the whole flash memory
+  *
+@@ -291,6 +314,7 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	struct m25p *flash = mtd_to_m25p(mtd);
+ 	u32 addr,len;
+ 	uint32_t rem;
++	bool ext = false;
+ 
+ 	pr_debug("%s: %s at 0x%llx, len %lld\n", dev_name(&flash->spi->dev),
+ 			__func__, (long long)instr->addr,
+@@ -323,9 +347,18 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 
+ 	/* "sector"-at-a-time erase */
+ 	} else {
++		if (flash->addr_width == 3 && addr >= FLASH_16M_SIZE) {
++			ext = true;
++			enter_ext_addr(flash, GET_EXT_4B(addr));
++			addr = GET_EXT_3BS(addr);
++		}
++
+ 		while (len) {
+ 			if (erase_sector(flash, addr)) {
+ 				instr->state = MTD_ERASE_FAILED;
++
++				exit_ext_addr(flash, ext);
++
+ 				mutex_unlock(&flash->lock);
+ 				return -EIO;
+ 			}
+@@ -335,6 +368,8 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		}
+ 	}
+ 
++	exit_ext_addr(flash, ext);
++
+ 	mutex_unlock(&flash->lock);
+ 
+ 	instr->state = MTD_ERASE_DONE;
+@@ -354,6 +389,8 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	struct spi_transfer t[2];
+ 	struct spi_message m;
+ 	loff_t ofs;
++	int ret;
++	bool ext = false;
+ 
+ 	pr_debug("%s: %s from 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
+ 			__func__, (u32)from, len);
+@@ -385,6 +422,12 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 
+ 	mutex_lock(&flash->lock);
+ 
++	if (flash->addr_width == 3 && from >= FLASH_16M_SIZE) {
++		ext = true;
++		enter_ext_addr(flash, GET_EXT_4B(from));
++		from = GET_EXT_3BS(from);
++	}
++
+ 	/* FIXME switch to OPCODE_FAST_READ.  It's required for higher
+ 	 * clocks; and at this writing, every chip this driver handles
+ 	 * supports that opcode.
+@@ -397,13 +440,10 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	while (len) {
+ 		size_t readlen;
+ 		size_t done;
+-		int ret;
+ 
+ 		ret = wait_till_ready(flash);
+-		if (ret) {
+-			mutex_unlock(&flash->lock);
+-			return 1;
+-		}
++		if (ret)
++			goto fail;
+ 
+ 		if (flash->max_read_len > 0 &&
+ 		    flash->max_read_len < len)
+@@ -421,8 +461,8 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 		done = m.actual_length - m25p_cmdsz(flash) -
+ 		       FAST_READ_DUMMY_BYTE;
+ 		if (done != readlen) {
+-			mutex_unlock(&flash->lock);
+-			return 1;
++			ret = 1;
++			goto fail;
+ 		}
+ 
+ 		ofs += done;
+@@ -430,10 +470,13 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	}
+ 
+ 	*retlen = ofs;
++	ret  = 0;
+ 
+-	mutex_unlock(&flash->lock);
++fail:
++	exit_ext_addr(flash, ext);
+ 
+-	return 0;
++	mutex_unlock(&flash->lock);
++	return ret;
+ }
+ 
+ /*
+@@ -448,6 +491,7 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	u32 page_offset, page_size;
+ 	struct spi_transfer t[2];
+ 	struct spi_message m;
++	bool ext = false;
+ 
+ 	pr_debug("%s: %s to 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
+ 			__func__, (u32)to, len);
+@@ -479,6 +523,12 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		return 1;
+ 	}
+ 
++	if (flash->addr_width == 3 && to >= FLASH_16M_SIZE) {
++		ext = true;
++		enter_ext_addr(flash, GET_EXT_4B(to));
++		to = GET_EXT_3BS(to);
++	}
++
+ 	write_enable(flash);
+ 
+ 	/* Set up the opcode in the write buffer. */
+@@ -527,6 +577,8 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		}
+ 	}
+ 
++	exit_ext_addr(flash, ext);
++
+ 	mutex_unlock(&flash->lock);
+ 
+ 	return 0;
+@@ -808,6 +860,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
++	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
+ 
+ 	/* Catalyst / On Semiconductor -- non-JEDEC */
+ 	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1) },
+@@ -825,6 +878,31 @@ static const struct spi_device_id m25p_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, m25p_ids);
+ 
++/*
++ * The Extended Address Register is used only when the device is operating in
++ * the 3-Byte Address Mode (ADS=0). The lower 128Mb memory array (00000000h –
++ * 00FFFFFFh) is selected when A24=0, all instructions with 3-Byte addresses
++ * will be executed within that region. When A24=1, the upper 128Mb memory array
++ * (01000000h – 01FFFFFFh) will be selected.
++ * Upon power up or after the execution of a Software/Hardware Reset, the
++ * Extended Address Register values will be cleared to 0.
++ */
++static const u32 m25p_ext_addr_ids[] = {
++	0xef4019,
++	/* add id here */
++};
++
++static int m25p_ext_addr_mode(u32 jedec_id)
++{
++	int id;
++
++	for (id = 0; id < ARRAY_SIZE(m25p_ext_addr_ids); id++)
++		if (jedec_id == m25p_ext_addr_ids[id])
++			return 1;
++
++	return 0;
++}
++
+ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+ {
+ 	int			tmp;
+@@ -1003,7 +1081,8 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 		flash->addr_width = info->addr_width;
+ 	else {
+ 		/* enable 4-byte addressing if the device exceeds 16MiB */
+-		if (flash->mtd.size > 0x1000000) {
++		if (flash->mtd.size > FLASH_16M_SIZE &&
++				!m25p_ext_addr_mode(info->jedec_id)) {
+ 			flash->addr_width = 4;
+ 			set_4byte(flash, info->jedec_id, 1);
+ 		} else
