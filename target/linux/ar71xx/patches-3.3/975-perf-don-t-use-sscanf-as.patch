@@ -1,0 +1,45 @@
+From 0c86364175538929ee053601f74d4575a5706cd7 Mon Sep 17 00:00:00 2001
+From: Matthew McClintock <mmcclint@qca.qualcomm.com>
+Date: Wed, 4 Mar 2015 18:47:56 -0600
+Subject: [PATCH 975/975] perf: don't use sscanf %as
+
+Signed-off-by: Matthew McClintock <mmcclint@qca.qualcomm.com>
+---
+ tools/perf/util/trace-event-parse.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/tools/perf/util/trace-event-parse.c b/tools/perf/util/trace-event-parse.c
+index 1a8d4dc..923267f 100644
+--- a/tools/perf/util/trace-event-parse.c
++++ b/tools/perf/util/trace-event-parse.c
+@@ -151,7 +151,7 @@ void parse_proc_kallsyms(char *file, unsigned int size __unused)
+ 	char *line;
+ 	char *next = NULL;
+ 	char *addr_str;
+-	char ch;
++	char *fmt;
+ 	int ret __used;
+ 	int i;
+ 
+@@ -159,13 +159,12 @@ void parse_proc_kallsyms(char *file, unsigned int size __unused)
+ 	while (line) {
+ 		item = malloc_or_die(sizeof(*item));
+ 		item->mod = NULL;
+-		ret = sscanf(line, "%as %c %as\t[%as",
+-			     (float *)(void *)&addr_str, /* workaround gcc warning */
+-			     &ch,
+-			     (float *)(void *)&item->func,
+-			     (float *)(void *)&item->mod);
++		addr_str = strtok_r(line, " ", &fmt);
+ 		item->addr = strtoull(addr_str, NULL, 16);
+-		free(addr_str);
++		/* skip character */
++		strtok_r(NULL, " ", &fmt);
++		item->func = strtok_r(NULL, "\t", &fmt);
++		item->mod = strtok_r(NULL, "]", &fmt);
+ 
+ 		/* truncate the extra ']' */
+ 		if (item->mod)
+-- 
+2.2.1
+
