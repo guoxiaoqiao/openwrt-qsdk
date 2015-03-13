@@ -1,0 +1,22 @@
+#!/bin/sh /etc/rc.common
+#
+# Copyright (c) 2015 The Linux Foundation. All rights reserved.
+
+START=70
+
+enable_rps() {
+	irq_nss_rps=`grep -m2 nss /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	[ -n "$irq_nss_rps" ] && echo 2 > /proc/irq/$irq_nss_rps/smp_affinity
+
+	# Enable NSS RPS
+	sysctl -w dev.nss.general.rps=1 >/dev/null 2>/dev/null
+
+}
+
+
+start() {
+	local rps_enabled="$(uci_get nss @general[0] enable_rps)"
+	if [ "$rps_enabled" -eq 1 ]; then
+		enable_rps
+	fi
+}
