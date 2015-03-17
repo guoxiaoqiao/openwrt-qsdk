@@ -1,9 +1,9 @@
 From 0c86364175538929ee053601f74d4575a5706cd7 Mon Sep 17 00:00:00 2001
-From: Matthew McClintock <mmcclint@qca.qualcomm.com>
+From: Matthew McClintock <mmcclint@codeaurora.org>
 Date: Wed, 4 Mar 2015 18:47:56 -0600
 Subject: [PATCH 975/975] perf: don't use sscanf %as
 
-Signed-off-by: Matthew McClintock <mmcclint@qca.qualcomm.com>
+Signed-off-by: Matthew McClintock <mmcclint@codeaurora.org>
 ---
  tools/perf/util/trace-event-parse.c | 13 ++++++-------
  1 file changed, 6 insertions(+), 7 deletions(-)
