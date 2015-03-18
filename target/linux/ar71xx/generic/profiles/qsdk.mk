@@ -26,7 +26,7 @@ define Profile/QSDK_Open_Router
 	  alljoyn-notification alljoyn-services_common \
 	  hostapd hostapd-utils iwinfo kmod-qca-ath10k kmod-qca-ath9k kmod-qca-ath \
 	  kmod-fast-classifier kmod-usb2 luci-app-qos wireless-tools \
-	  wpa-supplicant-p2p wpa-cli qca-legacy-uboot-ap121 qca-legacy-uboot-ap143 \
+	  wpa-supplicant-p2p wpa-cli qca-legacy-uboot-ap121 qca-legacy-uboot-ap143-16M \
 	  qca-legacy-uboot-ap152-16M
 endef
 
@@ -108,8 +108,9 @@ define Profile/QSDK_IoE_Device
 	  hostapd hostapd-utils iwinfo  wpa-supplicant-p2p wpa-cli wireless-tools \
 	  kmod-qca-ath10k kmod-qca-ath9k kmod-qca-ath \
 	  kmod-fast-classifier kmod-usb2 kmod-i2c-gpio-custom \
+	  qca-legacy-uboot-ap143-16M qca-legacy-uboot-ap143-32M \
 	  qca-legacy-uboot-cus531-16M qca-legacy-uboot-cus531-dual \
-	  qca-legacy-uboot-cus531-nand
+	  qca-legacy-uboot-cus531-nand qca-legacy-uboot-cus531-32M
 endef
 
 define Profile/QSDK_IoE_Device/Description
