@@ -38,6 +38,8 @@
 #include "dev-i2c.h"
 #include "machtypes.h"
 
+#define CUS531_GPIO_SPI_CS0		5
+#define CUS531_GPIO_SPI_CS1		11
 #define CUS531_GPIO_LED_SYS		12
 #define CUS531_GPIO_I2C_SCL		16
 #define CUS531_GPIO_I2C_SDA		17
@@ -175,6 +177,12 @@ static void __init cus531_setup(void)
 
 static void __init cus531_dual_setup(void)
 {
+	/* fix up spi chip select, uboot may switch the CS pin. */
+	ath79_gpio_output_select(CUS531_GPIO_SPI_CS0,
+				 QCA953X_GPIO_OUT_MUX_SPI_CS0);
+	ath79_gpio_output_select(CUS531_GPIO_SPI_CS1,
+				 QCA953X_GPIO_OUT_MUX_SPI_CS1);
+
 	ath79_register_m25p80_multi(NULL);
 	cus531_common_setup();
 }

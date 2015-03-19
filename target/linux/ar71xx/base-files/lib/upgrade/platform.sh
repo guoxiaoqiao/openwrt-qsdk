@@ -266,6 +266,12 @@ platform_check_image() {
 
 		return 0
 		;;
+	cus531 | \
+	cus531-dual | \
+	cus531-nand)
+		platform_check_image_cus531 "$1" && return 0
+		return 1
+		;;
 	esac
 
 	echo "Sysupgrade is not yet supported on $board."
@@ -310,6 +316,11 @@ platform_do_upgrade() {
 	cus227)
 		platform_do_upgrade_cus227 "$ARGV"
 		;;
+	cus531 | \
+	cus531-dual | \
+	cus531-nand)
+                platform_do_upgrade_cus531 "$ARGV" "$board"
+                ;;
 	ap147 |\
 	ap151 |\
 	ap152 |\

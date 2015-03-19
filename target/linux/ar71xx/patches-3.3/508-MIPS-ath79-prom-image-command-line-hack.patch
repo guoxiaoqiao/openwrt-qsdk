@@ -17,7 +17,7 @@
 +		p++;
 +	}
 +
-+	if (*p == '\0')
++	if (*p == '\0' || !strstr(p, "mtdparts"))
 +		return 0;
 +
 +	if (replace) {
