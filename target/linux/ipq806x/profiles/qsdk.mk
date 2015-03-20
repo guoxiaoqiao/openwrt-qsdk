@@ -21,7 +21,9 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell  swconfig
 SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
 WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad hostapd-utils \
-		 kmod-art2-netlink sigma-dut-open wpa-cli
+		 kmod-art2-netlink sigma-dut-open wpa-cli \
+		 kmod-ebtables kmod-ebtables-ipv4 kmod-ebtables-ipv6 \
+		 ebtables
 
 WIFI_10_4_2_PKGS:=kmod-qca-wifi-10.4.2-akronite-perf qca-wifi-fw-10.4.2-asic \
 	qca-wifi-fw-10.4.2-emu_m2m qca-wifi-fw-10.4.2-emu_bb \
@@ -35,7 +37,7 @@ OPENWRT_STANDARD:= \
 STORAGE:=kmod-scsi-core kmod-usb-storage \
 	kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	kmod-nls-cp437 kmod-nls-iso8859-1 kmod-fs-ext4 \
-	mdadm ntfs-3g kmod-ebtables
+	mdadm ntfs-3g
 
 CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	kmod-ipt-conntrack-qos mcproxy kmod-ipt-nathelper-rtsp kmod-ipv6 \
@@ -52,7 +54,7 @@ ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 
 UTILS:=tftp-hpa sysstat iperf devmem2 ip-full ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald \
-	luci-app-samba perf ebtables
+	luci-app-samba perf
 
 BLUETOOTH:=bluez kmod-ath3k
 
