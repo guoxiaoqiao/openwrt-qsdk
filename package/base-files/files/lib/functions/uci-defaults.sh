@@ -217,6 +217,22 @@ ucidef_set_interfaces_lan_wan() {
 	ucidef_set_interface_wan "$wan_ifname"
 }
 
+ucidef_set_interface_bond() {
+       local ifname=$1
+       local hash_policy=$2
+       local slave_list=$3
+       local mode=$4
+       uci batch <<EOF
+set network.bond='interface'
+set network.bond.ifname='$ifname'
+set network.bond.type='bonding'
+set network.bond.proto='static'
+set network.bond.xmit_hash_policy='$hash_policy'
+set network.bond.slaves='$slave_list'
+set network.bond.mode='$mode'
+EOF
+}
+
 ucidef_set_interface_macaddr() {
 	local ifname=$1
 	local mac=$2
