@@ -5,7 +5,7 @@
 
 . /lib/functions.sh
 include /lib/upgrade
-
+cd /
 kill_remaining TERM
 sleep 3
 kill_remaining KILL
