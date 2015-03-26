@@ -103,7 +103,7 @@ define Package/hostapd/Default
   CATEGORY:=Network
   TITLE:=IEEE 802.1x Authenticator
   URL:=http://hostap.epitest.fi/
-  DEPENDS:=$(DRV_DEPENDS) +libubus +libnl
+  DEPENDS:=$(DRV_DEPENDS) +hostapd-common +libubus +libnl
 endef
 
 define Package/hostapd
@@ -144,13 +144,14 @@ define Package/wpad/Default
   SECTION:=net
   CATEGORY:=Network
   TITLE:=IEEE 802.1x Authenticator/Supplicant
+  DEPENDS:=$(DRV_DEPENDS) +hostapd-common +libubus
   URL:=http://hostap.epitest.fi/
 endef
 
 define Package/wpad
 $(call Package/wpad/Default)
   TITLE+= (full)
-  DEPENDS:=$(DRV_DEPENDS) +WPA_SUPPLICANT_OPENSSL:libopenssl +libubus +libnl
+  DEPENDS+=+WPA_SUPPLICANT_OPENSSL:libopenssl +libnl
   VARIANT:=wpad-full
 endef
 
@@ -162,7 +163,7 @@ endef
 define Package/wpad-mini
 $(call Package/wpad/Default)
   TITLE+= (WPA-PSK only)
-  DEPENDS:=$(DRV_DEPENDS) +libubus +libnl
+  DEPENDS:=$(DRV_DEPENDS) +libnl
   VARIANT:=wpad-mini
 endef
 
