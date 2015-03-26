@@ -158,8 +158,8 @@ hostapd_set_bss_options() {
 	wireless_vif_parse_encryption
 
 	local bss_conf
-	local wpa_group_rekey wpa_pair_rekey wpa_master_rekey wpa_strict_rekey
-	local wep_rekey wep_key_len_broadcast wep_key_len_unicast
+	local wpa_group_rekey wpa_pair_rekey wpa_master_rekey wpa_key_mgmt
+	local wep_rekey wep_key_len_broadcast wep_key_len_unicast wpa_strict_rekey
 	local wps_config
 
 	json_get_vars \
@@ -241,6 +241,7 @@ hostapd_set_bss_options() {
 				append bss_conf "wpa_psk_file=$wpa_psk_file" "$N"
 			}
 			wps_possible=1
+			append wpa_key_mgmt "WPA-PSK"
 		;;
 		eap)
 			json_get_vars \
@@ -291,7 +292,7 @@ hostapd_set_bss_options() {
 			[ -n "$ownip" ] && append bss_conf "own_ip_addr=$ownip" "$N"
 			append bss_conf "eapol_key_index_workaround=$eapol_key_index_workaround" "$N"
 			append bss_conf "ieee8021x=1" "$N"
-			append bss_conf "wpa_key_mgmt=WPA-EAP" "$N"
+			append wpa_key_mgmt "WPA-EAP"
 
 			[ -n "$dynamic_vlan" ] && {
 				append bss_conf "dynamic_vlan=$dynamic_vlan" "$N"
@@ -363,6 +364,7 @@ hostapd_set_bss_options() {
 	if [ "$wpa" -ge "1" ]; then
 		json_get_vars nasid
 		[ -n "$nasid" ] && append bss_conf "nas_identifier=$nasid" "$N"
+		[ -n "$wpa_key_mgmt" ] && append bss_conf "wpa_key_mgmt=$wpa_key_mgmt" "$N"
 	fi
 
 	if [ "$wpa" -ge "2" ]; then
