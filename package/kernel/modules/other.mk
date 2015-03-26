@@ -701,7 +701,7 @@ define KernelPackage/regmap-i2c
   KCONFIG:=CONFIG_REGMAP=y \
 	   CONFIG_REGMAP_I2C
   FILES:=$(LINUX_DIR)/drivers/base/regmap/regmap-i2c.ko
-  AUTOLOAD:=$(call AutoLoad,10,regmap-i2c)
+  AUTOLOAD:=$(call AutoLoad,54,regmap-i2c)
 endef
 
 define KernelPackage/regmap-i2c/description
