@@ -595,6 +595,26 @@ menuconfig DEVEL
 		  in the package directory, pointing to the .git tree that you want
 		  to pull the source code from
 
+menu "Security Mitigations"
+
+	config ENABLE_SSP
+		bool "Enable stack protection (-fstack-protector)"
+		default y
+		select SSP_SUPPORT
+		help
+		  If enabled, the packages and libc will be built with
+		  stack protection, a security mitigation that prevents
+		  buffer overflows from being exploitable.
+
+	config ENABLE_RELRO
+		bool "Enable RELRO (-Wl,-z,relro,-z,now)"
+		default y
+		help
+		  If enabled, the packages and libc will be built with read only
+		  relocation entries, preventing exploits from overwriting
+		  sensitive sections in an ELF file that can lead to code execution.
+endmenu
+
 menuconfig TARGET_OPTIONS
 	bool "Target Options"  if DEVEL
 

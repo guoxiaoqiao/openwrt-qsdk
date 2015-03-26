@@ -113,6 +113,13 @@ TARGET_CFLAGS:=$(TARGET_OPTIMIZATION)$(if $(CONFIG_DEBUG), -g3)
 TARGET_CXXFLAGS = $(TARGET_CFLAGS)
 TARGET_CPPFLAGS:=-I$(STAGING_DIR)/usr/include -I$(STAGING_DIR)/include
 TARGET_LDFLAGS:=-L$(STAGING_DIR)/usr/lib -L$(STAGING_DIR)/lib
+ifeq ($(CONFIG_ENABLE_SSP),y)
+TARGET_CFLAGS+= -fstack-protector
+endif
+ifeq ($(CONFIG_ENABLE_RELRO),y)
+TARGET_CFLAGS+= -Wl,-z,relro,-z,now
+TARGET_LDFLAGS+= -Wl,-z,relro,-z,now
+endif
 ifneq ($(CONFIG_EXTERNAL_TOOLCHAIN),)
 LIBGCC_S_PATH=$(realpath $(wildcard $(call qstrip,$(CONFIG_LIBGCC_ROOT_DIR))/$(call qstrip,$(CONFIG_LIBGCC_FILE_SPEC))))
 LIBGCC_S=$(if $(LIBGCC_S_PATH),-L$(dir $(LIBGCC_S_PATH)) -lgcc_s)
