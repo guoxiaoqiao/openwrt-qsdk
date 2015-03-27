@@ -169,11 +169,12 @@ include() {
 }
 
 find_mtd_part() {
-	local INDEX=$(find_mtd_index "$1")
-	local PREFIX=/dev/mtdblock
+        local PART="$(grep "\"$1\"" /proc/mtd | awk -F: '{print $1}')"
+        local PREFIX=/dev/mtd
 
-	[ -d /dev/mtdblock ] && PREFIX=/dev/mtdblock/
-	echo "${INDEX:+$PREFIX$INDEX}"
+        PART="${PART##mtd}"
+        [ -d /dev/mtdblock ] && PREFIX=/dev/mtdblock/
+        echo "${PART:+$PREFIX$PART}"
 }
 
 group_add() {
