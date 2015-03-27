@@ -110,7 +110,8 @@ define Profile/QSDK_IoE_Device
 	  kmod-fast-classifier kmod-usb2 kmod-i2c-gpio-custom \
 	  qca-legacy-uboot-ap143-16M qca-legacy-uboot-ap143-32M \
 	  qca-legacy-uboot-cus531-16M qca-legacy-uboot-cus531-dual \
-	  qca-legacy-uboot-cus531-nand qca-legacy-uboot-cus531-32M
+	  qca-legacy-uboot-cus531-nand qca-legacy-uboot-cus531-32M \
+	  mtd-utils mtd-utils-nandwrite
 endef
 
 define Profile/QSDK_IoE_Device/Description
