@@ -264,6 +264,22 @@ endef
 $(eval $(call KernelPackage,crypto-ecb))
 
 
+define KernelPackage/crypto-gcm
+  TITLE:=GCM digest CryptoAPI module
+  KCONFIG:=CONFIG_CRYPTO_GCM
+  FILES:=$(LINUX_DIR)/crypto/gcm.ko \
+	$(LINUX_DIR)/crypto/ghash-generic.ko \
+	$(LINUX_DIR)/crypto/ctr.ko \
+	$(LINUX_DIR)/crypto/gf128mul.ko \
+	$(LINUX_DIR)/crypto/seqiv.ko
+  DEPENDS:=+kmod-crypto-manager
+  AUTOLOAD:=$(call AutoLoad,09,aead seqiv ctr gf128mul ghash-generic gcm)
+  $(call AddDepends/crypto)
+endef
+
+$(eval $(call KernelPackage,crypto-gcm))
+
+
 define KernelPackage/crypto-hmac
   TITLE:=HMAC digest CryptoAPI module
   DEPENDS:=+kmod-crypto-hash
