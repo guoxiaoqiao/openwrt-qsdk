@@ -1,5 +1,5 @@
 #!/bin/sh
-ECM_MODULE=${1:-ecm_db}
+ECM_MODULE=${1:-ecm_state}
 MOUNT_ROOT=/dev/ecm
 
 #
