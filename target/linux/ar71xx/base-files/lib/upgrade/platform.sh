@@ -266,10 +266,11 @@ platform_check_image() {
 
 		return 0
 		;;
+	ap143 | \
 	cus531 | \
 	cus531-dual | \
 	cus531-nand)
-		platform_check_image_cus531 "$1" && return 0
+		platform_check_image_ioe "$1" && return 0
 		return 1
 		;;
 	esac
@@ -316,10 +317,11 @@ platform_do_upgrade() {
 	cus227)
 		platform_do_upgrade_cus227 "$ARGV"
 		;;
+	ap143 | \
 	cus531 | \
 	cus531-dual | \
 	cus531-nand)
-                platform_do_upgrade_cus531 "$ARGV" "$board"
+                platform_do_upgrade_ioe "$ARGV" "$board"
                 ;;
 	ap147 |\
 	ap151 |\
