@@ -10,7 +10,7 @@ PKG_NAME:=mtd-utils
 PKG_VERSION:=1.4.5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=git://git.infradead.org/mtd-utils.git
+PKG_SOURCE_URL:=git://codeaurora.org/quic/qsdk/mtd-utils.git
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=5319b84974fcb71504aed2d1b8285e9c0a4a4bb8
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
