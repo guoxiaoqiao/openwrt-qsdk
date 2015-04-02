@@ -59,6 +59,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi kmod-qca-nss-drv-profile \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
+		kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 		$(PACKAGES_WIFI_10_2)
 endef
 
@@ -76,6 +77,7 @@ define Profile/QSDK_Standard_Beeliner
 	NAME:=Qualcomm-Atheros SDK Standard Beeliner Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
+		kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 		$(PACKAGES_WIFI_10_4)
 endef
 
