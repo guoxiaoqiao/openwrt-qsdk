@@ -2368,10 +2368,7 @@ ar8216_read_status(struct phy_device *phydev)
 		for(i = 0; i < AR8X16_MAX_VLANS; i++) {
 			if(((port_status & priv->vlan_table[i]) != 0) &&
 					(priv->vlan_status[i] == 0)){
-				if(unlikely(priv->vlan_dev[i] == NULL)) {
-					ret = ar8216_get_vlan_dev(phydev, i);
-				} else
-					ret = 1;
+				ret = ar8216_get_vlan_dev(phydev, i);
 
 				if(ret == 1) {
 					netif_carrier_on(priv->vlan_dev[i]);
@@ -2379,10 +2376,7 @@ ar8216_read_status(struct phy_device *phydev)
 				}
 			} else if( (priv->vlan_table[i] != 0) &&
 					((port_status & priv->vlan_table[i]) == 0)) {
-				if(unlikely(priv->vlan_dev[i] == NULL)) {
-					ret = ar8216_get_vlan_dev(phydev, i);
-				} else
-					ret = 1;
+				ret = ar8216_get_vlan_dev(phydev, i);
 
 				if(ret == 1) {
 					netif_carrier_off(priv->vlan_dev[i]);
