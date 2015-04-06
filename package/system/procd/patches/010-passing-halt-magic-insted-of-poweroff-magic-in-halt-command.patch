@@ -1,0 +1,52 @@
+Index: procd-2014-03-18/signal.c
+===================================================================
+--- procd-2014-03-18.orig/signal.c	2015-04-03 19:55:13.000000000 +0530
++++ procd-2014-03-18/signal.c	2015-04-03 23:53:45.056585181 +0530
+@@ -41,6 +41,9 @@
+ 		msg = "reboot";
+ 		break;
+ 	case SIGUSR1:
++		event = RB_HALT_SYSTEM;
++		msg = "halt";
++		break;
+ 	case SIGUSR2:
+ 		event = RB_POWER_OFF;
+ 		msg = "poweroff";
+Index: procd-2014-03-18/state.c
+===================================================================
+--- procd-2014-03-18.orig/state.c	2015-04-03 19:55:13.000000000 +0530
++++ procd-2014-03-18/state.c	2015-04-03 23:48:28.209928164 +0530
+@@ -29,6 +29,7 @@
+ 	STATE_RUNNING,
+ 	STATE_SHUTDOWN,
+ 	STATE_HALT,
++	STATE_AUTOBOOT,
+ 	__STATE_MAX,
+ };
+ 
+@@ -75,6 +76,11 @@
+ 		break;
+ 
+ 	case STATE_HALT:
++		LOG("- halt -\n");
++		reboot(reboot_event);
++		break;
++	
++	case STATE_AUTOBOOT:
+ 		LOG("- reboot -\n");
+ 		reboot(reboot_event);
+ 		break;
+@@ -96,6 +102,12 @@
+ {
+ 	DEBUG(2, "Shutting down system with event %x\n", event);
+ 	reboot_event = event;
+-	state = STATE_SHUTDOWN;
++	if (reboot_event == RB_AUTOBOOT) {
++		state = STATE_AUTOBOOT;
++	} else if (reboot_event == RB_HALT_SYSTEM) {
++		state = STATE_HALT;
++	} else if (reboot_event == RB_POWER_OFF) {
++		state = STATE_SHUTDOWN;
++	}
+ 	state_enter();
+ }
