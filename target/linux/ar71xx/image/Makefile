@@ -831,6 +831,7 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP136,ap136,AP136,ttyS0,115200,$$(
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(ap143_mtdlayout_8M),1441792,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),1507328,14876672,RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_32M_DUAL,ap143-32M-dual,AP143,ttyS0,115200,,1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP147_8M,ap147-8M,AP147,ttyS0,115200,$$(ap147_mtdlayout_8M),1441792,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP147_16M,ap147-16M,AP147,ttyS0,115200,$$(ap147_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP151_8M,ap151-8M,AP151,ttyS0,115200,$$(ap151_mtdlayout_8M),1507328,6488064,RKuImage))
@@ -968,7 +969,7 @@ $(eval $(call SingleProfile,Zcomax,$(fs_64k),ZCN1523H516,zcn-1523h-5-16,ZCN-1523
 $(eval $(call SingleProfile,ZyXEL,$(fs_64k),NBG_460N_550N_550NH,nbg460n_550n_550nh,NBG460N,ttyS0,115200,NBG-460N))
 
 $(eval $(call MultiProfile,AP121,AP121_2M AP121_4M))
-$(eval $(call MultiProfile,AP143,AP143_8M AP143_16M))
+$(eval $(call MultiProfile,AP143,AP143_8M AP143_16M AP143_32M AP143_32M_DUAL))
 $(eval $(call MultiProfile,AP147,AP147_8M AP147_16M))
 $(eval $(call MultiProfile,AP152,AP152_8M AP152_16M))
 $(eval $(call MultiProfile,CUS531,CUS531_16M CUS531_32M CUS531DUAL CUS531NAND CUS531_32M_DUAL CUS531DUAL_DUAL CUS531NAND_DUAL))
@@ -1063,10 +1064,10 @@ define Image/Build/Profile/QSDK_Open_Router
 	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/AP143_16M,$(1))
 	$(call Image/Build/Profile/AP152_16M,$(1))
-	$(call Image/Build/Profile/CUS531,$(1))
 endef
 
 define Image/Build/Profile/QSDK_IoE_Device
+	$(call Image/Build/Profile/AP143,$(1))
 	$(call Image/Build/Profile/CUS531,$(1))
 endef
 

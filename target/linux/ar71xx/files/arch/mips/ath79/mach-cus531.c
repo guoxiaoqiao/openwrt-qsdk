@@ -177,12 +177,6 @@ static void __init cus531_setup(void)
 
 static void __init cus531_dual_setup(void)
 {
-	/* fix up spi chip select, uboot may switch the CS pin. */
-	ath79_gpio_output_select(CUS531_GPIO_SPI_CS0,
-				 QCA953X_GPIO_OUT_MUX_SPI_CS0);
-	ath79_gpio_output_select(CUS531_GPIO_SPI_CS1,
-				 QCA953X_GPIO_OUT_MUX_SPI_CS1);
-
 	ath79_register_m25p80_multi(NULL);
 	cus531_common_setup();
 }

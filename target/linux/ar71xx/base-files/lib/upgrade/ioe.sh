@@ -15,7 +15,7 @@
 USE_REFRESH=
 
 # make sure we got the tools we need during the fw upgrade process
-platform_add_ramfs_cus531_tools()
+platform_add_ramfs_ioe_tools()
 {
 	install_bin /usr/sbin/fw_printenv /usr/sbin/fw_setenv
 	install_bin /bin/busybox /usr/bin/cut
@@ -23,7 +23,7 @@ platform_add_ramfs_cus531_tools()
 	install_bin /usr/sbin/nandwrite
 	install_file /etc/fw_env.config
 }
-append sysupgrade_pre_upgrade platform_add_ramfs_cus531_tools
+append sysupgrade_pre_upgrade platform_add_ramfs_ioe_tools
 
 # determine size of the main firmware partition
 platform_get_firmware_size() {
@@ -71,7 +71,7 @@ get_mtdpart_offset() {
 	eval "${varname}=${offset}"
 }
 
-platform_check_image_cus531() {
+platform_check_image_ioe() {
 	local image_size=$( get_filesize "$1" )
 	local firmware_size=$( platform_get_firmware_size )
 
@@ -84,7 +84,7 @@ platform_check_image_cus531() {
 	return 0
 }
 
-cus531_update_uboot_env() {
+ioe_update_uboot_env() {
 	local file="$1"
 	local nand=$2
         # NOR0 size - 16MB hex (dual NOR)
@@ -131,7 +131,6 @@ cus531_update_uboot_env() {
 
 	_kernel_addr=$(printf '%d' 0x${kernel_addr})
 	_nor0_size=$(printf '%d' 0x${nor0_size})
-	_nor1_exist='/sys/bus/spi/drivers/m25p80/spi0.1/mtd'
 
 	if [ -n "$nand" ]; then
 		# Kernel and rootfs for NAND flash are on second SPI partition
@@ -140,14 +139,10 @@ cus531_update_uboot_env() {
 		bootcmd="nboot 0x81000000 0 0x${kernel_addr}; run fail"
 	elif [ $_kernel_addr -lt $_nor0_size ]; then
 		bootcmd="bootm 0x9f${kernel_addr}; run fail"
-	elif [ -d $_nor1_exist ]; then
-		v "Two NOR flash detected"
+	else
+		v "32M NOR flash detected"
 		kernel_addr=$(printf '%x' $((0x${kernel_addr} - 0x${nor0_size})))
 		bootcmd="flselect 1; bootm 0x9f${kernel_addr}; run fail"
-	else
-		v "Single large NOR flash detected"
-		kernel_addr=$(printf '%x' $((0x${kernel_addr} + 0x9f000000)))
-		bootcmd="bootm ${kernel_addr}; run fail"
 	fi
 
 	fw_setenv -s - << EOF
@@ -162,7 +157,7 @@ EOF
 	v "done"
 }
 
-platform_do_upgrade_cus531() {
+platform_do_upgrade_ioe() {
 	local file=$1
 	local name=$2
 	local fw="firmware"
@@ -189,6 +184,6 @@ platform_do_upgrade_cus531() {
 		get_image "$1" | mtd -j "$CONF_TAR" write - $fw
 	fi
 
-	[ -n "$dual" ] && cus531_update_uboot_env "$file" "$nand"
+	[ -n "$dual" ] && ioe_update_uboot_env "$file" "$nand"
 }
 
