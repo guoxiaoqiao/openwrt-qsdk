@@ -1,0 +1,142 @@
+diff --git a/drivers/watchdog/ath79_wdt.c b/drivers/watchdog/ath79_wdt.c
+index bf79909..eff7903 100644
+--- a/drivers/watchdog/ath79_wdt.c
++++ b/drivers/watchdog/ath79_wdt.c
+@@ -31,9 +31,14 @@
+ #include <linux/watchdog.h>
+ #include <linux/clk.h>
+ #include <linux/err.h>
++#include <linux/interrupt.h>
++#include <linux/jiffies.h>
++#include <linux/sched.h>
++#include <linux/debugfs.h>
+ 
+ #include <asm/mach-ath79/ath79.h>
+ #include <asm/mach-ath79/ar71xx_regs.h>
++#include <asm/mach-ath79/irq.h>
+ 
+ #define DRIVER_NAME	"ath79-wdt"
+ 
+@@ -65,12 +70,15 @@ static struct clk *wdt_clk;
+ static unsigned long wdt_freq;
+ static int boot_status;
+ static int max_timeout;
++static unsigned long long last_pet;
++static struct dentry *ath79_wdt_dbg_dir;
+ 
+ static inline void ath79_wdt_keepalive(void)
+ {
+ 	ath79_reset_wr(AR71XX_RESET_REG_WDOG, wdt_freq * timeout);
+ 	/* flush write */
+ 	ath79_reset_rr(AR71XX_RESET_REG_WDOG);
++	last_pet = sched_clock();
+ }
+ 
+ static inline void ath79_wdt_enable(void)
+@@ -88,6 +96,22 @@ static inline void ath79_wdt_enable(void)
+ 	ath79_reset_wr(AR71XX_RESET_REG_WDOG_CTRL, WDOG_CTRL_ACTION_FCR);
+ 	/* flush write */
+ 	ath79_reset_rr(AR71XX_RESET_REG_WDOG_CTRL);
++
++}
++
++static irqreturn_t ath79_wdt_irq_handler(int irq, void *dev_id)
++{
++	unsigned long nanosec_rem;
++	unsigned long long t = sched_clock();
++	struct task_struct *tsk;
++
++	ath79_reset_wr(AR71XX_RESET_REG_WDOG_CTRL, WDOG_CTRL_ACTION_NONE);
++	pr_info("Watchdog bark! Now = %llu \n", t);
++	pr_info("Watchdog last pet at %llu \n", last_pet);
++	pr_info("\n ================================== \n");
++	panic("BUG :  ATH_WDT_TIMEOUT ");
++
++	return IRQ_HANDLED;
+ }
+ 
+ static inline void ath79_wdt_disable(void)
+@@ -110,10 +134,20 @@ static int ath79_wdt_set_timeout(int val)
+ 
+ static int ath79_wdt_open(struct inode *inode, struct file *file)
+ {
++	int ret;
++
+ 	if (test_and_set_bit(WDT_FLAGS_BUSY, &wdt_flags))
+ 		return -EBUSY;
+ 
+ 	clear_bit(WDT_FLAGS_EXPECT_CLOSE, &wdt_flags);
++
++	ret = request_irq(ATH79_MISC_IRQ_WDOG,ath79_wdt_irq_handler,0,"ath79_wdt_irq",NULL);
++	if(ret)
++	{
++		pr_err("ATH79 WDT IRQ Request failed! err %d\n",ret);
++		return -EBUSY;
++	}
++
+ 	ath79_wdt_enable();
+ 
+ 	return nonseekable_open(inode, file);
+@@ -131,6 +165,7 @@ static int ath79_wdt_release(struct inode *inode, struct file *file)
+ 
+ 	clear_bit(WDT_FLAGS_BUSY, &wdt_flags);
+ 	clear_bit(WDT_FLAGS_EXPECT_CLOSE, &wdt_flags);
++	free_irq(ATH79_MISC_IRQ_WDOG,NULL);
+ 
+ 	return 0;
+ }
+@@ -287,22 +322,52 @@ static int __devexit ath79_wdt_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static void ath97_wdt_shutdown(struct platform_device *pdev)
++static void ath79_wdt_shutdown(struct platform_device *pdev)
+ {
+ 	ath79_wdt_disable();
+ }
+ 
+ static struct platform_driver ath79_wdt_driver = {
+ 	.remove		= __devexit_p(ath79_wdt_remove),
+-	.shutdown	= ath97_wdt_shutdown,
++	.shutdown	= ath79_wdt_shutdown,
+ 	.driver		= {
+ 		.name	= DRIVER_NAME,
+ 		.owner	= THIS_MODULE,
+ 	},
+ };
+ 
++static int ath79_wdt_debugfs_read(void *data, u64 *val)
++{
++	pr_info(" ath79_wdt ::Action = %d \n",
++		ath79_reset_rr(AR71XX_RESET_REG_WDOG_CTRL));
++	return 0;
++}
++
++static int ath79_wdt_debugfs_write(void *data, u64 val)
++{
++	/* check for validity of the option for action. valid range is 0 till 3 */
++	if (val < WDOG_CTRL_ACTION_NONE || val > WDOG_CTRL_ACTION_FCR)
++		return -EINVAL;
++
++	ath79_reset_wr(AR71XX_RESET_REG_WDOG_CTRL, val);
++	/* flush write */
++	ath79_reset_rr(AR71XX_RESET_REG_WDOG_CTRL);
++	return 0;
++}
++DEFINE_SIMPLE_ATTRIBUTE(ath79_wdt_dbg_fops,ath79_wdt_debugfs_read,
++			ath79_wdt_debugfs_write, "%llu\n");
++
+ static int __init ath79_wdt_init(void)
+ {
++	ath79_wdt_dbg_dir = debugfs_create_dir("ath79_wdt", NULL);
++	if (IS_ERR_OR_NULL(ath79_wdt_dbg_dir)) {
++		pr_err("%s: ath79_wdt_dbg_dir  debugfs dir creation failed\n", __func__);
++		return -EINVAL;
++	}
++
++	(void) debugfs_create_file("action", S_IRUGO | S_IWUSR,
++		ath79_wdt_dbg_dir, NULL, &ath79_wdt_dbg_fops);
++
+ 	return platform_driver_probe(&ath79_wdt_driver, ath79_wdt_probe);
+ }
+ module_init(ath79_wdt_init);
