@@ -21,6 +21,7 @@ CONFIG_KERNEL_GIT_LOCAL_REPOSITORY:=""
 include $(INCLUDE_DIR)/target.mk
 
 DEFAULT_PACKAGES += \
-	uboot-ipq806x uboot-qca961x kmod-usb-dwc3-qcom kmod-usb2 kmod-usb3 kmod-usb-dwc3-qca961x
+	uboot-ipq806x uboot-qca961x kmod-usb-dwc3-qcom kmod-usb2 kmod-usb3 kmod-usb-dwc3-qca961x \
+	uboot-envtools
 
 $(eval $(call BuildTarget))
