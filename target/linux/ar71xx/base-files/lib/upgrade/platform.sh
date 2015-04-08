@@ -465,11 +465,9 @@ platform_check_image() {
                 return 0
                 ;;
 
-	ap143 | \
 	cus531 | \
 	cus531-dual | \
-	cus531-nand | \
-	cus532k)
+	cus531-nand)
 		platform_check_image_ioe "$1" && return 0
 		return 1
 		;;
@@ -544,11 +542,9 @@ platform_do_upgrade() {
 		MTD_CONFIG_ARGS="-s 0x180000"
 		default_do_upgrade "$ARGV"
 		;;
-	ap143 | \
 	cus531 | \
 	cus531-dual | \
-	cus531-nand | \
-	cus532k)
+	cus531-nand)
 		platform_do_upgrade_ioe "$ARGV" "$board"
 		;;
 	*)

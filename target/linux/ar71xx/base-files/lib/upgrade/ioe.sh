@@ -18,11 +18,9 @@ USE_REFRESH=
 platform_add_ramfs_ioe_tools()
 {
 	install_bin /usr/sbin/fw_printenv /usr/sbin/fw_setenv
-	install_bin /bin/busybox /usr/bin/cut /usr/bin/sed
+	install_bin /bin/busybox /usr/bin/cut
 	install_bin /usr/bin/md5sum
 	install_bin /usr/sbin/nandwrite
-	install_bin /usr/sbin/ubiattach
-	install_bin /usr/sbin/ubidetach
 	install_file /etc/fw_env.config
 }
 append sysupgrade_pre_upgrade platform_add_ramfs_ioe_tools
@@ -113,19 +111,6 @@ ioe_update_uboot_env() {
 	local bootcmd_old=$(fw_printenv -n bootcmd)
 	local bootargs_old=$(fw_printenv -n bootargs)
 
-	local ubi=$(fw_printenv -n bootargs |grep ubi)
-	[ -n "$ubi" ] && {
-		mtdx=$(cat /proc/mtd |grep "r-2" |cut -f1 -d ":")
-		r_n=$(echo $mtdx |cut -f2 -d "d")
-
-		while read line; do
-			echo $line | grep -q "rootfs" || continue
-			mtdx=$(echo $line |cut -f1 -d ":")
-			rootfs_n=$(echo $mtdx |cut -f2 -d "d")
-			break
-		done < /proc/mtd
-	}
-
 	v "Updating cus-531 u-boot-env..."
 	bootargs=$(fw_printenv -n bootargs | sed \
 		-e 's/(kernel)/(tmp-k-1)/' \
@@ -152,7 +137,6 @@ ioe_update_uboot_env() {
 		v "NAND flash detected"
 		kernel_addr=$(printf '%x' $((0x${kernel_addr} - 0x${nor0_size_nand})))
 		bootcmd="nboot 0x81000000 0 0x${kernel_addr}; run fail"
-		[ -n "$ubi" ] && bootargs=$(echo ${bootargs} | sed -e 's/ubi.mtd='"${rootfs_n}"'/ubi.mtd='"${r_n}"'/')
 	elif [ $_kernel_addr -lt $_nor0_size ]; then
 		bootcmd="bootm 0x9f${kernel_addr}; run fail"
 	else
@@ -177,9 +161,6 @@ platform_do_upgrade_ioe() {
 	local file=$1
 	local name=$2
 	local fw="firmware"
-	local ubi_vol="0"
-	local rootfs="rootfs"
-	local rootfs_data="rootfs_data"
 	local valid_env=$(fw_printenv | grep "bootcmd=bootp")
 
 	[ -n "$valid_env" ] && {
@@ -193,23 +174,12 @@ platform_do_upgrade_ioe() {
 	sync
 
 	nand=$(echo $name | grep "nand");
-	if [ -n "$nand" ] || [ "$name" = "cus532k" ]; then
+	if [ -n "$nand" ]; then
 		mtd_fw=$(cat /proc/mtd |grep $fw |cut -f1 -d ":")
 		mtd_dev="/dev/$mtd_fw"
 
-		ubidetach -d $ubi_vol
-		mtd erase $mtd_dev
-		mtd_ubi_rootfs="/dev/$(cat /proc/mtd |grep $rootfs |cut -f1 -d ":")"
+		mtd erase $mtd_fw
 		dd if=$file bs=2048 | nandwrite -p $mtd_dev -
-		ubiattach -p $mtd_ubi_rootfs
-		sleep 2
-		mtd_ubi_rootfs_data="$(cat /proc/mtd |grep $rootfs_data |cut -f1 -d ":" | awk ' // {sub(/mtd/, "", $0);print("/dev/mtdblock"$0)}')"
-		echo $mtd_ubi_rootfs_data
-		mount -t jffs2 $mtd_ubi_rootfs_data /mnt
-		echo $CONF_TAR
-		tar xzf $CONF_TAR -C /mnt
-		sync
-		umount /mnt
 	else
 		get_image "$1" | mtd -j "$CONF_TAR" write - $fw
 	fi

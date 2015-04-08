@@ -113,7 +113,7 @@ static struct spi_board_info cus531_spi_info[] = {
 	{
 		.bus_num	= 0,
 		.chip_select	= 1,
-		.max_speed_hz   = 50000000,
+		.max_speed_hz   = 25000000,
 		.modalias	= "ath79-spinand",
 		.controller_data = &cus531_spi1_cdata,
 		.platform_data 	= NULL,
@@ -123,7 +123,6 @@ static struct spi_board_info cus531_spi_info[] = {
 static struct ath79_spi_platform_data cus531_spi_data = {
 	.bus_num		= 0,
 	.num_chipselect		= 2,
-	.word_banger		= true,
 };
 
 static void __init cus531_register_i2c_devices(
