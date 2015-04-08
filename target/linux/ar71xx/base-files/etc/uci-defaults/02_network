@@ -46,6 +46,12 @@ tl-wr1043nd-v2)
 	ucidef_add_switch_vlan "switch0" "2" "5 6"
 	;;
 
+ap143)
+	ucidef_set_interfaces_lan_wan "eth1" "eth0"
+	ucidef_add_switch "eth1" "1" "1"
+	ucidef_add_switch_vlan "eth1" "1" "0 1 2 3 4"
+	;;
+
 archer-c7 |\
 tl-wdr4900-v2)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
