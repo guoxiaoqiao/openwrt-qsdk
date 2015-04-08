@@ -24,6 +24,10 @@ menuconfig DEVEL
 		string "Local mirror for source packages" if DEVEL
 		default ""
 
+	config GIT_MIRROR
+		string "Git mirror" if DEVEL
+		default ""
+
 	config AUTOREBUILD
 		bool "Automatic rebuild of packages" if DEVEL
 		default y
