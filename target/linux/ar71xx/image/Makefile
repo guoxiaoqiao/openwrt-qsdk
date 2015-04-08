@@ -222,6 +222,10 @@ cap4200ag_mtdlayout=mtdparts=spi0.0:256k(u-boot),64k(u-boot-env),320k(custom)ro,
 db120_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(nvram),64k(art)ro,7744k@0x50000(firmware)
 cameo_ap94_mtdlayout=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,6208k(firmware),64k(caldata)ro,1600k(unknown)ro,64k@0x7f0000(caldata_copy)
 cameo_ap94_mtdlayout_fat=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,7808k(firmware),64k(caldata)ro,64k@0x660000(caldata_orig),6208k@0x50000(firmware_orig)
+cus531_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
+cus531_mtdlayout_32M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),256k(reserve)ro,16128k(user),16000k@0x50000(firmware)
+cus531_mtdlayout_dual=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware);spi0.1:16m(user)
+cus531_mtdlayout_nand=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,128k(reserved),64k(art);spi0.1:2m(kernel),20m(rootfs),106m(user),22m@0x0(firmware)
 ew-dorin_mtdlayout_4M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),3712k(firmware),64k(art)
 ew-dorin_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),16000k(firmware),64k(art)
 dlrtdev_mtdlayout=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,6208k(firmware),64k(caldata)ro,640k(certs),960k(unknown)ro,64k@0x7f0000(caldata_copy)
@@ -923,6 +927,13 @@ $(eval $(call SingleProfile,AthLzma,64k,AP136_010,ap136-010,AP136-010,ttyS0,1152
 $(eval $(call SingleProfile,AthLzma,64k,AP136_020,ap136-020,AP136-020,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,BXU2000N2,bxu2000n-2-a1,BXU2000n-2-A1,ttyS0,115200,$$(bxu2000n2_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CAP4200AG,cap4200ag,CAP4200AG,ttyS0,115200,$$(cap4200ag_mtdlayout),KRuImage))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531_16M,cus531-16M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_16M),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531_32M,cus531-32M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_32M),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531_32M_DUAL,cus531-32M-dual,CUS531,ttyS0,115200,,RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531DUAL,cus531dual,CUS531-DUAL,ttyS0,115200,$$(cus531_mtdlayout_dual),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531DUAL_DUAL,cus531dual-dual,CUS531-DUAL,ttyS0,115200,,RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531NAND,cus531nand,CUS531-NAND,ttyS0,115200,$$(cus531_mtdlayout_nand),KRuImage))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531NAND_DUAL,cus531nand-dual,CUS531-NAND,ttyS0,115200,,KRuImage))
 $(eval $(call SingleProfile,AthLzma,64k,DB120,db120,DB120,ttyS0,115200,$$(db120_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,DRAGINO2,dragino2,DRAGINO2,ttyATH0,115200,$$(dragino2_mtdlayout),KRuImage,65536))
 $(eval $(call SingleProfile,AthLzma,64k,EWDORINAP,ew-dorin,EW-DORIN,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),KRuImage,65536))
@@ -1094,6 +1105,7 @@ $(eval $(call SingleProfile,ZyXEL,64k,NBG_460N_550N_550NH,nbg460n_550n_550nh,NBG
 
 $(eval $(call MultiProfile,AP121,AP121_2M AP121_4M))
 $(eval $(call MultiProfile,AP136,AP136_010 AP136_020))
+$(eval $(call MultiProfile,CUS531,CUS531_16M CUS531_32M CUS531DUAL CUS531NAND CUS531_32M_DUAL CUS531DUAL_DUAL CUS531NAND_DUAL))
 $(eval $(call MultiProfile,EWDORIN, EWDORINAP EWDORINRT EWDORIN16M))
 $(eval $(call MultiProfile,OPENMESH,OM2P MR600))
 $(eval $(call MultiProfile,TEW652BRP,TEW652BRP_FW TEW652BRP_RECOVERY))
@@ -1158,6 +1170,10 @@ ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
 endif
 	$(call Image/BuildLoader,generic,elf)
 	$(call Image/Build/Profile/$(if $(CONFIG_IB),Default,$(IMAGE_PROFILE)),loader)
+endef
+
+define Image/Build/Profile/QSDK_IoE_Device
+	$(call Image/Build/Profile/CUS531,$(1))
 endef
 
 define Image/Build

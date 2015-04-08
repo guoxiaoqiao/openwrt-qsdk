@@ -328,6 +328,12 @@ platform_check_image() {
 		fi
 		return 0
 		;;
+	cus531 | \
+	cus531-dual | \
+	cus531-nand)
+		platform_check_image_ioe "$1" && return 0
+		return 1
+		;;
 	esac
 
 	echo "Sysupgrade is not yet supported on $board."
@@ -377,6 +383,11 @@ platform_do_upgrade() {
 	uap-pro)
 		MTD_CONFIG_ARGS="-s 0x180000"
 		default_do_upgrade "$ARGV"
+		;;
+	cus531 | \
+	cus531-dual | \
+	cus531-nand)
+		platform_do_upgrade_ioe "$ARGV" "$board"
 		;;
 	*)
 		default_do_upgrade "$ARGV"

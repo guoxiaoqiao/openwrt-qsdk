@@ -271,6 +271,15 @@ ar71xx_board_detect() {
 	*CAP4200AG)
 		name="cap4200ag"
 		;;
+	*"CUS531 reference board")
+		name="cus531"
+		;;
+	*"CUS531 dual reference board")
+		name="cus531-dual"
+		;;
+	*"CUS531 nand reference board")
+		name="cus531-nand"
+		;;
 	*"DB120 reference board")
 		name="db120"
 		;;
