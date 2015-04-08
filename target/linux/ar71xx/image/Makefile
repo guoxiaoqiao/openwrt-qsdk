@@ -1958,10 +1958,10 @@ $(eval $(call SingleProfile,AthLzma,64k,AP132,ap132,AP132,ttyS0,115200,$$(ap132_
 $(eval $(call SingleProfile,AthLzma,64k,AP135,ap135-020,AP135-020,ttyS0,115200,$$(ap135_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP136_010,ap136-010,AP136-010,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP136_020,ap136-020,AP136-020,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
-$(eval $(call SingleProfile,AthLzma,64k,AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(ap143_mtdlayout_8M),RKuImage))
-$(eval $(call SingleProfile,AthLzma,64k,AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),RKuImage))
-$(eval $(call SingleProfile,AthLzma,64k,AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),RKuImage))
-$(eval $(call SingleProfile,AthLzma,64k,AP143_32M_DUAL,ap143-32M-dual,AP143,ttyS0,115200,,RKuImage,1507328,14876672))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(ap143_mtdlayout_8M),RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_32M_DUAL,ap143-32M-dual,AP143,ttyS0,115200,,RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,BXU2000N2,bxu2000n-2-a1,BXU2000n-2-A1,ttyS0,115200,$$(bxu2000n2_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CAP4200AG,cap4200ag,CAP4200AG,ttyS0,115200,$$(cap4200ag_mtdlayout),KRuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CUS531_16M,cus531-16M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_16M),RKuImage))
@@ -2146,6 +2146,7 @@ $(eval $(call SingleProfile,ZyXEL,64k,NBG_460N_550N_550NH,nbg460n_550n_550nh,NBG
 $(eval $(call MultiProfile,AP121,AP121_2M AP121_4M))
 $(eval $(call MultiProfile,DIR615IX,DIR615I1 DIR615I3))
 $(eval $(call MultiProfile,AP136,AP136_010 AP136_020))
+$(eval $(call MultiProfile,AP143,AP143_8M AP143_16M AP143_32M AP143_32M_DUAL))
 $(eval $(call MultiProfile,CUS531,CUS531_16M CUS531_32M CUS531DUAL CUS531NAND CUS531_32M_DUAL CUS531DUAL_DUAL CUS531NAND_DUAL))
 $(eval $(call MultiProfile,EWDORIN, EWDORINAP EWDORINRT EWDORIN16M))
 $(eval $(call MultiProfile,OPENMESH,OM2P OM5P MR600 MR900))
@@ -2224,6 +2225,7 @@ endef
 
 define Image/Build/Profile/QSDK_IoE_Device
 	$(call Image/Build/Profile/CUS531,$(1))
+	$(call Image/Build/Profile/AP143,$(1))
 endef
 
 # $(1): filesystem type.
