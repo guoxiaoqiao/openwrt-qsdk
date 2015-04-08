@@ -400,6 +400,15 @@ ar71xx_board_detect() {
 		name="cpe510"
 		tplink_pharos_board_detect
 		;;
+	*"CUS531 reference board")
+		name="cus531"
+		;;
+	*"CUS531 dual reference board")
+		name="cus531-dual"
+		;;
+	*"CUS531 nand reference board")
+		name="cus531-nand"
+		;;
 	*"DB120 reference board")
 		name="db120"
 		;;
