@@ -558,6 +558,7 @@ define KernelPackage/crypto-qcrypto
   FILES:= \
 	$(LINUX_DIR)/drivers/crypto/msm/qcrypto.ko \
 	$(LINUX_DIR)/drivers/crypto/msm/qcedev.ko
+  AUTOLOAD:=$(call AutoLoad,09,qcrypto)
   DEPENDS:=@TARGET_ipq806x +kmod-crypto-manager +kmod-crypto-aes +kmod-crypto-hash +kmod-crypto-des
   $(call AddDepends/crypto)
 endef
