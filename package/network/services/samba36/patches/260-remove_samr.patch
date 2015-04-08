@@ -120,17 +120,6 @@
  	if (!str1 || !str2 || !p) {
  		return False;
  	}
-@@ -2979,6 +2991,10 @@ static bool api_SetUserPassword(struct s
- 	int min_pwd_length;
- 	struct dcerpc_binding_handle *b = NULL;
- 
-+#ifndef SAMR_SUPPORT
-+	return False;
-+#endif
-+
- 	/* Skip 2 strings. */
- 	p = skip_string(param,tpscnt,np);
- 	p = skip_string(param,tpscnt,p);
 @@ -3224,6 +3240,10 @@ static bool api_SamOEMChangePassword(str
  	int bufsize;
  	struct dcerpc_binding_handle *b;
