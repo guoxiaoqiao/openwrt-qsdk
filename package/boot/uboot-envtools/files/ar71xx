@@ -16,8 +16,12 @@ board=$(ar71xx_board_name)
 case "$board" in
 alfa-ap120c | \
 all0258n | \
+ap143 |\
 cap4200ag | \
 carambola2 | \
+cus531 | \
+cus531-dual | \
+cus531-nand | \
 eap300v2 | \
 hornet-ub | \
 hornet-ub-x2 | \
