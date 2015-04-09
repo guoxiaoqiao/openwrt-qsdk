@@ -14,8 +14,12 @@ touch /etc/config/ubootenv
 board=$(ar71xx_board_name)
 
 case "$board" in
+ap143 |\
 all0258n | \
 cap4200ag | \
+cus531 | \
+cus531-dual | \
+cus531-nand | \
 hornet-ub | \
 hornet-ub-x2 | \
 mr600 | \
