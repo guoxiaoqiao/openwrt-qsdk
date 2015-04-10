@@ -1,0 +1,63 @@
+--- a/src/ap/x_snoop.c
++++ b/src/ap/x_snoop.c
+@@ -51,6 +51,14 @@ int x_snoop_init(struct hostapd_data *ha
+ 		return -1;
+ 	}
+ 
++#ifdef CONFIG_IPV6
++	if (hostapd_drv_br_set_net_param(hapd, DRV_BR_MULTICAST_SNOOPING, 1)) {
++		wpa_printf(MSG_DEBUG,
++			   "x_snoop: Failed to enable multicast snooping on the bridge");
++		return -1;
++	}
++#endif /* CONFIG_IPV6 */
++
+ 	return 0;
+ }
+ 
+--- a/src/drivers/driver.h
++++ b/src/drivers/driver.h
+@@ -1555,6 +1555,7 @@ enum drv_br_port_attr {
+ 
+ enum drv_br_net_param {
+ 	DRV_BR_NET_PARAM_GARP_ACCEPT,
++	DRV_BR_MULTICAST_SNOOPING,
+ };
+ 
+ struct drv_acs_params {
+--- a/src/drivers/driver_nl80211.c
++++ b/src/drivers/driver_nl80211.c
+@@ -8198,9 +8198,9 @@ static const char * drv_br_net_param_str
+ 	switch (param) {
+ 	case DRV_BR_NET_PARAM_GARP_ACCEPT:
+ 		return "arp_accept";
++	default:
++		return NULL;
+ 	}
+-
+-	return NULL;
+ }
+ 
+ 
+@@ -8212,6 +8212,13 @@ static int wpa_driver_br_set_net_param(v
+ 	const char *param_txt;
+ 	int ip_version = 4;
+ 
++	if (param == DRV_BR_MULTICAST_SNOOPING) {
++		os_snprintf(path, sizeof(path),
++			    "/sys/devices/virtual/net/%s/bridge/multicast_snooping",
++			    bss->brname);
++		goto set_val;
++	}
++
+ 	param_txt = drv_br_net_param_str(param);
+ 	if (param_txt == NULL)
+ 		return -EINVAL;
+@@ -8227,6 +8234,7 @@ static int wpa_driver_br_set_net_param(v
+ 	os_snprintf(path, sizeof(path), "/proc/sys/net/ipv%d/conf/%s/%s",
+ 		    ip_version, bss->brname, param_txt);
+ 
++set_val:
+ 	if (linux_write_system_file(path, val))
+ 		return -1;
+ 
