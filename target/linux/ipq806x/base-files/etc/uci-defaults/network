@@ -41,9 +41,12 @@ ap161)
 	ucidef_add_switch_vlan "switch0" "2" "0 1 2 3"
 	;;
 ap160_2xx)
-       ucidef_set_interface_bond "bond0" "2" "eth1 eth2 eth3" "2"
-       ucidef_set_interface_lan "bond0 eth0"
-       ;;
+	ucidef_set_interface_bond "bond0" "2" "eth1 eth2 eth3" "2"
+	ucidef_set_interface_lan "bond0 eth0"
+	ucidef_add_switch "switch0" "1" "1" "1"
+	ucidef_add_switch_vlan "switch0" "1" "1 26"
+	ucidef_add_switch_vlan "switch0" "2" "2 3 4 27"
+	;;
 *)
 	echo "Unsupported hardware. Network interfaces not intialized"
 	;;
