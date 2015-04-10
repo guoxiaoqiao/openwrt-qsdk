@@ -2,10 +2,11 @@
 # Copyright (c) 2013 The Linux Foundation. All rights reserved.
 #
 
+STORAGE:=kmod-fs-ext4 kmod-usb-storage kmod-usb2 kmod-fs-msdos kmod-fs-ntfs \
+	kmod-fs-vfat ntfs-3g kmod-nls-cp437 kmod-nls-iso8859-1
+
 define Profile/QSDK_Base
-	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp kmod-fs-ext4 \
-	  kmod-usb-storage kmod-usb2 kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
-	  ntfs-3g kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa mcproxy \
+	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp tftp-hpa mcproxy \
 	  kmod-ipt-nathelper-rtsp kmod-ipv6 \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
@@ -23,7 +24,7 @@ define Profile/QSDK_Open_Router
 	NAME:=Qualcomm-Atheros SDK Open Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
-	  alljoyn-notification alljoyn-services_common \
+	  alljoyn-notification alljoyn-services_common $(STORAGE) \
 	  hostapd hostapd-utils iwinfo kmod-qca-ath10k kmod-qca-ath9k kmod-qca-ath \
 	  kmod-fast-classifier kmod-usb2 luci-app-qos wireless-tools \
 	  wpa-supplicant-p2p wpa-cli qca-legacy-uboot-ap121 qca-legacy-uboot-ap143-16M \
@@ -71,7 +72,7 @@ define Profile/QSDK_Premium_Router
 	$(Profile/QSDK_Test)
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
-	  streamboost hyfi kmod-fast-classifier \
+	  streamboost hyfi kmod-fast-classifier $(STORAGE) \
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
 	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
