@@ -95,6 +95,18 @@ define KernelPackage/qca-nss-drv-ipsecmgr/Description
 Kernel module for NSS IPsec offload manager
 endef
 
+define KernelPackage/qca-nss-drv-netlink
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  TITLE:=Kernel driver for NSS (NETLINK) - netlink
+  DEPENDS:=kmod-qca-nss-drv
+  FILES:=$(PKG_BUILD_DIR)/qca-nss-netlink.ko
+endef
+
+define KernelPackage/qca-nss-drv-netlink/Description
+Kernel module for NSS netlink
+endef
 EXTRA_CFLAGS+= \
         -I$(STAGING_DIR)/usr/include/qca-nss-drv \
 	-I$(STAGING_DIR)/usr/include/qca-nss-gmac
@@ -114,3 +126,4 @@ $(eval $(call KernelPackage,qca-nss-drv-tun6rd))
 $(eval $(call KernelPackage,qca-nss-drv-tunipip6))
 $(eval $(call KernelPackage,qca-nss-drv-qdisc))
 $(eval $(call KernelPackage,qca-nss-drv-ipsecmgr))
+$(eval $(call KernelPackage,qca-nss-drv-netlink))
