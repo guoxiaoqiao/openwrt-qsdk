@@ -79,7 +79,7 @@ define Profile/QSDK_Standard_Beeliner
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
-		$(PACKAGES_WIFI_10_4)
+		$(PACKAGES_WIFI_10_4) kmod-qca-wil6210
 endef
 
 define Profile/QSDK_Standard_Beeliner/Description
