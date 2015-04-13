@@ -21,7 +21,65 @@
  	 * Local power constraint is an octet encoded as an unsigned integer in
 --- a/src/ap/dfs.c
 +++ b/src/ap/dfs.c
-@@ -812,6 +812,7 @@ static int hostapd_csa_in_progress(struc
+@@ -16,6 +16,8 @@
+ #include "ap_drv_ops.h"
+ #include "drivers/driver.h"
+ #include "dfs.h"
++#include "beacon.h"
++#include "eloop.h"
+ 
+ 
+ static int dfs_get_used_n_chans(struct hostapd_iface *iface, int *seg1)
+@@ -809,9 +811,56 @@ static int hostapd_csa_in_progress(struc
+ 	return 0;
+ }
+ 
++void hostapd_dfs_test_mode_csa_timeout(void *eloop_data, void *user_data)
++{
++	struct hostapd_data *hapd = eloop_data;
++
++	wpa_printf(MSG_INFO, "Stopping CSA in dfs test mode");
++	hostapd_switch_channel_fallback(hapd->iface, &hapd->cs_freq_params);
++}
++
++int hostapd_dfs_testmode_set_beacon_csa(struct hostapd_iface *iface,
++					struct csa_settings *settings)
++{
++	struct hostapd_data *hapd = iface->bss[0];
++	struct hostapd_hw_modes *mode;
++	struct hostapd_channel_data *chan = NULL;
++	int err = 0, i;
++
++	eloop_cancel_timeout(hostapd_dfs_test_mode_csa_timeout, hapd, NULL);
++
++	for (i = 0; i < hapd->iface->current_mode->num_channels; i++) {
++		chan = &hapd->iface->current_mode->channels[i];
++		if (chan->freq == settings->freq_params.freq)
++			break;
++	}
++	if (i == hapd->iface->current_mode->num_channels)
++		return -1;
++
++	if (!(chan->flag & HOSTAPD_CHAN_RADAR))
++		return 1;
++
++	if ((chan->flag & HOSTAPD_CHAN_DFS_MASK) == HOSTAPD_CHAN_DFS_AVAILABLE)
++		return 1;
++
++	err = ieee802_11_set_beacon(hapd);
++	if (err)
++		goto fail;
++	wpa_printf(MSG_DEBUG, "CSA beacon configured for dfs mode, count %d",
++		   hapd->cs_count);
++	hapd->csa_in_progress = 1;
++	eloop_register_timeout(HOSTAPD_DFS_TEST_MODE_CSA_DUR, 0,
++			       hostapd_dfs_test_mode_csa_timeout, hapd, NULL);
++	return 0;
++
++fail:
++	hostapd_disable_iface(iface);
++	return err;
++}
  
  static int hostapd_dfs_start_channel_switch(struct hostapd_iface *iface)
  {
@@ -29,7 +87,7 @@
  	struct hostapd_channel_data *channel;
  	int secondary_channel;
  	u8 vht_oper_centr_freq_seg0_idx;
-@@ -839,6 +840,18 @@ static int hostapd_dfs_start_channel_swi
+@@ -839,6 +888,18 @@ static int hostapd_dfs_start_channel_swi
  					&vht_oper_centr_freq_seg1_idx,
  					skip_radar);
  
@@ -48,7 +106,7 @@
  	if (!channel) {
  		/*
  		 * If there is no channel to switch immediately to, check if
-@@ -944,6 +957,11 @@ int hostapd_dfs_radar_detected(struct ho
+@@ -944,6 +1005,11 @@ int hostapd_dfs_radar_detected(struct ho
  	set_dfs_state(iface, freq, ht_enabled, chan_offset, chan_width,
  		      cf1, cf2, HOSTAPD_CHAN_DFS_UNAVAILABLE);
  
@@ -60,3 +118,54 @@
  	/* Skip if reported radar event not overlapped our channels */
  	res = dfs_are_channels_overlapped(iface, freq, chan_width, cf1, cf2);
  	if (!res)
+--- a/src/ap/dfs.h
++++ b/src/ap/dfs.h
+@@ -9,6 +9,13 @@
+ #ifndef DFS_H
+ #define DFS_H
+ 
++/* CSA beacon duration in seconds for dfs testing mode */
++#define HOSTAPD_DFS_TEST_MODE_CSA_DUR 1
++
++void hostapd_dfs_test_mode_csa_timeout(void *eloop_data, void *user_data);
++int hostapd_dfs_testmode_set_beacon_csa(struct hostapd_iface *iface,
++					struct csa_settings *settings);
++
+ int hostapd_handle_dfs(struct hostapd_iface *iface);
+ 
+ int hostapd_dfs_complete_cac(struct hostapd_iface *iface, int success, int freq,
+--- a/src/ap/hostapd.c
++++ b/src/ap/hostapd.c
+@@ -1952,6 +1952,7 @@ int hostapd_disable_iface(struct hostapd
+ 		!!(hapd_iface->drv_flags &
+ 		   WPA_DRIVER_FLAGS_AP_TEARDOWN_SUPPORT);
+ 
++	eloop_cancel_timeout(hostapd_dfs_test_mode_csa_timeout, hapd_iface, NULL);
+ 	/* same as hostapd_interface_deinit without deinitializing ctrl-iface */
+ 	for (j = 0; j < hapd_iface->num_bss; j++) {
+ 		struct hostapd_data *hapd = hapd_iface->bss[j];
+@@ -2607,7 +2608,6 @@ void hostapd_cleanup_cs_params(struct ho
+ 	hapd->csa_in_progress = 0;
+ }
+ 
+-
+ int hostapd_switch_channel(struct hostapd_data *hapd,
+ 			   struct csa_settings *settings)
+ {
+@@ -2622,6 +2622,16 @@ int hostapd_switch_channel(struct hostap
+ 	if (ret)
+ 		return ret;
+ 
++	if (hapd->iface->conf->dfs_test_mode) {
++		ret = hostapd_dfs_testmode_set_beacon_csa(hapd->iface,
++							  settings);
++		if (ret <= 0) {
++			free_beacon_data(&settings->beacon_csa);
++			free_beacon_data(&settings->beacon_after);
++			return ret;
++		}
++	}
++
+ 	ret = hostapd_drv_switch_channel(hapd, settings);
+ 	free_beacon_data(&settings->beacon_csa);
+ 	free_beacon_data(&settings->beacon_after);
