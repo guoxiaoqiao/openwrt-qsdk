@@ -7,13 +7,13 @@ define Profile/QSDK_IoE_Device
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp \
 	  tftp-hpa mcproxy kmod-ipt-nathelper-rtsp kmod-ipv6 \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
-	  sysstat iperf devmem2 ip ethtool ip6tables
+	  sysstat iperf devmem2 ip ethtool ip6tables -swconfig
 
-	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
+	PACKAGES+= -wpad-mini \
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
 	  alljoyn-notification alljoyn-services_common \
 	  hostapd hostapd-utils iwinfo  wpa-supplicant-p2p wpa-cli wireless-tools \
-	  kmod-qca-ath10k kmod-qca-ath9k kmod-qca-ath kmod-usb2 kmod-i2c-gpio-custom \
+	  kmod-usb2 kmod-i2c-gpio-custom kmod-ath9k  \
 	  qca-legacy-uboot-ap143-16M qca-legacy-uboot-ap143-32M \
 	  qca-legacy-uboot-cus531-16M qca-legacy-uboot-cus531-dual \
 	  qca-legacy-uboot-cus531-nand qca-legacy-uboot-cus531-32M \
