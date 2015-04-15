@@ -1,0 +1,45 @@
+From 19e84aa975f3a85a50cfee69cc60e20e5512b0d1 Mon Sep 17 00:00:00 2001
+From: Ajay <c_akisho@qti.qualcomm.com>
+Date: Wed, 25 Mar 2015 11:41:20 +0530
+Subject: [PATCH] Add CPU registers parsing support for IPQ806X
+
+Signed-off-by: Ajay <c_akisho@qti.qualcomm.com>
+---
+ linux-ramdump-parser-v2/boards.py  | 3 ++-
+ linux-ramdump-parser-v2/ramdump.py | 4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/linux-ramdump-parser-v2/boards.py b/linux-ramdump-parser-v2/boards.py
+index 1f12499..9604033 100755
+--- a/linux-ramdump-parser-v2/boards.py
++++ b/linux-ramdump-parser-v2/boards.py
+@@ -215,7 +215,8 @@ class BoardIPQ806X(Board):
+         self.imem_start = 0x2a03f000
+         self.smem_addr = 0x41000000
+         self.phys_offset = 0x41500000
+-        self.imem_file_name = 'IMEM_A.BIN'
++        self.imem_file_name = 'IMEM_C.BIN'
++        self.wdog_addr = 0x2a03f658
+ 
+ boards = []
+ boards.append(Board8916(socid=206, smem_addr=0xe200000))
+diff --git a/linux-ramdump-parser-v2/ramdump.py b/linux-ramdump-parser-v2/ramdump.py
+index 0a7a214..d160b00 100755
+--- a/linux-ramdump-parser-v2/ramdump.py
++++ b/linux-ramdump-parser-v2/ramdump.py
+@@ -772,10 +772,10 @@ class RamDump():
+             'v.v  %ASCII %STRING linux_banner\n'.encode('ascii', 'ignore'))
+         if os.path.exists(out_path + '/regs_panic.cmm'):
+             startup_script.write(
+-                'do {0}\n'.format(out_path + '/regs_panic.cmm').encode('ascii', 'ignore'))
++                'do {0}\n'.format('regs_panic.cmm').encode('ascii', 'ignore'))
+         elif os.path.exists(out_path + '/core0_regs.cmm'):
+             startup_script.write(
+-                'do {0}\n'.format(out_path + '/core0_regs.cmm').encode('ascii', 'ignore'))
++                'do {0}\n'.format('core0_regs.cmm').encode('ascii', 'ignore'))
+         startup_script.close()
+ 
+         t32_bat = open(out_path + '/launch_t32.bat', 'wb')
+-- 
+1.9.1
+
