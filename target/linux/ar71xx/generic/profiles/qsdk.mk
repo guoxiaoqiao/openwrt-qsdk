@@ -18,6 +18,17 @@ define Profile/QSDK_Test
 	  ethtool ip6tables iputils-tracepath iputils-tracepath6 iozone
 endef
 
+PACKAGES_WIFI_10_2:=kmod-qca-wifi-perf kmod-art2 qca-hostap qca-hostapd-cli \
+	  qca-wpa-supplicant qca-wpa-cli qca-spectral qca-wapid sigma-dut \
+	  qca-acfg qca-wrapd whc
+
+PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-perf kmod-art2 \
+	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
+	qca-wpa-cli-10.4 qca-wapid-10.4 sigma-dut-10.4 qca-wpc-10.4 \
+	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc \
+	qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw3-10.4-asic \
+	qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw4-10.4-emu_m2m qca-wifi-fw-hw4-10.4-emu_bb
+
 define Profile/QSDK_Open_Router
 	$(Profile/QSDK_Base)
 	$(Profile/QSDK_Test)
@@ -74,11 +85,9 @@ define Profile/QSDK_Premium_Router
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  streamboost hyfi kmod-fast-classifier $(STORAGE) \
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
-	  alljoyn-notification alljoyn-services_common \
-	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
-	  qca-wpa-cli qca-legacy-uboot-ap135 kmod-art2 sigma-dut qca-wrapd qca-wapid \
-	  qca-acfg whc qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell \
-	  qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
+	  alljoyn-notification alljoyn-services_common $(PACKAGES_WIFI_10_2) \
+	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat \
+	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand
 endef
 
@@ -95,6 +104,33 @@ define Profile/QSDK_Premium_Router/Description
   - DynDns
 endef
 $(eval $(call Profile,QSDK_Premium_Router))
+
+define Profile/QSDK_Premium_Beeliner_Router
+	$(Profile/QSDK_Base)
+	$(Profile/QSDK_Test)
+	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
+	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
+	  streamboost hyfi kmod-fast-classifier $(STORAGE) \
+	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
+	  alljoyn-notification alljoyn-services_common $(PACKAGES_WIFI_10_4) \
+	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat \
+	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
+	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand
+endef
+
+define Profile/QSDK_Premium_Beeliner_Router/Description
+  QSDK Premium Router package set configuration.
+  This profile is designed to fit in a 16M flash and supports the following features:
+  - Bridging and routing networking
+  - QCA-WiFi driver 10.4 configuration
+  - LuCI web configuration interface
+  - Streamboost
+  - USB hard drive support
+  - Samba
+  - IPv4/IPv6
+  - DynDns
+endef
+$(eval $(call Profile,QSDK_Premium_Beeliner_Router))
 
 define Profile/QSDK_IoE_Device
 	NAME:=Qualcomm-Atheros SDK IoE Device Profile

@@ -1058,6 +1058,15 @@ define Image/Build/Profile/QSDK_Premium_Router
 	$(call Image/Build/Profile/AP147_16M,$(1))
 endef
 
+define Image/Build/Profile/QSDK_Premium_Beeliner_Router
+	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135DUAL,$(1))
+	$(call Image/Build/Profile/AP135NAND,$(1))
+	$(call Image/Build/Profile/AP152_16M,$(1))
+	$(call Image/Build/Profile/AP151_16M,$(1))
+	$(call Image/Build/Profile/AP147_16M,$(1))
+endef
+
 define Image/Build/Profile/QSDK_Open_Router
 	$(call Image/Build/Profile/AP121_16M,$(1))
 	$(call Image/Build/Profile/AP135,$(1))
