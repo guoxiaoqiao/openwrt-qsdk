@@ -109,7 +109,8 @@ Kernel module for NSS netlink
 endef
 EXTRA_CFLAGS+= \
         -I$(STAGING_DIR)/usr/include/qca-nss-drv \
-	-I$(STAGING_DIR)/usr/include/qca-nss-gmac
+	-I$(STAGING_DIR)/usr/include/qca-nss-gmac \
+	-I$(STAGING_DIR)/usr/include/qca-nss-crypto
 
 define Build/Compile
         $(MAKE) -C "$(LINUX_DIR)" \
