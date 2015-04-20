@@ -425,6 +425,7 @@ define Image/Build/Ath
 	$(eval fwsize=$(call mtdpartsize,firmware,$(4)))
 	$(eval rootsize=$(call mtdpartsize,rootfs,$(4)))
 	$(eval kernsize=$(call mtdpartsize,kernel,$(4)))
+	$(eval rootsize=$(if $(7),$(7),$(rootsize)))
 	$(call Sysupgrade/$(5),$(1),$(2),$(if $(6),$(6),$(kernsize)),$(if $(rootsize),$(rootsize),$(fwsize)))
 	if [ -e "$(call sysupname,$(1),$(2))" ]; then \
 		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage \
@@ -936,11 +937,11 @@ $(eval $(call SingleProfile,AthLzma,64k,BXU2000N2,bxu2000n-2-a1,BXU2000n-2-A1,tt
 $(eval $(call SingleProfile,AthLzma,64k,CAP4200AG,cap4200ag,CAP4200AG,ttyS0,115200,$$(cap4200ag_mtdlayout),KRuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CUS531_16M,cus531-16M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_16M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CUS531_32M,cus531-32M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_32M),RKuImage))
-$(eval $(call SingleProfile,AthLzma,64k,CUS531_32M_DUAL,cus531-32M-dual,CUS531,ttyS0,115200,,RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531_32M_DUAL,cus531-32M-dual,CUS531,ttyS0,115200,,RKuImage,1507328,14876672))
 $(eval $(call SingleProfile,AthLzma,64k,CUS531DUAL,cus531dual,CUS531-DUAL,ttyS0,115200,$$(cus531_mtdlayout_dual),RKuImage))
-$(eval $(call SingleProfile,AthLzma,64k,CUS531DUAL_DUAL,cus531dual-dual,CUS531-DUAL,ttyS0,115200,,RKuImage))
-$(eval $(call SingleProfile,AthLzma,64k,CUS531NAND,cus531nand,CUS531-NAND,ttyS0,115200,$$(cus531_mtdlayout_nand),KRuImage))
-$(eval $(call SingleProfile,AthLzma,64k,CUS531NAND_DUAL,cus531nand-dual,CUS531-NAND,ttyS0,115200,,KRuImage))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531DUAL_DUAL,cus531dual-dual,CUS531-DUAL,ttyS0,115200,,RKuImage,1507328,14876672))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531NAND,cus531nand,CUS531-NAND,ttyS0,115200,$$(cus531_mtdlayout_nand),KRuImage,2097152,20971520))
+$(eval $(call SingleProfile,AthLzma,64k,CUS531NAND_DUAL,cus531nand-dual,CUS531-NAND,ttyS0,115200,,KRuImage,2097152,20971520))
 $(eval $(call SingleProfile,AthLzma,64k,DB120,db120,DB120,ttyS0,115200,$$(db120_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,DRAGINO2,dragino2,DRAGINO2,ttyATH0,115200,$$(dragino2_mtdlayout),KRuImage,65536))
 $(eval $(call SingleProfile,AthLzma,64k,EWDORINAP,ew-dorin,EW-DORIN,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),KRuImage,65536))
