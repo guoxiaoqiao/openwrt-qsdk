@@ -18,7 +18,7 @@ USE_REFRESH=
 platform_add_ramfs_ioe_tools()
 {
 	install_bin /usr/sbin/fw_printenv /usr/sbin/fw_setenv
-	install_bin /bin/busybox /usr/bin/cut
+	install_bin /bin/busybox /usr/bin/cut /usr/bin/sed
 	install_bin /usr/bin/md5sum
 	install_bin /usr/sbin/nandwrite
 	install_file /etc/fw_env.config
