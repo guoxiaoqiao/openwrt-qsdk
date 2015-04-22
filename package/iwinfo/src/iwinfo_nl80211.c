@@ -1986,6 +1986,11 @@ static int nl80211_get_hwmodelist_cb(struct nl_msg *msg, void *arg)
 					*modes |= IWINFO_80211_B;
 					*modes |= IWINFO_80211_G;
 				}
+				else if(nla_get_u32(freqs[NL80211_FREQUENCY_ATTR_FREQ]) >= 58320 &&
+					nla_get_u32(freqs[NL80211_FREQUENCY_ATTR_FREQ]) <= 62640)
+				{
+					*modes |= IWINFO_80211_AD;
+				}
 				else
 				{
 					*modes |= IWINFO_80211_A;
