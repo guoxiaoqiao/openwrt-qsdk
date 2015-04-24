@@ -1,32 +1,3 @@
---- a/arch/mips/ath79/early_printk.c
-+++ b/arch/mips/ath79/early_printk.c
-@@ -114,7 +114,8 @@ static void prom_putchar_init(void)
- 	case REV_ID_MAJOR_AR9341:
- 	case REV_ID_MAJOR_AR9342:
- 	case REV_ID_MAJOR_AR9344:
--	case REV_ID_MAJOR_QCA9533:
-+	case REV_ID_MAJOR_QCA9533_V1:
-+	case REV_ID_MAJOR_QCA9533_V2:
- 	case REV_ID_MAJOR_QCA9556:
- 	case REV_ID_MAJOR_QCA9558:
- 	case REV_ID_MAJOR_TP9343:
---- a/arch/mips/ath79/setup.c
-+++ b/arch/mips/ath79/setup.c
-@@ -152,10 +152,13 @@ static void __init ath79_detect_sys_type(void)
- 		rev = id & AR934X_REV_ID_REVISION_MASK;
- 		break;
- 
--	case REV_ID_MAJOR_QCA9533:
-+	case REV_ID_MAJOR_QCA9533_V1:
-+	case REV_ID_MAJOR_QCA9533_V2:
- 		ath79_soc = ATH79_SOC_QCA9533;
- 		chip = "9533";
- 		rev = id & QCA953X_REV_ID_REVISION_MASK;
-+		if (major == REV_ID_MAJOR_QCA9533_V2)
-+			rev = 2;
- 		break;
- 
- 	case REV_ID_MAJOR_QCA9556:
 --- a/arch/mips/ath79/common.h
 +++ b/arch/mips/ath79/common.h
 @@ -28,6 +28,7 @@ void ath79_gpio_function_enable(u32 mask);
@@ -39,15 +10,15 @@
  #endif /* __ATH79_COMMON_H */
 --- a/arch/mips/ath79/dev-eth.c
 +++ b/arch/mips/ath79/dev-eth.c
-@@ -695,7 +695,6 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
+@@ -687,7 +687,6 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
  		case ATH79_SOC_AR7241:
  		case ATH79_SOC_AR9330:
  		case ATH79_SOC_AR9331:
 -		case ATH79_SOC_QCA9533:
- 		case ATH79_SOC_QCA9561:
- 		case ATH79_SOC_TP9343:
  			pdata->phy_if_mode = PHY_INTERFACE_MODE_GMII;
-@@ -707,6 +706,7 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
+ 			break;
+ 
+@@ -697,6 +696,7 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
  		case ATH79_SOC_AR9341:
  		case ATH79_SOC_AR9342:
  		case ATH79_SOC_AR9344:
@@ -55,7 +26,7 @@
  			switch (pdata->phy_if_mode) {
  			case PHY_INTERFACE_MODE_MII:
  			case PHY_INTERFACE_MODE_GMII:
-@@ -952,6 +952,7 @@ void __init ath79_register_eth(unsigned int id)
+@@ -942,6 +942,7 @@ void __init ath79_register_eth(unsigned int id)
  	case ATH79_SOC_AR9341:
  	case ATH79_SOC_AR9342:
  	case ATH79_SOC_AR9344:
@@ -63,14 +34,43 @@
  		if (id == 0) {
  			pdata->reset_bit = AR934X_RESET_GE0_MAC |
  					   AR934X_RESET_GE0_MDIO;
-@@ -983,7 +984,6 @@ void __init ath79_register_eth(unsigned int id)
+@@ -973,36 +974,6 @@ void __init ath79_register_eth(unsigned int id)
  			pdata->fifo_cfg3 = 0x01f00140;
  		break;
  
 -	case ATH79_SOC_QCA9533:
- 	case ATH79_SOC_QCA9561:
- 	case ATH79_SOC_TP9343:
- 		if (id == 0) {
+-		if (id == 0) {
+-			pdata->reset_bit = AR933X_RESET_GE0_MAC |
+-					   AR933X_RESET_GE0_MDIO;
+-			pdata->set_speed = ath79_set_speed_dummy;
+-
+-			pdata->phy_mask = BIT(4);
+-		} else {
+-			pdata->reset_bit = AR933X_RESET_GE1_MAC |
+-					   AR933X_RESET_GE1_MDIO;
+-			pdata->set_speed = ath79_set_speed_dummy;
+-
+-			pdata->speed = SPEED_1000;
+-			pdata->duplex = DUPLEX_FULL;
+-			pdata->switch_data = &ath79_switch_data;
+-
+-			ath79_switch_data.phy_poll_mask |= BIT(4);
+-		}
+-
+-		pdata->ddr_flush = ath79_ddr_no_flush;
+-		pdata->has_gbit = 1;
+-		pdata->is_ar724x = 1;
+-
+-		if (!pdata->fifo_cfg1)
+-			pdata->fifo_cfg1 = 0x0010ffff;
+-		if (!pdata->fifo_cfg2)
+-			pdata->fifo_cfg2 = 0x015500aa;
+-		if (!pdata->fifo_cfg3)
+-			pdata->fifo_cfg3 = 0x01f00140;
+-		break;
+ 
+ 	case ATH79_SOC_QCA9556:
+ 	case ATH79_SOC_QCA9558:
 --- a/arch/mips/ath79/dev-usb.c
 +++ b/arch/mips/ath79/dev-usb.c
 @@ -236,6 +236,30 @@ static void __init ar934x_usb_setup(void)
@@ -104,7 +104,7 @@
  static void qca955x_usb_reset_notifier(struct platform_device *pdev)
  {
  	u32 base;
-@@ -299,6 +323,8 @@ void __init ath79_register_usb(void)
+@@ -286,6 +310,8 @@ void __init ath79_register_usb(void)
  		ar933x_usb_setup();
  	else if (soc_is_ar934x())
  		ar934x_usb_setup();
@@ -112,10 +112,35 @@
 +		qca953x_usb_setup();
  	else if (soc_is_qca955x())
  		qca955x_usb_setup();
- 	else if (soc_is_qca9561())
+ 	else
+--- a/arch/mips/ath79/dev-wmac.c
++++ b/arch/mips/ath79/dev-wmac.c
+@@ -157,8 +157,8 @@ static void qca953x_wmac_setup(void)
+ 
+ 	ath79_wmac_resources[0].start = QCA953X_WMAC_BASE;
+ 	ath79_wmac_resources[0].end = QCA953X_WMAC_BASE + QCA953X_WMAC_SIZE - 1;
+-	ath79_wmac_resources[1].start = ATH79_CPU_IRQ(2);
+-	ath79_wmac_resources[1].end = ATH79_CPU_IRQ(2);
++	ath79_wmac_resources[1].start = ATH79_IP2_IRQ(1);
++	ath79_wmac_resources[1].end = ATH79_IP2_IRQ(1);
+ 
+ 	t = ath79_reset_rr(QCA953X_RESET_REG_BOOTSTRAP);
+ 	if (t & QCA953X_BOOTSTRAP_REF_CLK_40)
+--- a/arch/mips/ath79/early_printk.c
++++ b/arch/mips/ath79/early_printk.c
+@@ -114,7 +114,8 @@ static void prom_putchar_init(void)
+ 	case REV_ID_MAJOR_AR9341:
+ 	case REV_ID_MAJOR_AR9342:
+ 	case REV_ID_MAJOR_AR9344:
+-	case REV_ID_MAJOR_QCA9533:
++	case REV_ID_MAJOR_QCA9533_V1:
++	case REV_ID_MAJOR_QCA9533_V2:
+ 	case REV_ID_MAJOR_QCA9556:
+ 	case REV_ID_MAJOR_QCA9558:
+ 		_prom_putchar = prom_putchar_ar71xx;
 --- a/arch/mips/ath79/gpio.c
 +++ b/arch/mips/ath79/gpio.c
-@@ -130,6 +130,32 @@ static int ar934x_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
+@@ -130,6 +130,30 @@ static int ar934x_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
  	return 0;
  }
  
@@ -124,9 +149,7 @@
 +	void __iomem *base = ath79_gpio_base;
 +	unsigned long flags;
 +	bool ieq_1 = (soc_is_ar934x() ||
-+			soc_is_qca953x() ||
-+			soc_is_qca955x() ||
-+			soc_is_qca956x());
++			soc_is_qca953x());
 +
 +	if (gpio >= ath79_gpio_count)
 +		return -1;
@@ -148,17 +171,16 @@
  static struct gpio_chip ath79_gpio_chip = {
  	.label			= "ath79",
  	.get			= ath79_gpio_get_value,
-@@ -148,8 +174,7 @@ static void __iomem *ath79_gpio_get_function_reg(void)
+@@ -148,7 +172,7 @@ static void __iomem *ath79_gpio_get_function_reg(void)
  	    soc_is_ar913x() ||
  	    soc_is_ar933x())
  		reg = AR71XX_GPIO_REG_FUNC;
--	else if (soc_is_ar934x() ||
--		 soc_is_qca956x())
-+	else if (soc_is_ar934x() || soc_is_qca953x() || soc_is_qca956x())
+-	else if (soc_is_ar934x())
++	else if (soc_is_ar934x() || soc_is_qca953x())
  		reg = AR934X_GPIO_REG_FUNC;
  	else
  		BUG();
-@@ -188,7 +213,7 @@ void __init ath79_gpio_output_select(unsigned gpio, u8 val)
+@@ -187,7 +211,7 @@ void __init ath79_gpio_output_select(unsigned gpio, u8 val)
  	unsigned int reg;
  	u32 t, s;
  
@@ -169,7 +191,23 @@
  		return;
 --- a/arch/mips/ath79/irq.c
 +++ b/arch/mips/ath79/irq.c
-@@ -156,6 +156,39 @@ static void ar934x_ip2_irq_init(void)
+@@ -26,6 +26,8 @@
+ 
+ static void (*ath79_ip2_handler)(void);
+ static void (*ath79_ip3_handler)(void);
++static struct irq_chip ip2_chip;
++static struct irq_chip ip3_chip;
+ 
+ static void ath79_misc_irq_handler(unsigned int irq, struct irq_desc *desc)
+ {
+@@ -148,12 +150,43 @@ static void ar934x_ip2_irq_init(void)
+ 
+ 	for (i = ATH79_IP2_IRQ_BASE;
+ 	     i < ATH79_IP2_IRQ_BASE + ATH79_IP2_IRQ_COUNT; i++)
+-		irq_set_chip_and_handler(i, &dummy_irq_chip,
+-					 handle_level_irq);
++		irq_set_chip_and_handler(i, &ip2_chip, handle_level_irq);
+ 
  	irq_set_chained_handler(ATH79_CPU_IRQ(2), ar934x_ip2_irq_dispatch);
  }
  
@@ -200,8 +238,7 @@
 +
 +	for (i = ATH79_IP2_IRQ_BASE;
 +	     i < ATH79_IP2_IRQ_BASE + ATH79_IP2_IRQ_COUNT; i++)
-+		irq_set_chip_and_handler(i, &ip2_chip,
-+					 handle_level_irq);
++		irq_set_chip_and_handler(i, &ip2_chip, handle_level_irq);
 +
 +	irq_set_chained_handler(ATH79_CPU_IRQ(2), qca953x_ip2_irq_dispatch);
 +}
@@ -209,7 +246,25 @@
  static void qca955x_ip2_irq_dispatch(unsigned int irq, struct irq_desc *desc)
  {
  	u32 status;
-@@ -427,6 +460,12 @@ static void ar934x_ip3_handler(void)
+@@ -223,15 +256,13 @@ static void qca955x_irq_init(void)
+ 
+ 	for (i = ATH79_IP2_IRQ_BASE;
+ 	     i < ATH79_IP2_IRQ_BASE + ATH79_IP2_IRQ_COUNT; i++)
+-		irq_set_chip_and_handler(i, &dummy_irq_chip,
+-					 handle_level_irq);
++		irq_set_chip_and_handler(i, &ip2_chip, handle_level_irq);
+ 
+ 	irq_set_chained_handler(ATH79_CPU_IRQ(2), qca955x_ip2_irq_dispatch);
+ 
+ 	for (i = ATH79_IP3_IRQ_BASE;
+ 	     i < ATH79_IP3_IRQ_BASE + ATH79_IP3_IRQ_COUNT; i++)
+-		irq_set_chip_and_handler(i, &dummy_irq_chip,
+-					 handle_level_irq);
++		irq_set_chip_and_handler(i, &ip3_chip, handle_level_irq);
+ 
+ 	irq_set_chained_handler(ATH79_CPU_IRQ(3), qca955x_ip3_irq_dispatch);
+ }
+@@ -336,8 +367,41 @@ static void ar934x_ip3_handler(void)
  	do_IRQ(ATH79_CPU_IRQ(3));
  }
  
@@ -219,10 +274,39 @@
 +	do_IRQ(ATH79_CPU_IRQ(3));
 +}
 +
- static void ath79_ip2_disable(struct irq_data *data)
++static void ath79_ip2_disable(struct irq_data *data)
++{
++	disable_irq(ATH79_CPU_IRQ(2));
++}
++
++static void ath79_ip2_enable(struct irq_data *data)
++{
++	enable_irq(ATH79_CPU_IRQ(2));
++}
++
++static void ath79_ip3_disable(struct irq_data *data)
++{
++	disable_irq(ATH79_CPU_IRQ(3));
++}
++
++static void ath79_ip3_enable(struct irq_data *data)
++{
++	enable_irq(ATH79_CPU_IRQ(3));
++}
++
+ void __init arch_init_irq(void)
  {
- 	disable_irq(ATH79_CPU_IRQ(2));
-@@ -473,7 +512,7 @@ void __init arch_init_irq(void)
++	ip2_chip = dummy_irq_chip;
++	ip3_chip = dummy_irq_chip;
++	ip2_chip.irq_disable = ath79_ip2_disable;
++	ip2_chip.irq_enable = ath79_ip2_enable;
++	ip3_chip.irq_disable = ath79_ip3_disable;
++	ip3_chip.irq_enable = ath79_ip3_enable;
++
+ 	if (soc_is_ar71xx()) {
+ 		ath79_ip2_handler = ar71xx_ip2_handler;
+ 		ath79_ip3_handler = ar71xx_ip3_handler;
+@@ -355,7 +419,7 @@ void __init arch_init_irq(void)
  		ath79_ip3_handler = ar934x_ip3_handler;
  	} else if (soc_is_qca953x()) {
  		ath79_ip2_handler = ath79_default_ip2_handler;
@@ -231,7 +315,7 @@
  	} else if (soc_is_qca955x()) {
  		ath79_ip2_handler = ath79_default_ip2_handler;
  		ath79_ip3_handler = ath79_default_ip3_handler;
-@@ -490,6 +529,8 @@ void __init arch_init_irq(void)
+@@ -369,6 +433,8 @@ void __init arch_init_irq(void)
  
  	if (soc_is_ar934x())
  		ar934x_ip2_irq_init();
@@ -239,51 +323,24 @@
 +		qca953x_irq_init();
  	else if (soc_is_qca955x())
  		qca955x_irq_init();
- 	else if (soc_is_qca956x())
---- a/arch/mips/ath79/pci.c
-+++ b/arch/mips/ath79/pci.c
-@@ -68,6 +68,15 @@ static const struct ath79_pci_irq qca955x_pci_irq_map[] __initconst = {
- 	},
- };
+ }
+--- a/arch/mips/ath79/setup.c
++++ b/arch/mips/ath79/setup.c
+@@ -151,10 +151,13 @@ static void __init ath79_detect_sys_type(void)
+ 		rev = id & AR934X_REV_ID_REVISION_MASK;
+ 		break;
  
-+static const struct ath79_pci_irq qca953x_pci_irq_map[] __initconst = {
-+	{
-+		.bus	= 0,
-+		.slot	= 0,
-+		.pin	= 1,
-+		.irq	= ATH79_PCI_IRQ(0),
-+	}
-+};
-+
- static const struct ath79_pci_irq qca956x_pci_irq_map[] __initconst = {
- 	{
- 		.bus    = 0,
-@@ -98,6 +107,9 @@ int __init pcibios_map_irq(const struct pci_dev *dev, uint8_t slot, uint8_t pin)
- 			   soc_is_ar9344()) {
- 			ath79_pci_irq_map = ar724x_pci_irq_map;
- 			ath79_pci_nr_irqs = ARRAY_SIZE(ar724x_pci_irq_map);
-+		} else if (soc_is_qca953x()) {
-+			ath79_pci_irq_map = qca953x_pci_irq_map;
-+			ath79_pci_nr_irqs = ARRAY_SIZE(qca953x_pci_irq_map);
- 		} else if (soc_is_qca955x()) {
- 			ath79_pci_irq_map = qca955x_pci_irq_map;
- 			ath79_pci_nr_irqs = ARRAY_SIZE(qca955x_pci_irq_map);
-@@ -321,6 +333,15 @@ int __init ath79_register_pci(void)
- 						 QCA955X_PCI_MEM_SIZE,
- 						 1,
- 						 ATH79_IP3_IRQ(2));
-+	} else if (soc_is_qca953x()) {
-+		pdev = ath79_register_pci_ar724x(0,
-+						 QCA953X_PCI_CFG_BASE0,
-+						 QCA953X_PCI_CTRL_BASE0,
-+						 QCA953X_PCI_CRP_BASE0,
-+						 QCA953X_PCI_MEM_BASE0,
-+						 QCA953X_PCI_MEM_SIZE,
-+						 0,
-+						 ATH79_IP2_IRQ(0));
- 	} else if (soc_is_qca9561()) {
- 		pdev = ath79_register_pci_ar724x(0,
- 						 QCA956X_PCI_CFG_BASE1,
+-	case REV_ID_MAJOR_QCA9533:
++	case REV_ID_MAJOR_QCA9533_V1:
++	case REV_ID_MAJOR_QCA9533_V2:
+ 		ath79_soc = ATH79_SOC_QCA9533;
+ 		chip = "9533";
+ 		rev = id & QCA953X_REV_ID_REVISION_MASK;
++		if (major == REV_ID_MAJOR_QCA9533_V2)
++			rev = 2;
+ 		break;
+ 
+ 	case REV_ID_MAJOR_QCA9556:
 --- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
 +++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
 @@ -105,8 +105,20 @@
@@ -307,7 +364,7 @@
  
  #define QCA955X_PCI_MEM_BASE0	0x10000000
  #define QCA955X_PCI_MEM_BASE1	0x12000000
-@@ -193,6 +205,12 @@
+@@ -176,6 +188,12 @@
  #define AR934X_DDR_REG_FLUSH_PCIE	0xa8
  #define AR934X_DDR_REG_FLUSH_WMAC	0xac
  
@@ -320,7 +377,7 @@
  /*
   * PLL block
   */
-@@ -302,6 +320,7 @@
+@@ -285,6 +303,7 @@
  #define QCA953X_PLL_CPU_CONFIG_REG		0x00
  #define QCA953X_PLL_DDR_CONFIG_REG		0x04
  #define QCA953X_PLL_CLK_CTRL_REG		0x08
@@ -328,7 +385,7 @@
  #define QCA953X_PLL_ETH_XMII_CONTROL_REG	0x2c
  #define QCA953X_PLL_ETH_SGMII_CONTROL_REG	0x48
  
-@@ -312,7 +331,7 @@
+@@ -295,7 +314,7 @@
  #define QCA953X_PLL_CPU_CONFIG_REFDIV_SHIFT	12
  #define QCA953X_PLL_CPU_CONFIG_REFDIV_MASK	0x1f
  #define QCA953X_PLL_CPU_CONFIG_OUTDIV_SHIFT	19
@@ -337,7 +394,7 @@
  
  #define QCA953X_PLL_DDR_CONFIG_NFRAC_SHIFT	0
  #define QCA953X_PLL_DDR_CONFIG_NFRAC_MASK	0x3ff
-@@ -457,7 +476,7 @@
+@@ -397,7 +416,7 @@
  
  #define QCA953X_RESET_REG_RESET_MODULE		0x1c
  #define QCA953X_RESET_REG_BOOTSTRAP		0xb0
@@ -346,7 +403,7 @@
  
  #define QCA955X_RESET_REG_RESET_MODULE		0x1c
  #define QCA955X_RESET_REG_BOOTSTRAP		0xb0
-@@ -559,6 +578,27 @@
+@@ -494,6 +513,27 @@
  #define AR934X_RESET_MBOX		BIT(1)
  #define AR934X_RESET_I2S		BIT(0)
  
@@ -374,7 +431,7 @@
  #define QCA955X_RESET_HOST		BIT(31)
  #define QCA955X_RESET_SLIC		BIT(30)
  #define QCA955X_RESET_HDMA		BIT(29)
-@@ -612,7 +652,12 @@
+@@ -547,7 +587,12 @@
  #define AR934X_BOOTSTRAP_SDRAM_DISABLED BIT(1)
  #define AR934X_BOOTSTRAP_DDR1		BIT(0)
  
@@ -387,7 +444,7 @@
  
  #define QCA955X_BOOTSTRAP_REF_CLK_40	BIT(4)
  
-@@ -636,6 +681,24 @@
+@@ -569,6 +614,24 @@
  	 AR934X_PCIE_WMAC_INT_PCIE_RC1 | AR934X_PCIE_WMAC_INT_PCIE_RC2 | \
  	 AR934X_PCIE_WMAC_INT_PCIE_RC3)
  
@@ -412,7 +469,7 @@
  #define QCA955X_EXT_INT_WMAC_MISC		BIT(0)
  #define QCA955X_EXT_INT_WMAC_TX			BIT(1)
  #define QCA955X_EXT_INT_WMAC_RXLP		BIT(2)
-@@ -709,7 +772,8 @@
+@@ -611,7 +674,8 @@
  #define REV_ID_MAJOR_AR9341		0x0120
  #define REV_ID_MAJOR_AR9342		0x1120
  #define REV_ID_MAJOR_AR9344		0x2120
@@ -421,8 +478,8 @@
 +#define REV_ID_MAJOR_QCA9533_V2		0x0160
  #define REV_ID_MAJOR_QCA9556		0x0130
  #define REV_ID_MAJOR_QCA9558		0x1130
- #define REV_ID_MAJOR_TP9343		0x0150
-@@ -785,6 +849,25 @@
+ 
+@@ -683,13 +747,32 @@
  #define AR934X_GPIO_REG_OUT_FUNC5	0x40
  #define AR934X_GPIO_REG_FUNC		0x6c
  
@@ -445,19 +502,18 @@
 +#define QCA953X_GPIO_OUT_MUX_LED_LINK4		44
 +#define QCA953X_GPIO_OUT_MUX_LED_LINK5		45
 +
- #define QCA956X_GPIO_REG_OUT_FUNC0	0x2c
- #define QCA956X_GPIO_REG_OUT_FUNC1	0x30
- #define QCA956X_GPIO_REG_OUT_FUNC2	0x34
-@@ -804,7 +887,7 @@
+ #define AR71XX_GPIO_COUNT		16
+ #define AR7240_GPIO_COUNT		18
+ #define AR7241_GPIO_COUNT		20
  #define AR913X_GPIO_COUNT		22
  #define AR933X_GPIO_COUNT		30
  #define AR934X_GPIO_COUNT		23
 -#define QCA953X_GPIO_COUNT		24
 +#define QCA953X_GPIO_COUNT		18
  #define QCA955X_GPIO_COUNT		24
- #define QCA956X_GPIO_COUNT		23
  
-@@ -829,6 +912,24 @@
+ /*
+@@ -713,6 +796,24 @@
  #define AR934X_SRIF_DPLL2_OUTDIV_SHIFT	13
  #define AR934X_SRIF_DPLL2_OUTDIV_MASK	0x7
  
@@ -482,7 +538,15 @@
  #define AR71XX_GPIO_FUNC_STEREO_EN		BIT(17)
  #define AR71XX_GPIO_FUNC_SLIC_EN		BIT(16)
  #define AR71XX_GPIO_FUNC_SPI_CS2_EN		BIT(13)
-@@ -966,6 +1067,16 @@
+@@ -781,6 +882,7 @@
+ #define AR934X_GPIO_FUNC_JTAG_DISABLE		BIT(1)
+ 
+ #define AR934X_GPIO_OUT_GPIO		0
++#define AR934X_GPIO_OUT_SPI_CS1	7
+ #define AR934X_GPIO_OUT_LED_LINK0	41
+ #define AR934X_GPIO_OUT_LED_LINK1	42
+ #define AR934X_GPIO_OUT_LED_LINK2	43
+@@ -849,6 +951,16 @@
  #define AR934X_ETH_CFG_RDV_DELAY        BIT(16)
  
  /*
@@ -499,16 +563,3 @@
   * QCA955X GMAC Interface
   */
  
---- a/arch/mips/ath79/dev-wmac.c
-+++ b/arch/mips/ath79/dev-wmac.c
-@@ -159,8 +159,8 @@ static void qca953x_wmac_setup(void)
- 
- 	ath79_wmac_resources[0].start = QCA953X_WMAC_BASE;
- 	ath79_wmac_resources[0].end = QCA953X_WMAC_BASE + QCA953X_WMAC_SIZE - 1;
--	ath79_wmac_resources[1].start = ATH79_CPU_IRQ(2);
--	ath79_wmac_resources[1].end = ATH79_CPU_IRQ(2);
-+	ath79_wmac_resources[1].start = ATH79_IP2_IRQ(1);
-+	ath79_wmac_resources[1].end = ATH79_IP2_IRQ(1);
- 
- 	t = ath79_reset_rr(QCA953X_RESET_REG_BOOTSTRAP);
- 	if (t & QCA953X_BOOTSTRAP_REF_CLK_40)
