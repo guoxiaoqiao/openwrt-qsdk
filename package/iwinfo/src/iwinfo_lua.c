@@ -503,6 +503,9 @@ static int iwinfo_L_hwmodelist(lua_State *L, int (*func)(const char *, int *))
 		lua_pushboolean(L, hwmodes & IWINFO_80211_AC);
 		lua_setfield(L, -2, "ac");
 
+		lua_pushboolean(L, hwmodes & IWINFO_80211_AD);
+		lua_setfield(L, -2, "ad");
+
 		return 1;
 	}
 
