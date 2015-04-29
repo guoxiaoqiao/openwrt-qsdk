@@ -51,6 +51,8 @@ endef
 define Package/uboot-qca961x/install
 	$(INSTALL_DIR) $(1)
 	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-qca961x-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq40xx-u-boot-stripped.elf
 	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-qca961x-u-boot.img
 endef
 
