@@ -81,7 +81,6 @@
 #define CACHE_BUF			2112
 
 struct ath79_spinand_info {
-	bool			init;
 	struct spi_device	*spi;
 	void			*priv;
 };
@@ -115,7 +114,6 @@ static const struct nand_ecclayout ath79_spinand_oob_128 = {
 		104, 105, 106, 107, 108, 109, 110, 111,
 		112, 113, 114, 115, 116, 117, 118, 119,
 		120, 121, 122, 123, 124, 125, 126, 127},
-	.oobavail = 48,
 	.oobfree = { {.offset = 16, .length = 48}, }
 };
 
@@ -177,46 +175,14 @@ static int ath79_spinand_cmd(struct spi_device *spi, struct ath79_spinand_comman
 	return spi_sync(spi, &message);
 }
 
-static u8 ath79_spinand_id_map(struct spi_device *spi_nand, u8 device_id)
-{
-	u8 map_id;
-
-	switch (device_id) {
-	case 0xB1:
-		/* 128MiB 3,3V 16-bit */
-		map_id = 0xC1;
-		break;
-	case 0xB2:
-		/* 256MiB 3,3V 16-bit */
-		map_id = 0xCA;
-		break;
-	case 0xA1:
-		/* 128MiB 1,8V 16-bit */
-		map_id = 0xB1;
-		break;
-	case 0xA2:
-		/* 256MiB 1,8V 16-bit */
-		map_id = 0xBA;
-		break;
-	default:
-		dev_err(&spi_nand->dev, "Unknow device id %02x\n", device_id);
-		map_id = device_id;
-	}
-
-	pr_info("GD5FxGQ4x device id 0x%02x\n", device_id);
-
-	return map_id;
-}
-
 static int ath79_spinand_read_id(struct spi_device *spi_nand, u8 *id)
 {
 	int retval;
-	u8 nand_id[3];
 	struct ath79_spinand_command cmd = {0};
 
 	cmd.cmd = CMD_READ_ID;
 	cmd.n_rx = 3;
-	cmd.rx_buf = &nand_id[0];
+	cmd.rx_buf = id;
 
 	retval = ath79_spinand_cmd(spi_nand, &cmd);
 	if (retval < 0) {
@@ -224,8 +190,8 @@ static int ath79_spinand_read_id(struct spi_device *spi_nand, u8 *id)
 		return retval;
 	}
 
-	id[0] = nand_id[0];
-	id[1] = ath79_spinand_id_map(spi_nand, nand_id[1]);
+	/* GD conflict with cell info rules */
+	id[2] = 0;
 
 	return retval;
 }
@@ -409,16 +375,6 @@ static int ath79_spinand_read_page(struct spi_device *spi_nand, u32 page_id,
 		return -EBUSY;
 
 	if (STATUS2ECC(status) == STATUS_ECC_ERROR) {
-		struct mtd_info *mtd = dev_get_drvdata(&spi_nand->dev);
-		struct nand_chip *chip = (struct nand_chip *)mtd->priv;
-		struct ath79_spinand_info *info = (void *)chip->priv;
-
-		/* mark the block bad in nand scan stage */
-		if (info->init) {
-			memset(rbuf, 0, len);
-			return 0;
-		}
-
 		dev_err(&spi_nand->dev,
 			"ecc error, page=%d\n", page_id);
 
@@ -614,7 +570,7 @@ static int ath79_spinand_read_page_hwecc(struct mtd_info *mtd,
 	} else if (STATUS2ECC(status) >= STATUS_ECC_ERR_BITS7) {
 		pr_debug("%s: ECC error %d corrected\n",
 			 __func__, STATUS2ECC(status));
-		/* mtd->ecc_stats.corrected++; */
+		mtd->ecc_stats.corrected++;
 	}
 
 	return 0;
@@ -668,19 +624,6 @@ static void ath79_spinand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
 
 	memcpy(buf, state->buf + state->buf_ptr, len);
 	state->buf_ptr += len;
-}
-
-static int ath79_init_size(struct mtd_info *mtd, struct nand_chip *this, u8 *id_data)
-{
-	mtd->oobsize		= 128;
-	mtd->writesize_shift	= 11;
-	mtd->writesize		= (1 << mtd->writesize_shift);
-	mtd->writesize_mask	= (mtd->writesize - 1);
-	mtd->erasesize_shift	= 17;
-	mtd->erasesize		= (1 << mtd->erasesize_shift);
-	mtd->erasesize_mask	= (mtd->erasesize - 1);
-
-	return NAND_BUSWIDTH_16;
 }
 
 static void ath79_spinand_reset(struct spi_device *spi_nand)
@@ -797,10 +740,10 @@ static int ath79_spinand_probe(struct spi_device *spi_nand)
 	if (!info)
 		return -ENOMEM;
 
-	info->init = true;
 	info->spi = spi_nand;
 
 	ath79_spinand_lock_block(spi_nand, BL_ALL_UNLOCKED);
+	ath79_spinand_disable_ecc(spi_nand);
 
 	state = devm_kzalloc(&spi_nand->dev, sizeof(struct ath79_spinand_state),
 			     GFP_KERNEL);
@@ -821,9 +764,7 @@ static int ath79_spinand_probe(struct spi_device *spi_nand)
 	chip->ecc.mode	= NAND_ECC_HW;
 	chip->ecc.size	= 512;
 	chip->ecc.bytes	= 16;
-	chip->ecc.steps = 4;
 	chip->ecc.strength = 1;
-	chip->ecc.total = chip->ecc.steps * chip->ecc.bytes;
 	chip->ecc.layout = (void *)&ath79_spinand_oob_128;
 	chip->badblock_pattern = &ath79_badblock_pattern;
 	chip->ecc.read_page = ath79_spinand_read_page_hwecc;
@@ -835,9 +776,8 @@ static int ath79_spinand_probe(struct spi_device *spi_nand)
 	chip->read_byte	= ath79_spinand_read_byte;
 	chip->cmdfunc	= ath79_spinand_cmdfunc;
 	chip->waitfunc	= ath79_spinand_wait;
-	chip->options	|= NAND_CACHEPRG;
+	chip->options	= NAND_CACHEPRG | NAND_NO_SUBPAGE_WRITE;
 	chip->select_chip = ath79_spinand_select_chip;
-	chip->init_size = ath79_init_size;
 
 	mtd = devm_kzalloc(&spi_nand->dev, sizeof(struct mtd_info), GFP_KERNEL);
 	if (!mtd)
@@ -847,14 +787,19 @@ static int ath79_spinand_probe(struct spi_device *spi_nand)
 
 	mtd->priv		= chip;
 	mtd->name		= dev_name(&spi_nand->dev);
+	mtd->oobsize		= 128;
+	mtd->writesize_shift	= 11;
+	mtd->writesize		= (1 << mtd->writesize_shift);
+	mtd->writesize_mask	= (mtd->writesize - 1);
+	mtd->erasesize_shift	= 17;
+	mtd->erasesize		= (1 << mtd->erasesize_shift);
+	mtd->erasesize_mask	= (mtd->erasesize - 1);
 	mtd->owner		= THIS_MODULE;
 
 	if (nand_scan(mtd, 1))
 		return -ENXIO;
 
 	ath79_spinand_enable_ecc(spi_nand);
-
-	info->init = false;
 
 	return mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
 }
