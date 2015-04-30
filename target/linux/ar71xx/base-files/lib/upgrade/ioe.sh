@@ -178,7 +178,7 @@ platform_do_upgrade_ioe() {
 		mtd_fw=$(cat /proc/mtd |grep $fw |cut -f1 -d ":")
 		mtd_dev="/dev/$mtd_fw"
 
-		mtd erase $mtd_fw
+		mtd erase $mtd_dev
 		dd if=$file bs=2048 | nandwrite -p $mtd_dev -
 	else
 		get_image "$1" | mtd -j "$CONF_TAR" write - $fw
