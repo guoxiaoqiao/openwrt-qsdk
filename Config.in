@@ -310,6 +310,10 @@ menu "Global build settings"
 		bool "Compile the kernel with kprobes support"
 		default n
 
+	config KERNEL_KEXEC
+		bool "Compile the kernel with kexec supportt"
+		default n
+
 	config KERNEL_EARLY_PRINTK
 		bool "Compile the kernel with early printk"
 		default n
