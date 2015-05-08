@@ -179,7 +179,7 @@ include() {
 
 find_mtd_part() {
         local PART="$(grep "\"$1\"" /proc/mtd | awk -F: '{print $1}')"
-        local PREFIX=/dev/mtd
+        local PREFIX=/dev/mtdblock
 
         PART="${PART##mtd}"
         [ -d /dev/mtdblock ] && PREFIX=/dev/mtdblock/
