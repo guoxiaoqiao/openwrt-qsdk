@@ -419,6 +419,27 @@ Image/Build/CameoAP121_8M/buildkernel=$(call MkuImageLzma,$(2),$(3) $(cameo_ap12
 Image/Build/CameoAP121_8M=$(call Image/Build/CameoHornet,$(1),$(2),$(3),$(cameo_ap121_mtdlayout_8M),$(4),$(5),$(6),0x100000)
 Image/Build/CameoAP121_8M/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(cameo_ap121_mtdlayout_8M))
 
+# $(1): rootfs type
+# $(2): Board name (small caps)
+# $(6): Board name (upper caps)
+# $(7): kernel mtd partition size
+define Image/Build/IoENAND
+	$(CP) $(KDIR)/root.squashfs-raw $(KDIR_TMP)/root.squashfs
+	echo -ne '\xde\xad\xc0\xde' > $(KDIR_TMP)/jffs2.eof
+	$(call ubinize,ubinize-IoE.ini,$(KDIR_TMP),$(KDIR_TMP)/$(2)-root.ubi,128KiB,2048,)
+	( \
+		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage \
+			of=$(call imgname,kernel,$(2)).bin conv=sync; \
+		dd if=$(KDIR_TMP)/$(2)-root.ubi \
+			of=$(call imgname,$(1),$(2)-rootfs).ubi bs=128k conv=sync; \
+	)
+	( \
+		dd if=$(call imgname,kernel,$(2)).bin bs=$(7) conv=sync; \
+		dd if=$(call imgname,$(1),$(2)-rootfs).ubi \
+	) > $(call sysupname,$(1),$(2))
+endef
+
+Image/Build/IoENAND/buildkernel=$(call MkuImageLzma,$(2),$(3) $(4))
 
 define Image/Build/Ath
 	$(eval fwsize=$(call mtdpartsize,firmware,$(4)))
@@ -432,28 +453,6 @@ define Image/Build/Ath
 		dd if=$(KDIR)/root.$(1) \
 			of=$(call imgname,$(1),$(2)-rootfs).bin bs=128k conv=sync; \
 	fi
-endef
-
-Image/Build/IoENAND/buildkernel=$(call MkuImageLzma,$(2),$(3) $(4))
-define Image/Build/IoENAND
-	$(eval imageraw=$(KDIR_TMP)/$(2)-raw.img)
-	$(CP) $(KDIR)/root.squashfs-raw $(KDIR_TMP)/root.squashfs
-	echo -ne '\xde\xad\xc0\xde' > $(KDIR_TMP)/jffs2.eof
-	$(call ubinize,ubinize-IoE.ini,$(KDIR_TMP),$(KDIR_TMP)/$(2)-root.ubi,128KiB,2048,)
-	( \
-		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage \
-			of=$(call imgname,kernel,$(2)).bin bs=64k conv=sync; \
-		dd if=$(KDIR_TMP)/$(2)-root.ubi \
-			of=$(call imgname,$(1),$(2)-rootfs).ubi bs=128k conv=sync; \
-	)
-	( \
-		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage; \
-		dd if=$(KDIR_TMP)/$(2)-root.ubi \
-	) > $(imageraw)
-	$(STAGING_DIR_HOST)/bin/mkdniimg \
-		-B $(6) \
-		-i $(imageraw) \
-		-o $(call sysupname,$(1),$(2))
 endef
 
 Image/Build/AthGzip/buildkernel=$(call MkuImageGzip,$(2),$(3) $(4))
@@ -961,8 +960,8 @@ $(eval $(call SingleProfile,AthLzma,64k,CUS531_32M,cus531-32M,CUS531,ttyS0,11520
 $(eval $(call SingleProfile,AthLzma,64k,CUS531_32M_DUAL,cus531-32M-dual,CUS531,ttyS0,115200,,RKuImage,1507328,14876672))
 $(eval $(call SingleProfile,AthLzma,64k,CUS531DUAL,cus531dual,CUS531-DUAL,ttyS0,115200,$$(cus531_mtdlayout_dual),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CUS531DUAL_DUAL,cus531dual-dual,CUS531-DUAL,ttyS0,115200,,RKuImage,1507328,14876672))
-$(eval $(call SingleProfile,IoENAND,64k,CUS531NAND,cus531nand,CUS531-NAND,ttyS0,115200,,KRuImage,CUS531-NAND))
-$(eval $(call SingleProfile,IoENAND,64k,CUS531NAND_DUAL,cus531nand-dual,CUS531-NAND,ttyS0,115200,,KRuImage,CUS531-NAND))
+$(eval $(call SingleProfile,IoENAND,64k,CUS531NAND,cus531nand,CUS531-NAND,ttyS0,115200,,KRuImage,CUS531-NAND,2097152))
+$(eval $(call SingleProfile,IoENAND,64k,CUS531NAND_DUAL,cus531nand-dual,CUS531-NAND,ttyS0,115200,,KRuImage,CUS531-NAND,2097152))
 $(eval $(call SingleProfile,AthLzma,64k,DB120,db120,DB120,ttyS0,115200,$$(db120_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,DRAGINO2,dragino2,DRAGINO2,ttyATH0,115200,$$(dragino2_mtdlayout),KRuImage,65536))
 $(eval $(call SingleProfile,AthLzma,64k,EWDORINAP,ew-dorin,EW-DORIN,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),KRuImage,65536))
