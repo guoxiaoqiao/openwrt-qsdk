@@ -113,6 +113,7 @@ static void __init ap143_setup(void)
 
 	ath79_register_usb();
 
+	ath79_wmac_set_led_pin(AP143_GPIO_LED_WLAN);
 	ath79_register_wmac(art + AP143_WMAC_CALDATA_OFFSET, NULL);
 
 	ath79_register_mdio(0, 0x0);
