@@ -162,7 +162,8 @@ hostapd_set_bss_options() {
 		wps_device_type wps_device_name wps_manufacturer wps_pin \
 		macfilter ssid wmm hidden short_preamble uapsd vht_2g_enabled \
 		vendor_vht_2g_enabled wep_key_len_broadcast wep_key_len_unicast \
-		wpa_strict_rekey wps_config
+		wpa_strict_rekey wps_config wps_model_name wps_model_number \
+		wps_serial_number
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -301,6 +302,9 @@ hostapd_set_bss_options() {
 		set_default wps_device_type "6-0050F204-1"
 		set_default wps_device_name "OpenWrt AP"
 		set_default wps_manufacturer "openwrt.org"
+		set_default wps_model_name "WAP"
+		set_default wps_model_number "123"
+		set_default wps_serial_number "12345"
 		set_default wps_pin "12345670"
 
 		wps_state=2
@@ -315,6 +319,9 @@ hostapd_set_bss_options() {
 		append bss_conf "device_type=$wps_device_type" "$N"
 		append bss_conf "device_name=$wps_device_name" "$N"
 		append bss_conf "manufacturer=$wps_manufacturer" "$N"
+		append bss_conf "model_name=$wps_model_name" "$N"
+		append bss_conf "model_number=$wps_model_number" "$N"
+		append bss_conf "serial_number=$wps_serial_number" "$N"
 		append bss_conf "config_methods=$config_methods" "$N"
 		[ "$wps_pbc_in_m1" -gt 0 ] && append bss_conf "pbc_in_m1=$wps_pbc_in_m1" "$N"
 	}
@@ -481,9 +488,10 @@ wpa_supplicant_add_network() {
 	wireless_vif_parse_encryption
 
 	json_get_vars \
-		ssid bssid key \
-		basic_rate mcast_rate \
-		ieee80211w
+		ssid bssid key basic_rate mcast_rate ieee80211w \
+		wps_device_type wps_device_name wps_manufacturer \
+		wps_config wps_model_name wps_model_number \
+		wps_serial_number
 
 	local key_mgmt='NONE'
 	local enc_str=
@@ -588,7 +596,32 @@ wpa_supplicant_add_network() {
 	local ht_str
 	[ -n "$ht" ] && append network_data "htmode=$ht" "$N$T"
 
+	config_methods=$wps_config
+	[ -n "$config_methods" ] && {
+		set_default wps_device_type "6-0050F204-1"
+		set_default wps_device_name "Wireless Client"
+		set_default wps_manufacturer "openwrt.org"
+		set_default wps_model_name "cmodel"
+		set_default wps_model_number "123"
+		set_default wps_serial_number "12345"
+
+		device_type="device_type=$wps_device_type"
+		device_name="device_name=$wps_device_name"
+		manufacturer="manufacturer=$wps_manufacturer"
+		model_name="model_name=$wps_model_name"
+		model_number="model_number=$wps_model_number"
+		serial_number="serial_number=$wps_serial_number"
+		config_methods="config_methods=$config_methods"
+	}
+
 	cat >> "$_config" <<EOF
+$device_type
+$device_name
+$manufacturer
+$model_name
+$model_number
+$serial_number
+$config_methods
 network={
 	scan_ssid=$scan_ssid
 	ssid="$ssid"
