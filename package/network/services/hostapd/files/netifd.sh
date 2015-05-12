@@ -184,6 +184,7 @@ hostapd_set_bss_options() {
 		maxassoc max_inactivity disassoc_low_ack isolate auth_cache \
 		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 \
 		wps_device_type wps_config wps_device_name wps_manufacturer wps_pin \
+		wps_model_name wps_model_number wps_serial_number \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
 		iapp_interface
 
@@ -340,6 +341,9 @@ hostapd_set_bss_options() {
 		append bss_conf "device_type=$wps_device_type" "$N"
 		append bss_conf "device_name=$wps_device_name" "$N"
 		append bss_conf "manufacturer=$wps_manufacturer" "$N"
+		append bss_conf "model_name=$wps_model_name" "$N"
+		append bss_conf "model_number=$wps_model_number" "$N"
+		append bss_conf "serial_number=$wps_serial_number" "$N"
 		append bss_conf "config_methods=$config_methods" "$N"
 		[ "$wps_pbc_in_m1" -gt 0 ] && append bss_conf "pbc_in_m1=$wps_pbc_in_m1" "$N"
 	}
@@ -548,9 +552,10 @@ wpa_supplicant_add_network() {
 	wireless_vif_parse_encryption
 
 	json_get_vars \
-		ssid bssid key \
-		basic_rate mcast_rate \
-		ieee80211w
+		ssid bssid key basic_rate mcast_rate ieee80211w \
+		wps_device_type wps_device_name wps_manufacturer \
+		wps_config wps_model_name wps_model_number \
+		wps_serial_number
 
 	local key_mgmt='NONE'
 	local enc_str=
@@ -684,9 +689,34 @@ wpa_supplicant_add_network() {
 	[[ "$_w_mode" = adhoc ]] || ibss_htmode=
 	[ -n "$ibss_htmode" ] && append network_data "htmode=$ibss_htmode" "$N$T"
 
+	config_methods=$wps_config
+	[ -n "$config_methods" ] && {
+		set_default wps_device_type "6-0050F204-1"
+		set_default wps_device_name "Wireless Client"
+		set_default wps_manufacturer "openwrt.org"
+		set_default wps_model_name "cmodel"
+		set_default wps_model_number "123"
+		set_default wps_serial_number "12345"
+
+		device_type="device_type=$wps_device_type"
+		device_name="device_name=$wps_device_name"
+		manufacturer="manufacturer=$wps_manufacturer"
+		model_name="model_name=$wps_model_name"
+		model_number="model_number=$wps_model_number"
+		serial_number="serial_number=$wps_serial_number"
+		config_methods="config_methods=$config_methods"
+	}
+
 	cat >> "$_config" <<EOF
 $mesh_ctrl_interface
 $user_mpm
+$device_type
+$device_name
+$manufacturer
+$model_name
+$model_number
+$serial_number
+$config_methods
 
 network={
 	$scan_ssid
