@@ -17,7 +17,7 @@ MOUNT_ROOT=/dev/ecm
 
 # this is the stop control file for the ecm conntrack notifier, which
 # happens to be the last module started in ecm
-ECM_CT_STOP=/sys/devices/system/ecm_conntrack_notifier/ecm_conntrack_notifier0/stop
+ECM_CT_STOP=/sys/kernel/debug/ecm/ecm_conntrack_notifier/stop
 
 # tests to see if ECM is up and ready to receive commands.
 # returns 0 if ECM is fully up and ready, else 1
@@ -36,7 +36,7 @@ ecm_is_ready() {
 module_state_mount() {
 	local module_name=$1
 	local mount_dir=$2
-	local state_file="/sys/devices/system/${module_name}/${module_name}0/state_dev_major"
+	local state_file="/sys/kernel/debug/ecm/${module_name}/state_dev_major"
 
 	if [ -e "${mount_dir}/${module_name}" ]
 	then
