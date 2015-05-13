@@ -13,7 +13,7 @@ define Profile/QSDK_IoE_Device
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
 	  alljoyn-notification alljoyn-services_common \
 	  hostapd hostapd-utils iwinfo  wpa-supplicant-p2p wpa-cli wireless-tools \
-	  kmod-usb2 kmod-i2c-gpio-custom kmod-ath9k  \
+	  kmod-usb2 kmod-i2c-gpio-custom kmod-ath9k kmod-button-hotplug \
 	  qca-legacy-uboot-ap143-16M qca-legacy-uboot-ap143-32M \
 	  qca-legacy-uboot-cus531-16M qca-legacy-uboot-cus531-dual \
 	  qca-legacy-uboot-cus531-nand qca-legacy-uboot-cus531-32M \
