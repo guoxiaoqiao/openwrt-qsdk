@@ -29,6 +29,12 @@ ipq806x_board_detect() {
 	*"WHIRLWIND")
 		name="whirlwind"
 		;;
+	*"AP-DK01.1")
+		name="ap-dk01.1"
+		;;
+	*"AP-DK04.1")
+		name="ap-dk04.1"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"
