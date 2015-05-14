@@ -194,3 +194,7 @@ endef
 $(eval $(call Require,ocamlc, \
 	Please install the Objective Caml compiler (ocaml-nox) v3.11 or later \
 ))
+
+$(eval $(call RequireCommand,ocamlfind, \
+	Please install ocaml-findlib. \
+))
