@@ -26,6 +26,14 @@ define Image/Prepare
 	$(CP) $(LINUX_DIR)/vmlinux $(KDIR)/$(IMG_PREFIX)-vmlinux.elf
 endef
 
+define Image/BuildKernel/GenericFIT
+	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
+	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
+	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.gz)
+	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz,,gzip,$(2),$(2))
+	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
+endef
+
 define Image/BuildKernel
 	$(CP) $(KDIR)/$(IMG_PREFIX)-vmlinux.elf $(BIN_DIR)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148)
