@@ -1,0 +1,19 @@
+--- a/Makefile
++++ b/Makefile
+@@ -508,6 +508,8 @@
+ 		cp -fv ./bundles/pycaml/dllpycaml_stubs.so $(DESTDIR)$(SHAREDIR); fi
+ 	@if test -f ./bundles/pcre/dllpcre_stubs.so; then \
+ 		cp -fv ./bundles/pcre/dllpcre_stubs.so $(DESTDIR)$(SHAREDIR); fi
++	@if test -f ./bundles/parmap/parmap-1.0-rc5-patched/_build/dllparmap_stubs.so; then \
++		cp -fv ./bundles/parmap/parmap-1.0-rc5-patched/_build/dllparmap_stubs.so $(DESTDIR)$(SHAREDIR); fi
+ 
+ install: install-man install-common install-stubs $(PYTHON_INSTALL_TARGET)
+ 	rm -f $(DESTDIR)$(SHAREDIR)/spatch
+@@ -548,6 +550,7 @@
+ 	rm -f $(DESTDIR)$(BINDIR)/spatch.byte
+ 	rm -f $(DESTDIR)$(SHAREDIR)/dllpycaml_stubs.so
+ 	rm -f $(DESTDIR)$(SHAREDIR)/dllpcre_stubs.so
++	rm -f $(DESTDIR)$(SHAREDIR)/dllparmap_stubs.so
+ 	rm -f $(DESTDIR)$(SHAREDIR)/spatch
+ 	rm -f $(DESTDIR)$(SHAREDIR)/spatch.opt
+ 	rm -f $(DESTDIR)$(SHAREDIR)/standard.h
