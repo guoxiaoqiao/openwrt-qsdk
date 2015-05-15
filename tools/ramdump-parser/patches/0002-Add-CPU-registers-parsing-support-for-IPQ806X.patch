@@ -1,9 +1,9 @@
-From 19e84aa975f3a85a50cfee69cc60e20e5512b0d1 Mon Sep 17 00:00:00 2001
-From: Ajay <c_akisho@qti.qualcomm.com>
-Date: Wed, 25 Mar 2015 11:41:20 +0530
+From b0fe049dd50934a205748845de250a720141a7b8 Mon Sep 17 00:00:00 2001
+From: Ajay <akisho@codeaurora.org>
+Date: Thu, 14 May 2015 17:44:14 +0530
 Subject: [PATCH] Add CPU registers parsing support for IPQ806X
 
-Signed-off-by: Ajay <c_akisho@qti.qualcomm.com>
+Signed-off-by: Ajay <akisho@codeaurora.org>
 ---
  linux-ramdump-parser-v2/boards.py  | 3 ++-
  linux-ramdump-parser-v2/ramdump.py | 4 ++--
