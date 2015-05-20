@@ -2,9 +2,11 @@
 # Copyright (c) 2013 The Linux Foundation. All rights reserved.
 
 tunnel_if="$1"
+interface="$6"
 
 [ -e "/tmp/server.$tunnel_if" ] && {
 	for svr in $(cat /tmp/server.$tunnel_if); do
+		proto_add_host_dependency $interface $svr
 		ip route add blackhole $svr metric 1000
 	done
 }
