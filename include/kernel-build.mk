@@ -49,7 +49,6 @@ ifdef CONFIG_COLLECT_KERNEL_DEBUG
   define Kernel/CollectDebug
 	mkdir -p $(KERNEL_BUILD_DIR)/debug
 	$(CP) $(LINUX_DIR)/vmlinux $(KERNEL_BUILD_DIR)/debug/
-	$(FIND) $(KERNEL_BUILD_DIR)/debug -type f | $(XARGS) $(KERNEL_CROSS)strip --only-keep-debug
 	$(CP) $(KERNEL_BUILD_DIR)/debug $(BIN_DIR)/
 	rm -rf $(KERNEL_BUILD_DIR)/debug
   endef
