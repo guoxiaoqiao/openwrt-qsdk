@@ -6,7 +6,7 @@ define KernelPackage/qca-edma
      SUBMENU:=$(NETWORK_DEVICES_MENU)
      TITLE:=Qualcomm 961x ethernet driver
      FILES:=$(LINUX_DIR)/drivers/net/ethernet/qcom/essedma/essedma.ko
-     AUTOLOAD:=$(call AutoLoad,45,essedma)
+     AUTOLOAD:=$(call AutoLoad,41,essedma)
 endef
 
 define KernelPackage/qca-edma/description
