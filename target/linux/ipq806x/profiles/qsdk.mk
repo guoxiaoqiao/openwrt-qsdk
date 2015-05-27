@@ -46,7 +46,7 @@ CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	kmod-bonding luci-app-qos luci-app-radvd kmod-nat-sctp openswan arptables alsa \
 	kmod-ipsec kmod-ipsec4 kmod-ipsec6 perl perlbase-base \
 	perlbase-config perlbase-essential perlbase-getopt\
-	perlbase-getopt
+	perlbase-getopt qca-mcs-apps
 ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	alljoyn-controlpanel alljoyn-notification alljoyn-services_common
 
