@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013 The Linux Foundation. All rights reserved.
+# Copyright (c) 2013, 2015 The Linux Foundation. All rights reserved.
 #
 
 define Profile/QSDK_Base
@@ -60,7 +60,9 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi kmod-qca-nss-drv-profile \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
-		kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi qca-mcs-apps \
+		luci-app-qos luci-app-openswan openswan-nss kmod-openswan-nss \
+		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
+		qca-mcs-apps \
 		$(PACKAGES_WIFI_10_2)
 endef
 
@@ -78,7 +80,8 @@ define Profile/QSDK_Standard_Beeliner
 	NAME:=Qualcomm-Atheros SDK Standard Beeliner Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
-		kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
+		luci-app-qos luci-app-openswan openswan-nss kmod-openswan-nss \
+		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 		$(PACKAGES_WIFI_10_4) kmod-qca-wil6210 iwinfo
 endef
 
