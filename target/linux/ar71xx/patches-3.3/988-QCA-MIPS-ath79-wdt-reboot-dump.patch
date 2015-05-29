@@ -1,0 +1,35 @@
+diff --git a/drivers/watchdog/ath79_wdt.c b/drivers/watchdog/ath79_wdt.c
+index eff7903..1b57349 100644
+--- a/drivers/watchdog/ath79_wdt.c
++++ b/drivers/watchdog/ath79_wdt.c
+@@ -93,7 +93,11 @@ static inline void ath79_wdt_enable(void)
+ 	 */
+ 	udelay(2);
+ 
++#ifdef CONFIG_KEXEC
++	ath79_reset_wr(AR71XX_RESET_REG_WDOG_CTRL, WDOG_CTRL_ACTION_GPI);
++#else
+ 	ath79_reset_wr(AR71XX_RESET_REG_WDOG_CTRL, WDOG_CTRL_ACTION_FCR);
++#endif
+ 	/* flush write */
+ 	ath79_reset_rr(AR71XX_RESET_REG_WDOG_CTRL);
+ 
+@@ -272,6 +276,7 @@ static int __devinit ath79_wdt_probe(struct platform_device *pdev)
+ {
+ 	u32 ctrl;
+ 	int err;
++	u8 wdtboot;
+ 
+ 	wdt_clk = clk_get(&pdev->dev, "wdt");
+ 	if (IS_ERR(wdt_clk))
+@@ -297,6 +302,10 @@ static int __devinit ath79_wdt_probe(struct platform_device *pdev)
+ 
+ 	ctrl = ath79_reset_rr(AR71XX_RESET_REG_WDOG_CTRL);
+ 	boot_status = (ctrl & WDOG_CTRL_LAST_RESET) ? WDIOF_CARDRESET : 0;
++	wdtboot = (ctrl & WDOG_CTRL_LAST_RESET)? 1:0;
++	pr_info("AR71XX_RESET_REG_WDOG_CTRL: 0x%x\n ", ctrl);
++	if (wdtboot)
++		pr_info("Last system reboot was due to WDOG\n");
+ 
+ 	err = misc_register(&ath79_wdt_miscdev);
+ 	if (err) {
