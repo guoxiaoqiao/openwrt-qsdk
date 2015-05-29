@@ -4,6 +4,15 @@
 # Copyright (C) 2010 Vertical Communications
 
 
+find_mmc_part() {
+	local DEVNAME PARTNAME
+
+	for DEVNAME in /sys/block/mmcblk0/mmcblk*p*; do
+		PARTNAME=$(grep PARTNAME ${DEVNAME}/uevent | cut -f2 -d'=')
+		[ "$PARTNAME" = "$1" ] && echo "/dev/$(basename $DEVNAME)" && return 0
+	done
+}
+
 debug () {
 	${DEBUG:-:} "$@"
 }
