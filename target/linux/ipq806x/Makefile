@@ -21,7 +21,9 @@ CONFIG_KERNEL_GIT_LOCAL_REPOSITORY:=""
 include $(INCLUDE_DIR)/target.mk
 
 DEFAULT_PACKAGES += \
+	mtd-utils mtd-utils-mkfs.ubifs mtd-utils-ubiattach mtd-utils-ubidetach \
+	mtd-utils-ubiformat mtd-utils-ubimkvol mtd-utils-ubiupdatevol \
 	uboot-ipq806x uboot-qca961x kmod-usb-dwc3-qcom kmod-usb2 kmod-usb3 kmod-usb-dwc3-ipq40xx \
-	uboot-envtools
+	uboot-envtools uboot-ipq806x-fwupgrade-tools
 
 $(eval $(call BuildTarget))
