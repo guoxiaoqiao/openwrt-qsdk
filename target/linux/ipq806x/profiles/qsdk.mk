@@ -82,7 +82,7 @@ define Profile/QSDK_Standard_Beeliner
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		luci-app-qos luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
-		$(PACKAGES_WIFI_10_4) kmod-qca-wil6210 iwinfo
+		$(PACKAGES_WIFI_10_4) kmod-qca-wil6210 iwinfo qca-mcs-apps
 endef
 
 define Profile/QSDK_Standard_Beeliner/Description
