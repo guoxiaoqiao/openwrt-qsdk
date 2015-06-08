@@ -107,7 +107,6 @@ $(eval $(call Profile,QSDK_Premium_Router))
 
 define Profile/QSDK_Premium_Beeliner_Router
 	$(Profile/QSDK_Base)
-	$(Profile/QSDK_Test)
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  streamboost hyfi kmod-fast-classifier $(STORAGE) \
