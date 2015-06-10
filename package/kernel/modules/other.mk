@@ -149,7 +149,8 @@ $(eval $(call KernelPackage,gpio-nxp-74hc164))
 define KernelPackage/hid
   SUBMENU:=$(OTHER_MENU)
   TITLE:=HID Devices
-  KCONFIG:=CONFIG_HID
+  KCONFIG:=CONFIG_HID_SUPPORT=y \
+	CONFIG_HID
   FILES:=$(LINUX_DIR)/drivers/hid/hid.ko
   AUTOLOAD:=$(call AutoLoad,61,hid)
   $(call AddDepends/input,+kmod-input-evdev)
