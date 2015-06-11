@@ -39,6 +39,8 @@ PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
 	qca-nss-fw-enterprise kmod-qca-nss-drv-ipsecmgr \
 	qca-nss-fw-enterprise_custA qca-nss-fw-enterprise_custC
 
+BLUETOOTH:=kmod-qca-ath3k bluez btconfig
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES+=kmod-ath9k wpad-mini \
@@ -59,7 +61,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi kmod-qca-nss-drv-profile \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
-		$(PACKAGES_WIFI_10_2)
+		$(PACKAGES_WIFI_10_2) $(BLUETOOTH)
 endef
 
 define Profile/QSDK_Standard/Description
