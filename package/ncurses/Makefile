@@ -27,6 +27,15 @@ define Package/libncurses
   CATEGORY:=Libraries
   TITLE:=Terminal handling library
   URL:=http://www.gnu.org/software/ncurses/
+  DEPENDS:= +terminfo +libtinfo
+  VARIANT:=libncurses
+endef
+
+define Package/libtinfo
+  SECTION:=libs
+  CATEGORY:=Libraries
+  TITLE:=Shared low-level terminal handling library
+  URL:=http://www.gnu.org/software/ncurses/
   DEPENDS:= +terminfo
   VARIANT:=libncurses
 endef
@@ -62,6 +71,7 @@ CONFIGURE_ARGS += \
 	--disable-home-terminfo \
 	--with-normal \
 	--with-shared \
+	--with-termlib \
 	--with-terminfo-dirs=/usr/share/terminfo \
 	--with-default-terminfo-dir=/usr/share/terminfo
 
@@ -112,14 +122,19 @@ ifneq ($(HOST_OS),FreeBSD)
 endif
 endef
 
+define Package/libtinfo/install
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libtinfo.so* $(1)/usr/lib/
+endef
+
 define Package/libncurses/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{curses,ncurses,panel,menu,form}.so* $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{curses,ncurses,panel,menu,form,tinfo}.so* $(1)/usr/lib/
 endef
 
 define Package/libncursesw/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{ncurses,panel,menu,form}w.so* $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{ncurses,panel,menu,form,tinfo}w.so* $(1)/usr/lib/
 endef
 
 ifeq ($(BUILD_VARIANT),libncursesw)
@@ -128,7 +143,7 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/*.h $(1)/usr/include/ncursesw/
 
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{ncurses,panel,menu,form}w.{a,so*} $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{ncurses,panel,menu,form,tinfo}w.{a,so*} $(1)/usr/lib/
 
 	$(INSTALL_DIR) $(1)/usr/bin $(2)/bin
 	$(CP) $(PKG_INSTALL_DIR)/usr/bin/ncursesw5-config $(2)/bin/
@@ -142,7 +157,7 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/*.h $(1)/usr/include/
 
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{curses,ncurses,panel,menu,form}.{a,so*} $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{curses,ncurses,panel,menu,form,tinfo}.{a,so*} $(1)/usr/lib/
 
 	$(INSTALL_DIR) $(1)/usr/bin $(2)/bin
 	$(CP) $(PKG_INSTALL_DIR)/usr/bin/ncurses5-config $(2)/bin/
@@ -153,5 +168,6 @@ endef
 endif
 
 $(eval $(call BuildPackage,terminfo))
+$(eval $(call BuildPackage,libtinfo))
 $(eval $(call BuildPackage,libncurses))
 $(eval $(call BuildPackage,libncursesw))
