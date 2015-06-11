@@ -37,6 +37,50 @@ static int ag71xx_gmac_num = 0;
 static int ag71xx_msg_level = -1;
 static int ag71xx_frame_len_mask = DESC_PKTLEN_M;
 
+#define SGMII_PROCFS_DIR                        "ag71xx_sgmii"
+#define SGMII_FLAG_NAME				"sgmii_en"
+static u8 ag71xx_sgmii_flag = 0;
+static struct proc_dir_entry *ag71xx_sgmii_dir;
+static struct proc_dir_entry *ag71xx_sgmii_flag_file;
+void ag71xx_sgmii_flag_set(u8 flag)
+{
+	if (flag != ag71xx_sgmii_flag) {
+		struct net_device *sgmii_net = NULL;
+		struct ag71xx *ag = NULL;
+		sgmii_net = dev_get_by_name(&init_net, "eth1");
+		if (!sgmii_net)
+			return;
+		ag = netdev_priv(sgmii_net);
+		if (!ag)
+			return;
+		if (flag) {
+			/* enable sgmii set */
+			/* map sgmii interface register space*/
+			ag->sgmii_base = ioremap_nocache(AR71XX_MII_BASE, AR71XX_MII_SIZE);
+			/* map pll register space*/
+			ag->pll_base = ioremap_nocache(AR71XX_PLL_BASE, AR71XX_PLL_SIZE);
+		} else {
+			/* disable sgmii set */
+			/* unmap sgmii interface register space*/
+			if (ag->sgmii_base) {
+				iounmap(ag->sgmii_base);
+				ag->sgmii_base = NULL;
+			}
+			/* unmap pll register space*/
+			if (ag->pll_base) {
+				iounmap(ag->pll_base);
+				ag->pll_base = NULL;
+			}
+		}
+		ag71xx_sgmii_flag = flag;
+	}
+}
+
+u8 ag71xx_sgmii_flag_get(void)
+{
+	return ag71xx_sgmii_flag;
+}
+
 u32 ar8216_phy_read(u32 address, u32 reg);
 void ar8216_phy_write(u32 address, u32 reg,u32 data);
 
@@ -113,6 +157,200 @@ static inline void ag71xx_dump_intr(struct ag71xx *ag, char *label, u32 intr)
 #define ag71xx_dump_regs(__ag)
 #define ag71xx_dump_intr(__ag, __label, __intr)
 #endif /* DEBUG */
+
+static int sgmii_procfile_read(char *page, char **start, off_t off, int count,  int *eof, void *data)
+{
+	int ret;
+	u8 *prv_data = (u8 *)data;
+
+	ret = snprintf(page, sizeof(int), "%d\n", *prv_data);
+
+	return ret;
+}
+
+static int sgmii_procfile_write(struct file *file, const char *buffer, unsigned long count, void *data)
+{
+	int len;
+	u8 tmp_buf[8] = {'0', '0', '0', '0', '0', '0', '0', '0'};
+	u32 prv_data;
+	int res = 0;
+
+	if(count > sizeof(tmp_buf))
+		len = sizeof(tmp_buf);
+	else
+		len = count;
+
+	if(copy_from_user(tmp_buf, buffer, len))
+		return -EFAULT;
+
+	tmp_buf[len-1] = '\0';
+	res = kstrtol((const char *)tmp_buf, 8, &prv_data);
+	if(res < 0)
+		return res;
+	ag71xx_sgmii_flag_set((u8)prv_data);
+
+	return len;
+}
+
+
+int ag71xx_sgmii_procfs_init(void)
+{
+	int ret = 0;
+	ag71xx_sgmii_dir = proc_mkdir(SGMII_PROCFS_DIR, NULL);
+	if(ag71xx_sgmii_dir == NULL)
+	{
+		ret = -ENOMEM;
+		goto err_out;
+	}
+	ag71xx_sgmii_flag_file = create_proc_entry(SGMII_FLAG_NAME, 0644, ag71xx_sgmii_dir);
+	if (NULL == ag71xx_sgmii_flag_file)
+	{
+		printk("Error: Can not create /proc/%s/%s\n", SGMII_PROCFS_DIR, SGMII_FLAG_NAME);
+		ret = -ENOMEM;;
+		goto file_create_fail;
+	}
+	ag71xx_sgmii_flag_file->data = &ag71xx_sgmii_flag;
+	ag71xx_sgmii_flag_file->read_proc  = sgmii_procfile_read;
+	ag71xx_sgmii_flag_file->write_proc = sgmii_procfile_write;
+	return 0;
+file_create_fail:
+	remove_proc_entry(SGMII_PROCFS_DIR, NULL);
+err_out:
+	return ret;
+}
+
+void ag71xx_sgmii_procfs_exit(void)
+{
+	remove_proc_entry(SGMII_FLAG_NAME, ag71xx_sgmii_dir);
+	remove_proc_entry(SGMII_PROCFS_DIR, NULL);
+}
+
+void ag71xx_sgmii_interface_setup(
+	struct ag71xx *ag,
+	ag71xx_sgmii_speed_t speed,
+	ag71xx_sgmii_duplex_t duplex)
+{
+	u32 val1 = 0, val2 = 0, count = 0;
+	if (duplex == AG71XX_SGMII_FULL_DUPLEX)
+		val1 |= SGMII_DUPLEX_SET(1);
+	if(speed == AG71XX_SGMII_SPEED_1000T) {
+		val1 |= SGMII_SPEED_SEL1_SET(1);
+		val2 |= SGMII_SPEED_SET(2);
+	}
+	else if (speed == AG71XX_SGMII_SPEED_100T) {
+		val1 |= SGMII_SPEED_SEL0_SET(1);
+		val2 |= SGMII_SPEED_SET(1);
+	}
+	val1 |= SGMII_PHY_RESET_SET(1);
+	ag71xx_sgmii_wr(ag, SGMII_PHY_MGMT_CTRL, val1);
+	udelay(10);
+	val2 |= SGMII_MODE_CTRL_SET(2);
+	val2 |= SGMII_FORCE_SPEED_SET(1);
+	ag71xx_sgmii_wr(ag, SGMII_CONFIG, val2);
+	/*sgmii reset sequence*/
+	ag71xx_sgmii_wr(ag, SGMII_RESET, SGMII_RX_CLK_N);
+	ag71xx_sgmii_wr(ag, SGMII_RESET, SGMII_HW_RX_125M);
+	val1 = SGMII_RX_125M | SGMII_HW_RX_125M;
+	ag71xx_sgmii_wr(ag, SGMII_RESET, val1);
+	val1 = SGMII_RX_125M | SGMII_TX_125M | SGMII_HW_RX_125M;
+	ag71xx_sgmii_wr(ag, SGMII_RESET, val1);
+	val1 = SGMII_RX_125M | SGMII_TX_125M | SGMII_HW_RX_125M | SGMII_RX_CLK_N;
+	ag71xx_sgmii_wr(ag, SGMII_RESET, val1);
+	val1 = SGMII_RX_125M | SGMII_TX_125M | SGMII_HW_RX_125M \
+		| SGMII_RX_CLK_N | SGMII_TX_CLK_N;
+	ag71xx_sgmii_wr(ag, SGMII_RESET, val1);
+	val1 = ag71xx_sgmii_rr(ag, SGMII_PHY_MGMT_CTRL);
+	val1 &= ~SGMII_PHY_RESET_SET(1);
+	ag71xx_sgmii_wr(ag, SGMII_PHY_MGMT_CTRL, val1);
+	val1 = ag71xx_sgmii_rr(ag, SGMII_DEBUG);
+	while (!(val1 == 0xf || val1 == 0x10)) {
+		val2 = ag71xx_sgmii_rr(ag, SGMII_PHY_MGMT_CTRL);
+		val2 |= SGMII_PHY_RESET_SET(1);
+		ag71xx_sgmii_wr(ag, SGMII_PHY_MGMT_CTRL, val2);
+		udelay(100);
+		val2 = ag71xx_sgmii_rr(ag, SGMII_PHY_MGMT_CTRL);
+		val2 &= ~SGMII_PHY_RESET_SET(1);
+		ag71xx_sgmii_wr(ag, SGMII_PHY_MGMT_CTRL, val2);
+		if (count++ == SGMII_LINK_MAX_TRY) {
+			printk ("Max resets limit reached exiting...\n");
+			break;
+		}
+		val1 = (ag71xx_sgmii_rr(ag, SGMII_DEBUG) & 0xff);
+	}
+}
+
+void ag71xx_gmac_set_link(
+	struct ag71xx *ag,
+	ag71xx_sgmii_speed_t speed,
+	ag71xx_sgmii_duplex_t duplex)
+{
+	u32 val;
+	val = ag71xx_rr(ag, AG71XX_REG_MAC_CFG2);
+	if (duplex == AG71XX_SGMII_FULL_DUPLEX)
+		val |= MAC_CFG2_FDX;
+	else
+		val &= ~MAC_CFG2_FDX;
+	if (speed == AG71XX_SGMII_SPEED_1000T) {
+		val |= MAC_CFG2_IF_1000;
+		val &= ~MAC_CFG2_IF_10_100;
+	} else {
+		val |= MAC_CFG2_IF_10_100;
+		val &= ~MAC_CFG2_IF_1000;
+	}
+	ag71xx_wr(ag, AG71XX_REG_MAC_CFG2, val);
+	val = ag71xx_rr(ag, AG71XX_REG_FIFO_CFG5);
+	if (speed == AG71XX_SGMII_SPEED_1000T) {
+		val |= FIFO_CFG5_BM;
+	} else if (speed == AG71XX_SGMII_SPEED_100T) {
+		val &= ~FIFO_CFG5_BM;
+	} else {
+		val &= ~FIFO_CFG5_BM;
+	}
+	ag71xx_wr(ag, AG71XX_REG_FIFO_CFG5, val);
+	val = ag71xx_pll_rr(ag, AG71XX_PLL_SGMII);
+	if  (speed == AG71XX_SGMII_SPEED_1000T) {
+		val |= (AG71XX_PLL_GIGE | AG71XX_PLL_GIGE_CLK);
+	} else if (speed == AG71XX_SGMII_SPEED_100T) {
+		val = AG71XX_PLL_100;
+	} else {
+		val = AG71XX_PLL_10;
+	}
+	ag71xx_pll_wr(ag, AG71XX_PLL_SGMII, val);
+	val = ag71xx_rr(ag, AG71XX_REG_MAC_IFCTL);
+	if (speed == AG71XX_SGMII_SPEED_100T) {
+		val |= AG71XX_INTF_CTRL_SPEED;
+	} else if (speed == AG71XX_SGMII_SPEED_10T) {
+		val &= ~AG71XX_INTF_CTRL_SPEED;
+	}
+}
+
+void ag71xx_sgmii_set_link(
+	struct ag71xx *ag,
+	ag71xx_sgmii_speed_t speed,
+	ag71xx_sgmii_duplex_t duplex)
+{
+	ag71xx_sgmii_interface_setup(ag, speed, duplex);
+	ag71xx_gmac_set_link(ag, speed, duplex);
+}
+
+void ag71xx_sgmii_get_link(
+	struct ag71xx *ag,
+	ag71xx_sgmii_speed_t *speed,
+	ag71xx_sgmii_duplex_t *duplex)
+{
+	u32 val = 0;
+	val = ag71xx_sgmii_rr(ag, SGMII_PHY_MGMT_CTRL);
+	if (val & SGMII_DUPLEX_SET(1))
+		*duplex = AG71XX_SGMII_FULL_DUPLEX;
+	else
+		*duplex = AG71XX_SGMII_HALF_DUPLEX;
+	if (val & SGMII_SPEED_SEL1_SET(1))
+		*speed = AG71XX_SGMII_SPEED_1000T;
+	else if (val & SGMII_SPEED_SEL0_SET(1))
+		*speed = AG71XX_SGMII_SPEED_100T;
+	else
+		*speed = AG71XX_SGMII_SPEED_10T;
+}
 
 static void ag71xx_ring_free(struct ag71xx_ring *ring)
 {
@@ -1489,6 +1727,9 @@ static int __devinit ag71xx_probe(struct platform_device *pdev)
 		goto err_free_dev;
 	}
 
+	ag->sgmii_base = 0;
+	ag->pll_base = 0;
+
 	ag->rx_ctrl_reg = ag->mac_base + AG71XX_REG_RX_CTRL;
 	ag->rx_status_reg = ag->mac_base + AG71XX_REG_RX_STATUS;
 	ag->tx_ctrl_reg = ag->mac_base + AG71XX_REG_TX_CTRL;
@@ -1587,6 +1828,10 @@ static int __devexit ag71xx_remove(struct platform_device *pdev)
 		unregister_netdev(dev);
 		free_irq(dev->irq, dev);
 		iounmap(ag->mac_base);
+		if (ag->sgmii_base)
+			iounmap(ag->sgmii_base);
+		if(ag->pll_base)
+			iounmap(ag->pll_base);
 		kfree(dev);
 		platform_set_drvdata(pdev, NULL);
 	}
@@ -1616,9 +1861,13 @@ static int __init ag71xx_module_init(void)
 {
 	int ret;
 
-	ret = ag71xx_debugfs_root_init();
+	ret = ag71xx_sgmii_procfs_init();
 	if (ret)
 		goto err_out;
+
+	ret = ag71xx_debugfs_root_init();
+	if (ret)
+		goto err_procfs_exit;
 
 	ret = ag71xx_mdio_driver_init();
 	if (ret)
@@ -1634,6 +1883,8 @@ err_mdio_exit:
 	ag71xx_mdio_driver_exit();
 err_debugfs_exit:
 	ag71xx_debugfs_root_exit();
+err_procfs_exit:
+	ag71xx_sgmii_procfs_exit();
 err_out:
 	return ret;
 }
@@ -1643,6 +1894,7 @@ static void __exit ag71xx_module_exit(void)
 	platform_driver_unregister(&ag71xx_driver);
 	ag71xx_mdio_driver_exit();
 	ag71xx_debugfs_root_exit();
+	ag71xx_sgmii_procfs_exit();
 }
 
 module_init(ag71xx_module_init);
