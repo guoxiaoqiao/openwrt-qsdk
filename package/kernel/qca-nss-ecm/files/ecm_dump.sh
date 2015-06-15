@@ -15,14 +15,14 @@ MOUNT_ROOT=/dev/ecm
 # cat the contents.
 #
 
-# this is the stop control file for the ecm conntrack notifier, which
-# happens to be the last module started in ecm
-ECM_CT_STOP=/sys/kernel/debug/ecm/ecm_conntrack_notifier/stop
+# this is one of the state files, which happens to be the
+# last module started in ecm
+ECM_STATE=/sys/kernel/debug/ecm/ecm_state/state_dev_major
 
 # tests to see if ECM is up and ready to receive commands.
 # returns 0 if ECM is fully up and ready, else 1
 ecm_is_ready() {
-	if [ ! -e "${ECM_CT_STOP}" ]
+	if [ ! -e "${ECM_STATE}" ]
 	then
 		return 1
 	fi
