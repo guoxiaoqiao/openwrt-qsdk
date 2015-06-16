@@ -743,6 +743,10 @@ int nl80211_get_bssid(const char *ifname, char *buf)
 {
 	char *bssid;
 	unsigned char mac[6];
+	char *res;
+
+	res = nl80211_phy2ifname(ifname);
+	ifname = res ? res : ifname;
 
 	if (!wext_get_bssid(ifname, buf))
 	{
