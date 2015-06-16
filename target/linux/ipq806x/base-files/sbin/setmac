@@ -62,8 +62,5 @@ hexdump -C /tmp/macaddr
 [ -n "${DELETE}" ] && mtd erase $(find_mtd_part ART | sed 's,block,,')
 
 # Find the partition and set the MAC addresses in the flash
-dd if=$(find_mtd_part 0:ART) of=/tmp/art bs=1024 count=64 conv=sync
-dd if=/tmp/macaddr of=/tmp/art bs=64 conv=notrunc
-mtd erase $(find_mtd_part 0:ART)
-dd if=/tmp/art of=$(find_mtd_part 0:ART) bs=1024 count=64 conv=sync
+dd if=/tmp/macaddr of=$(find_mtd_part 0:ART) bs=64 conv=sync 2>/dev/null
 rm -f /tmp/macaddr
