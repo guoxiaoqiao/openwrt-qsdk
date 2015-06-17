@@ -1,8 +1,6 @@
-Index: procd-2014-03-18/signal.c
-===================================================================
---- procd-2014-03-18.orig/signal.c	2015-04-03 19:55:13.000000000 +0530
-+++ procd-2014-03-18/signal.c	2015-04-03 23:53:45.056585181 +0530
-@@ -41,6 +41,9 @@
+--- a/signal.c
++++ b/signal.c
+@@ -42,6 +42,9 @@
  		msg = "reboot";
  		break;
  	case SIGUSR1:
@@ -12,11 +10,9 @@ Index: procd-2014-03-18/signal.c
  	case SIGUSR2:
  		event = RB_POWER_OFF;
  		msg = "poweroff";
-Index: procd-2014-03-18/state.c
-===================================================================
---- procd-2014-03-18.orig/state.c	2015-04-03 19:55:13.000000000 +0530
-+++ procd-2014-03-18/state.c	2015-04-03 23:48:28.209928164 +0530
-@@ -29,6 +29,7 @@
+--- a/state.c
++++ b/state.c
+@@ -35,6 +35,7 @@
  	STATE_RUNNING,
  	STATE_SHUTDOWN,
  	STATE_HALT,
@@ -24,20 +20,29 @@ Index: procd-2014-03-18/state.c
  	__STATE_MAX,
  };
  
-@@ -75,6 +76,11 @@
+@@ -144,7 +145,7 @@
+ 		if (reboot_event == RB_POWER_OFF)
+ 			LOG("- power down -\n");
+ 		else
+-			LOG("- reboot -\n");
++			LOG("- halt -\n");
+ 
+ 		/* Allow time for last message to reach serial console, etc */
+ 		sleep(1);
+@@ -161,6 +162,11 @@
+ 			sleep(1);
  		break;
  
- 	case STATE_HALT:
-+		LOG("- halt -\n");
++	case STATE_AUTOBOOT:
++		LOG("- reboot -\n");
 +		reboot(reboot_event);
 +		break;
-+	
-+	case STATE_AUTOBOOT:
- 		LOG("- reboot -\n");
- 		reboot(reboot_event);
- 		break;
-@@ -96,6 +102,12 @@
- {
++
+ 	default:
+ 		ERROR("Unhandled state %d\n", state);
+ 		return;
+@@ -186,6 +192,12 @@
+ 		return;
  	DEBUG(2, "Shutting down system with event %x\n", event);
  	reboot_event = event;
 -	state = STATE_SHUTDOWN;
