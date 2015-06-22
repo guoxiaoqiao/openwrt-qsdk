@@ -16,9 +16,8 @@ read_caldata_to_filesystem()
 
     # load board.bin
     case "$board" in
-            ap-dk01.1 | ap-dk04.1)
+            ap-dk0*)
                     mkdir -p ${apdk041}
-                    touch ${apdk041}/board.bin.creating
                     dd if=${mtdblock} of=${apdk041}/caldata_0.bin bs=32 count=377 skip=128
                     dd if=${mtdblock} of=${apdk041}/caldata_1.bin bs=32 count=377 skip=640
             ;;
