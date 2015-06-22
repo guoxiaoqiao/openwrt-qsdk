@@ -30,6 +30,14 @@ define Image/BuildKernel/GenericFIT
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 endef
 
+define Image/BuildKernel/MultiDTBFIT
+	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
+	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
+	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.gz)
+	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/Image.gz,$(2),gzip,$(3),$(3))
+	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
+endef
+
 define Image/BuildKernel
 	$(CP) $(KDIR)/vmlinux$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,0x42208000)
@@ -44,6 +52,12 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c2,0x80208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c3,0x80208000)
 	$(call Image/BuildKernel/GenericFIT,qcom-ipq40xx,0x80208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq40xx-ap.dkxx,"qcom-ipq40xx-ap.dk04.1-c1 \
+																qcom-ipq40xx-ap.dk04.1-c2 \
+																qcom-ipq40xx-ap.dk04.1-c3 \
+																qcom-ipq40xx-ap.dk01.1-c1 \
+																qcom-ipq40xx-ap.dk01.1-c2"\
+																,0x80208000)
 endef
 
 define Image/Build/squashfs
