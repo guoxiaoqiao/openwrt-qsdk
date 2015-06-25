@@ -42,6 +42,9 @@ case "$FIRMWARE" in
 		ath9k_eeprom_extract "caldata" 4096 2048
 		ath9k_patch_firmware_mac $(mtd_get_mac_binary caldata 0)
 		;;
+	cus532k)
+		ath9k_eeprom_extract "caldata" 4096 4096
+		;;
 	*)
 		ath9k_eeprom_die "board $board is not supported yet"
 		;;
@@ -50,6 +53,7 @@ case "$FIRMWARE" in
 
 "pci_wmac0.eeprom")
 	case $board in
+	cus532k |\
 	wndr4300)
 		ath9k_eeprom_extract "caldata" 20480 2048
 		ath9k_patch_firmware_mac $(mtd_get_mac_binary caldata 12)
