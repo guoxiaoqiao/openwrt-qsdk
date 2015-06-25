@@ -1025,6 +1025,7 @@ cap4200ag_mtdlayout=mtdparts=spi0.0:256k(u-boot),64k(u-boot-env),320k(custom)ro,
 cpe510_mtdlayout=mtdparts=spi0.0:128k(u-boot)ro,64k(pation-table)ro,64k(product-info)ro,1536k(kernel),6144k(rootfs),192k(config)ro,64k(ART)ro,7680k@0x40000(firmware)
 eap300v2_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),320k(custom),13632k(firmware),2048k(failsafe),64k(art)ro
 db120_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(nvram),64k(art)ro,7744k@0x50000(firmware)
+cus532k_mtdlayout=mtdparts=ar934x-nfc:256k(u-boot)ro,256k(u-boot-env)ro,2048k(uImage),128256k(rootfs),128k(dummy),128k(caldata)
 dgl_5500_mtdlayout=mtdparts=spi0.0:192k(u-boot)ro,64k(nvram)ro,15296k(firmware),192k(lang)ro,512k(my-dlink)ro,64k(mac)ro,64k(art)ro
 dlan_pro_500_wp_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,64k(Config1)ro,64k(Config2)ro,7680k@0x70000(firmware),64k(art)ro
 dlan_pro_1200_ac_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,64k(Config1)ro,64k(Config2)ro,15872k@0x70000(firmware),64k(art)ro
@@ -1969,6 +1970,7 @@ $(eval $(call SingleProfile,AthLzma,64k,CUS531DUAL,cus531dual,CUS531-DUAL,ttyS0,
 $(eval $(call SingleProfile,AthLzma,64k,CUS531DUAL_DUAL,cus531dual-dual,CUS531-DUAL,ttyS0,115200,,RKuImage,1507328,14876672))
 $(eval $(call SingleProfile,IoENAND,64k,CUS531NAND,cus531nand,CUS531-NAND,ttyS0,115200,,KRuImage,CUS531-NAND,2097152))
 $(eval $(call SingleProfile,IoENAND,64k,CUS531NAND_DUAL,cus531nand-dual,CUS531-NAND,ttyS0,115200,,KRuImage,CUS531-NAND,2097152))
+$(eval $(call SingleProfile,IoENAND,64k,CUS532K,cus532k,CUS532K,ttyS0,115200,,KRuImage,CUS532K))
 $(eval $(call SingleProfile,AthLzma,64k,DB120,db120,DB120,ttyS0,115200,$$(db120_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,DRAGINO2,dragino2,DRAGINO2,ttyATH0,115200,$$(dragino2_mtdlayout),KRuImage,65536))
 $(eval $(call SingleProfile,AthLzma,64k,EWDORINAP,ew-dorin,EW-DORIN,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),KRuImage,65536))
@@ -2224,6 +2226,7 @@ endef
 define Image/Build/Profile/QSDK_IoE_Device
 	$(call Image/Build/Profile/CUS531,$(1))
 	$(call Image/Build/Profile/AP143,$(1))
+	$(call Image/Build/Profile/CUS532K,$(1))
 endef
 
 # $(1): filesystem type.
