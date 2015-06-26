@@ -14,6 +14,12 @@
 # additional information on FIT images.
 #
 
+# Initializing global variables
+DTB="";
+FDT="";
+CONFIG="";
+iter=1;
+
 usage() {
 	echo "Usage: `basename $0` -A arch -C comp -a addr -e entry" \
 		"-v version -k kernel [-D name -d dtb] -o its_file"
@@ -29,6 +35,35 @@ usage() {
 	exit 1
 }
 
+# Generating FDT COnfiguration for all the dtb files
+Generate_FDT () {
+	FDT="$FDT
+		fdt@$iter {
+			description = \"${ARCH_UPPER} OpenWrt ${DEVICE} device tree blob\";
+			data = /incbin/(\"${1}\");
+			type = \"flat_dt\";
+			arch = \"${ARCH}\";
+			compression = \"none\";
+			hash@1 {
+				algo = \"crc32\";
+			};
+			hash@2 {
+				algo = \"sha1\";
+			};
+		};
+"
+}
+
+Generate_Config () {
+	CONFIG="$CONFIG
+		config@$iter {
+			description = \"OpenWrt\";
+			kernel = \"kernel@1\";
+			fdt = \"fdt@$iter\";
+		};
+"
+}
+
 while getopts ":A:a:C:D:d:e:k:o:v:" OPTION
 do
 	case $OPTION in
@@ -36,7 +71,7 @@ do
 		a ) LOAD_ADDR=$OPTARG;;
 		C ) COMPRESS=$OPTARG;;
 		D ) DEVICE=$OPTARG;;
-		d ) DTB=$OPTARG;;
+		d ) DTB="$DTB $OPTARG";;
 		e ) ENTRY_ADDR=$OPTARG;;
 		k ) KERNEL=$OPTARG;;
 		o ) OUTPUT=$OPTARG;;
@@ -57,19 +92,18 @@ ARCH_UPPER=`echo $ARCH | tr '[:lower:]' '[:upper:]'`
 
 # Conditionally create fdt information
 if [ -n "${DTB}" ]; then
-	FDT="
-		fdt@1 {
-			description = \"${ARCH_UPPER} OpenWrt ${DEVICE} device tree blob\";
-			data = /incbin/(\"${DTB}\");
-			type = \"flat_dt\";
-			arch = \"${ARCH}\";
-			compression = \"none\";
-			hash@1 {
-				algo = \"crc32\";
-			};
-			hash@2 {
-				algo = \"sha1\";
-			};
+	for dtb in $DTB
+	do
+		Generate_FDT $dtb
+		Generate_Config
+		((iter++))
+	done
+else
+	CONFIG="
+		config@1 {
+			description = \"OpenWrt\";
+			kernel = \"kernel@1\";
+			fdt = \"fdt@1\";
 		};
 "
 fi
@@ -98,18 +132,12 @@ DATA="/dts-v1/;
 				algo = \"sha1\";
 			};
 		};
-
 ${FDT}
-
 	};
 
 	configurations {
 		default = \"config@1\";
-		config@1 {
-			description = \"OpenWrt\";
-			kernel = \"kernel@1\";
-			fdt = \"fdt@1\";
-		};
+${CONFIG}
 	};
 };"
 
