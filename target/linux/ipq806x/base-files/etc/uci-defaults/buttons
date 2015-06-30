@@ -13,7 +13,8 @@ ap148|\
 ap148_1xx|\
 ap160|\
 ap160_2xx|\
-ap161)
+ap161|\
+ak01_1xx)
 	button_add_range_uci_config "released" "reset" "reboot" "0" "3"
 	button_add_range_uci_config "released" "reset" "reset_to_factory_settings.sh" "3" "10"
 	;;
