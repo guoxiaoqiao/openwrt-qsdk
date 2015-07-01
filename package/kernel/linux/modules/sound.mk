@@ -239,3 +239,20 @@ define KernelPackage/pcspkr/description
 endef
 
 $(eval $(call KernelPackage,pcspkr))
+
+define KernelPackage/sound-soc-ipq40xx
+  TITLE:=Qualcomm-Atheros IPQ40xx board soundcard support
+  KCONFIG:= \
+	CONFIG_SND_QCA_SOC \
+	CONFIG_SND_QCA_SOC_IPQ40XX
+  FILES:= $(LINUX_DIR)/sound/soc/qca/snd-soc-ipq40xx-codec.ko
+  AUTOLOAD:=$(call AutoLoad,60,snd-soc-ipq40xx-codec)
+  DEPENDS:=@TARGET_ipq806x +kmod-sound-soc-core
+  $(call AddDepends/sound)
+endef
+
+define KernelPackage/sound-soc-ipq40xx/description
+ This enables sound card support for Qualcomm-Atheros IPQ40xx board
+endef
+
+$(eval $(call KernelPackage,sound-soc-ipq40xx))
