@@ -27,7 +27,8 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-perf kmod-art2 \
 	qca-wpa-cli-10.4 qca-wapid-10.4 sigma-dut-10.4 qca-wpc-10.4 \
 	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc \
 	qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw3-10.4-asic \
-	qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw4-10.4-emu_m2m qca-wifi-fw-hw4-10.4-emu_bb
+	qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw6-10.4-asic \
+	qca-wifi-fw-hw4-10.4-emu_m2m qca-wifi-fw-hw4-10.4-emu_bb
 
 define Profile/QSDK_Open_Router
 	$(Profile/QSDK_Base)
