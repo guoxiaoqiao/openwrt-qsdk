@@ -56,6 +56,8 @@ UTILS:=tftp-hpa sysstat iperf devmem2 ip-full ethtool iputils-tracepath \
 
 BLUETOOTH:=bluez kmod-ath3k
 
+AUDIO:=kmod-sound-soc-ipq40xx
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
@@ -73,7 +75,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(ALLJOYN_PKGS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS)
+		$(ALLJOYN_PKGS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO)
 endef
 
 define Profile/QSDK_Standard/Description
