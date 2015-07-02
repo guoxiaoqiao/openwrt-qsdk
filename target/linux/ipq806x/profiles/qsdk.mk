@@ -81,6 +81,7 @@ define Profile/QSDK_Standard_Beeliner
 	NAME:=Qualcomm-Atheros SDK Standard Beeliner Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi hyfi-ui \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
+		kmod-qca-nss-drv-l2tpv2 \
 		luci-app-qos luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 		$(PACKAGES_WIFI_10_4) kmod-qca-wil6210 wigig-firmware iwinfo
