@@ -260,6 +260,7 @@ define BuildImage
 		$(call Image/mkfs/jffs2_nand)
 		$(call Image/mkfs/squashfs)
 		$(call Image/mkfs/ubifs_fit,-ipq40xx)
+		$(call Image/mkfs/ubifs_fit,-ipq806x)
 		$(call Image/mkfs/ubifs)
 		$(call Image/Checksum)
   else
@@ -275,6 +276,7 @@ define BuildImage
 		$(call Image/mkfs/jffs2_nand)
 		$(call Image/mkfs/squashfs)
 		$(call Image/mkfs/ubifs_fit,-ipq40xx)
+		$(call Image/mkfs/ubifs_fit,-ipq806x)
 		$(call Image/mkfs/ubifs)
 		$(call Image/Checksum)
   endif
