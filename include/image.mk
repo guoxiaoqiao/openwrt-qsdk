@@ -94,7 +94,7 @@ endef
 define Image/BuildKernel/MkFIT
 	$(TOPDIR)/scripts/mkits.sh \
 		-D $(1) -o $(KDIR)/fit-$(1).its -k $(2) $(if $(3),-d $(3)) -C $(4) -a $(5) -e $(6) \
-		-A $(ARCH) -v $(LINUX_VERSION)
+		-A $(ARCH) -v $(LINUX_VERSION) $(if $(8),-b $(8) -B gzip)
 	PATH=$(LINUX_DIR)/scripts/dtc:$(PATH) mkimage -f $(KDIR)/fit-$(1).its $(KDIR)/fit-$(1)$(7).itb
 endef
 

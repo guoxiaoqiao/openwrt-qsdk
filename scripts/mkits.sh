@@ -19,10 +19,14 @@ DTB="";
 FDT="";
 CONFIG="";
 iter=1;
+DTB_COMP="none";
+DTB_ADDR="";
+LOAD_DTB_ADDR=""
 
 usage() {
 	echo "Usage: `basename $0` -A arch -C comp -a addr -e entry" \
-		"-v version -k kernel [-D name -d dtb] -o its_file"
+		"-v version -k kernel [-D name -d dtb] -b dtb_addr" \
+		"-B dtb_comp -o its_file"
 	echo -e "\t-A ==> set architecture to 'arch'"
 	echo -e "\t-C ==> set compression type 'comp'"
 	echo -e "\t-a ==> set load address to 'addr' (hex)"
@@ -32,6 +36,8 @@ usage() {
 	echo -e "\t-D ==> human friendly Device Tree Blob 'name'"
 	echo -e "\t-d ==> include Device Tree Blob 'dtb'"
 	echo -e "\t-o ==> create output file 'its_file'"
+	echo -e "\t-b ==> set dtb load address to 'dtb_addr' (hex)"
+	echo -e "\t-B ==> set dtb compression type 'dtb_comp'"
 	exit 1
 }
 
@@ -43,7 +49,8 @@ Generate_FDT () {
 			data = /incbin/(\"${1}\");
 			type = \"flat_dt\";
 			arch = \"${ARCH}\";
-			compression = \"none\";
+			compression = \"${DTB_COMP}\";
+			${LOAD_DTB_ADDR}
 			hash@1 {
 				algo = \"crc32\";
 			};
@@ -64,7 +71,7 @@ Generate_Config () {
 "
 }
 
-while getopts ":A:a:C:D:d:e:k:o:v:" OPTION
+while getopts ":A:a:C:D:d:e:k:o:v:b:B:" OPTION
 do
 	case $OPTION in
 		A ) ARCH=$OPTARG;;
@@ -76,6 +83,8 @@ do
 		k ) KERNEL=$OPTARG;;
 		o ) OUTPUT=$OPTARG;;
 		v ) VERSION=$OPTARG;;
+		b ) DTB_ADDR=$OPTARG;;
+		B ) DTB_COMP=$OPTARG;;
 		* ) echo "Invalid option passed to '$0' (options:$@)"
 		usage;;
 	esac
@@ -89,6 +98,9 @@ if [ -z "${ARCH}" ] || [ -z "${COMPRESS}" ] || [ -z "${LOAD_ADDR}" ] || \
 fi
 
 ARCH_UPPER=`echo $ARCH | tr '[:lower:]' '[:upper:]'`
+if [ -n "${DTB_ADDR}" ]; then
+	LOAD_DTB_ADDR="load = <${DTB_ADDR}>;"
+fi
 
 # Conditionally create fdt information
 if [ -n "${DTB}" ]; then

@@ -12,7 +12,12 @@ define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
 	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
 	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.gz)
+ifeq ($(3),compressed-dtb)
+	gzip -9 -c $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb > $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb.gz
+	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb.gz,gzip,$(2),$(2),,$(4))
+else
 	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb,gzip,$(2),$(2))
+endif
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb $(BIN_DIR)/$(IMG_PREFIX)-$(1).dtb
 ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
@@ -40,7 +45,7 @@ endef
 
 define Image/BuildKernel
 	$(CP) $(KDIR)/vmlinux$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,0x42208000)
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,0x42208000,compressed-dtb,0x43F00000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-v2.0-ap148,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-storm,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-whirlwind,0x42208000)
