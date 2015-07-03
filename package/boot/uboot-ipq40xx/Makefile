@@ -28,17 +28,17 @@ PKG_SOURCE_VERSION:=$(PKG_REV)
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/uboot-qca961x
+define Package/uboot-ipq40xx
   SECTION:=boot
   CATEGORY:=Boot Loaders
   DEPENDS:=@TARGET_ipq806x
-  TITLE:=U-boot for qca961x  based platforms
+  TITLE:=U-boot for ipq40xx  based platforms
   URL:=http://www.denx.de/wiki/U-Boot
 endef
 
 
 define Build/Configure
-	$(MAKE) -C $(PKG_BUILD_DIR) qca961x_cdp_config
+	$(MAKE) -C $(PKG_BUILD_DIR) ipq40xx_cdp_config
 endef
 
 define Build/Compile
@@ -48,13 +48,13 @@ define Build/Compile
 		HOSTSTRIP=true CROSS_COMPILE=$(TARGET_CROSS)
 endef
 
-define Package/uboot-qca961x/install
+define Package/uboot-ipq40xx/install
 	$(INSTALL_DIR) $(1)
 	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx-u-boot.elf
 	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx-u-boot-stripped.elf
 	$(STRIP) $(BIN_DIR)/openwrt-ipq40xx-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-qca961x-u-boot.img
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq40xx-u-boot.img
 endef
 
 
-$(eval $(call BuildPackage,uboot-qca961x))
+$(eval $(call BuildPackage,uboot-ipq40xx))
