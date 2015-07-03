@@ -83,6 +83,20 @@ endef
 
 $(eval $(call KernelPackage,fb-cfb-imgblt))
 
+define KernelPackage/qpic_panel_ili_qvga
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=ILI QVGA Panel support
+  KCONFIG:=CONFIG_FB_MSM_QPIC_ILI_QVGA_PANEL
+  FILES:=$(LINUX_DIR)/drivers/video/msm/mdss/qpic_panel_ili_qvga.ko
+  AUTOLOAD:=$(call AutoLoad,07,qpic_panel_ili_qvga.ko)
+endef
+
+define KernelPackage/qpic_panel_ili_qvga/description
+ Kernel support for qpic_panel_ili_qvga  lcd panel
+endef
+
+$(eval $(call KernelPackage,qpic_panel_ili_qvga))
+
 
 define KernelPackage/video-core
   SUBMENU:=$(VIDEO_MENU)
