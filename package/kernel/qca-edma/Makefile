@@ -15,7 +15,7 @@ define KernelPackage/qca-edma
      SUBMENU:=$(NETWORK_DEVICES_MENU)
      TITLE:=Qualcomm IPQ40xx ethernet driver
      FILES:=$(LINUX_DIR)/drivers/net/ethernet/qcom/essedma/essedma.ko
-     AUTOLOAD:=$(call AutoLoad,41,essedma)
+     AUTOLOAD:=$(call AutoLoad,45,essedma)
 endef
 
 define KernelPackage/qca-edma/description
