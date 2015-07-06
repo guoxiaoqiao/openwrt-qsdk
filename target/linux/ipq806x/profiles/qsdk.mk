@@ -52,7 +52,7 @@ ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	alljoyn-controlpanel alljoyn-notification alljoyn-services_common
 
 UTILS:=tftp-hpa sysstat iperf devmem2 ip-full ethtool iputils-tracepath \
-	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald \
+	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald-10.4 \
 	luci-app-samba perf e2fsprogs fdisk mkdosfs i2c-tools
 
 BLUETOOTH:=bluez kmod-ath3k
