@@ -170,10 +170,10 @@ ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 	$(call Image/Build,ubifs)
 
         ifneq ($($(PROFILE)_UBI_OPTS)$(UBI_OPTS),)
-		$(call Image/mkfs/ubifs/generate,)
+		$(if $(wildcard $KDIR/uImage),$(call Image/mkfs/ubifs/generate,))
 		$(if $(wildcard ./ubinize-overlay.cfg),$(call Image/mkfs/ubifs/generate,-overlay))
         endif
-	$(call Image/Build,ubi)
+	$(if $(wildcard $KDIR/root.ubi),$(call Image/Build,ubi))
     endef
 endif
 
@@ -259,6 +259,7 @@ define BuildImage
 		$(call Image/mkfs/jffs2)
 		$(call Image/mkfs/jffs2_nand)
 		$(call Image/mkfs/squashfs)
+		$(call Image/mkfs/ubifs_fit,-ipq40xx)
 		$(call Image/mkfs/ubifs)
 		$(call Image/Checksum)
   else
@@ -273,6 +274,7 @@ define BuildImage
 		$(call Image/mkfs/jffs2)
 		$(call Image/mkfs/jffs2_nand)
 		$(call Image/mkfs/squashfs)
+		$(call Image/mkfs/ubifs_fit,-ipq40xx)
 		$(call Image/mkfs/ubifs)
 		$(call Image/Checksum)
   endif
