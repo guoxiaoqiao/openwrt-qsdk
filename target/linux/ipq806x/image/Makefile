@@ -16,6 +16,13 @@ IPQ806X_KERNEL_LOADADDR = 0x42208000
 IPQ40XX_KERNEL_LOADADDR = 0x80208000
 endif
 
+ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
+define Image/mkfs/ubifs_fit
+	$(call Image/mkfs/ubifs/generate,$(1))
+	$(call Image/Build,ubi,$(1))
+endef
+endif
+
 define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
 	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
@@ -85,7 +92,7 @@ endef
 
 define Image/Build
 	$(call Image/Build/$(1),$(1))
-	dd if=$(KDIR)/root.$(1) of=$(BIN_DIR)/$(IMG_PREFIX)-$(1)-root.img bs=2k conv=sync
+	dd if=$(KDIR)/root$(2).$(1) of=$(BIN_DIR)/$(IMG_PREFIX)$(2)-$(1)-root.img bs=2k conv=sync
 endef
 
 $(eval $(call BuildImage))
