@@ -46,7 +46,8 @@ CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	kmod-bonding luci-app-qos luci-app-radvd kmod-nat-sctp openswan arptables alsa \
 	kmod-ipsec kmod-ipsec4 kmod-ipsec6 perl perlbase-base \
 	perlbase-config perlbase-essential perlbase-getopt\
-	perlbase-getopt qca-mcs-apps rstp
+	perlbase-getopt qca-mcs-apps rstp rp-pppoe-server isc-dhcp-relay-ipv4 \
+	isc-dhcp-relay-ipv6
 ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	alljoyn-controlpanel alljoyn-notification alljoyn-services_common
 
@@ -55,6 +56,8 @@ UTILS:=tftp-hpa sysstat iperf devmem2 ip-full ethtool iputils-tracepath \
 	luci-app-samba perf e2fsprogs fdisk mkdosfs i2c-tools
 
 BLUETOOTH:=bluez kmod-ath3k
+
+AUDIO:=kmod-sound-soc-ipq40xx
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
@@ -73,7 +76,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(ALLJOYN_PKGS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS)
+		$(ALLJOYN_PKGS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO)
 endef
 
 define Profile/QSDK_Standard/Description
