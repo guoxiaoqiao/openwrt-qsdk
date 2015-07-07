@@ -149,4 +149,5 @@ restart() {
 shutdown() {
 	ifdown -a
 	sleep 1
+	stop
 }
