@@ -128,6 +128,8 @@ akronite_battery_power()
 ap_dk01_1_ac_power()
 {
 	echo "Entering AC-Power Mode"
+# Cortex Power-UP Sequence
+	/etc/init.d/powerctl restart
 
 # USB Power-UP Sequence
 	if ! [ -d /sys/module/dwc3_ipq40xx ]
@@ -168,11 +170,16 @@ ap_dk01_1_battery_power()
 		rmmod phy-qca-baldur
 	fi
 	sleep 2
+# Cortex Power-down Sequence
+	echo 48000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 }
 
 ap_dk04_1_ac_power()
 {
 	echo "Entering AC-Power Mode"
+# Cortex Power-UP Sequence
+	/etc/init.d/powerctl restart
 
 # PCIe Power-UP Sequence
 	sleep 1
@@ -247,7 +254,9 @@ ap_dk04_1_battery_power()
 		rmmod phy-qca-baldur
 	fi
 	sleep 2
-
+# Cortex Power-down Sequence
+	echo 48000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 }
 
 local board=$(ipq806x_board_name)
