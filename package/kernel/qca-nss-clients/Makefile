@@ -30,6 +30,20 @@ define KernelPackage/qca-nss-drv-tun6rd/Description
 Kernel modules for NSS connection manager - Support for 6rd tunnel
 endef
 
+define KernelPackage/qca-nss-drv-l2tpv2
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  TITLE:=Kernel driver for NSS (connection manager) - l2tp
+  DEPENDS:=kmod-qca-nss-drv kmod-l2tp
+  FILES:=$(PKG_BUILD_DIR)/l2tp/l2tpv2/qca-nss-l2tpv2.ko
+  AUTOLOAD:=$(call AutoLoad,51,qca-nss-l2tpv2)
+endef
+
+define KernelPackage/qca-nss-drv-l2tp/Description
+Kernel modules for NSS connection manager - Support for l2tp tunnel
+endef
+
 define KernelPackage/qca-nss-drv-tunipip6
   SECTION:=kernel
   CATEGORY:=Kernel modules
@@ -115,6 +129,7 @@ endef
 $(eval $(call KernelPackage,qca-nss-drv-profile))
 $(eval $(call KernelPackage,qca-nss-drv-capwapmgr))
 $(eval $(call KernelPackage,qca-nss-drv-tun6rd))
+$(eval $(call KernelPackage,qca-nss-drv-l2tpv2))
 $(eval $(call KernelPackage,qca-nss-drv-tunipip6))
 $(eval $(call KernelPackage,qca-nss-drv-ipsecmgr))
 $(eval $(call KernelPackage,qca-nss-drv-qdisc))
