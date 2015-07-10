@@ -48,8 +48,8 @@ define Profile/QSDK_Wireless_Router
 	NAME:=Qualcomm-Atheros SDK Wireless Router Profile
 	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos \
 	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat qca-ssdk-shell kmod-shortcut-fe-cm \
-	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
-	  qca-wpa-cli qca-wrapd qca-wapid qca-acfg kmod-art2 qca-legacy-uboot-ap152-8M \
+	  kmod-qca-wifi-perf qca-hostap-10.4 qca-spectral qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
+	  qca-wpa-cli-10.4 qca-wrapd qca-wapid qca-acfg kmod-art2 qca-legacy-uboot-ap152-8M \
 	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x
 endef
 
@@ -74,8 +74,8 @@ define Profile/QSDK_Premium_Router
 	  streamboost hyfi kmod-fast-classifier \
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
 	  alljoyn-notification alljoyn-services_common \
-	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
-	  qca-wpa-cli qca-legacy-uboot-ap135 kmod-art2 sigma-dut qca-wrapd qca-wapid \
+	  kmod-qca-wifi-perf qca-hostap-10.4 qca-spectral qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
+	  qca-wpa-cli-10.4 qca-legacy-uboot-ap135 kmod-art2 sigma-dut-10.4 qca-wrapd qca-wapid \
 	  qca-acfg whc qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand
