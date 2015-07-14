@@ -22,7 +22,7 @@ define KernelPackage/qca-nss-drv
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
-  DEPENDS:=@TARGET_ipq806x qca-nss-fw +kmod-qca-nss-gmac
+  DEPENDS:=@TARGET_ipq806x qca-nss-fw2 +kmod-qca-nss-gmac
   TITLE:=Kernel driver for NSS (core driver)
   FILES:=$(PKG_BUILD_DIR)/qca-nss-drv.ko
   AUTOLOAD:=$(call AutoLoad,32,qca-nss-drv)
