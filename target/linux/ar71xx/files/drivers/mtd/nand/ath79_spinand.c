@@ -600,14 +600,15 @@ static int ath79_spinand_wait(struct mtd_info *mtd, struct nand_chip *chip)
 
 	while (time_before(jiffies, timeo)) {
 		if (ath79_spinand_read_status(info->spi, &status))
-			return -1;
+			return NAND_STATUS_FAIL;
 
 		if ((status & STATUS_OIP_MASK) == STATUS_READY)
-			return 0;
+			return (STATUS2ECC(status) == STATUS_ECC_ERROR) ?
+				NAND_STATUS_FAIL : NAND_STATUS_READY;
 
 		cond_resched();
 	}
-	return 0;
+	return NAND_STATUS_FAIL;
 }
 
 static void ath79_spinand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
