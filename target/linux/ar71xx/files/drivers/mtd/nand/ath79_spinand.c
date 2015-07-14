@@ -539,14 +539,21 @@ static int ath79_spinand_erase_block(struct mtd_info *mtd,
 	return 0;
 }
 
-static void ath79_spinand_write_page_hwecc(struct mtd_info *mtd,
-		struct nand_chip *chip, const uint8_t *buf)
+static int ath79_spinand_write_page_hwecc(struct mtd_info *mtd,
+					  struct nand_chip *chip,
+					  const uint8_t *buf,
+					  int oob_required)
 {
 	chip->write_buf(mtd, buf, chip->ecc.size * chip->ecc.steps);
+
+	return 0;
 }
 
 static int ath79_spinand_read_page_hwecc(struct mtd_info *mtd,
-		struct nand_chip *chip, uint8_t *buf, int page)
+					 struct nand_chip *chip,
+					 uint8_t *buf,
+					 int oob_required,
+					 int page)
 {
 	u8 status;
 	uint8_t *p = buf;
@@ -555,6 +562,9 @@ static int ath79_spinand_read_page_hwecc(struct mtd_info *mtd,
 	struct spi_device *spi_nand = info->spi;
 
 	chip->read_buf(mtd, p, chip->ecc.size * chip->ecc.steps);
+
+	if (oob_required)
+		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
 
 	if (__ath79_wait_till_ready(spi_nand, &status)) {
 		dev_err(&spi_nand->dev, "wait timedout!\n");
