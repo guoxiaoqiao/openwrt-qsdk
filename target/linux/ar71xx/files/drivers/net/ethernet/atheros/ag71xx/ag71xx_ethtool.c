@@ -19,6 +19,29 @@ static int ag71xx_ethtool_get_settings(struct net_device *dev,
 {
 	struct ag71xx *ag = netdev_priv(dev);
 	struct phy_device *phydev = ag->phy_dev;
+	ag71xx_sgmii_speed_t speed;
+	ag71xx_sgmii_duplex_t duplex;
+
+	if (ag71xx_sgmii_flag_get()) {
+		cmd->autoneg = AUTONEG_DISABLE;
+		cmd->supported = (SUPPORTED_10baseT_Half   |
+			   SUPPORTED_10baseT_Full   |
+			   SUPPORTED_100baseT_Half  |
+			   SUPPORTED_100baseT_Full  |
+			   SUPPORTED_1000baseT_Full);
+		ag71xx_sgmii_get_link(ag, &speed, &duplex);
+		if (speed == AG71XX_SGMII_SPEED_1000T)
+			cmd->speed = SPEED_1000;
+		else if (speed == AG71XX_SGMII_SPEED_100T)
+			cmd->speed = SPEED_100;
+		else
+			cmd->speed = SPEED_10;
+		if (duplex == AG71XX_SGMII_FULL_DUPLEX)
+			cmd->duplex = DUPLEX_FULL;
+		else
+			cmd->duplex = DUPLEX_HALF;
+		return 0;
+	}
 
 	if (!phydev)
 		return -ENODEV;
@@ -31,6 +54,33 @@ static int ag71xx_ethtool_set_settings(struct net_device *dev,
 {
 	struct ag71xx *ag = netdev_priv(dev);
 	struct phy_device *phydev = ag->phy_dev;
+	ag71xx_sgmii_speed_t speed;
+	ag71xx_sgmii_duplex_t duplex;
+
+	if(cmd->autoneg == AUTONEG_DISABLE && ag71xx_sgmii_flag_get()) {
+		if (cmd->speed == SPEED_1000) {
+			if(cmd->duplex == DUPLEX_FULL) {
+				speed = AG71XX_SGMII_SPEED_1000T;
+				duplex = AG71XX_SGMII_FULL_DUPLEX;
+			} else {
+				return -EINVAL;
+			}
+		} else if(cmd->speed == SPEED_100) {
+			if (cmd->duplex == DUPLEX_FULL)
+				duplex = AG71XX_SGMII_FULL_DUPLEX;
+			else
+				duplex = AG71XX_SGMII_HALF_DUPLEX;
+			speed = AG71XX_SGMII_SPEED_100T;
+		} else {
+			if (cmd->duplex == DUPLEX_FULL)
+				duplex = AG71XX_SGMII_FULL_DUPLEX;
+			else
+				duplex = AG71XX_SGMII_HALF_DUPLEX;
+			speed = AG71XX_SGMII_SPEED_10T;
+		}
+		ag71xx_sgmii_set_link(ag, speed, duplex);
+		return 0;
+	}
 
 	if (!phydev)
 		return -ENODEV;

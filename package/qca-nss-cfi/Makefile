@@ -24,8 +24,9 @@ define KernelPackage/qca-nss-cfi
   DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-crypto +kmod-crypto-ocf
   TITLE:=Kernel driver for NSS cfi
   FILES:=$(PKG_BUILD_DIR)/ocf/qca-nss-cfi-ocf.ko \
+	 $(PKG_BUILD_DIR)/cryptoapi/qca-nss-cfi-cryptoapi.ko \
 	 $(PKG_BUILD_DIR)/ipsec/qca-nss-ipsec.ko
-  AUTOLOAD:=$(call AutoLoad,34,qca-nss-cfi-ocf)
+  AUTOLOAD:=$(call AutoLoad,34,qca-nss-cfi-ocf qca-nss-cfi-cryptoapi)
 endef
 
 define KernelPackage/qca-nss-cfi/Description

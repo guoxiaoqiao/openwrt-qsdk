@@ -27,9 +27,9 @@ ppp_generic_setup() {
 	json_get_vars ipv6 demand keepalive username password pppd_options
 	[ "$ipv6" = 1 ] || ipv6=""
 	if [ "${demand:-0}" -gt 0 ]; then
-		demand="precompiled-active-filter /etc/ppp/filter demand idle $demand"
+		demand="precompiled-active-filter /etc/ppp/filter demand defaultroute idle $demand"
 	else
-		demand="persist"
+		demand="persist nodefaultroute"
 	fi
 
 	[ -n "$mtu" ] || json_get_var mtu mtu
@@ -44,7 +44,6 @@ ppp_generic_setup() {
 		ifname "${proto:-ppp}-$config" \
 		${keepalive:+lcp-echo-interval $interval lcp-echo-failure ${keepalive%%[, ]*}} \
 		${ipv6:++ipv6} \
-		nodefaultroute \
 		usepeerdns \
 		$demand maxfail 1 \
 		${username:+user "$username" password "$password"} \

@@ -19,7 +19,8 @@ define Profile/QSDK_Base
 	  kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  file pure-ftpd kmod-qca-nss-drv-qdisc xl2tpd ppp-mod-pptp pm-utils \
 	  kmod-qca-nss-macsec qca-thermald rng-tools perf kmod-nat-sctp kmod-aq_phy \
-	  kmod-qca_85xx_sw aq-fw-download kmod-regmap-i2c i2c-tools qca-mcs-apps
+	  kmod-qca_85xx_sw aq-fw-download kmod-regmap-i2c i2c-tools qca-mcs-apps \
+	  kmod-crypto-aes kmod-ipsec kmod-ipsec4 kmod-ipsec6 
 endef
 
 PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd-cli \
@@ -32,13 +33,15 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-akronite-perf kmod-art2 \
 	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc \
 	qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw3-10.4-asic \
        qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw4-10.4-emu_m2m qca-wifi-fw-hw4-10.4-emu_bb \
-	qca-thermald-10.4
+	qca-thermald-10.4 qca-wifi-fw-hw6-10.4-asic
 
 PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
 	openswan-nss kmod-qca-nss-crypto kmod-qca-nss-cfi \
 	kmod-qca-nss-drv-profile kmod-qca-nss-drv-capwapmgr \
 	qca-nss-fw-enterprise kmod-qca-nss-drv-ipsecmgr \
 	qca-nss-fw-enterprise_custA qca-nss-fw-enterprise_custC
+
+BLUETOOTH:=kmod-qca-ath3k bluez btconfig
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
@@ -62,7 +65,7 @@ define Profile/QSDK_Standard
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		luci-app-qos luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
-		$(PACKAGES_WIFI_10_2)
+		$(PACKAGES_WIFI_10_2) $(BLUETOOTH) kmod-qca-wil6210 iwinfo
 endef
 
 define Profile/QSDK_Standard/Description

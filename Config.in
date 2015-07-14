@@ -365,6 +365,16 @@ menu "Global build settings"
 		bool "Enable sparse check during kernel build"
 		default n
 
+	config KERNEL_SKB_RECYCLER_PREALLOC
+		select KERNEL_SKB_RECYCLE_MAX_PREALLOC_SKBS
+		bool "Enable preallocation of skbs for recycler lists"
+		default n
+
+	config KERNEL_SKB_RECYCLE_MAX_PREALLOC_SKBS
+		depends on KERNEL_SKB_RECYCLER_PREALLOC
+		int "Number of preallocated skbs"
+		default 16384
+
 	comment "Package build options"
 
 	config DEBUG
