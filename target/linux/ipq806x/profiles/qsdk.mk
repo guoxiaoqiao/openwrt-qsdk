@@ -10,7 +10,7 @@ NSS_STANDARD:= \
 
 NSS_ECM:= kmod-qca-nss-ecm
 
-NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
+NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6
 
 HW_CRYPTO:= kmod-crypto-qcrypto
 
