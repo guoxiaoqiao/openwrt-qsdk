@@ -16,6 +16,8 @@ PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
+HDR_INSTALL:=$(LINUX_SRC_DIR)/scripts/headers_install.pl
+
 define KernelPackage/qca-nss-crypto
   SECTION:=kernel
   CATEGORY:=Kernel modules
@@ -31,9 +33,16 @@ define KernelPackage/qca-nss-crypto/Description
 This package contains a NSS crypto driver for QCA chipset
 endef
 
+define qca_header_install
+	cd $(LINUX_DIR) && \
+	perl $(HDR_INSTALL) $(1)/qca-nss-crypto $(1)/qca-nss-userspace $(ARCH) $(strip $2);
+endef
+
 define Build/InstallDev
 	mkdir -p $(1)/usr/include/qca-nss-crypto
-	$(CP) $(PKG_BUILD_DIR)/include/nss_crypto_if.h $(1)/usr/include/qca-nss-crypto/
+	mkdir -p $(1)/usr/include/qca-nss-userspace
+	$(CP) $(PKG_BUILD_DIR)/include/* $(1)/usr/include/qca-nss-crypto/
+	$(call qca_header_install, $(1)/usr/include, $(HDR_EXPORTS))
 endef
 
 EXTRA_CFLAGS+= \
@@ -42,6 +51,8 @@ EXTRA_CFLAGS+= \
 	-I$(STAGING_DIR)/usr/include/qca-nss-drv \
 	-I$(PKG_BUILD_DIR)/include \
 	-I$(PKG_BUILD_DIR)/src
+
+HDR_EXPORTS = nss_crypto_if.h
 
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
