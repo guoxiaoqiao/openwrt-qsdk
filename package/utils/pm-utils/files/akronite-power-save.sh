@@ -197,6 +197,14 @@ ap_dk04_1_ac_power()
 		insmod dwc3-ipq40xx.ko
 		insmod dwc3.ko
 	fi
+# SD/MMC Power-UP sequence
+	if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
+	then
+		sd_drvname=$(cat /tmp/sysinfo/sd_drvname)
+		echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/bind
+	fi
+
+	sleep 1
 
 	exit 0
 }
@@ -254,6 +262,13 @@ ap_dk04_1_battery_power()
 		rmmod phy-qca-baldur
 	fi
 	sleep 2
+#SD/MMC Power-down Sequence
+	if [ -d /sys/block/mmcblk0 ]
+	then
+		sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $4}'`
+		echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
+		echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
+	fi
 # Cortex Power-down Sequence
 	echo 48000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
