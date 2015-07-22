@@ -43,11 +43,15 @@ CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	quagga-vtysh rp-pppoe-relay -dnsmasq dnsmasq-dhcpv6 radvd \
 	wide-dhcpv6-client bridge luci-app-ddns ddns-scripts xl2tpd ppp-mod-pptp \
 	iptables-mod-extra iptables-mod-ipsec iptables-mod-filter 6rd luci-proto-ipv6 \
-	kmod-bonding luci-app-qos luci-app-radvd kmod-nat-sctp openswan arptables alsa \
-	kmod-ipsec kmod-ipsec4 kmod-ipsec6 perl perlbase-base \
-	perlbase-config perlbase-essential perlbase-getopt\
-	perlbase-getopt qca-mcs-apps rstp rp-pppoe-server isc-dhcp-relay-ipv4 \
-	isc-dhcp-relay-ipv6
+	kmod-bonding luci-app-qos luci-app-radvd kmod-nat-sctp alsa \
+	rp-pppoe-server isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 arptables
+
+#These packages depend on SWITCH_SSDK_PKGS
+IGMPSNOOING_RSTP:=rstp qca-mcs-apps
+
+IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6 \
+	perl perlbase-base perlbase-config perlbase-essential perlbase-getopt\
+	perlbase-getopt
 
 UTILS:=tftp-hpa sysstat iperf devmem2 ip-full ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald-10.4 \
@@ -76,7 +80,8 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO)
+		$(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO)\
+		$(IGMPSNOOING_RSTP) $(IPSEC)
 endef
 
 define Profile/QSDK_Standard/Description
