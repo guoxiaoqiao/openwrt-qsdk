@@ -669,6 +669,7 @@ flash_section() {
 	case "${sec}" in
 		hlos*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:HLOS";;
 		rootfs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
+		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "0:SBL1";;
 		mibib*) switch_layout boot; do_flash_partition ${sec} "0:MIBIB";;
 		dtb-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DTB";;
