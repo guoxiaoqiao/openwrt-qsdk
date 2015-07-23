@@ -358,7 +358,15 @@ static void ar934x_set_speed_ge0(int speed)
 	u32 val = ath79_get_eth_pll(0, speed);
 
 	base = ioremap_nocache(AR71XX_PLL_BASE, AR71XX_PLL_SIZE);
-	__raw_writel(val, base + AR934X_PLL_ETH_XMII_CONTROL_REG);
+	if (ATH79_SOC_QCA9558 == ath79_soc) {
+		/* enhance pll mii control setting */
+		__raw_writel(0, base + QCA955X_PLL_ETH_XMII_CONTROL_REG);
+		mdelay(1000);
+		val |= QCA955X_PLL_ETH_XMII_CONTROL_INVERT;
+		__raw_writel(val, base + QCA955X_PLL_ETH_XMII_CONTROL_REG);
+	} else {
+		__raw_writel(val, base + AR934X_PLL_ETH_XMII_CONTROL_REG);
+	}
 	iounmap(base);
 }
 

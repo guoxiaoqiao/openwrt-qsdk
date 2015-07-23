@@ -43,6 +43,8 @@
 #define AP135_MAC1_OFFSET		6
 #define AP135_WMAC_CALDATA_OFFSET	0x1000
 
+#define AP135_PLL_10	0x00001313
+
 static struct gpio_led ap135_leds_gpio[] __initdata = {
 	{
 		.name		= "ap135:green:status",
@@ -183,7 +185,10 @@ static void __init ap135_setup(void)
 	ath79_eth0_data.phy_if_mode = PHY_INTERFACE_MODE_RGMII;
 	ath79_eth0_data.phy_mask = BIT(0);
 	ath79_eth0_data.mii_bus_dev = &ath79_mdio0_device.dev;
+	/* set default 1000/100/10 pll value */
 	ath79_eth0_pll_data.pll_1000 = 0x06000000;
+	ath79_eth0_pll_data.pll_10 = AP135_PLL_10;
+	ath79_eth0_pll_data.pll_100 = 0;
 
 	ath79_register_eth(0);
 	ath79_init_mac(ath79_eth1_data.mac_addr, art + AP135_MAC1_OFFSET, 0);
