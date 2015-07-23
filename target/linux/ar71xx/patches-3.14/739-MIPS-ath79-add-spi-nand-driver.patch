@@ -34,7 +34,7 @@
  #define NAND_MFR_INTEL		0x89
 --- a/drivers/mtd/nand/nand_ids.c
 +++ b/drivers/mtd/nand/nand_ids.c
-@@ -44,6 +44,19 @@ struct nand_flash_dev nand_flash_ids[] = {
+@@ -44,6 +44,25 @@ struct nand_flash_dev nand_flash_ids[] = {
  		{ .id = {0x98, 0xde, 0x94, 0x82, 0x76, 0x56, 0x04, 0x20} },
  		  SZ_8K, SZ_8K, SZ_2M, 0, 8, 640, NAND_ECC_INFO(40, SZ_1K) },
  
@@ -50,11 +50,17 @@
 +	{"GD5F2GQ4R 2G 1.8V 8-bit",
 +		{ .id = {0xc8, 0xa2} },
 +		  SZ_2K, SZ_256, SZ_128K, 0, 2, 128, NAND_ECC_INFO(4, SZ_512) },
++	{"MX35LF1G4EAB 1G 3.3V 8-bit",
++		{ .id = {0xc2, 0x12} },
++		  SZ_2K, SZ_128, SZ_128K, 0, 2, 64, NAND_ECC_INFO(4, SZ_512) },
++	{"MX35LF2G4EAB 2G 3.3V 8-bit",
++		{ .id = {0xc2, 0x22} },
++		  SZ_2K, SZ_256, SZ_128K, 0, 2, 64, NAND_ECC_INFO(4, SZ_512) },
 +
  	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
  	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
  	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE5, 4, SZ_8K, SP_OPTIONS),
-@@ -171,6 +184,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
+@@ -171,6 +190,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
  	{NAND_MFR_EON, "Eon"},
  	{NAND_MFR_SANDISK, "SanDisk"},
  	{NAND_MFR_INTEL, "Intel"},
