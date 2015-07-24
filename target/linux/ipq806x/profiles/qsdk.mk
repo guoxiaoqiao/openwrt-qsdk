@@ -48,8 +48,6 @@ CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	perlbase-config perlbase-essential perlbase-getopt\
 	perlbase-getopt qca-mcs-apps rstp rp-pppoe-server isc-dhcp-relay-ipv4 \
 	isc-dhcp-relay-ipv6
-ALLJOYN_PKGS:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
-	alljoyn-controlpanel alljoyn-notification alljoyn-services_common
 
 UTILS:=tftp-hpa sysstat iperf devmem2 ip-full ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald-10.4 \
@@ -65,7 +63,7 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(ALLJOYN_PKGS) $(BLUETOOTH) $(NSS_ECM) $(NSS_CLIENTS)
+		$(BLUETOOTH) $(NSS_ECM) $(NSS_CLIENTS)
 endef
 
 define Profile/QSDK_Open/Description
@@ -78,7 +76,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(ALLJOYN_PKGS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO)
+		$(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO)
 endef
 
 define Profile/QSDK_Standard/Description
