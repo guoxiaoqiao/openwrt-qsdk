@@ -57,7 +57,7 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Standard
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi kmod-qca-nss-drv-profile \
+	PACKAGES+=streamboost-noload kmod-qca-nss-ecm-noload hyfi kmod-qca-nss-drv-profile \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		ip-dock \
 		$(PACKAGES_WIFI_10_2) kmod-qca-wil6210 iwinfo
