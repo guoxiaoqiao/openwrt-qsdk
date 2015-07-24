@@ -19,3 +19,5 @@ if [ "$ACTION" = "released" -a "$BUTTON" = "wps" ]; then
 		jffs2reset -y && reboot &
 	fi
 fi
+
+return 0
