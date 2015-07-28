@@ -667,6 +667,34 @@ LUA_WRAP_STRUCT(madwifi,mbssid_support)
 LUA_WRAP_STRUCT(madwifi,hardware_id)
 #endif
 
+#ifdef USE_QCAWIFI
+/* Madwifi */
+LUA_WRAP_INT(qcawifi,channel)
+LUA_WRAP_INT(qcawifi,frequency)
+LUA_WRAP_INT(qcawifi,frequency_offset)
+LUA_WRAP_INT(qcawifi,txpower)
+LUA_WRAP_INT(qcawifi,txpower_offset)
+LUA_WRAP_INT(qcawifi,bitrate)
+LUA_WRAP_INT(qcawifi,signal)
+LUA_WRAP_INT(qcawifi,noise)
+LUA_WRAP_INT(qcawifi,quality)
+LUA_WRAP_INT(qcawifi,quality_max)
+LUA_WRAP_STRING(qcawifi,ssid)
+LUA_WRAP_STRING(qcawifi,bssid)
+LUA_WRAP_STRING(qcawifi,country)
+LUA_WRAP_STRING(qcawifi,hardware_name)
+LUA_WRAP_STRUCT(qcawifi,mode)
+LUA_WRAP_STRUCT(qcawifi,assoclist)
+LUA_WRAP_STRUCT(qcawifi,txpwrlist)
+LUA_WRAP_STRUCT(qcawifi,scanlist)
+LUA_WRAP_STRUCT(qcawifi,freqlist)
+LUA_WRAP_STRUCT(qcawifi,countrylist)
+LUA_WRAP_STRUCT(qcawifi,hwmodelist)
+LUA_WRAP_STRUCT(qcawifi,encryption)
+LUA_WRAP_STRUCT(qcawifi,mbssid_support)
+LUA_WRAP_STRUCT(qcawifi,hardware_id)
+#endif
+
 #ifdef USE_NL80211
 /* NL80211 */
 LUA_WRAP_INT(nl80211,channel)
@@ -787,6 +815,37 @@ static const luaL_reg R_madwifi[] = {
 };
 #endif
 
+#ifdef USE_QCAWIFI
+/* Madwifi table */
+static const luaL_reg R_qcawifi[] = {
+	LUA_REG(qcawifi,channel),
+	LUA_REG(qcawifi,frequency),
+	LUA_REG(qcawifi,frequency_offset),
+	LUA_REG(qcawifi,txpower),
+	LUA_REG(qcawifi,txpower_offset),
+	LUA_REG(qcawifi,bitrate),
+	LUA_REG(qcawifi,signal),
+	LUA_REG(qcawifi,noise),
+	LUA_REG(qcawifi,quality),
+	LUA_REG(qcawifi,quality_max),
+	LUA_REG(qcawifi,mode),
+	LUA_REG(qcawifi,ssid),
+	LUA_REG(qcawifi,bssid),
+	LUA_REG(qcawifi,country),
+	LUA_REG(qcawifi,assoclist),
+	LUA_REG(qcawifi,txpwrlist),
+	LUA_REG(qcawifi,scanlist),
+	LUA_REG(qcawifi,freqlist),
+	LUA_REG(qcawifi,countrylist),
+	LUA_REG(qcawifi,hwmodelist),
+	LUA_REG(qcawifi,encryption),
+	LUA_REG(qcawifi,mbssid_support),
+	LUA_REG(qcawifi,hardware_id),
+	LUA_REG(qcawifi,hardware_name),
+	{ NULL, NULL }
+};
+#endif
+
 #ifdef USE_NL80211
 /* NL80211 table */
 static const luaL_reg R_nl80211[] = {
@@ -876,6 +935,14 @@ LUALIB_API int luaopen_iwinfo(lua_State *L) {
 	lua_pushvalue(L, -1);
 	lua_setfield(L, -2, "__index");
 	lua_setfield(L, -2, "madwifi");
+#endif
+
+#ifdef USE_QCAWIFI
+	luaL_newmetatable(L, IWINFO_QCAWIFI_META);
+	luaL_register(L, NULL, R_qcawifi);
+	lua_pushvalue(L, -1);
+	lua_setfield(L, -2, "__index");
+	lua_setfield(L, -2, "qcawifi");
 #endif
 
 #ifdef USE_NL80211

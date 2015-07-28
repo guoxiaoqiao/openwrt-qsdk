@@ -190,6 +190,10 @@ void iwinfo_finish(void);
 #include "iwinfo/madwifi.h"
 #endif
 
+#ifdef USE_QCAWIFI
+#include "iwinfo/qcawifi.h"
+#endif
+
 #ifdef USE_NL80211
 #include "iwinfo/nl80211.h"
 #endif
