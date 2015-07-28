@@ -297,7 +297,7 @@ static char * qcawifi_ifadd(const char *ifname)
 		snprintf(nif, sizeof(nif), "tmp.%s", ifname);
 
 		strncpy(cp.icp_name, nif, IFNAMSIZ);
-		cp.icp_opmode = IEEE80211_M_STA;
+		cp.icp_opmode = IEEE80211_M_HOSTAP;
 		cp.icp_flags  = IEEE80211_CLONE_BSSID;
 
 		strncpy(ifr.ifr_name, wifidev, IFNAMSIZ);
@@ -720,6 +720,9 @@ int qcawifi_get_assoclist(const char *ifname, char *buf, int *len)
 	struct ieee80211req_sta_info *si;
 	struct iwinfo_assoclist_entry entry;
 
+	if( qcawifi_iswifi(ifname) )
+		return -1;
+
 	if( (tl = get80211priv(ifname, IEEE80211_IOCTL_STA_INFO, tmp, 24*1024)) > 0 )
 	{
 		cp = tmp;
@@ -984,13 +987,18 @@ int qcawifi_get_hwmodelist(const char *ifname, int *buf)
 	if( (fd = open(path, O_RDONLY)) < 0 )
 		return -1;
 
+	memset(prot, 0, sizeof(prot));
 	if( read(fd, prot, sizeof(prot)) < 0) {
 		close(fd);
 		return -1;
 	}
 
-	if(strchr(prot, 'a'))
+	*buf = 0;
+	if(strchr(prot, 'a')) {
+		if(strstr(prot, "/ac"))
+			*buf |= IWINFO_80211_AC;
 		*buf |= IWINFO_80211_A;
+	}
 	if(strchr(prot, 'b'))
 		*buf |= IWINFO_80211_B;
 	if(strchr(prot, 'g'))

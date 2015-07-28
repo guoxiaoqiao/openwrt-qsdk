@@ -1203,6 +1203,34 @@ int nl80211_get_noise(const char *ifname, int *buf)
 	return -1;
 }
 
+/*
+ * There doesn't seem to be a way to get the beacon interval using nl80211
+ * right now, so just use the hostapd information.
+ */
+int nl80211_get_beacon_int(const char *ifname, int *buf)
+{
+	char *res, *beacon_int;
+	struct nl80211_msg_conveyor *req;
+
+	res = nl80211_hostapd_info(ifname);
+	if (res) {
+		beacon_int = nl80211_getval(NULL, res, "beacon_int");
+
+		/*
+		 * If beacon interval is not explicitly configured,
+		 * hostapd uses 100 as default.
+		 */
+		if (beacon_int)
+			*buf = atoi(beacon_int);
+		else
+			*buf = 100;
+
+		return 0;
+	}
+
+	return -1;
+}
+
 int nl80211_get_quality(const char *ifname, int *buf)
 {
 	int signal;

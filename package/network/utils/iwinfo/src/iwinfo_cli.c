@@ -141,6 +141,18 @@ static char * format_rate(int rate)
 	return buf;
 }
 
+static char * format_beacon_int(int beacon_int)
+{
+	static char buf[10];
+
+	if (beacon_int < 0)
+		snprintf(buf, sizeof(buf), "unknown");
+	else
+		snprintf(buf, sizeof(buf), "%d", beacon_int);
+
+	return buf;
+}
+
 static char * format_enc_ciphers(int ciphers)
 {
 	static char str[128] = { 0 };
@@ -268,11 +280,12 @@ static char * format_hwmodes(int modes)
 	if (modes <= 0)
 		snprintf(buf, sizeof(buf), "unknown");
 	else
-		snprintf(buf, sizeof(buf), "802.11%s%s%s%s",
+		snprintf(buf, sizeof(buf), "802.11%s%s%s%s%s",
 			(modes & IWINFO_80211_A) ? "a" : "",
 			(modes & IWINFO_80211_B) ? "b" : "",
 			(modes & IWINFO_80211_G) ? "g" : "",
-			(modes & IWINFO_80211_N) ? "n" : "");
+			(modes & IWINFO_80211_N) ? "n" : "",
+			(modes & IWINFO_80211_AC) ? "/ac" : "");
 
 	return buf;
 }
@@ -512,6 +525,27 @@ static char * print_mbssid_supp(const struct iwinfo_ops *iw, const char *ifname)
 	return buf;
 }
 
+static void print_beacon_int(const struct iwinfo_ops *iw, const char *ifname)
+{
+	int mode, beacon_int;
+
+	if (iw->mode(ifname, &mode))
+		mode = IWINFO_OPMODE_UNKNOWN;
+
+	/*
+	 * For station mode, iw dev wlan# link has the beacon
+	 * interval information.
+	 */
+	if (mode != IWINFO_OPMODE_MASTER)
+		return;
+
+	if (!iw->beacon_int || iw->beacon_int(ifname, &beacon_int))
+		beacon_int = -1;
+
+	printf("          Beacon Interval: %s\n",
+	       format_beacon_int(beacon_int));
+}
+
 static char * print_phyname(const struct iwinfo_ops *iw, const char *ifname)
 {
 	static char buf[32];
@@ -558,6 +592,8 @@ static void print_info(const struct iwinfo_ops *iw, const char *ifname)
 	printf("          Supports VAPs: %s  PHY name: %s\n",
 		print_mbssid_supp(iw, ifname),
 		print_phyname(iw, ifname));
+
+	print_beacon_int(iw, ifname);
 }
 
 
