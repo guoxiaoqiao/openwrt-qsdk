@@ -82,8 +82,8 @@ define Host/Install
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/bin2hex $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/checksum $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/array2bin $(STAGING_DIR_HOST)/bin
-	$(INSTALL_BIN) $(HOST_BUILD_DIR)/wasp/mk2stage $(STAGING_DIR_HOST)/bin/mk2stage-ar934x
-	$(INSTALL_BIN) $(HOST_BUILD_DIR)/sco/mk2stage $(STAGING_DIR_HOST)/bin/mk2stage-qca955x
+	$(INSTALL_BIN) $(LOCAL_SRC)/wasp/mk2stage $(STAGING_DIR_HOST)/bin/mk2stage-ar934x
+	$(INSTALL_BIN) $(LOCAL_SRC)/sco/mk2stage $(STAGING_DIR_HOST)/bin/mk2stage-qca955x
 endef
 
 $(eval $(call DefineRomboot,ar934x))
