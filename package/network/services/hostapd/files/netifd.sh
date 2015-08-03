@@ -140,6 +140,7 @@ hostapd_common_add_bss_config() {
 
 	config_add_boolean require_ht
 	config_add_boolean vht_2g_enabled vendor_vht_2g_enabled
+	config_add_string vendor_elements
 
 }
 
@@ -163,7 +164,7 @@ hostapd_set_bss_options() {
 		macfilter ssid wmm hidden short_preamble uapsd vht_2g_enabled \
 		vendor_vht_2g_enabled wep_key_len_broadcast wep_key_len_unicast \
 		wpa_strict_rekey wps_config wps_model_name wps_model_number \
-		wps_serial_number
+		wps_serial_number vendor_elements
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -388,6 +389,8 @@ hostapd_set_bss_options() {
 			[ -n "$macfile" -a -f "$macfile" ] && cat "$macfile"
 		) > "$_macfile"
 	}
+
+  [ -n "$vendor_elements" ] && append bss_conf "vendor_elements=$vendor_elements" "$N"
 
 	append "$var" "$bss_conf" "$N"
 	return 0
