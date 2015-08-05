@@ -70,6 +70,9 @@ start() {
 	grep -q debugfs /proc/filesystems && mount -t debugfs debugfs /sys/kernel/debug
 	[ "$FAILSAFE" = "true" ] && touch /tmp/.failsafe
 
+	config_load system
+	config_foreach system_config system
+
 	load_modules /etc/modules.d/*
 
 	# allow wifi modules time to settle
@@ -88,8 +91,6 @@ start() {
 	rm -f /tmp/sound.tmp
 
 	apply_uci_config
-	config_load system
-	config_foreach system_config system
 
 	killall -q hotplug2
 	[ -x /sbin/hotplug2 ] && /sbin/hotplug2 --override --persistent \
