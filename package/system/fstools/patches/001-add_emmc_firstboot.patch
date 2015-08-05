@@ -1,6 +1,6 @@
 --- a/dev/null
 +++ b/libfstools/ext4.c
-@@ -0,0 +1,122 @@
+@@ -0,0 +1,142 @@
 +/*
 + * Copyright (C) 2014 John Crispin <blogic@openwrt.org>
 + *
@@ -88,12 +88,32 @@
 +	return -1;
 +}
 +
++static int check_for_mtd(const char *mtd)
++{
++	FILE *fp;
++	char dev[PATH_MAX];
++
++	if ((fp = fopen("/proc/mtd", "r"))) {
++		while (fgets(dev, sizeof(dev), fp)) {
++			if (strstr(dev, mtd)) {
++				fclose(fp);
++				return -1;
++			}
++		}
++	}
++	fclose(fp);
++	return 0;
++}
++
 +static int ext4_volume_find(struct volume *v, char *name)
 +{
 +	char buf[PATH_MAX];
 +	struct ext4_priv *p;
 +
 +	if (find_filesystem("ext4"))
++		return -1;
++
++	if (check_for_mtd(name))
 +		return -1;
 +
 +	if(ext4_find_index(buf,name))
