@@ -16,6 +16,14 @@ ap148_1xx)
 	ucidef_set_led_usbdev "0" "USB1" "ap148:green:usb_1" "1-1"
 	ucidef_set_led_usbdev "1" "USB3" "ap148:green:usb_3" "3-1"
 	;;
+ap160|\
+ap160_2xx)
+	ucidef_set_led_usbdev "0" "USB1" "ap160:green:usb_1" "1-1"
+	;;
+ap161)
+	ucidef_set_led_usbdev "0" "USB1" "ap161:green:usb_1" "1-1"
+	ucidef_set_led_usbdev "1" "USB3" "ap161:green:usb_3" "3-1"
+	;;
 *)
 	echo "Unsupported hardware. LED Configuration not intialized"
 	;;
