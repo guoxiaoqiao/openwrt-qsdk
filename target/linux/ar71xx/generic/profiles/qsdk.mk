@@ -24,18 +24,16 @@ PACKAGES_WIFI_10_2:=kmod-qca-wifi-perf kmod-art2 qca-hostap qca-hostapd-cli \
 
 PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-perf kmod-art2 \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
-	qca-wpa-cli-10.4 qca-wapid-10.4 sigma-dut-10.4 qca-wpc-10.4 \
+	qca-wpa-cli-10.4 qca-wapid sigma-dut-10.4 qca-wpc-10.4 \
 	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc \
-	qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw3-10.4-asic \
-	qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw4-10.4-emu_m2m qca-wifi-fw-hw4-10.4-emu_bb
+	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw7-10.4-asic \
+	qca-wifi-fw-hw6-10.4-asic
 
 define Profile/QSDK_Open_Router
 	$(Profile/QSDK_Base)
 	$(Profile/QSDK_Test)
 	NAME:=Qualcomm-Atheros SDK Open Router Profile
-	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
-	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
-	  alljoyn-notification alljoyn-services_common $(STORAGE) \
+	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini $(STORAGE) \
 	  hostapd hostapd-utils iwinfo kmod-qca-ath10k kmod-qca-ath9k kmod-qca-ath \
 	  kmod-fast-classifier kmod-usb2 luci-app-qos wireless-tools \
 	  wpa-supplicant-p2p wpa-cli qca-legacy-uboot-ap121 qca-legacy-uboot-ap143-16M \
@@ -83,9 +81,7 @@ define Profile/QSDK_Premium_Router
 	$(Profile/QSDK_Test)
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
-	  streamboost hyfi kmod-fast-classifier $(STORAGE) \
-	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
-	  alljoyn-notification alljoyn-services_common $(PACKAGES_WIFI_10_2) \
+	  streamboost hyfi kmod-fast-classifier $(STORAGE) $(PACKAGES_WIFI_10_2) \
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand
@@ -109,9 +105,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
-	  streamboost hyfi kmod-fast-classifier $(STORAGE) \
-	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
-	  alljoyn-notification alljoyn-services_common $(PACKAGES_WIFI_10_4) \
+	  streamboost hyfi kmod-fast-classifier $(STORAGE) $(PACKAGES_WIFI_10_4) \
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand \

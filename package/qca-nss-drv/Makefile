@@ -16,6 +16,8 @@ PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
+HDR_INSTALL:=$(LINUX_SRC_DIR)/scripts/headers_install.pl
+
 define KernelPackage/qca-nss-drv
   SECTION:=kernel
   CATEGORY:=Kernel modules
@@ -28,6 +30,11 @@ endef
 
 define KernelPackage/qca-nss-drv/Description
 This package contains a NSS driver for QCA chipset
+endef
+
+define qca_header_install
+	cd $(LINUX_DIR) && \
+	perl $(HDR_INSTALL) $(1)/qca-nss-drv $(1)/qca-nss-userspace $(ARCH) $(strip $2);
 endef
 
 define KernelPackage/qca-nss-drv/install
@@ -46,10 +53,17 @@ endef
 
 define Build/InstallDev
 	mkdir -p $(1)/usr/include/qca-nss-drv
+	mkdir -p $(1)/usr/include/qca-nss-userspace
 	$(CP) $(PKG_BUILD_DIR)/exports/* $(1)/usr/include/qca-nss-drv/
+	$(call qca_header_install, $(1)/usr/include, $(HDR_EXPORTS))
 endef
 
 EXTRA_CFLAGS+= -I$(STAGING_DIR)/usr/include/qca-nss-gmac
+
+HDR_EXPORTS  =  nss_cmn.h
+HDR_EXPORTS +=  nss_crypto.h
+HDR_EXPORTS +=  nss_ipsecmgr.h
+HDR_EXPORTS +=  nss_ipv4.h
 
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
@@ -57,7 +71,7 @@ define Build/Compile
 		ARCH="$(LINUX_KARCH)" \
 		SUBDIRS="$(PKG_BUILD_DIR)" \
 		EXTRA_CFLAGS="$(EXTRA_CFLAGS)" \
-		modules
+		modules;
 endef
 
 $(eval $(call KernelPackage,qca-nss-drv))

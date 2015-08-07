@@ -5,7 +5,7 @@
 define Profile/QSDK_Base
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp \
 	  kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
-	  kmod-sound-core kmod-sound-soc-ipq806x alsa mplayer kmod-ipt-ipopt \
+	  kmod-sound-core kmod-sound-soc-ipq806x alsa kmod-ipt-ipopt \
 	  ntfs-3g dosfsck e2fsprogs iozone fdisk mkdosfs kmod-ipt-conntrack-qos \
 	  kmod-nls-cp437 kmod-nls-iso8859-1 tftp-hpa sysstat mcproxy kmod-ipt-nathelper-rtsp \
 	  kmod-ipv6 iperf devmem2 ip ethtool ip6tables ds-lite rstp \
@@ -14,8 +14,6 @@ define Profile/QSDK_Base
 	  luci-app-ddns ddns-scripts cups cups-client mdadm\
 	  kmod-md-mod kmod-md-linear kmod-md-raid0 kmod-md-raid1 \
 	  iputils-tracepath iputils-tracepath6 \
-	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
-	  alljoyn-notification alljoyn-services_common \
 	  kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  file pure-ftpd kmod-qca-nss-drv-qdisc xl2tpd ppp-mod-pptp pm-utils \
 	  kmod-qca-nss-macsec qca-thermald rng-tools perf kmod-nat-sctp kmod-aq_phy \
@@ -29,10 +27,10 @@ PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd
 
 PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-akronite-perf kmod-art2 \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4-macsec \
-	qca-wpa-cli-10.4 qca-wapid-10.4 sigma-dut-10.4 qca-wpc-10.4 \
+	qca-wpa-cli-10.4 qca-wapid sigma-dut-10.4 qca-wpc-10.4 \
 	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc \
 	qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw3-10.4-asic \
-       qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw4-10.4-emu_m2m qca-wifi-fw-hw4-10.4-emu_bb \
+	qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw4-10.4-emu_m2m qca-wifi-fw-hw4-10.4-emu_bb \
 	qca-thermald-10.4 qca-wifi-fw-hw6-10.4-asic
 
 PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
