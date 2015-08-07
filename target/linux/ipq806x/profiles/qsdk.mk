@@ -25,7 +25,7 @@ WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad hostapd-utils \
 
 WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-dakota-perf qca-wifi-fw-hw5-10.4-asic \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
-	qca-wpa-cli-10.4 qca-spectral-10.4 sigma-dut-10.4 qca-wpc-10.4 \
+	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wpc-10.4 \
 	qcmbr-10.4 qca-wrapd-10.4 qca-wapid qca-acfg-10.4
 
 OPENWRT_STANDARD:= \
@@ -78,14 +78,29 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
+		$(WIFI_10_4_PKGS) sigma-dut-10.4 $(STORAGE) $(CD_ROUTER) $(UTILS) \
 		$(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO)\
 		$(IGMPSNOOING_RSTP) $(IPSEC)
 endef
 
 define Profile/QSDK_Standard/Description
 	QSDK Standard package set configuration.
-	Enables qca-wifi 10.4.2 packages
+	Enables qca-wifi 10.4 packages
 endef
 
 $(eval $(call Profile,QSDK_Standard))
+
+define Profile/QSDK_Compact
+	NAME:=Qualcomm-Atheros SDK Compact Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_10_4_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(IGMPSNOOING_RSTP) $(IPSEC) tftp-hpa e2fsprogs fdisk mkdosfs \
+		qca-thermald-10.4 pure-ftpd
+endef
+
+define Profile/QSDK_Compact/Description
+	QSDK Compact package set configuration.
+	Enables qca-wifi 10.4 packages
+endef
+
+$(eval $(call Profile,QSDK_Compact))
