@@ -576,11 +576,13 @@ switch_layout() {
 do_flash_mtd() {
 	local bin=$1
 	local mtdname=$2
+	local append=""
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
+	[ -f "$CONF_TAR" -a "$SAVE_CONFIG" -eq 1 -a "$2" == "rootfs" ] && append="-j $CONF_TAR"
 
-	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e "/dev/${mtdpart}" "/dev/${mtdpart}"
+	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd $append write - -e "/dev/${mtdpart}" "/dev/${mtdpart}"
 }
 
 do_flash_emmc() {
@@ -794,8 +796,6 @@ platform_copy_config() {
 	elif [ -e "$emmcblock" ]; then
 		mount -t ext4 "$emmcblock" /tmp/overlay
 		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
-	else
-		jffs2_copy_config
 	fi
 }
 
