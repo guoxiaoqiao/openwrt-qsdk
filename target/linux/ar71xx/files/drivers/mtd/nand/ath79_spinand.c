@@ -69,6 +69,7 @@
 #define BL_ALL_UNLOCKED			0
 
 #define PAGE_TO_BLOCK(p)		((p) >> 6)
+#define OFS_TO_PAGE(ofs)		(((ofs) >> 17) << 6)
 #define BUF_SIZE			(2048 * 64)
 
 struct ath79_spinand_priv {
@@ -635,6 +636,50 @@ static void ath79_spinand_select_chip(struct mtd_info *mtd, int dev)
 {
 }
 
+/*
+ * Mark bad block: the 1st page of the bad block set to zero, include
+ * main area and spare area.
+ * NOTE, irreversible and erase is not recommanded
+ */
+static int ath79_spinand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+{
+	u8 status;
+	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
+	struct ath79_spinand_info *info = (struct ath79_spinand_info *)chip->priv;
+	struct spi_device *spi_nand = info->spi;
+	struct ath79_spinand_state *state = info->state;
+	int page_len = mtd->writesize + mtd->oobsize;
+	int retval, page_id = OFS_TO_PAGE(ofs);;
+
+	memset(state->buf, 0, page_len);
+
+	retval = ath79_spinand_program_load(spi_nand, 0, page_len, state->buf);
+	if (retval < 0)
+		return retval;
+
+	retval = ath79_spinand_program_execute(spi_nand, page_id);
+	if (retval < 0) {
+		dev_err(&spi_nand->dev, "program execute failed\n");
+		return retval;
+	}
+
+	if (__ath79_wait_till_ready(spi_nand, &status)) {
+		dev_err(&spi_nand->dev, "wait timedout!!!\n");
+		return -EBUSY;
+	}
+
+	if ((status & STATUS_OIP_MASK) != STATUS_READY)
+		return -EBUSY;
+
+	if ((status & STATUS_P_FAIL_MASK) == STATUS_P_FAIL) {
+		dev_err(&spi_nand->dev,
+			"program error, page %d\n", page_id);
+		return -1;
+	}
+
+	return 0;
+}
+
 static uint8_t ath79_spinand_read_byte(struct mtd_info *mtd)
 {
 	struct ath79_spinand_state *state = mtd_to_state(mtd);
@@ -979,6 +1024,7 @@ static int ath79_spinand_probe(struct spi_device *spi_nand)
 	chip->waitfunc		= ath79_spinand_wait;
 	chip->options		= NAND_CACHEPRG | NAND_NO_SUBPAGE_WRITE;
 	chip->select_chip	= ath79_spinand_select_chip;
+	chip->block_markbad	= ath79_spinand_block_markbad;
 
 	mtd = devm_kzalloc(&spi_nand->dev, sizeof(struct mtd_info), GFP_KERNEL);
 	if (!mtd)
