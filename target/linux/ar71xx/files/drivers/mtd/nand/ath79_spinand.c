@@ -84,6 +84,9 @@ struct ath79_spinand_priv {
 	void			(*read_rdm_addr)(u32 offset, u8 *addr);
 	int			(*program_load)(struct spi_device *spi,
 						u32 offset, u32 len, u8 *wbuf);
+	int			(*erase_block)(struct spi_device *spi, u32 page);
+	int			(*page_read_to_cache)(struct spi_device *spi, u32 page);
+	int			(*program_execute)(struct spi_device *spi, u32 page);
 };
 
 struct ath79_spinand_state {
@@ -147,6 +150,22 @@ static struct nand_ecclayout ath79_spinand_oob_64_mx = {
 	}
 };
 
+static struct nand_ecclayout ath79_spinand_oob_64_win = {
+	.eccbytes = 40,
+	.eccpos = {
+		8, 9, 10, 11, 12, 13, 14, 15,
+		24, 25, 26, 27, 28, 29, 30, 31,
+		40, 41, 42, 43, 44, 45, 46, 47,
+		56, 57, 58, 59, 60, 61, 62, 63,
+		72, 73, 74, 75, 76, 77, 78, 79},
+	.oobfree = {
+		{.offset = 4,  .length = 4},
+		{.offset = 20, .length = 4},
+		{.offset = 36, .length = 4},
+		{.offset = 52, .length = 4},
+	}
+};
+
 static inline struct ath79_spinand_state *mtd_to_state(struct mtd_info *mtd)
 {
 	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
@@ -191,6 +210,27 @@ static inline int ath79_spinand_program_load(struct spi_device *spi, u32 offset,
 	struct ath79_spinand_priv *priv = spi_to_priv(spi);
 
 	return priv->program_load(spi, offset, len, wbuf);
+}
+
+static inline int ath79_spinand_erase_block_erase(struct spi_device *spi, u32 page)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	return priv->erase_block(spi, page);
+}
+
+static inline int ath79_spinand_read_page_to_cache(struct spi_device *spi, u32 page)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	return priv->page_read_to_cache(spi, page);
+}
+
+static inline int ath79_spinand_program_execute(struct spi_device *spi, u32 page)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	return priv->program_execute(spi, page);
 }
 
 static int ath79_spinand_cmd(struct spi_device *spi, struct ath79_spinand_command *cmd)
@@ -386,19 +426,6 @@ static int ath79_spinand_write_enable(struct spi_device *spi_nand)
 	return ath79_spinand_cmd(spi_nand, &cmd);
 }
 
-static int ath79_spinand_read_page_to_cache(struct spi_device *spi_nand, u32 page_id)
-{
-	struct ath79_spinand_command cmd = {0};
-
-	cmd.cmd = CMD_READ;
-	cmd.n_addr = 3;
-	cmd.addr[0] = (u8)(page_id >> 16);
-	cmd.addr[1] = (u8)(page_id >> 8);
-	cmd.addr[2] = (u8)(page_id >> 0);
-
-	return ath79_spinand_cmd(spi_nand, &cmd);
-}
-
 static int ath79_spinand_read_from_cache(struct spi_device *spi_nand,
 		u32 offset, u32 len, u8 *rbuf)
 {
@@ -467,19 +494,6 @@ static int ath79_spinand_program_data_to_cache(struct spi_device *spi_nand,
 	return ath79_spinand_cmd(spi_nand, &cmd);
 }
 
-static int ath79_spinand_program_execute(struct spi_device *spi_nand, u32 page_id)
-{
-	struct ath79_spinand_command cmd = {0};
-
-	cmd.cmd = CMD_PROG_PAGE_EXC;
-	cmd.n_addr = 3;
-	cmd.addr[0] = (u8)(page_id >> 16);
-	cmd.addr[1] = (u8)(page_id >> 8);
-	cmd.addr[2] = (u8)(page_id >> 0);
-
-	return ath79_spinand_cmd(spi_nand, &cmd);
-}
-
 static int ath79_spinand_program_page(struct spi_device *spi_nand,
 		u32 page_id, u32 offset, u32 len, u8 *buf, u32 cache_size)
 {
@@ -530,19 +544,6 @@ static int ath79_spinand_program_page(struct spi_device *spi_nand,
 	}
 
 	return 0;
-}
-
-static int ath79_spinand_erase_block_erase(struct spi_device *spi_nand, u32 page)
-{
-	struct ath79_spinand_command cmd = {0};
-
-	cmd.cmd = CMD_ERASE_BLK;
-	cmd.n_addr = 3;
-	cmd.addr[0] = (u8)(page >> 16);
-	cmd.addr[1] = (u8)(page >> 8);
-	cmd.addr[2] = (u8)(page >> 0);
-
-	return ath79_spinand_cmd(spi_nand, &cmd);
 }
 
 static int ath79_spinand_erase_block(struct mtd_info *mtd,
@@ -859,7 +860,7 @@ static inline u8 ath79_spinand_eccsr_gd(u8 status)
  *	10		uncorrectable
  *	11		reserved
  */
-static inline u8 ath79_spinand_eccsr_mx(u8 status)
+static inline u8 ath79_spinand_eccsr_common(u8 status)
 {
 	return status >> 4 & 0x3;
 }
@@ -871,7 +872,7 @@ static inline void ath79_spinand_read_rdm_addr_gd(u32 offset, u8 *addr)
 	addr[2] = (u8)(offset >> 0);
 }
 
-static inline void ath79_spinand_read_rdm_addr_mx(u32 offset, u8 *addr)
+static inline void ath79_spinand_read_rdm_addr_common(u32 offset, u8 *addr)
 {
 	addr[0] = (u8)(offset >> 8);
 	addr[1] = (u8)(offset >> 0);
@@ -903,7 +904,7 @@ static inline int ath79_spinand_program_load_gd(struct spi_device *spi, u32 offs
 	return 0;
 }
 
-static inline int ath79_spinand_program_load_mx(struct spi_device *spi, u32 offset,
+static inline int ath79_spinand_program_load_common(struct spi_device *spi, u32 offset,
 						u32 len, u8 *wbuf)
 {
 	int retval;
@@ -928,6 +929,64 @@ static inline int ath79_spinand_program_load_mx(struct spi_device *spi, u32 offs
 	return 0;
 }
 
+static inline int __ath79_spinand_execute_cmd_common(struct spi_device *spi,
+						     u32 page, u8 cmd_id)
+{
+	struct ath79_spinand_command cmd = {0};
+
+	cmd.cmd = cmd_id;
+	cmd.n_addr = 3;
+	cmd.addr[0] = (u8)(page >> 16);
+	cmd.addr[1] = (u8)(page >> 8);
+	cmd.addr[2] = (u8)(page >> 0);
+
+	return ath79_spinand_cmd(spi, &cmd);
+}
+
+static inline int __ath79_spinand_execute_cmd_win(struct spi_device *spi,
+						  u32 page, u8 cmd_id)
+{
+	struct ath79_spinand_command cmd = {0};
+
+	cmd.cmd = cmd_id;
+	cmd.n_addr = 3;
+	cmd.addr[0] = 0;
+	cmd.addr[1] = (u8)(page >> 8);
+	cmd.addr[2] = (u8)(page >> 0);
+
+	return ath79_spinand_cmd(spi, &cmd);
+}
+
+static inline int ath79_spinand_erase_block_erase_common(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_common(spi_nand, page, CMD_ERASE_BLK);
+}
+
+static inline int ath79_spinand_erase_block_erase_win(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_win(spi_nand, page, CMD_ERASE_BLK);
+}
+
+static inline int ath79_spinand_page_read_to_cache_common(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_common(spi_nand, page, CMD_READ);
+}
+
+static inline int ath79_spinand_page_read_to_cache_win(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_win(spi_nand, page, CMD_READ);
+}
+
+static inline int ath79_spinand_program_execute_common(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_common(spi_nand, page, CMD_PROG_PAGE_EXC);
+}
+
+static inline int ath79_spinand_program_execute_win(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_win(spi_nand, page, CMD_PROG_PAGE_EXC);
+}
+
 static struct ath79_spinand_priv ath79_spinand_ids[] = {
 	{ /* Giga Device */
 		NAND_MFR_GIGADEVICE,			/* manufacturer */
@@ -940,6 +999,9 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
 		ath79_spinand_eccsr_gd,			/* get ecc status */
 		ath79_spinand_read_rdm_addr_gd,		/* wrap address for 03h command */
 		ath79_spinand_program_load_gd,		/* program load data to cache */
+		ath79_spinand_erase_block_erase_common,	/* erase block */
+		ath79_spinand_page_read_to_cache_common,/* page read to cache */
+		ath79_spinand_program_execute_common,	/* program execute */
 	},
 	{ /* Macronix */
 		NAND_MFR_MACRONIX,			/* manufacturer*/
@@ -949,9 +1011,27 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
 		1,					/* ecc strength */
 		&ath79_spinand_oob_64_mx,		/* ecc layout */
 		&ath79_badblock_pattern_default,	/* bad block pattern */
-		ath79_spinand_eccsr_mx,			/* get ecc status */
-		ath79_spinand_read_rdm_addr_mx,		/* wrap address for 03h command */
-		ath79_spinand_program_load_mx,		/* program load data to cache */
+		ath79_spinand_eccsr_common,		/* get ecc status */
+		ath79_spinand_read_rdm_addr_common,	/* wrap address for 03h command */
+		ath79_spinand_program_load_common,	/* program load data to cache */
+		ath79_spinand_erase_block_erase_common,	/* erase block */
+		ath79_spinand_page_read_to_cache_common,/* page read to cache */
+		ath79_spinand_program_execute_common,	/* program execute */
+	},
+	{ /* Winbond */
+		NAND_MFR_WINBOND,			/* manufacturer*/
+		0x02,					/* ecc error code */
+		SZ_512,					/* ecc size */
+		10,					/* ecc bytes */
+		1,					/* ecc strength */
+		&ath79_spinand_oob_64_win,		/* ecc layout */
+		&ath79_badblock_pattern_default,	/* bad block pattern */
+		ath79_spinand_eccsr_common,		/* get ecc status */
+		ath79_spinand_read_rdm_addr_common,	/* wrap address for 03h command */
+		ath79_spinand_program_load_common,	/* program load data to cache */
+		ath79_spinand_erase_block_erase_win,	/* erase block */
+		ath79_spinand_page_read_to_cache_win,	/* page read to cache */
+		ath79_spinand_program_execute_win,	/* program execute */
 	},
 };
 
