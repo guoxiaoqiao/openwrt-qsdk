@@ -10,7 +10,7 @@ USE_REFRESH=1
 RAMFS_COPY_DATA=/lib/ipq806x.sh
 RAMFS_COPY_BIN="/usr/bin/dumpimage /bin/mktemp /usr/sbin/mkfs.ubifs
 	/usr/sbin/ubiattach /usr/sbin/ubidetach /usr/sbin/ubiformat /usr/sbin/ubimkvol
-	/usr/sbin/ubiupdatevol"
+	/usr/sbin/ubiupdatevol /usr/bin/basename"
 
 get_full_section_name() {
 	local img=$1
@@ -596,7 +596,7 @@ do_flash_emmc() {
 do_flash_partition() {
 	local bin=$1
 	local mtdname=$2
-	local emmcblock="$(find_mmc_part "0:$mtdname")"
+	local emmcblock="$(find_mmc_part "$mtdname")"
 
 	if [ -e "$emmcblock" ]; then
 		do_flash_emmc $bin $emmcblock
@@ -684,6 +684,13 @@ flash_section() {
 	echo "Flashed ${sec}"
 }
 
+erase_emmc_config() {
+	local emmcblock="$(find_mmc_part "rootfs_data")"
+	if [ -e "$emmcblock" -a "$SAVE_CONFIG" -ne 1 ]; then
+		dd if=/dev/zero of=${emmcblock}
+	fi
+}
+
 platform_check_image() {
 	local board=$(ipq806x_board_name)
 
@@ -769,6 +776,7 @@ platform_do_upgrade() {
 		# update bootconfig to register that fw upgrade has been done
 		do_flash_bootconfig bootconfig "BOOTCONFIG"
 
+		erase_emmc_config
 		return 0;
 		;;
 	esac
