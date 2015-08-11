@@ -485,26 +485,31 @@ static int ath79_spinand_program_page(struct spi_device *spi_nand,
 {
 	int retval;
 	u8 status = 0;
-	uint8_t *wbuf;
-	unsigned int i, j;
 
-	wbuf = devm_kzalloc(&spi_nand->dev, cache_size, GFP_KERNEL);
-	if (!wbuf) {
-		dev_err(&spi_nand->dev, "No memory\n");
-		return -ENOMEM;
-	}
+	if (unlikely(offset)) {
+		uint8_t *wbuf;
+		unsigned int i, j;
 
-	if (ath79_spinand_read_page(spi_nand, page_id, 0, cache_size, wbuf)) {
+		wbuf = devm_kzalloc(&spi_nand->dev, cache_size, GFP_KERNEL);
+		if (!wbuf) {
+			dev_err(&spi_nand->dev, "No memory\n");
+			return -ENOMEM;
+		}
+
+		if (ath79_spinand_read_page(spi_nand, page_id, 0, cache_size, wbuf)) {
+			devm_kfree(&spi_nand->dev, wbuf);
+			return -1;
+		}
+
+		for (i = offset, j = 0; i < len; i++, j++)
+			wbuf[i] &= buf[j];
+
+		retval = ath79_spinand_program_load(spi_nand, offset, len, wbuf);
+
 		devm_kfree(&spi_nand->dev, wbuf);
-		return -1;
+	} else {
+		retval = ath79_spinand_program_load(spi_nand, offset, len, buf);
 	}
-
-	for (i = offset, j = 0; i < len; i++, j++)
-		wbuf[i] &= buf[j];
-
-	retval = ath79_spinand_program_load(spi_nand, offset, len, wbuf);
-
-	devm_kfree(&spi_nand->dev, wbuf);
 
 	if (retval < 0)
 		return retval;
