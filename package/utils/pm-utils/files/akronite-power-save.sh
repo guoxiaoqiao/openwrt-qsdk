@@ -131,6 +131,12 @@ ap_dk01_1_ac_power()
 # Cortex Power-UP Sequence
 	/etc/init.d/powerctl restart
 
+# Power on Malibu PHY of LAN ports
+	ssdk_sh port poweron set 1
+	ssdk_sh port poweron set 2
+	ssdk_sh port poweron set 3
+	ssdk_sh port poweron set 4
+
 # USB Power-UP Sequence
 	if ! [ -d /sys/module/dwc3_ipq40xx ]
 	then
@@ -160,6 +166,11 @@ ap_dk01_1_battery_power()
 		fi
 	done
 
+# Power off Malibu PHY of LAN ports
+	ssdk_sh port poweroff set 1
+	ssdk_sh port poweroff set 2
+	ssdk_sh port poweroff set 3
+	ssdk_sh port poweroff set 4
 
 # USB Power-down Sequence
 	if [ -d /sys/module/dwc3_ipq40xx ]
@@ -180,6 +191,12 @@ ap_dk04_1_ac_power()
 	echo "Entering AC-Power Mode"
 # Cortex Power-UP Sequence
 	/etc/init.d/powerctl restart
+
+# Power on Malibu PHY of LAN ports
+	ssdk_sh port poweron set 1
+	ssdk_sh port poweron set 2
+	ssdk_sh port poweron set 3
+	ssdk_sh port poweron set 4
 
 # PCIe Power-UP Sequence
 	sleep 1
@@ -252,6 +269,12 @@ ap_dk04_1_battery_power()
 			}
 		fi
 	done
+
+# Power off Malibu PHY of LAN ports
+	ssdk_sh port poweroff set 1
+	ssdk_sh port poweroff set 2
+	ssdk_sh port poweroff set 3
+	ssdk_sh port poweroff set 4
 
 # USB Power-down Sequence
 	if [ -d /sys/module/dwc3_ipq40xx ]
