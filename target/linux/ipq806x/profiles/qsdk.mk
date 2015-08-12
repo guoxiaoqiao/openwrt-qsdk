@@ -42,8 +42,10 @@ CD_ROUTER:=kmod-ipt-nathelper-extra luci-app-upnp kmod-ipt-ipopt \
 	quagga-vtysh rp-pppoe-relay -dnsmasq dnsmasq-dhcpv6 radvd \
 	wide-dhcpv6-client bridge luci-app-ddns ddns-scripts xl2tpd ppp-mod-pptp \
 	iptables-mod-extra iptables-mod-ipsec iptables-mod-filter 6rd luci-proto-ipv6 \
-	kmod-bonding luci-app-qos luci-app-radvd kmod-nat-sctp alsa \
+	kmod-bonding luci-app-radvd kmod-nat-sctp alsa \
 	rp-pppoe-server isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 arptables
+
+QOS:=luci-app-qos kmod-sched
 
 #These packages depend on SWITCH_SSDK_PKGS
 IGMPSNOOING_RSTP:=rstp qca-mcs-apps
@@ -66,7 +68,7 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(BLUETOOTH) $(NSS_ECM) $(NSS_CLIENTS)
+		$(BLUETOOTH) $(NSS_ECM) $(NSS_CLIENTS) $(QOS)
 endef
 
 define Profile/QSDK_Open/Description
@@ -80,7 +82,7 @@ define Profile/QSDK_Standard
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) sigma-dut-10.4 $(STORAGE) $(CD_ROUTER) $(UTILS) \
 		$(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO)\
-		$(IGMPSNOOING_RSTP) $(IPSEC)
+		$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS)
 endef
 
 define Profile/QSDK_Standard/Description
