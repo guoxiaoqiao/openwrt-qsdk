@@ -8,13 +8,13 @@ NSS_STANDARD:= \
 	kmod-qca-nss-gmac \
 	kmod-qca-edma
 
-NSS_ECM:= kmod-qca-nss-ecm
+QCA_ECM:= kmod-qca-nss-ecm
 
 NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6
 
 HW_CRYPTO:= kmod-crypto-qcrypto
 
-SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm
+SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm kmod-shortcut-fe-drv
 QCA_RFS:= kmod-qca-rfs
 
 SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell  swconfig
@@ -68,7 +68,7 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(UTILS) \
-		$(BLUETOOTH) $(NSS_ECM) $(NSS_CLIENTS) $(QOS)
+		$(BLUETOOTH) $(QCA_ECM) $(NSS_CLIENTS) $(QOS)
 endef
 
 define Profile/QSDK_Open/Description
@@ -82,7 +82,7 @@ define Profile/QSDK_Premium
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) sigma-dut-10.4 $(STORAGE) $(CD_ROUTER) $(UTILS) \
 		$(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO)\
-		$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS)
+		$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM)
 endef
 
 define Profile/QSDK_Premium/Description
