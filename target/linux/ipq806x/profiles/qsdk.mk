@@ -78,7 +78,7 @@ endef
 $(eval $(call Profile,QSDK_Open))
 
 define Profile/QSDK_Premium
-	NAME:=Qualcomm-Atheros SDK Standard Profile
+	NAME:=Qualcomm-Atheros SDK Premium Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) sigma-dut-10.4 $(STORAGE) $(CD_ROUTER) $(UTILS) \
 		$(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO)\
@@ -86,14 +86,14 @@ define Profile/QSDK_Premium
 endef
 
 define Profile/QSDK_Premium/Description
-	QSDK Standard package set configuration.
+	QSDK Premium package set configuration.
 	Enables qca-wifi 10.4 packages
 endef
 
 $(eval $(call Profile,QSDK_Premium))
 
 define Profile/QSDK_Standard
-	NAME:=Qualcomm-Atheros SDK Compact Profile
+	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(IPSEC) tftp-hpa e2fsprogs fdisk mkdosfs \
@@ -101,7 +101,7 @@ define Profile/QSDK_Standard
 endef
 
 define Profile/QSDK_Standard/Description
-	QSDK Compact package set configuration.
+	QSDK Standard package set configuration.
 	Enables qca-wifi 10.4 packages
 endef
 
