@@ -20,7 +20,8 @@ endef
 
 PACKAGES_WIFI_10_2:=kmod-qca-wifi-perf kmod-art2 qca-hostap qca-hostapd-cli \
 	  qca-wpa-supplicant qca-wpa-cli qca-spectral qca-wapid sigma-dut \
-	  qca-acfg qca-wrapd whc
+	  qca-acfg qca-wrapd whc qca-wifi-fw-hw1-10.2 qca-wifi-fw-hw1-10.2-lteu \
+	  qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
 
 PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-perf kmod-art2 \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
