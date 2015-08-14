@@ -51,7 +51,8 @@ define Profile/QSDK_Wireless_Router
 	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat qca-ssdk-shell kmod-shortcut-fe-cm \
 	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
 	  qca-wpa-cli qca-wrapd qca-wapid qca-acfg qca-legacy-uboot-ap152-8M \
-	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x
+	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x \
+	  qca-wifi-fw-hw1-10.2 qca-wifi-fw-hw1-10.2-lteu qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
 endef
 
 define Profile/QSDK_Wireless_Router/Description
@@ -79,7 +80,8 @@ define Profile/QSDK_Premium_Router
 	  qca-wpa-cli-10.4 qca-legacy-uboot-ap135 kmod-art2 sigma-dut-10.4 qca-wrapd qca-wapid \
 	  qca-acfg whc qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
-	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand
+	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand \
+	  qca-wifi-fw-hw1-10.2 qca-wifi-fw-hw1-10.2-lteu qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
 endef
 
 define Profile/QSDK_Premium_Router/Description
