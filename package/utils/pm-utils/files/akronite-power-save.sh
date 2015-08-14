@@ -136,6 +136,8 @@ ap_dk01_1_ac_power()
 	ssdk_sh port poweron set 2
 	ssdk_sh port poweron set 3
 	ssdk_sh port poweron set 4
+# Wifi Power-up Sequence
+	wifi up
 
 # USB Power-UP Sequence
 	if ! [ -d /sys/module/dwc3_ipq40xx ]
@@ -151,6 +153,9 @@ ap_dk01_1_ac_power()
 ap_dk01_1_battery_power()
 {
 	echo "Entering Battery Mode..."
+
+# Wifi Power-down Sequence
+	wifi down
 
 # Find scsi devices and remove it
 
@@ -206,6 +211,9 @@ ap_dk04_1_ac_power()
 
 	sleep 1
 
+# Wifi Power-up Sequence
+	wifi up
+
 # USB Power-UP Sequence
 	if ! [ -d /sys/module/dwc3_ipq40xx ]
 	then
@@ -255,6 +263,9 @@ ap_dk04_1_battery_power()
 		echo 1 > /sys/devices/pci0000:00/pci_bus/0000:00/rcremove
 	}
 	sleep 1
+
+# Wifi Power-down Sequence
+	wifi down
 
 # Find scsi devices and remove it
 
