@@ -16,6 +16,8 @@ QCA_ECM:= kmod-qca-nss-ecm
 
 NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6
 
+NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
+
 HW_CRYPTO:= kmod-crypto-qcrypto
 
 SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm kmod-shortcut-fe-drv
@@ -77,7 +79,7 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(NETWORKING) $(UTILS) \
-		$(BLUETOOTH) $(QCA_ECM) $(NSS_CLIENTS) $(QOS) $(TEST_TOOLS) alsa
+		$(BLUETOOTH) $(QCA_ECM) $(NSS_CRYPTO) $(NSS_CLIENTS) $(QOS) $(TEST_TOOLS) alsa
 endef
 
 define Profile/QSDK_Open/Description
@@ -91,8 +93,8 @@ define Profile/QSDK_Premium
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PREMIUM_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
-		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) \
-		$(QCA_ECM) $(NSS_MACSEC) $(TEST_TOOLS)
+		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM) \
+		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS)
 endef
 
 define Profile/QSDK_Premium/Description
