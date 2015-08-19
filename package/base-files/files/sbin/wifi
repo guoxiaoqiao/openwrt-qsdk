@@ -261,6 +261,7 @@ case "$1" in
 	status) ubus_wifi_cmd "status" "$2";;
 	reload) wifi_reload "$2";;
 	reload_legacy) wifi_reload_legacy "$2";;
+	load) wifi_load "$2";;
 	--help|help) usage;;
 	*) ubus call network reload; wifi_updown "enable" "$2";;
 esac
