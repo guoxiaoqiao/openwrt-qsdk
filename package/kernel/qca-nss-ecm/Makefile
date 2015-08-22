@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014 The Linux Foundation. All rights reserved.
+# Copyright (c) 2014-2015 The Linux Foundation. All rights reserved.
 #
 
 include $(TOPDIR)/rules.mk
@@ -24,7 +24,7 @@ define KernelPackage/qca-nss-ecm/Default
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Support
-  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +kmod-qca-hyfi-bridge +iptables-mod-extra +kmod-ipt-conntrack +kmod-ipv6
+  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +kmod-qca-hyfi-bridge +iptables-mod-extra +kmod-ipt-conntrack +kmod-ipv6 +kmod-shortcut-fe-drv
   TITLE:=QCA NSS Enhanced Connection Manager (ECM)
   FILES:=$(PKG_BUILD_DIR)/ecm.ko
   KCONFIG:=CONFIG_BRIDGE_NETFILTER=y
@@ -76,7 +76,8 @@ endef
 
 EXTRA_CFLAGS+= \
 	-I$(STAGING_DIR)/usr/include/hyfibr \
-	-I$(STAGING_DIR)/usr/include/qca-nss-drv
+	-I$(STAGING_DIR)/usr/include/qca-nss-drv \
+	-I$(STAGING_DIR)/usr/include/shortcut-fe
 
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
