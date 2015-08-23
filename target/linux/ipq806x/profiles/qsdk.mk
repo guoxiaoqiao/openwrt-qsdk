@@ -56,7 +56,7 @@ IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6 \
 
 UTILS:=tftp-hpa sysstat iperf devmem2 ip-full ethtool iputils-tracepath \
 	iputils-tracepath6 file pure-ftpd pm-utils trace-cmd qca-thermald-10.4 \
-	luci-app-samba perf e2fsprogs fdisk mkdosfs i2c-tools
+	luci-app-samba perf e2fsprogs fdisk mkdosfs i2c-tools openssl-util
 
 BLUETOOTH:=bluez kmod-ath3k
 
