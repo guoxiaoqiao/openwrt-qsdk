@@ -21,8 +21,8 @@ define Profile/QSDK_Base
 	  kmod-crypto-aes kmod-ipsec kmod-ipsec4 kmod-ipsec6 
 endef
 
-PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap qca-hostapd-cli \
-	  qca-wpa-supplicant-macsec qca-wpa-cli qca-spectral qca-wapid sigma-dut \
+PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap-10.4 qca-hostapd-cli-10.4 \
+	  qca-wpa-supplicant-10.4-macsec qca-wpa-cli-10.4 qca-spectral qca-wapid sigma-dut-10.4 \
 	  qca-acfg qca-wrapd whc qca-thermald qca-wifi-fw-hw1-10.2 qca-wifi-fw-hw1-10.2-lteu \
 	  qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
 
