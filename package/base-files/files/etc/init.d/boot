@@ -73,6 +73,9 @@ start() {
 	config_load system
 	config_foreach system_config system
 
+	echo -17 > /proc/$(pgrep init)/oom_score_adj
+	echo -17 > /proc/$(pgrep syslogd)/oom_score_adj
+
 	load_modules /etc/modules.d/*
 
 	# allow wifi modules time to settle
