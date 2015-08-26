@@ -38,6 +38,7 @@ define Image/BuildKernel
 	$(CP) $(KDIR)/$(IMG_PREFIX)-vmlinux.elf $(BIN_DIR)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-db149,0x42208000)
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-storm,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-r3pc,0x80008000)
 endef
 

@@ -20,6 +20,9 @@ ipq806x_board_detect() {
 	*"DB149")
 		name="db149"
 		;;
+	*"STORM")
+		name="storm"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"
