@@ -10,11 +10,20 @@ START=70
 
 CONF_FILE=/etc/sysctl.d/qca-nss-ecm.conf
 
+support_bridge() {
+	#NSS support bridge acceleration
+	[ -d /sys/kernel/debug/ecm/ecm_nss_conntrack_notifier ] && return 0
+	#SFE don't support bridge acceleration
+	[ -d /sys/kernel/debug/ecm/ecm_sfe_conntrack_notifier ] && return 1
+}
+
 load_ecm() {
 	[ -d /sys/module/ecm ] || insmod ecm
 
-	sysctl -w net.bridge.bridge-nf-call-ip6tables=1
-	sysctl -w net.bridge.bridge-nf-call-iptables=1
+	support_bridge && {
+		sysctl -w net.bridge.bridge-nf-call-ip6tables=1
+		sysctl -w net.bridge.bridge-nf-call-iptables=1
+	}
 }
 
 unload_ecm() {
@@ -43,8 +52,10 @@ start() {
 	load_ecm
 
 	setopt dev.nss.general.redirect 1
-	setopt net.bridge.bridge-nf-call-ip6tables 1
-	setopt net.bridge.bridge-nf-call-iptables 1
+	support_bridge && {
+		setopt net.bridge.bridge-nf-call-ip6tables 1
+		setopt net.bridge.bridge-nf-call-iptables 1
+	}
 }
 
 stop() {
