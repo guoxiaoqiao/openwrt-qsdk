@@ -228,6 +228,7 @@ scan_wifi
 case "$1" in
 	down) wifi_updown "disable" "$2";;
 	detect) wifi_detect "$2";;
+	load) wifi_load "$2";;
 	--help|help) usage;;
 	*) wifi_updown "enable" "$2";;
 esac
