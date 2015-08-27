@@ -42,16 +42,20 @@
 #include "dev-wmac.h"
 #include "machtypes.h"
 
-#define CUS532K_GPIO_SPI_CS0	 5
-#define CUS532K_GPIO_SPI_CLK	 6
-#define CUS532K_GPIO_SPI_MOSI	 7
-#define CUS532K_GPIO_SPI_MISO	 8
-#define CUS532K_GPIO_I2C_SCL	16
-#define CUS532K_GPIO_I2C_SDA	17
-#define CUS532K_GPIO_UART1_RD	22
-#define CUS532K_GPIO_UART1_CTS	19
-#define CUS532K_GPIO_UART1_TD	20
-#define CUS532K_GPIO_UART1_RTS	21
+#define CUS532K_GPIO_SPI_CS0		5
+#define CUS532K_GPIO_SPI_CLK		6
+#define CUS532K_GPIO_SPI_MOSI		7
+#define CUS532K_GPIO_SPI_MISO		8
+#define CUS532K_GPIO_WL_ACTIVE		12
+#define CUS532K_GPIO_BT_ACTIVE		13
+#define CUS532K_GPIO_BT_PRIORITY	14
+#define CUS532K_GPIO_BT_ANT		15
+#define CUS532K_GPIO_I2C_SCL		16
+#define CUS532K_GPIO_I2C_SDA		17
+#define CUS532K_GPIO_UART1_CTS		19
+#define CUS532K_GPIO_UART1_TD		20
+#define CUS532K_GPIO_UART1_RTS		21
+#define CUS532K_GPIO_UART1_RD		22
 
 static struct i2c_gpio_platform_data cus532k_i2c_gpio_data = {
 	.sda_pin	= CUS532K_GPIO_I2C_SDA,
@@ -93,6 +97,15 @@ static void __init cus532k_setup(void)
 	ath79_gpio_direction_select(CUS532K_GPIO_UART1_RTS, true);
 	ath79_gpio_direction_select(CUS532K_GPIO_UART1_RD, false);
 	ath79_gpio_direction_select(CUS532K_GPIO_UART1_CTS, false);
+
+	ath79_gpio_direction_select(CUS532K_GPIO_WL_ACTIVE, true);
+	ath79_gpio_direction_select(CUS532K_GPIO_BT_ACTIVE, false);
+	ath79_gpio_direction_select(CUS532K_GPIO_BT_PRIORITY, false);
+
+	ath79_gpio_output_select(CUS532K_GPIO_WL_ACTIVE,
+				 AR934X_GPIO_OUT_MUX_RX_CLEAR_EXTERNAL);
+	ath79_gpio_input_select(CUS532K_GPIO_BT_ACTIVE, AR934X_GPIO_IN_MUX_BT_ACTIVE);
+	ath79_gpio_input_select(CUS532K_GPIO_BT_PRIORITY, AR934X_GPIO_IN_MUX_BT_PRIORITY);
 
 	/* set up SPI GPIO */
 	ath79_gpio_output_select(CUS532K_GPIO_SPI_CS0, AR934X_GPIO_OUT_MUX_SPI_CS0);
