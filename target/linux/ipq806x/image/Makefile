@@ -74,6 +74,10 @@ define Image/BuildKernel
 																qcom-ipq40xx-db.dk01.1-c1 \
 																qcom-ipq40xx-db.dk02.1-c1"\
 																,0x80208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-db149,"qcom-ipq8064-db149 \
+								qcom-ipq8064-v2.0-db149 \
+								qcom-ipq8064-v3.0-db149"\
+								,0x42208000)
 endef
 
 define Image/Build/squashfs
