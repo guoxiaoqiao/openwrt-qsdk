@@ -147,6 +147,10 @@ ap_dk01_1_ac_power()
 		insmod dwc3-ipq40xx.ko
 		insmod dwc3.ko
 	fi
+
+# LAN interface up
+	ifup lan
+
 	exit 0
 }
 
@@ -186,6 +190,10 @@ ap_dk01_1_battery_power()
 		rmmod phy-qca-baldur
 	fi
 	sleep 2
+
+# LAN interface down
+	ifdown lan
+
 # Cortex Power-down Sequence
 	echo 48000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
@@ -222,6 +230,10 @@ ap_dk04_1_ac_power()
 		insmod dwc3-ipq40xx.ko
 		insmod dwc3.ko
 	fi
+
+# LAN interface up
+	ifup lan
+
 # SD/MMC Power-UP sequence
 	if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
 	then
@@ -303,6 +315,10 @@ ap_dk04_1_battery_power()
 		echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
 		echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
 	fi
+
+# LAN interface down
+	ifdown lan
+
 # Cortex Power-down Sequence
 	echo 48000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
