@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2008-2010 OpenWrt.org
+# Copyright (C) 2008-2010, 2015 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -34,6 +34,7 @@ endef
 define Build/InstallDev
 	mkdir -p $(1)/usr/include/crypto
 	$(CP) ./src/cryptodev.h $(1)/usr/include/crypto
+	$(CP) ./src/ocf-compat.h $(1)/usr/include/crypto
 endef
 
 $(eval $(call BuildPackage,ocf-crypto-headers))
