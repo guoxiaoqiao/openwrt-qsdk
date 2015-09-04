@@ -85,6 +85,18 @@ define Image/BuildKernel
 								qcom-ipq8064-v2.0-ap148 \
 								qcom-ipq8064-v3.0-ap148"\
 								,0x42208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ak01,"qcom-ipq8064-ak01 \
+								qcom-ipq8064-v2.0-ak01 \
+								qcom-ipq8064-v3.0-ak01"\
+								,0x42208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145_1xx,"qcom-ipq8064-ap145_1xx \
+								qcom-ipq8064-v2.0-ap145_1xx \
+								qcom-ipq8064-v3.0-ap145_1xx"\
+								,0x42208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145,"qcom-ipq8064-ap145 \
+								qcom-ipq8064-v2.0-ap145 \
+								qcom-ipq8064-v3.0-ap145"\
+								,0x42208000)
 endef
 
 define Image/Build/squashfs
