@@ -1,0 +1,91 @@
+diff --git a/include/trace/events/irq.h b/include/trace/events/irq.h
+index 1c09820..65da94d 100644
+--- a/include/trace/events/irq.h
++++ b/include/trace/events/irq.h
+@@ -8,6 +8,7 @@
+ 
+ struct irqaction;
+ struct softirq_action;
++struct tasklet_struct;
+ 
+ #define softirq_name(sirq) { sirq##_SOFTIRQ, #sirq }
+ #define show_softirq_name(val)				\
+@@ -84,6 +85,54 @@ TRACE_EVENT(irq_handler_exit,
+ 		  __entry->irq, __entry->ret ? "handled" : "unhandled")
+ );
+ 
++/**
++ * tlet_entry - called immediately before the tasklet handler
++ * @t: pointer to struct tasklet_struct
++ *
++ * When used in combination with the tlet_exit tracepoint we can
++ * determine the latency of the tasklet.
++ */
++TRACE_EVENT(tlet_entry,
++
++	TP_PROTO(struct tasklet_struct *t),
++
++	TP_ARGS(t),
++
++	TP_STRUCT__entry(
++		__field(void *, func)
++	),
++
++	TP_fast_assign(
++		__entry->func = t->func;
++	),
++
++	TP_printk("func=%pf", __entry->func)
++);
++
++/**
++ * tlet_exit - called immediately after the tasklet handler returns
++ * @t: pointer to struct tasklet_struct
++ *
++ * When used in combination with the tasklet_entry tracepoint we can
++ * determine the latency of the tasklet.
++ */
++TRACE_EVENT(tlet_exit,
++
++	TP_PROTO(struct tasklet_struct *t),
++
++	TP_ARGS(t),
++
++	TP_STRUCT__entry(
++		__field(void *, func)
++	),
++
++	TP_fast_assign(
++		__entry->func = t->func;
++	),
++
++	TP_printk("func=%pf", __entry->func)
++);
++
+ DECLARE_EVENT_CLASS(softirq,
+ 
+ 	TP_PROTO(unsigned int vec_nr),
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 0202067..01d9a72 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -468,7 +468,9 @@ static void tasklet_action(struct softirq_action *a)
+ 			if (!atomic_read(&t->count)) {
+ 				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state))
+ 					BUG();
++				trace_tlet_entry(t);
+ 				t->func(t->data);
++				trace_tlet_exit(t);
+ 				tasklet_unlock(t);
+ 				continue;
+ 			}
+@@ -503,7 +505,9 @@ static void tasklet_hi_action(struct softirq_action *a)
+ 			if (!atomic_read(&t->count)) {
+ 				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state))
+ 					BUG();
++				trace_tlet_entry(t);
+ 				t->func(t->data);
++				trace_tlet_exit(t);
+ 				tasklet_unlock(t);
+ 				continue;
+ 			}
