@@ -74,7 +74,7 @@ define Profile/QSDK_Premium_Router
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  streamboost hyfi kmod-fast-classifier $(STORAGE) \
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
-	  alljoyn-notification alljoyn-services_common \
+	  alljoyn-notification alljoyn-services_common luci-app-samba \
 	  kmod-qca-wifi-perf qca-hostap-10.4 qca-spectral qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 	  qca-wpa-cli-10.4 qca-legacy-uboot-ap135 kmod-art2 sigma-dut-10.4 qca-wrapd qca-wapid \
 	  qca-acfg whc qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell \
