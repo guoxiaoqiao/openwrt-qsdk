@@ -25,6 +25,7 @@
 #include <linux/wait.h>
 #include <linux/spinlock.h>
 #include <linux/mtd/mtd.h>
+#include <linux/sizes.h>
 
 /* cmd */
 #define CMD_READ			0x13
@@ -47,42 +48,45 @@
 
 /* status */
 #define STATUS_OIP_MASK			0x01
-#define STATUS_READY			(0 << 0)
-#define STATUS_BUSY			(1 << 0)
+#define STATUS_READY			0
+#define STATUS_BUSY			BIT(1)
 
 #define STATUS_E_FAIL_MASK		0x04
-#define STATUS_E_FAIL			(1 << 2)
+#define STATUS_E_FAIL			BIT(2)
 
 #define STATUS_P_FAIL_MASK		0x08
-#define STATUS_P_FAIL			(1 << 3)
-
-#define STATUS_ECC_MASK			0x07
-#define STATUS_ECC_ERR_BITS5		0x03
-#define STATUS_ECC_ERR_BITS6		0x04
-#define STATUS_ECC_ERR_BITS7		0x05
-#define STATUS_ECC_ERR_BITS8		0x06
-#define STATUS_ECC_ERROR		0x07
-#define STATUS2ECC(status) 		(((status) >> 4) & STATUS_ECC_MASK)
+#define STATUS_P_FAIL			BIT(3)
 
 /* ECC/OTP enable defines */
 #define REG_ECC_MASK			0x10
-#define REG_ECC_OFF			(0 << 4)
-#define REG_ECC_ON			(1 << 4)
+#define REG_ECC_OFF			0
+#define REG_ECC_ON			BIT(4)
 
-#define REG_OTP_EN			(1 << 6)
-#define REG_OTP_PRT			(1 << 7)
+#define REG_OTP_EN			BIT(6)
+#define REG_OTP_PRT			BIT(7)
 
 /* block lock */
 #define BL_ALL_UNLOCKED			0
 
-#define BLOCK_TO_RA(b)			((b) << 6)
+#define PAGE_TO_BLOCK(p)		((p) >> 6)
+#define OFS_TO_PAGE(ofs)		(((ofs) >> 17) << 6)
+#define BUF_SIZE			(2048 * 64)
 
-#define BUFSIZE				(10 * 64 * 2048)
-#define CACHE_BUF			2112
-
-struct ath79_spinand_info {
-	struct spi_device	*spi;
-	void			*priv;
+struct ath79_spinand_priv {
+	u8 			mfr;
+	u8			ecc_error;
+	int			ecc_size;
+	int			ecc_bytes;
+	int			ecc_strength;
+	struct nand_ecclayout   *ecc_layout;
+	struct nand_bbt_descr	*badblock_pattern;
+	u8			(*ecc_status)(u8 status);
+	void			(*read_rdm_addr)(u32 offset, u8 *addr);
+	int			(*program_load)(struct spi_device *spi,
+						u32 offset, u32 len, u8 *wbuf);
+	int			(*erase_block)(struct spi_device *spi, u32 page);
+	int			(*page_read_to_cache)(struct spi_device *spi, u32 page);
+	int			(*program_execute)(struct spi_device *spi, u32 page);
 };
 
 struct ath79_spinand_state {
@@ -90,6 +94,12 @@ struct ath79_spinand_state {
 	uint32_t	row;
 	int		buf_ptr;
 	u8		*buf;
+};
+
+struct ath79_spinand_info {
+	struct spi_device		*spi;
+	struct ath79_spinand_state	*state;
+	void				*priv;
 };
 
 struct ath79_spinand_command {
@@ -103,7 +113,16 @@ struct ath79_spinand_command {
 	u8		*rx_buf;	/* Rx buf */
 };
 
-static const struct nand_ecclayout ath79_spinand_oob_128 = {
+static u8 badblock_pattern[] = { 0xff, };
+
+static struct nand_bbt_descr ath79_badblock_pattern_default = {
+	.options = 0,
+	.offs = 0,
+	.len = 1,
+	.pattern = badblock_pattern,
+};
+
+static struct nand_ecclayout ath79_spinand_oob_128_gd = {
 	.eccbytes = 64,
 	.eccpos = {
 		64, 65, 66, 67, 68, 69, 70, 71,
@@ -114,25 +133,104 @@ static const struct nand_ecclayout ath79_spinand_oob_128 = {
 		104, 105, 106, 107, 108, 109, 110, 111,
 		112, 113, 114, 115, 116, 117, 118, 119,
 		120, 121, 122, 123, 124, 125, 126, 127},
-	.oobfree = { {.offset = 16, .length = 48}, }
+	.oobfree = {
+		{.offset = 16, .length = 48},
+	}
 };
 
-static u8 badblock_pattern[] = { 0xff, };
+/* ECC parity code stored in the additional hidden spare area */
+static struct nand_ecclayout ath79_spinand_oob_64_mx = {
+	.eccbytes = 0,
+	.eccpos = {},
+	.oobfree = {
+		{.offset = 4,  .length = 4},
+		{.offset = 20, .length = 4},
+		{.offset = 36, .length = 4},
+		{.offset = 52, .length = 4},
+	}
+};
 
-static struct nand_bbt_descr ath79_badblock_pattern = {
-	.options = 0,
-	.offs = 0,
-	.len = 1,
-	.pattern = badblock_pattern,
+static struct nand_ecclayout ath79_spinand_oob_64_win = {
+	.eccbytes = 40,
+	.eccpos = {
+		8, 9, 10, 11, 12, 13, 14, 15,
+		24, 25, 26, 27, 28, 29, 30, 31,
+		40, 41, 42, 43, 44, 45, 46, 47,
+		56, 57, 58, 59, 60, 61, 62, 63,
+		72, 73, 74, 75, 76, 77, 78, 79},
+	.oobfree = {
+		{.offset = 4,  .length = 4},
+		{.offset = 20, .length = 4},
+		{.offset = 36, .length = 4},
+		{.offset = 52, .length = 4},
+	}
 };
 
 static inline struct ath79_spinand_state *mtd_to_state(struct mtd_info *mtd)
 {
 	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
 	struct ath79_spinand_info *info = (struct ath79_spinand_info *)chip->priv;
-	struct ath79_spinand_state *state = (struct ath79_spinand_state *)info->priv;
 
-	return state;
+	return info->state;
+}
+
+static inline struct ath79_spinand_priv *spi_to_priv(struct spi_device *spi)
+{
+	struct mtd_info *mtd = dev_get_drvdata(&spi->dev);
+	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
+	struct ath79_spinand_info *info = (struct ath79_spinand_info *)chip->priv;
+
+	return info->priv;
+}
+
+static inline u8 ath79_spinand_ecc_status(struct spi_device *spi, u8 status)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	return priv->ecc_status(status);
+}
+
+static inline u8 ath79_spinand_ecc_error(struct spi_device *spi)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	return priv->ecc_error;
+}
+
+static inline void ath79_spinand_read_rdm_addr(struct spi_device *spi, u32 offset, u8 *addr)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	priv->read_rdm_addr(offset, addr);
+}
+
+static inline int ath79_spinand_program_load(struct spi_device *spi, u32 offset,
+					     u32 len, u8 *wbuf)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	return priv->program_load(spi, offset, len, wbuf);
+}
+
+static inline int ath79_spinand_erase_block_erase(struct spi_device *spi, u32 page)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	return priv->erase_block(spi, page);
+}
+
+static inline int ath79_spinand_read_page_to_cache(struct spi_device *spi, u32 page)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	return priv->page_read_to_cache(spi, page);
+}
+
+static inline int ath79_spinand_program_execute(struct spi_device *spi, u32 page)
+{
+	struct ath79_spinand_priv *priv = spi_to_priv(spi);
+
+	return priv->program_execute(spi, page);
 }
 
 static int ath79_spinand_cmd(struct spi_device *spi, struct ath79_spinand_command *cmd)
@@ -164,9 +262,7 @@ static int ath79_spinand_cmd(struct spi_device *spi, struct ath79_spinand_comman
 		x[3].len = cmd->n_tx;
 		x[3].tx_buf = cmd->tx_buf;
 		spi_message_add_tail(&x[3], &message);
-	}
-
-	if (cmd->n_rx) {
+	} else if (cmd->n_rx) {
 		x[3].len = cmd->n_rx;
 		x[3].rx_buf = cmd->rx_buf;
 		spi_message_add_tail(&x[3], &message);
@@ -178,11 +274,12 @@ static int ath79_spinand_cmd(struct spi_device *spi, struct ath79_spinand_comman
 static int ath79_spinand_read_id(struct spi_device *spi_nand, u8 *id)
 {
 	int retval;
+	u8 nand_id[3];
 	struct ath79_spinand_command cmd = {0};
 
 	cmd.cmd = CMD_READ_ID;
 	cmd.n_rx = 3;
-	cmd.rx_buf = id;
+	cmd.rx_buf = nand_id;
 
 	retval = ath79_spinand_cmd(spi_nand, &cmd);
 	if (retval < 0) {
@@ -190,8 +287,13 @@ static int ath79_spinand_read_id(struct spi_device *spi_nand, u8 *id)
 		return retval;
 	}
 
-	/* GD conflict with cell info rules */
-	id[2] = 0;
+	if (nand_id[0] == NAND_MFR_GIGADEVICE) {
+		id[0] = nand_id[0];
+		id[1] = nand_id[1];
+	} else { /* Macronix, Micron */
+		id[0] = nand_id[1];
+		id[1] = nand_id[2];
+	}
 
 	return retval;
 }
@@ -214,7 +316,7 @@ static int ath79_spinand_read_status(struct spi_device *spi_nand, uint8_t *statu
 	return ret;
 }
 
-#define MAX_WAIT_JIFFIES  (120 * HZ)
+#define MAX_WAIT_JIFFIES  (40 * HZ)
 static int __ath79_wait_till_ready(struct spi_device *spi_nand, u8 *status)
 {
 	unsigned long deadline;
@@ -324,29 +426,15 @@ static int ath79_spinand_write_enable(struct spi_device *spi_nand)
 	return ath79_spinand_cmd(spi_nand, &cmd);
 }
 
-static int ath79_spinand_read_page_to_cache(struct spi_device *spi_nand, u32 page_id)
-{
-	struct ath79_spinand_command cmd = {0};
-
-	cmd.cmd = CMD_READ;
-	cmd.n_addr = 3;
-	cmd.addr[0] = (u8)(page_id >> 16);
-	cmd.addr[1] = (u8)(page_id >> 8);
-	cmd.addr[2] = (u8)(page_id >> 0);
-
-	return ath79_spinand_cmd(spi_nand, &cmd);
-}
-
 static int ath79_spinand_read_from_cache(struct spi_device *spi_nand,
 		u32 offset, u32 len, u8 *rbuf)
 {
 	struct ath79_spinand_command cmd = {0};
 
+	ath79_spinand_read_rdm_addr(spi_nand, offset, cmd.addr);
+
 	cmd.cmd = CMD_READ_RDM;
 	cmd.n_addr = 3;
-	cmd.addr[0] = 0;
-	cmd.addr[1] = (u8)(offset >> 8);
-	cmd.addr[2] = (u8)(offset >> 0);
 	cmd.n_dummy = 0;
 	cmd.n_rx = len;
 	cmd.rx_buf = rbuf;
@@ -374,7 +462,8 @@ static int ath79_spinand_read_page(struct spi_device *spi_nand, u32 page_id,
 	if ((status & STATUS_OIP_MASK) != STATUS_READY)
 		return -EBUSY;
 
-	if (STATUS2ECC(status) == STATUS_ECC_ERROR) {
+	status = ath79_spinand_ecc_status(spi_nand, status);
+	if (ath79_spinand_ecc_error(spi_nand) == status) {
 		dev_err(&spi_nand->dev,
 			"ecc error, page=%d\n", page_id);
 
@@ -397,69 +486,47 @@ static int ath79_spinand_program_data_to_cache(struct spi_device *spi_nand,
 
 	cmd.cmd = CMD_PROG_PAGE_LOAD;
 	cmd.n_addr = 2;
-	cmd.addr[0] = 0;
-	cmd.addr[1] = 0;;
+	cmd.addr[0] = (u8)(offset >> 8);
+	cmd.addr[1] = (u8)(offset >> 0);
 	cmd.n_tx = len;
 	cmd.tx_buf = wbuf;
 
 	return ath79_spinand_cmd(spi_nand, &cmd);
 }
 
-static int ath79_spinand_program_execute(struct spi_device *spi_nand, u32 page_id)
-{
-	struct ath79_spinand_command cmd = {0};
-
-	cmd.cmd = CMD_PROG_PAGE_EXC;
-	cmd.n_addr = 3;
-	cmd.addr[0] = (u8)(page_id >> 16);
-	cmd.addr[1] = (u8)(page_id >> 8);
-	cmd.addr[2] = (u8)(page_id >> 0);
-
-	return ath79_spinand_cmd(spi_nand, &cmd);
-}
-
 static int ath79_spinand_program_page(struct spi_device *spi_nand,
-		u32 page_id, u32 offset, u32 len, u8 *buf)
+		u32 page_id, u32 offset, u32 len, u8 *buf, u32 cache_size)
 {
 	int retval;
 	u8 status = 0;
-	uint8_t *wbuf;
-	unsigned int i, j;
 
-	wbuf = devm_kzalloc(&spi_nand->dev, CACHE_BUF, GFP_KERNEL);
-	if (!wbuf) {
-		dev_err(&spi_nand->dev, "No memory\n");
-		return -ENOMEM;
-	}
+	if (unlikely(offset)) {
+		uint8_t *wbuf;
+		unsigned int i, j;
 
-	if (ath79_spinand_read_page(spi_nand, page_id, 0, CACHE_BUF, wbuf)) {
+		wbuf = devm_kzalloc(&spi_nand->dev, cache_size, GFP_KERNEL);
+		if (!wbuf) {
+			dev_err(&spi_nand->dev, "No memory\n");
+			return -ENOMEM;
+		}
+
+		if (ath79_spinand_read_page(spi_nand, page_id, 0, cache_size, wbuf)) {
+			devm_kfree(&spi_nand->dev, wbuf);
+			return -1;
+		}
+
+		for (i = offset, j = 0; i < len; i++, j++)
+			wbuf[i] &= buf[j];
+
+		retval = ath79_spinand_program_load(spi_nand, offset, len, wbuf);
+
 		devm_kfree(&spi_nand->dev, wbuf);
-		return -1;
+	} else {
+		retval = ath79_spinand_program_load(spi_nand, offset, len, buf);
 	}
 
-	for (i = offset, j = 0; i < len; i++, j++)
-		wbuf[i] &= buf[j];
-
-	retval = ath79_spinand_program_data_to_cache(spi_nand, offset,
-						     len, wbuf);
-
-	devm_kfree(&spi_nand->dev, wbuf);
-
-	if (retval < 0) {
-		dev_err(&spi_nand->dev, "program data to cache failed\n");
+	if (retval < 0)
 		return retval;
-	}
-
-	retval = ath79_spinand_write_enable(spi_nand);
-	if (retval < 0) {
-		dev_err(&spi_nand->dev, "write enable failed!!\n");
-		return retval;
-	}
-
-	if (ath79_wait_till_ready(spi_nand)) {
-		dev_err(&spi_nand->dev, "wait timedout!!!\n");
-		return -EBUSY;
-	}
 
 	retval = ath79_spinand_program_execute(spi_nand, page_id);
 	if (retval < 0) {
@@ -484,26 +551,11 @@ static int ath79_spinand_program_page(struct spi_device *spi_nand,
 	return 0;
 }
 
-static int ath79_spinand_erase_block_erase(struct spi_device *spi_nand, u32 block_id)
-{
-	struct ath79_spinand_command cmd = {0};
-	u32 row = BLOCK_TO_RA(block_id);
-
-	cmd.cmd = CMD_ERASE_BLK;
-	cmd.n_addr = 3;
-	cmd.addr[0] = (u8)(row >> 16);
-	cmd.addr[1] = (u8)(row >> 8);
-	cmd.addr[2] = (u8)(row >> 0);
-
-	return ath79_spinand_cmd(spi_nand, &cmd);
-}
-
 static int ath79_spinand_erase_block(struct mtd_info *mtd,
 		struct spi_device *spi_nand, u32 page)
 {
 	int retval;
 	u8 status = 0;
-	u32 block_id = page >> (mtd->erasesize_shift - mtd->writesize_shift);
 
 	retval = ath79_spinand_write_enable(spi_nand);
 	if (retval < 0) {
@@ -516,7 +568,7 @@ static int ath79_spinand_erase_block(struct mtd_info *mtd,
 		return -EBUSY;
 	}
 
-	retval = ath79_spinand_erase_block_erase(spi_nand, block_id);
+	retval = ath79_spinand_erase_block_erase(spi_nand, page);
 	if (retval < 0) {
 		dev_err(&spi_nand->dev, "erase block failed!\n");
 		return retval;
@@ -532,7 +584,7 @@ static int ath79_spinand_erase_block(struct mtd_info *mtd,
 
 	if ((status & STATUS_E_FAIL_MASK) == STATUS_E_FAIL) {
 		dev_err(&spi_nand->dev,
-			"erase error, block %d\n", block_id);
+			"erase error, block %d\n", PAGE_TO_BLOCK(page));
 		return -1;
 	}
 
@@ -574,12 +626,12 @@ static int ath79_spinand_read_page_hwecc(struct mtd_info *mtd,
 	if ((status & STATUS_OIP_MASK) != STATUS_READY)
 		return -EBUSY;
 
-	if (STATUS2ECC(status) == STATUS_ECC_ERROR) {
-		pr_info("%s: ECC error\n", __func__);
+	status = ath79_spinand_ecc_status(spi_nand, status);
+	if (ath79_spinand_ecc_error(spi_nand) == status) {
+		pr_info("%s: Internal ECC error\n", __func__);
 		mtd->ecc_stats.failed++;
-	} else if (STATUS2ECC(status) >= STATUS_ECC_ERR_BITS7) {
-		pr_debug("%s: ECC error %d corrected\n",
-			 __func__, STATUS2ECC(status));
+	} else if (status) {
+		pr_debug("%s: Internal ECC error corrected\n", __func__);
 		mtd->ecc_stats.corrected++;
 	}
 
@@ -588,6 +640,50 @@ static int ath79_spinand_read_page_hwecc(struct mtd_info *mtd,
 
 static void ath79_spinand_select_chip(struct mtd_info *mtd, int dev)
 {
+}
+
+/*
+ * Mark bad block: the 1st page of the bad block set to zero, include
+ * main area and spare area.
+ * NOTE, irreversible and erase is not recommanded
+ */
+static int ath79_spinand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+{
+	u8 status;
+	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
+	struct ath79_spinand_info *info = (struct ath79_spinand_info *)chip->priv;
+	struct spi_device *spi_nand = info->spi;
+	struct ath79_spinand_state *state = info->state;
+	int page_len = mtd->writesize + mtd->oobsize;
+	int retval, page_id = OFS_TO_PAGE(ofs);;
+
+	memset(state->buf, 0, page_len);
+
+	retval = ath79_spinand_program_load(spi_nand, 0, page_len, state->buf);
+	if (retval < 0)
+		return retval;
+
+	retval = ath79_spinand_program_execute(spi_nand, page_id);
+	if (retval < 0) {
+		dev_err(&spi_nand->dev, "program execute failed\n");
+		return retval;
+	}
+
+	if (__ath79_wait_till_ready(spi_nand, &status)) {
+		dev_err(&spi_nand->dev, "wait timedout!!!\n");
+		return -EBUSY;
+	}
+
+	if ((status & STATUS_OIP_MASK) != STATUS_READY)
+		return -EBUSY;
+
+	if ((status & STATUS_P_FAIL_MASK) == STATUS_P_FAIL) {
+		dev_err(&spi_nand->dev,
+			"program error, page %d\n", page_id);
+		return -1;
+	}
+
+	return 0;
 }
 
 static uint8_t ath79_spinand_read_byte(struct mtd_info *mtd)
@@ -612,9 +708,11 @@ static int ath79_spinand_wait(struct mtd_info *mtd, struct nand_chip *chip)
 		if (ath79_spinand_read_status(info->spi, &status))
 			return NAND_STATUS_FAIL;
 
-		if ((status & STATUS_OIP_MASK) == STATUS_READY)
-			return (STATUS2ECC(status) == STATUS_ECC_ERROR) ?
+		if ((status & STATUS_OIP_MASK) == STATUS_READY) {
+			status = ath79_spinand_ecc_status(info->spi, status);
+			return (ath79_spinand_ecc_error(info->spi) == status)  ?
 				NAND_STATUS_FAIL : NAND_STATUS_READY;
+		}
 
 		cond_resched();
 	}
@@ -624,6 +722,8 @@ static int ath79_spinand_wait(struct mtd_info *mtd, struct nand_chip *chip)
 static void ath79_spinand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
 {
 	struct ath79_spinand_state *state = mtd_to_state(mtd);
+
+	BUG_ON(BUF_SIZE - state->buf_ptr < len);
 
 	memcpy(state->buf + state->buf_ptr, buf, len);
 	state->buf_ptr += len;
@@ -654,11 +754,11 @@ static void ath79_spinand_reset(struct spi_device *spi_nand)
 }
 
 static void ath79_spinand_cmdfunc(struct mtd_info *mtd, unsigned int command,
-		int column, int page)
+				  int column, int page)
 {
 	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
 	struct ath79_spinand_info *info = (struct ath79_spinand_info *)chip->priv;
-	struct ath79_spinand_state *state = (struct ath79_spinand_state *)info->priv;
+	struct ath79_spinand_state *state = info->state;
 
 	switch (command) {
 	case NAND_CMD_READ1:
@@ -699,7 +799,8 @@ static void ath79_spinand_cmdfunc(struct mtd_info *mtd, unsigned int command,
 	/* PAGEPROG reuses all of the setup from SEQIN and adds the length */
 	case NAND_CMD_PAGEPROG:
 		ath79_spinand_program_page(info->spi, state->row, state->col,
-					   state->buf_ptr, state->buf);
+					   state->buf_ptr, state->buf,
+					   mtd->writesize + mtd->oobsize);
 		break;
 	case NAND_CMD_STATUS:
 		ath79_spinand_get_otp(info->spi, state->buf);
@@ -739,12 +840,231 @@ static int ath79_spinand_lock_block(struct spi_device *spi_nand, u8 lock)
 	return ret;
 }
 
+/*
+ * 	ECCSR[2:0]	ECC Status
+ *	-------------------------------------------
+ *	000		no bit errors were detected
+ *	001		bit errors(<3) corrected
+ *	010		bit errors(=4) corrected
+ *	011		bit errors(=5) corrected
+ *	100		bit errors(=6) corrected
+ *	101		bit errors(=7) corrected
+ *	110		bit errors(=8) corrected
+ *	111		uncorrectable
+ */
+static inline u8 ath79_spinand_eccsr_gd(u8 status)
+{
+	return status >> 4 & 0x7;
+}
+
+/*
+ * 	ECCSR[1:0]	ECC Status
+ *	-------------------------------------------
+ *	00		no bit errors were detected
+ *	01		bit errors(1~4) corrected
+ *	10		uncorrectable
+ *	11		reserved
+ */
+static inline u8 ath79_spinand_eccsr_common(u8 status)
+{
+	return status >> 4 & 0x3;
+}
+
+static inline void ath79_spinand_read_rdm_addr_gd(u32 offset, u8 *addr)
+{
+	addr[0] = 0xff; /* dummy byte */
+	addr[1] = (u8)(offset >> 8);
+	addr[2] = (u8)(offset >> 0);
+}
+
+static inline void ath79_spinand_read_rdm_addr_common(u32 offset, u8 *addr)
+{
+	addr[0] = (u8)(offset >> 8);
+	addr[1] = (u8)(offset >> 0);
+	addr[2] = 0xff; /* dummy byte */
+}
+
+static inline int ath79_spinand_program_load_gd(struct spi_device *spi, u32 offset,
+						u32 len, u8 *wbuf)
+{
+	int retval;
+
+	retval = ath79_spinand_program_data_to_cache(spi, offset, len, wbuf);
+	if (retval < 0) {
+		dev_err(&spi->dev, "program data to cache failed\n");
+		return retval;
+	}
+
+	retval = ath79_spinand_write_enable(spi);
+	if (retval < 0) {
+		dev_err(&spi->dev, "write enable failed!!\n");
+		return retval;
+	}
+
+	if (ath79_wait_till_ready(spi)) {
+		dev_err(&spi->dev, "wait timedout!!!\n");
+		return -EBUSY;
+	}
+
+	return 0;
+}
+
+static inline int ath79_spinand_program_load_common(struct spi_device *spi, u32 offset,
+						u32 len, u8 *wbuf)
+{
+	int retval;
+
+	retval = ath79_spinand_write_enable(spi);
+	if (retval < 0) {
+		dev_err(&spi->dev, "write enable failed!!\n");
+		return retval;
+	}
+
+	retval = ath79_spinand_program_data_to_cache(spi, offset, len, wbuf);
+	if (retval < 0) {
+		dev_err(&spi->dev, "program data to cache failed\n");
+		return retval;
+	}
+
+	if (ath79_wait_till_ready(spi)) {
+		dev_err(&spi->dev, "wait timedout!!!\n");
+		return -EBUSY;
+	}
+
+	return 0;
+}
+
+static inline int __ath79_spinand_execute_cmd_common(struct spi_device *spi,
+						     u32 page, u8 cmd_id)
+{
+	struct ath79_spinand_command cmd = {0};
+
+	cmd.cmd = cmd_id;
+	cmd.n_addr = 3;
+	cmd.addr[0] = (u8)(page >> 16);
+	cmd.addr[1] = (u8)(page >> 8);
+	cmd.addr[2] = (u8)(page >> 0);
+
+	return ath79_spinand_cmd(spi, &cmd);
+}
+
+static inline int __ath79_spinand_execute_cmd_win(struct spi_device *spi,
+						  u32 page, u8 cmd_id)
+{
+	struct ath79_spinand_command cmd = {0};
+
+	cmd.cmd = cmd_id;
+	cmd.n_addr = 3;
+	cmd.addr[0] = 0;
+	cmd.addr[1] = (u8)(page >> 8);
+	cmd.addr[2] = (u8)(page >> 0);
+
+	return ath79_spinand_cmd(spi, &cmd);
+}
+
+static inline int ath79_spinand_erase_block_erase_common(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_common(spi_nand, page, CMD_ERASE_BLK);
+}
+
+static inline int ath79_spinand_erase_block_erase_win(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_win(spi_nand, page, CMD_ERASE_BLK);
+}
+
+static inline int ath79_spinand_page_read_to_cache_common(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_common(spi_nand, page, CMD_READ);
+}
+
+static inline int ath79_spinand_page_read_to_cache_win(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_win(spi_nand, page, CMD_READ);
+}
+
+static inline int ath79_spinand_program_execute_common(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_common(spi_nand, page, CMD_PROG_PAGE_EXC);
+}
+
+static inline int ath79_spinand_program_execute_win(struct spi_device *spi_nand, u32 page)
+{
+	return __ath79_spinand_execute_cmd_win(spi_nand, page, CMD_PROG_PAGE_EXC);
+}
+
+static struct ath79_spinand_priv ath79_spinand_ids[] = {
+	{ /* Giga Device */
+		NAND_MFR_GIGADEVICE,			/* manufacturer */
+		0x07,					/* ecc error code */
+		SZ_512,					/* ecc size */
+		16,					/* ecc bytes */
+		1,					/* ecc strength */
+		&ath79_spinand_oob_128_gd,		/* ecc layout */
+		&ath79_badblock_pattern_default, 	/* bad block pattern */
+		ath79_spinand_eccsr_gd,			/* get ecc status */
+		ath79_spinand_read_rdm_addr_gd,		/* wrap address for 03h command */
+		ath79_spinand_program_load_gd,		/* program load data to cache */
+		ath79_spinand_erase_block_erase_common,	/* erase block */
+		ath79_spinand_page_read_to_cache_common,/* page read to cache */
+		ath79_spinand_program_execute_common,	/* program execute */
+	},
+	{ /* Macronix */
+		NAND_MFR_MACRONIX,			/* manufacturer*/
+		0x02,					/* ecc error code */
+		SZ_512,					/* ecc size */
+		7,					/* ecc bytes */
+		1,					/* ecc strength */
+		&ath79_spinand_oob_64_mx,		/* ecc layout */
+		&ath79_badblock_pattern_default,	/* bad block pattern */
+		ath79_spinand_eccsr_common,		/* get ecc status */
+		ath79_spinand_read_rdm_addr_common,	/* wrap address for 03h command */
+		ath79_spinand_program_load_common,	/* program load data to cache */
+		ath79_spinand_erase_block_erase_common,	/* erase block */
+		ath79_spinand_page_read_to_cache_common,/* page read to cache */
+		ath79_spinand_program_execute_common,	/* program execute */
+	},
+	{ /* Winbond */
+		NAND_MFR_WINBOND,			/* manufacturer*/
+		0x02,					/* ecc error code */
+		SZ_512,					/* ecc size */
+		10,					/* ecc bytes */
+		1,					/* ecc strength */
+		&ath79_spinand_oob_64_win,		/* ecc layout */
+		&ath79_badblock_pattern_default,	/* bad block pattern */
+		ath79_spinand_eccsr_common,		/* get ecc status */
+		ath79_spinand_read_rdm_addr_common,	/* wrap address for 03h command */
+		ath79_spinand_program_load_common,	/* program load data to cache */
+		ath79_spinand_erase_block_erase_win,	/* erase block */
+		ath79_spinand_page_read_to_cache_win,	/* page read to cache */
+		ath79_spinand_program_execute_win,	/* program execute */
+	},
+};
+
+static void *ath79_spinand_priv_data_get(struct spi_device *spi_nand)
+{
+	u8 id[3];
+	int i;
+
+	ath79_spinand_read_id(spi_nand, id);
+
+	for (i = 0; i < ARRAY_SIZE(ath79_spinand_ids); i++)
+		if (ath79_spinand_ids[i].mfr == id[0])
+			return &ath79_spinand_ids[i];
+
+	return NULL;
+}
+
 static int ath79_spinand_probe(struct spi_device *spi_nand)
 {
 	struct mtd_info *mtd;
 	struct nand_chip *chip;
 	struct ath79_spinand_info *info;
 	struct ath79_spinand_state *state;
+	struct ath79_spinand_priv *priv_data;
+
+	priv_data = ath79_spinand_priv_data_get(spi_nand);
+	if (!priv_data)
+		return -ENXIO;
 
 	info  = devm_kzalloc(&spi_nand->dev, sizeof(struct ath79_spinand_info),
 			GFP_KERNEL);
@@ -757,13 +1077,14 @@ static int ath79_spinand_probe(struct spi_device *spi_nand)
 	ath79_spinand_disable_ecc(spi_nand);
 
 	state = devm_kzalloc(&spi_nand->dev, sizeof(struct ath79_spinand_state),
-			     GFP_KERNEL);
+			    GFP_KERNEL);
 	if (!state)
 		return -ENOMEM;
 
-	info->priv	= state;
+	info->state	= state;
+	info->priv	= priv_data;
 	state->buf_ptr	= 0;
-	state->buf	= devm_kzalloc(&spi_nand->dev, BUFSIZE, GFP_KERNEL);
+	state->buf	= devm_kzalloc(&spi_nand->dev, BUF_SIZE, GFP_KERNEL);
 	if (!state->buf)
 		return -ENOMEM;
 
@@ -772,23 +1093,23 @@ static int ath79_spinand_probe(struct spi_device *spi_nand)
 	if (!chip)
 		return -ENOMEM;
 
-	chip->ecc.mode	= NAND_ECC_HW;
-	chip->ecc.size	= 512;
-	chip->ecc.bytes	= 16;
-	chip->ecc.strength = 1;
-	chip->ecc.layout = (void *)&ath79_spinand_oob_128;
-	chip->badblock_pattern = &ath79_badblock_pattern;
-	chip->ecc.read_page = ath79_spinand_read_page_hwecc;
-	chip->ecc.write_page = ath79_spinand_write_page_hwecc;
-
-	chip->priv	= info;
-	chip->read_buf	= ath79_spinand_read_buf;
-	chip->write_buf	= ath79_spinand_write_buf;
-	chip->read_byte	= ath79_spinand_read_byte;
-	chip->cmdfunc	= ath79_spinand_cmdfunc;
-	chip->waitfunc	= ath79_spinand_wait;
-	chip->options	= NAND_CACHEPRG | NAND_NO_SUBPAGE_WRITE;
-	chip->select_chip = ath79_spinand_select_chip;
+	chip->ecc.mode		= NAND_ECC_HW;
+	chip->ecc.size		= priv_data->ecc_size;
+	chip->ecc.bytes		= priv_data->ecc_bytes;
+	chip->ecc.strength	= priv_data->ecc_strength;
+	chip->ecc.layout	= priv_data->ecc_layout;
+	chip->badblock_pattern	= priv_data->badblock_pattern;
+	chip->ecc.read_page	= ath79_spinand_read_page_hwecc;
+	chip->ecc.write_page	= ath79_spinand_write_page_hwecc;
+	chip->priv		= info;
+	chip->read_buf		= ath79_spinand_read_buf;
+	chip->write_buf		= ath79_spinand_write_buf;
+	chip->read_byte		= ath79_spinand_read_byte;
+	chip->cmdfunc		= ath79_spinand_cmdfunc;
+	chip->waitfunc		= ath79_spinand_wait;
+	chip->options		= NAND_CACHEPRG | NAND_NO_SUBPAGE_WRITE;
+	chip->select_chip	= ath79_spinand_select_chip;
+	chip->block_markbad	= ath79_spinand_block_markbad;
 
 	mtd = devm_kzalloc(&spi_nand->dev, sizeof(struct mtd_info), GFP_KERNEL);
 	if (!mtd)
@@ -798,13 +1119,6 @@ static int ath79_spinand_probe(struct spi_device *spi_nand)
 
 	mtd->priv		= chip;
 	mtd->name		= dev_name(&spi_nand->dev);
-	mtd->oobsize		= 128;
-	mtd->writesize_shift	= 11;
-	mtd->writesize		= (1 << mtd->writesize_shift);
-	mtd->writesize_mask	= (mtd->writesize - 1);
-	mtd->erasesize_shift	= 17;
-	mtd->erasesize		= (1 << mtd->erasesize_shift);
-	mtd->erasesize_mask	= (mtd->erasesize - 1);
 	mtd->owner		= THIS_MODULE;
 
 	if (nand_scan(mtd, 1))
@@ -834,5 +1148,5 @@ static struct spi_driver ath79_spinand_driver = {
 
 module_spi_driver(ath79_spinand_driver);
 
-MODULE_DESCRIPTION("SPI NAND driver for Giga Device");
+MODULE_DESCRIPTION("SPI NAND driver for Giga Device/Macronix");
 MODULE_LICENSE("GPL v2");

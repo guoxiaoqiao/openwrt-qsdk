@@ -35,11 +35,19 @@ akronite_ac_power()
 	[ -f /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend ] && {
 		echo 0 > /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend
 	}
+	[ -f sys/devices/soc.2/29000000.sata/ahci_sata_suspend ] && {
+		echo 0 > sys/devices/soc.2/29000000.sata/ahci_sata_suspend
+	}
+
 	sleep 1
 	echo "- - -" > /sys/class/scsi_host/host0/scan
 
 # USB Power-UP Sequence
 	[ -d /sys/module/dwc3_ipq ] || insmod dwc3-ipq
+	[ -d /sys/module/dwc3_qcom ] && insmod dwc3-qcom
+	[ -d /sys/module/phy-qcom-hsusb ] && insmod phy-qcom-hsusb
+	[ -d /sys/module/phy-qcom-ssusb ] && insmod phy-qcom-ssusb
+	[ -d /sys/module/dwc3 ] && insmod dwc3
 
 	exit 0
 }
@@ -97,9 +105,17 @@ akronite_battery_power()
 	[ -f /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend ] && {
 		echo 1 > /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend
 	}
+	[ -f /sys/devices/soc.2/29000000.sata/ahci_sata_suspend ] && {
+		echo 1 > /sys/devices/soc.2/29000000.sata/ahci_sata_suspend
+	}
 
 # USB Power-down Sequence
 	[ -d /sys/module/dwc3_ipq ] && rmmod dwc3-ipq
+	[ -d /sys/module/dwc3_qcom ] && rmmod dwc3-qcom
+	[ -d /sys/module/phy-qcom-hsusb ] && rmmod phy-qcom-hsusb
+	[ -d /sys/module/phy-qcom-ssusb ] && rmmod phy-qcom-ssusb
+	[ -d /sys/module/dwc3 ] && rmmod dwc3
+
 	sleep 1
 
 # Disabling Auto scale on NSS cores
@@ -147,6 +163,10 @@ ap_dk01_1_ac_power()
 		insmod dwc3-ipq40xx.ko
 		insmod dwc3.ko
 	fi
+
+# LAN interface up
+	ifup lan
+
 	exit 0
 }
 
@@ -186,6 +206,10 @@ ap_dk01_1_battery_power()
 		rmmod phy-qca-baldur
 	fi
 	sleep 2
+
+# LAN interface down
+	ifdown lan
+
 # Cortex Power-down Sequence
 	echo 48000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
@@ -222,6 +246,10 @@ ap_dk04_1_ac_power()
 		insmod dwc3-ipq40xx.ko
 		insmod dwc3.ko
 	fi
+
+# LAN interface up
+	ifup lan
+
 # SD/MMC Power-UP sequence
 	if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
 	then
@@ -303,6 +331,10 @@ ap_dk04_1_battery_power()
 		echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
 		echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
 	fi
+
+# LAN interface down
+	ifdown lan
+
 # Cortex Power-down Sequence
 	echo 48000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
