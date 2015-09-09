@@ -64,7 +64,7 @@ BLUETOOTH:=bluez kmod-ath3k
 
 AUDIO:=kmod-sound-soc-ipq40xx alsa
 
-VIDEO:=kmod-qpic_panel_ili_qvga
+VIDEO:=kmod-qpic_panel_ertft
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
