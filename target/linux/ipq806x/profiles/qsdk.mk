@@ -68,9 +68,9 @@ VIDEO:=kmod-qpic_panel_ili_qvga
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
-		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(NETWORKING) $(UTILS) \
-		$(BLUETOOTH) $(QCA_ECM) $(NSS_CLIENTS) $(QOS) $(TEST_TOOLS) alsa
+	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_OPEN_PKGS) $(WIFI_OPEN_PKGS) \
+		$(STORAGE) $(CD_ROUTER) $(NETWORKING) $(UTILS) \
+		$(BLUETOOTH) $(QOS) $(TEST_TOOLS) alsa
 endef
 
 define Profile/QSDK_Open/Description
