@@ -8,6 +8,10 @@ NSS_STANDARD:= \
 	kmod-qca-nss-gmac \
 	kmod-qca-edma
 
+NSS_MACSEC:= \
+	kmod-qca-nss-macsec \
+	qca-wpa-supplicant-10.4-macsec
+
 QCA_ECM:= kmod-qca-nss-ecm
 
 NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6
@@ -88,7 +92,7 @@ define Profile/QSDK_Premium
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PREMIUM_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) \
-		$(QCA_ECM) $(TEST_TOOLS)
+		$(QCA_ECM) $(NSS_MACSEC) $(TEST_TOOLS)
 endef
 
 define Profile/QSDK_Premium/Description
