@@ -12,12 +12,12 @@ define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
 	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
 	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.gz)
-	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb,gzip,0x42208000,0x42208000)
+	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb,gzip,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb $(BIN_DIR)/$(IMG_PREFIX)-$(1).dtb
 ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
 	$(CP) $(KDIR)/Image-initramfs $(BIN_DIR)/$(IMG_PREFIX)-vmlinux-initramfs.bin
-	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image-initramfs, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb, none,0x42208000,0x42208000)
+	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image-initramfs, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb, none,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage-initramfs.itb
 endif
 endef
@@ -36,8 +36,9 @@ endef
 
 define Image/BuildKernel
 	$(CP) $(KDIR)/$(IMG_PREFIX)-vmlinux.elf $(BIN_DIR)
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148)
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-db149)
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,0x42208000)
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-db149,0x42208000)
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-r3pc,0x80008000)
 endef
 
 define Image/Build/squashfs
