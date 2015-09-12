@@ -1,0 +1,15 @@
+Index: linux-3.3.8/kernel/signal.c
+===================================================================
+--- linux-3.3.8.orig/kernel/signal.c	2012-06-01 12:46:13.000000000 +0530
++++ linux-3.3.8/kernel/signal.c	2015-09-12 19:02:27.213246807 +0530
+@@ -1210,6 +1210,10 @@
+ 	int ret = -ESRCH;
+ 
+ 	if (lock_task_sighand(p, &flags)) {
++		if (sig == SIGKILL || sig == SIGTERM)
++			printk (KERN_ALERT "OWT_DBG:The process with ID:%d and name: %s sending signal %d to"  \
++				" the process with ID:%d and name: %s\n", task_pid_nr(current), current->comm, \
++				sig, p->pid, p->comm);
+ 		ret = send_signal(sig, info, p, group);
+ 		unlock_task_sighand(p, &flags);
+ 	}
