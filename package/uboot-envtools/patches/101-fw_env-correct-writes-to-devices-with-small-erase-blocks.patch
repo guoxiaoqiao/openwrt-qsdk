@@ -1,0 +1,37 @@
+From: Dustin Byford <dustin@cumulusnetworks.com>
+Subject: [U-Boot] fw_env: correct writes to devices with small erase blocks
+
+Some NOR flash devices have a small erase block size.  For example, the
+Micron N25Q512 can erase in 4K blocks.  These devices expose a bug in
+fw_env.c where flash_write_buf() incorrectly calculates bytes written
+and attempts to write past the environment sectors.  Luckily, a range
+check prevents any real damage, but this does cause fw_setenv to fail
+with an error.
+
+This change corrects the write length calculation.
+
+The bug was introduced with commit 56086921 from 2008 and only affects
+configurations where the erase block size is smaller than the total
+environment data size.
+
+Signed-off-by: Dustin Byford <dustin@cumulusnetworks.com>
+---
+ tools/env/fw_env.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/env/fw_env.c b/tools/env/fw_env.c
+index 649db04..d228cc3 100644
+--- a/tools/env/fw_env.c
++++ b/tools/env/fw_env.c
+@@ -863,9 +863,9 @@ static int flash_write_buf (int dev, int fd, void *buf, size_t count,
+ 		if (mtd_type != MTD_ABSENT)
+ 			ioctl(fd, MEMLOCK, &erase);
+ 
+-		processed  += blocklen;
++		processed  += erasesize;
+ 		block_seek = 0;
+-		blockstart += blocklen;
++		blockstart += erasesize;
+ 	}
+ 
+ 	if (write_total > count)
