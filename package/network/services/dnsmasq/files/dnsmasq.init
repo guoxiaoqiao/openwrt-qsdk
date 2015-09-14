@@ -546,7 +546,7 @@ boot() {
 }
 
 start_service() {
-	include /lib/functions
+	. /lib/functions/network.sh
 
 	config_load dhcp
 
