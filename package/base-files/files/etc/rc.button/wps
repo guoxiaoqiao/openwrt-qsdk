@@ -1,4 +1,6 @@
 #!/bin/sh
+wps_hotplug=$(find /etc/hotplug.d/button -iname "*wps*") 2>/dev/null
+[ -n "$wps_hotplug" ] && exit 0
 
 for dir in /var/run/hostapd-*; do
 	[ -d "$dir" ] || continue
