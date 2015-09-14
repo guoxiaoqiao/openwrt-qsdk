@@ -52,8 +52,6 @@ endef
 
 define Image/BuildKernel
 	$(CP) $(KDIR)/vmlinux$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,0x42208000,compressed-dtb,0x43F00000)
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-v2.0-ap148,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-storm,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-whirlwind,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-r3pc,0x80208000)
@@ -77,6 +75,22 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-db149,"qcom-ipq8064-db149 \
 								qcom-ipq8064-v2.0-db149 \
 								qcom-ipq8064-v3.0-db149"\
+								,0x42208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148,"qcom-ipq8064-ap148 \
+								qcom-ipq8064-v2.0-ap148 \
+								qcom-ipq8064-v3.0-ap148"\
+								,0x42208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ak01,"qcom-ipq8064-ak01 \
+								qcom-ipq8064-v2.0-ak01 \
+								qcom-ipq8064-v3.0-ak01"\
+								,0x42208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145_1xx,"qcom-ipq8064-ap145_1xx \
+								qcom-ipq8064-v2.0-ap145_1xx \
+								qcom-ipq8064-v3.0-ap145_1xx"\
+								,0x42208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145,"qcom-ipq8064-ap145 \
+								qcom-ipq8064-v2.0-ap145 \
+								qcom-ipq8064-v3.0-ap145"\
 								,0x42208000)
 endef
 
