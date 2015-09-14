@@ -24,7 +24,7 @@ define KernelPackage/qca-nss-macsec
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
-  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +libpthread
+  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +libpthread +libc
   TITLE:=Kernel driver for NSS macsec
   FILES:=$(PKG_BUILD_DIR)/qca-nss-macsec.ko
   AUTOLOAD:=$(call AutoLoad,52,qca-nss-macsec)
@@ -42,10 +42,12 @@ QCA_NSS_MACSEC_CONFIG_OPTS+= TOOL_PATH=$(TOOLCHAIN_DIR)/bin/ \
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include/qca-nss-macsec
+	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_BUILD_DIR)/include/nss_macsec_types.h $(1)/usr/include/qca-nss-macsec
 	$(CP) $(PKG_BUILD_DIR)/include/nss_macsec_secy.h $(1)/usr/include/qca-nss-macsec
 	$(CP) $(PKG_BUILD_DIR)/include/nss_macsec_secy_rx.h $(1)/usr/include/qca-nss-macsec
 	$(CP) $(PKG_BUILD_DIR)/include/nss_macsec_secy_tx.h $(1)/usr/include/qca-nss-macsec
+	$(CP) $(PKG_BUILD_DIR)/libfal.so $(1)/usr/lib
 endef
 
 define Build/Compile
