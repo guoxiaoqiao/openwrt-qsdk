@@ -928,6 +928,11 @@ void ag71xx_link_adjust(struct ag71xx *ag)
 	else
 		ag71xx_wr(ag, AG71XX_REG_FIFO_CFG3, 0x008001ff);
 
+	if (ag->gmac_num == 0 && !ag->duplex) {
+		ag71xx_wr(ag, AG71XX_REG_FIFO_CFG3, AG71XX_CFG_3_HD_VAL);
+		ag71xx_wr(ag, AG71XX_REG_FIFO_THRESH, AG71XX_FIFO_TH_HD_VAL);
+	}
+
 	if (pdata->set_speed)
 		pdata->set_speed(ag->speed);
 
