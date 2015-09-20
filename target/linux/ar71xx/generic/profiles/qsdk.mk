@@ -23,12 +23,11 @@ PACKAGES_WIFI_10_2:=kmod-qca-wifi-perf kmod-art2 qca-hostap-10.4 qca-hostapd-cli
 	  qca-acfg qca-wrapd whc whc-ui qca-wifi-fw-hw1-10.2 qca-wifi-fw-hw1-10.2-lteu \
 	  qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
 
-PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-unified-perf kmod-art2 \
+PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-perf kmod-art2 \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 	qca-wpa-cli-10.4 qca-wapid sigma-dut-10.4 qca-wpc-10.4 \
-	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc whc-ui \
-	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw7-10.4-asic \
-	qca-wifi-fw-hw6-10.4-asic qca-wifi-fw-hw8-10.4-asic
+	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc \
+	qca-wifi-fw-hw7-10.4-asic
 
 define Profile/QSDK_Open_Router
 	$(Profile/QSDK_Base)
@@ -105,7 +104,7 @@ $(eval $(call Profile,QSDK_Premium_Router))
 define Profile/QSDK_Premium_Beeliner_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
-	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
+	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  streamboost kmod-fast-classifier $(STORAGE) $(PACKAGES_WIFI_10_4) \
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
