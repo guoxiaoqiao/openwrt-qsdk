@@ -12,6 +12,11 @@ do_load_ipq4019_board_bin()
 
     local apdk="/tmp"
 
+    if [ -z "$mtdblock" ]; then
+        # read from mmc
+        mtdblock=$(find_mmc_part 0:ART)
+    fi
+
     [ -n "$mtdblock" ] || return
 
     # load board.bin
