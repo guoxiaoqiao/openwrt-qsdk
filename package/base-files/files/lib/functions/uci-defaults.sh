@@ -289,6 +289,22 @@ set network.@switch_vlan[-1].ports='$ports'
 EOF
 }
 
+ucidef_add_switch_ext() {
+	local device=$1
+	local name=$2
+	local port=$3
+	local mode=$4
+	local status=$5
+	uci batch <<EOF
+add network switch_ext
+set network.@switch_ext[-1].device='$device'
+set network.@switch_ext[-1].name='$name'
+set network.@switch_ext[-1].port_id='$port'
+set network.@switch_ext[-1].mode='$mode'
+set network.@switch_ext[-1].status='$status'
+EOF
+}
+
 ucidef_add_switch_ext_trunk() {
 	local device=$1
 	local name=$2
