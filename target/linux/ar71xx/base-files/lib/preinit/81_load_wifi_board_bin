@@ -6,7 +6,10 @@ do_load_ath10k_board_bin() {
 	local board=$(ar71xx_board_name)
 	local mtdblock=$(find_mtd_part art)
 
+        [ -n "$mtdblock" ] || return
+
 	local dir="/lib/firmware/ath10k/QCA988X/hw2.0"
+        local cal_data_path="/tmp"
 
 	# load board.bin
 	case "$board" in
@@ -14,7 +17,18 @@ do_load_ath10k_board_bin() {
 			mkdir -p ${dir}
 	                dd if=${mtdblock} of=${dir}/board.bin \
 	                        bs=1 skip=20480 count=2116
+                        mkdir -p ${cal_data_path}
+                        dd if=${mtdblock} of=${cal_data_path}/wifi0.caldata bs=32 count=377 skip=128
+                        dd if=${mtdblock} of=${cal_data_path}/wifi1.caldata bs=32 count=377 skip=640
 	        ;;
+                ap147 | ap151 | ap135)
+                        mkdir -p ${cal_data_path}
+                        dd if=${mtdblock} of=${cal_data_path}/wifi0.caldata bs=32 count=377 skip=128
+                        dd if=${mtdblock} of=${cal_data_path}/wifi1.caldata bs=32 count=377 skip=640
+                ;;
+                *)
+                        echo "Support to copy caldata is not there for $board"
+                ;;
 	esac
 }
 
