@@ -181,9 +181,12 @@ ifneq ($(CONFIG_NAND_SUPPORT),)
 # $(3) rootfstype (e.g. squashfs or ubifs)
 # $(4) options to pass-through to ubinize (i.e. $($(PROFILE)_UBI_OPTS)))
    define Image/Build/UbinizeImage
-	sh $(TOPDIR)/scripts/ubinize-image.sh $(2) \
+	sh $(TOPDIR)/scripts/ubinize-image.sh --kernel $(2) \
 		"$(KDIR)/root.$(3)" \
-		"$(KDIR)/$(IMG_PREFIX)-$(1)-$(3)-ubinized.bin" \
+		"$(BIN_DIR)/$(IMG_PREFIX)-$(1)-ubi-root.img" \
+		"$(STAGING_DIR_HOST)/bin" \
+		"ubi_rootfs" \
+		"rootfs_data" \
 		$(4)
    endef
 
