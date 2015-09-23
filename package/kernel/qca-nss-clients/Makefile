@@ -65,7 +65,7 @@ define KernelPackage/qca-nss-drv-ipsecmgr
   TITLE:=Kernel driver for NSS (ipsec manager) - ipsecmgr
   DEPENDS:=kmod-qca-nss-drv
   FILES:=$(PKG_BUILD_DIR)/qca-nss-ipsecmgr.ko
-  AUTOLOAD:=$(call AutoLoad,34,qca-nss-ipsecmgr)
+  AUTOLOAD:=$(call AutoLoad,58,qca-nss-ipsecmgr)
 endef
 
 define KernelPackage/qca-nss-drv-ipsecmgr/Description
