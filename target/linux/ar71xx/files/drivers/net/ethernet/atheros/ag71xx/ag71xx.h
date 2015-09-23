@@ -288,6 +288,9 @@ static inline struct ag71xx_platform_data *ag71xx_get_pdata(struct ag71xx *ag)
 #define AG71XX_REG_RX_SM	0x01b0
 #define AG71XX_REG_TX_SM	0x01b4
 
+#define AG71XX_REG_IG_ACL	0x23c
+#define AG71XX_IG_ACL_FRA_DISABLE	0x60000000
+
 #define AG71XX_CFG_3_HD_VAL	0x00f00040
 #define AG71XX_FIFO_TH_HD_VAL	0x00880060
 
