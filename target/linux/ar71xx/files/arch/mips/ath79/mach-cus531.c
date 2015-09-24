@@ -123,6 +123,7 @@ static struct spi_board_info cus531_spi_info[] = {
 static struct ath79_spi_platform_data cus531_spi_data = {
 	.bus_num		= 0,
 	.num_chipselect		= 2,
+	.word_banger		= true,
 };
 
 static void __init cus531_register_i2c_devices(
