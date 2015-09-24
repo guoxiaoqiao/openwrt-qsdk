@@ -5,6 +5,7 @@
 # See /LICENSE for more information.
 #
 include $(TOPDIR)/rules.mk
+include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=ocf-crypto-headers
 PKG_VERSION:=20110720
@@ -12,7 +13,10 @@ PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
+include $(INCLUDE_DIR)/local-development.mk
 include $(INCLUDE_DIR)/package.mk
+
+HDR_SRC_DIR:=$(LINUX_SRC_DIR)/crypto/ocf
 
 define Package/ocf-crypto-headers
   SECTION:=utils
@@ -30,8 +34,8 @@ endef
 
 define Build/InstallDev
 	mkdir -p $(1)/usr/include/crypto
-	$(CP) ./src/cryptodev.h $(1)/usr/include/crypto/
-	$(CP) ./src/ocf-compat.h $(1)/usr/include/crypto/
+	$(CP) $(HDR_SRC_DIR)/cryptodev.h $(1)/usr/include/crypto/
+	$(CP) $(HDR_SRC_DIR)/ocf-compat.h $(1)/usr/include/crypto/
 endef
 
 $(eval $(call BuildPackage,ocf-crypto-headers))
