@@ -72,6 +72,8 @@
 #define OFS_TO_PAGE(ofs)		(((ofs) >> 17) << 6)
 #define BUF_SIZE			(2048 * 64)
 
+#define BITS_PER_WORD(len)		((len) & 0x02 ? 16 : 32)
+
 struct ath79_spinand_priv {
 	u8 			mfr;
 	u8			ecc_error;
@@ -261,10 +263,14 @@ static int ath79_spinand_cmd(struct spi_device *spi, struct ath79_spinand_comman
 	if (cmd->n_tx) {
 		x[3].len = cmd->n_tx;
 		x[3].tx_buf = cmd->tx_buf;
+		if (!(cmd->n_tx & 1))
+			x[3].bits_per_word = BITS_PER_WORD(cmd->n_tx);
 		spi_message_add_tail(&x[3], &message);
 	} else if (cmd->n_rx) {
 		x[3].len = cmd->n_rx;
 		x[3].rx_buf = cmd->rx_buf;
+		if (!(cmd->n_rx & 1))
+			x[3].bits_per_word = BITS_PER_WORD(cmd->n_rx);
 		spi_message_add_tail(&x[3], &message);
 	}
 
