@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ "${ACTION}" = "pressed" ] || exit 0
+[ "${ACTION}" = "released" ] || exit 0
 
 . /lib/functions.sh
 
