@@ -9,7 +9,7 @@ FEATURES:=squashfs
 CPU_TYPE:=cortex-a7
 MAINTAINER:=John Crispin <blogic@openwrt.org>
 
-LINUX_VERSION:=3.18.19
+LINUX_VERSION:=3.18.21
 
 CONFIG_KERNEL_GIT_CLONE_URI:=$(TOPDIR)/qca/src/linux
 CONFIG_KERNEL_GIT_BRANCH:=""
