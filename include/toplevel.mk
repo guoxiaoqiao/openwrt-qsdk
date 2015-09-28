@@ -243,12 +243,12 @@ endif
 # update all feeds, re-create index files, install symlinks
 package/symlinks:
 	./scripts/feeds update -a
-	./scripts/feeds install -a
+	./scripts/feeds install -a -f
 
 # re-create index files, install symlinks
 package/symlinks-install:
 	./scripts/feeds update -i
-	./scripts/feeds install -a
+	./scripts/feeds install -a -f
 
 # remove all symlinks, don't touch ./feeds
 package/symlinks-clean:
