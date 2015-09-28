@@ -55,6 +55,10 @@ $(eval $(call TestHostCommand,working-g++, \
 		g++ -x c++ -o $(TMP_DIR)/a.out - -lstdc++ && \
 		$(TMP_DIR)/a.out))
 
+$(eval $(call TestHostCommand,ocamlc, \
+	Please install the Objective Caml compiler (ocaml-nox) v3.12 or later, \
+	ocamlc -v | grep -E 'version (3\.1[2-9]\.[0-9]|3\.[2-9][0-9]|[4-9]\.)'))
+
 $(eval $(call TestHostCommand,ncurses, \
 	Please install ncurses. (Missing libncurses.so or ncurses.h), \
 	echo 'int main(int argc, char **argv) { initscr(); return 0; }' | \
