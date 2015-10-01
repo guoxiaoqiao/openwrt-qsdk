@@ -28,6 +28,8 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-dakota-perf qca-wifi-fw-hw5-10.4-asic \
 	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wpc-10.4 sigma-dut-10.4 \
 	qcmbr-10.4 qca-wrapd-10.4 qca-wapid qca-acfg-10.4 whc whc-ui
 
+WIFI_10_4_FW_PREMIUM_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic
+
 OPENWRT_STANDARD:= \
 	luci openssl-util
 
@@ -83,9 +85,10 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) $(NETWORKING) $(UTILS) \
-		$(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) \
-		$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM) $(TEST_TOOLS)
+		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PREMIUM_PKGS) $(STORAGE) $(CD_ROUTER) \
+		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
+		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) \
+		$(QCA_ECM) $(TEST_TOOLS)
 endef
 
 define Profile/QSDK_Premium/Description
