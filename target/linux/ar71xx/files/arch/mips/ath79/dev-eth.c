@@ -997,6 +997,8 @@ void ath79_init_eth_pdata(unsigned int id)
 	 */
 	if ((id == 0)  && (ath79_soc == ATH79_SOC_QCA956X)) {
 		pdata->is_qca9561 = 1;
+	} else if (ath79_soc == ATH79_SOC_QCA9558) {
+		pdata->is_qca955x = 1;
 	} else {
 		pdata->is_qca9561 = 0;
 	}

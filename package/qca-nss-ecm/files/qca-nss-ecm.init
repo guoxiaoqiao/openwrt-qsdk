@@ -17,8 +17,17 @@ support_bridge() {
 	[ -d /sys/kernel/debug/ecm/ecm_sfe_conntrack_notifier ] && return 1
 }
 
+load_sfe() {
+	[ -d /sys/module/shortcut_fe ] || insmod shortcut-fe
+	[ -d /sys/module/shortcut_fe_ipv6 ] || insmod shortcut-fe-ipv6
+	[ -d /sys/module/shortcut_fe_drv ] || insmod shortcut-fe-drv
+}
+
 load_ecm() {
-	[ -d /sys/module/ecm ] || insmod ecm
+	[ -d /sys/module/ecm ] || {
+		load_sfe
+		insmod ecm
+	}
 
 	support_bridge && {
 		sysctl -w net.bridge.bridge-nf-call-ip6tables=1

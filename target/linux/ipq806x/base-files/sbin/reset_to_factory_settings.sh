@@ -12,4 +12,11 @@ kill_remaining KILL
 
 ROOTFS_PART=$(grep rootfs_data /proc/mtd |cut -f4 -d' ')
 
-run_ramfs ". /lib/functions.sh; include /lib/upgrade; sync; mtd -r erase ${ROOTFS_PART}"
+if [ -z $ROOTFS_PART ]; then
+	ROOTFS_PART="$(find_mmc_part "rootfs_data")"
+	ERASE_PART="mkfs.ext4 "$ROOTFS_PART
+else
+	ERASE_PART="mtd erase "$ROOTFS_PART
+fi
+
+run_ramfs ". /lib/functions.sh; include /lib/upgrade; sync; ${ERASE_PART}; reboot"
