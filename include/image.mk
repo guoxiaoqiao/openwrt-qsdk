@@ -175,6 +175,19 @@ ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
         endif
 	$(if $(wildcard $KDIR/root.ubi),$(call Image/Build,ubi))
     endef
+# $(1) board name
+# $(2) ubinize-image options (e.g. --uboot-env and/or --kernel kernelimage)
+# $(3) rootfstype (e.g. squashfs or ubifs)
+# $(4) options to pass-through to ubinize (i.e. $($(PROFILE)_UBI_OPTS)))
+   define Image/Build/UbinizeImage
+	sh $(TOPDIR)/scripts/ubinize-image.sh --kernel $(2) \
+		"$(KDIR)/root.$(3)" \
+		"$(BIN_DIR)/$(IMG_PREFIX)-$(1)-ubi-root.img" \
+		"$(STAGING_DIR_HOST)/bin" \
+		"ubi_rootfs" \
+		"ubi_rootfs_data" \
+		 $(4)
+   endef
 endif
 
 ifneq ($(CONFIG_TARGET_ROOTFS_CPIOGZ),)
