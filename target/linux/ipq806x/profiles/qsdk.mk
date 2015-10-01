@@ -62,7 +62,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi hyfi-ui kmod-qca-nss-drv-profile \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
-		luci-app-qos luci-app-openswan openswan-nss kmod-openswan-nss \
+		luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 		$(PACKAGES_WIFI_10_2) $(BLUETOOTH) kmod-qca-wil6210 wigig-firmware-ipdock iwinfo
 endef
@@ -82,7 +82,7 @@ define Profile/QSDK_Standard_Beeliner
 	PACKAGES+=streamboost-noload kmod-qca-nss-ecm hyfi hyfi-ui \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		kmod-qca-nss-drv-l2tpv2 \
-		luci-app-qos luci-app-openswan openswan-nss kmod-openswan-nss \
+		luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 		$(PACKAGES_WIFI_10_4) kmod-qca-wil6210 wigig-firmware iwinfo
 endef
@@ -99,7 +99,7 @@ $(eval $(call Profile,QSDK_Standard_Beeliner))
 define Profile/QSDK_Enterprise
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
-	PACKAGES+=luci-app-qos luci-app-openswan kmod-crypto-ocf \
+	PACKAGES+=luci-app-openswan kmod-crypto-ocf \
 		$(PACKAGES_NSS_ENTERPRISE) \
 		$(PACKAGES_WIFI_10_2)
 endef
@@ -112,7 +112,7 @@ $(eval $(call Profile,QSDK_Enterprise))
 define Profile/QSDK_Enterprise_Beeliner
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
-	PACKAGES+=luci-app-qos luci-app-openswan kmod-crypto-ocf \
+	PACKAGES+=luci-app-openswan kmod-crypto-ocf \
                 $(PACKAGES_NSS_ENTERPRISE) \
                 $(PACKAGES_WIFI_10_4)
 endef
