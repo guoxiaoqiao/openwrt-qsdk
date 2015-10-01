@@ -38,7 +38,6 @@ menuconfig TARGET_OPTIONS
 
 		  Most people will answer N.
 
-
 menuconfig EXTERNAL_TOOLCHAIN
 	bool
 	prompt "Use external toolchain"  if DEVEL
