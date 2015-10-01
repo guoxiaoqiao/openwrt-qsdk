@@ -29,7 +29,7 @@ system_config() {
 	if [ -x /sbin/syslogd ]; then
 		local args log_ip log_size log_port log_type log_file
 		config_get log_ip "$cfg" log_ip 
-		config_get log_size "$cfg" log_size 16
+		config_get log_size "$cfg" log_size 128
 		config_get log_port "$cfg" log_port 514
 		config_get log_type "$cfg" log_type circular
 		config_get log_file "$cfg" log_file "/var/log/messages"
