@@ -283,3 +283,16 @@ set network.@switch_port[-1].port='$port'
 EOF
 }
 
+ucidef_set_skb_recycler() {
+
+	uci batch <<EOF
+add skb_recycler skb
+EOF
+}
+
+ucidef_set_skb() {
+
+	uci batch <<EOF
+set skb_recycler.@skb[-1].'${1}'='$2'
+EOF
+}
