@@ -6,6 +6,8 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell  swconfig
 
 QCA_EDMA:=kmod-qca-edma
 
+WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad hostapd-utils wpa-cli
+
 OPENWRT_STANDARD:= \
 	luci
 
@@ -17,7 +19,7 @@ STORAGE:=kmod-scsi-core kmod-usb-storage \
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA) \
-	$(STORAGE)
+	$(WIFI_OPEN_PKGS) $(STORAGE)
 endef
 
 define Profile/QSDK_Open/Description
