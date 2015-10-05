@@ -9,9 +9,15 @@ QCA_EDMA:=kmod-qca-edma
 OPENWRT_STANDARD:= \
 	luci
 
+STORAGE:=kmod-scsi-core kmod-usb-storage \
+	kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
+	kmod-nls-cp437 kmod-nls-iso8859-1 \
+	mdadm ntfs-3g e2fsprogs fdisk mkdosfs
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA)
+	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA) \
+	$(STORAGE)
 endef
 
 define Profile/QSDK_Open/Description
