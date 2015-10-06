@@ -185,7 +185,7 @@ ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 		"$(BIN_DIR)/$(IMG_PREFIX)-$(1)-ubi-root.img" \
 		"$(STAGING_DIR_HOST)/bin" \
 		"ubi_rootfs" \
-		"ubi_rootfs_data" \
+		"rootfs_data" \
 		 $(4)
    endef
 endif
