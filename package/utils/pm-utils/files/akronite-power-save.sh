@@ -82,6 +82,9 @@ akronite_battery_power()
 # Remove RC
 	sleep 2
 
+	[ -f /sys/bus/pci/rcremove ] && {
+		echo 1 > /sys/bus/pci/rcremove
+	}
 	[ -f /sys/devices/pci0000:00/pci_bus/0000:00/rcremove ] && {
 		echo 1 > /sys/devices/pci0000:00/pci_bus/0000:00/rcremove
 	}
@@ -287,6 +290,9 @@ ap_dk04_1_battery_power()
 # Remove RC
 	sleep 2
 
+	[ -f /sys/bus/pci/rcremove ] && {
+		echo 1 > /sys/bus/pci/rcremove
+	}
 	[ -f /sys/devices/pci0000:00/pci_bus/0000:00/rcremove ] && {
 		echo 1 > /sys/devices/pci0000:00/pci_bus/0000:00/rcremove
 	}
