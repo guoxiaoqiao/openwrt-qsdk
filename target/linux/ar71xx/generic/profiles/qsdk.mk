@@ -51,8 +51,7 @@ define Profile/QSDK_Wireless_Router
 	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat qca-ssdk-shell kmod-shortcut-fe-cm \
 	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
 	  qca-wpa-cli qca-wrapd qca-wapid qca-acfg qca-legacy-uboot-ap152-8M \
-	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x \
-	  qca-wifi-fw-hw1-10.2 qca-wifi-fw-hw1-10.2-lteu qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
+	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x
 endef
 
 define Profile/QSDK_Wireless_Router/Description
