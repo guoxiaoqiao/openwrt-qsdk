@@ -72,7 +72,7 @@ define Profile/QSDK_Premium_Router
 	$(Profile/QSDK_Test)
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
-	  streamboost hyfi kmod-fast-classifier $(STORAGE) \
+	  streamboost kmod-fast-classifier $(STORAGE) \
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
 	  alljoyn-notification alljoyn-services_common luci-app-samba \
 	  kmod-qca-wifi-perf qca-hostap-10.4 qca-spectral qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
