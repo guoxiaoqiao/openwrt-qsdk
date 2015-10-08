@@ -4,7 +4,7 @@
  		return;
  	}
  
-+	if (!sta && hapd->num_sta >= hapd->conf->max_num_sta)
++	if (hapd->num_sta >= hapd->conf->max_num_sta)
 +		wpa_printf(MSG_MSGDUMP, "Probe Request from " MACSTR " ignored,"
 +			   " too many connected stations.", MAC2STR(mgmt->sa));
 +
