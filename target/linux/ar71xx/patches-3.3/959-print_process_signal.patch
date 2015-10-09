@@ -6,7 +6,7 @@ Index: linux-3.3.8/kernel/signal.c
  	int ret = -ESRCH;
  
  	if (lock_task_sighand(p, &flags)) {
-+		if (sig == SIGKILL || sig == SIGTERM)
++		if ((p->pid == 1) && (sig == SIGKILL || sig == SIGTERM))
 +			printk (KERN_ALERT "OWT_DBG:The process with ID:%d and name: %s sending signal %d to"  \
 +				" the process with ID:%d and name: %s\n", task_pid_nr(current), current->comm, \
 +				sig, p->pid, p->comm);
