@@ -12,9 +12,8 @@ OPENWRT_STANDARD:= \
 	luci
 
 STORAGE:=kmod-scsi-core kmod-usb-storage \
-	kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
-	kmod-nls-cp437 kmod-nls-iso8859-1 \
-	mdadm ntfs-3g e2fsprogs fdisk mkdosfs
+	kmod-fs-msdos kmod-fs-vfat \
+	e2fsprogs
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
