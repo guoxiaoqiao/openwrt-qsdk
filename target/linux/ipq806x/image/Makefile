@@ -43,7 +43,7 @@ define Image/BuildKernel/MultiDTBFIT
 endef
 
 define Image/BuildKernel
-	$(CP) $(KDIR)/$(IMG_PREFIX)-vmlinux.elf $(BIN_DIR)
+	$(CP) $(KDIR)/vmlinux$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-v2.0-ap148,0x42208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq8064-db149,0x42208000)
