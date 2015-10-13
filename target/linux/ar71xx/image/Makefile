@@ -1270,6 +1270,13 @@ Image/Build/dLANLzma/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(4))
 # $(7): kernel mtd partition size
 define Image/Build/IoENAND
 	$(CP) $(KDIR)/root.squashfs-raw $(KDIR_TMP)/root.squashfs
+	echo -ne '\xde\xad\xc0\xde' > $(KDIR_TMP)/jffs2.eof
+	if [ -e "$(TOPDIR)/tools/rsa/host/rsa_priv.txt" ]; then \
+		$(TOPDIR)/tools/rsa/host/rsa_sign $(KDIR_TMP)/vmlinux-$(2).uImage $(TOPDIR)/tools/rsa/host/rsa_priv.txt; \
+		$(TOPDIR)/tools/rsa/host/rsa_sign $(KDIR)/root.$(1) $(TOPDIR)/tools/rsa/host/rsa_priv.txt; \
+		cat $(KDIR_TMP)/vmlinux-$(2).uImage.sig >> $(KDIR_TMP)/vmlinux-$(2).uImage; \
+		cat $(KDIR)/root.$(1).sig >> $(KDIR_TMP)/vmlinux-$(2).uImage; \
+	fi
 	$(call ubinize,ubinize-IoE.ini,$(KDIR_TMP),$(KDIR_TMP)/$(2)-root.ubi,128KiB,2048,)
 	( \
 		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage \
@@ -1290,6 +1297,12 @@ define Image/Build/Ath
 	$(eval rootsize=$(call mtdpartsize,rootfs,$(4)))
 	$(eval kernsize=$(call mtdpartsize,kernel,$(4)))
 	$(eval rootsize=$(if $(7),$(7),$(rootsize)))
+	if [ -e "$(TOPDIR)/tools/rsa/host/rsa_priv.txt" ]; then \
+		$(TOPDIR)/tools/rsa/host/rsa_sign $(KDIR_TMP)/vmlinux-$(2).uImage $(TOPDIR)/tools/rsa/host/rsa_priv.txt; \
+		$(TOPDIR)/tools/rsa/host/rsa_sign $(KDIR)/root.$(1) $(TOPDIR)/tools/rsa/host/rsa_priv.txt; \
+		cat $(KDIR_TMP)/vmlinux-$(2).uImage.sig >> $(KDIR_TMP)/vmlinux-$(2).uImage; \
+		cat $(KDIR)/root.$(1).sig >> $(KDIR_TMP)/vmlinux-$(2).uImage; \
+	fi
 	$(call Sysupgrade/$(5),$(1),$(2),$(if $(6),$(6),$(kernsize)),$(if $(rootsize),$(rootsize),$(fwsize)))
 	if [ -e "$(call sysupname,$(1),$(2))" ]; then \
 		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage \
