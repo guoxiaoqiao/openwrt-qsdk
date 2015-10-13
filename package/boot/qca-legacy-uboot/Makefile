@@ -22,7 +22,9 @@ UBOOT_MAKE_OPTS:= \
     LZMA=$(STAGING_DIR_HOST)/bin/lzma \
     ARCH=mips \
     CPU=mips \
-    CROSS_COMPILE=$(TARGET_CROSS)
+    CROSS_COMPILE=$(TARGET_CROSS) \
+    RSA_HOST_DIR=$(TOPDIR)/tools/rsa/host \
+    POLARSSL_MINI_DIR=$(STAGING_DIR)/usr/include/polarssl-mini
 
 ifdef BUILD_VARIANT
 UBOOT_CONFIG:=$(patsubst UBOOT_CONFIG_TARGET=%,%,\
@@ -60,7 +62,7 @@ define Package/qca-legacy-uboot/common
     SECTION:=boot
     CATEGORY:=Boot Loaders
     TITLE:=U-boot for $(1)
-    DEPENDS:=@TARGET_ar71xx $(2)
+    DEPENDS:=@TARGET_ar71xx $(2) +polarssl-mini
     URL:=http://www.denx.de/wiki/U-Boot
     VARIANT:=$(1)
   endef
