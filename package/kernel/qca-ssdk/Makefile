@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013 The Linux Foundation. All rights reserved.
+# Copyright (c) 2013, 2015 The Linux Foundation. All rights reserved.
 #
 
 include $(TOPDIR)/rules.mk
@@ -27,7 +27,7 @@ define KernelPackage/qca-ssdk/default-nohnat
   SUBMENU:=Network Devices
   TITLE:=Kernel driver for QCA SSDK
   FILES:=$(PKG_BUILD_DIR)/build/bin/qca-ssdk.ko
-  AUTOLOAD:=$(call AutoLoad,42,qca-ssdk)
+  AUTOLOAD:=$(call AutoLoad,30,qca-ssdk)
   PROVIDES:=qca-ssdk
 endef
 

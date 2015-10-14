@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2011 OpenWrt.org
+# Copyright (C) 2006-2011, 2015 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -135,7 +135,7 @@ define KernelPackage/swconfig
   DEPENDS:=+kmod-libphy
   KCONFIG:=CONFIG_SWCONFIG
   FILES:=$(LINUX_DIR)/drivers/net/phy/swconfig.ko
-  AUTOLOAD:=$(call AutoLoad,41,swconfig)
+  AUTOLOAD:=$(call AutoLoad,29,swconfig)
 endef
 
 define KernelPackage/swconfig/description
@@ -151,7 +151,7 @@ define KernelPackage/switch-ar8216
   DEPENDS:=+kmod-swconfig
   KCONFIG:=CONFIG_AR8216_PHY
   FILES:=$(LINUX_DIR)/drivers/net/phy/ar8216.ko
-  AUTOLOAD:=$(call AutoLoad,42,ar8216)
+  AUTOLOAD:=$(call AutoLoad,30,ar8216)
 endef
 
 define KernelPackage/switch-ar8216/description
@@ -776,7 +776,7 @@ $(eval $(call KernelPackage,gianfar))
 
 define KernelPackage/vmxnet3
   SUBMENU:=$(NETWORK_DEVICES_MENU)
-  TITLE:=VMware VMXNET3 ethernet driver 
+  TITLE:=VMware VMXNET3 ethernet driver
   DEPENDS:=@PCI_SUPPORT
   KCONFIG:=CONFIG_VMXNET3
   FILES:=$(LINUX_DIR)/drivers/net/vmxnet3/vmxnet3.ko
