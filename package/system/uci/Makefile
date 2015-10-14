@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2008-2013 OpenWrt.org
+# Copyright (C) 2008-2014 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -7,13 +7,13 @@
 
 include $(TOPDIR)/rules.mk
 
-UCI_VERSION=2014-02-18
+UCI_VERSION=2015-04-09
 UCI_RELEASE=1
 
 PKG_NAME:=uci
 PKG_VERSION:=$(UCI_VERSION)$(if $(UCI_RELEASE),.$(UCI_RELEASE))
 PKG_RELEASE:=1
-PKG_REV:=393bc2b908ef44cb8b417126a35d4915c4cdfbc9
+PKG_REV:=556215152a216c179fe2ca7db9b1de7036ceda60
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=git://nbd.name/uci.git
@@ -21,7 +21,7 @@ PKG_SOURCE_SUBDIR:=uci-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_SOURCE_PROTO:=git
 
-PKG_LICENSE:=LGPLv2.1 GPLv2
+PKG_LICENSE:=LGPL-2.1
 PKG_LICENSE_FILES:=
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
