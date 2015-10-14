@@ -1,0 +1,39 @@
+--- a/libbb/vfork_daemon_rexec.c
++++ b/libbb/vfork_daemon_rexec.c
+@@ -186,6 +186,7 @@
+ # if BB_MMU
+ 		/* MMU only */
+ 		/* a->noexec is true */
++		signal(SIGCHLD, SIG_DFL); /* Clear any inherited settings before fork() */
+ 		rc = fork();
+ 		if (rc) /* parent or error */
+ 			return wait4pid(rc);
+--- a/miscutils/lock.c
++++ b/miscutils/lock.c
+@@ -66,9 +66,23 @@
+ 		}
+ 	}
+ 
+-	if (flock(fd, (shared ? LOCK_SH : LOCK_EX)) < 0) {
+-		fprintf(stderr, "Can't lock %s\n", file);
+-		return 1;
++	while(flock(fd, (shared ? LOCK_SH : LOCK_EX))) {
++		switch (errno) {
++			case EINTR:
++				continue;
++			case EIO:
++			case EBADF:
++				close(fd);
++				if ((fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0700)) < 0) {
++					if ((fd = open(file, O_RDWR)) < 0) {
++						fprintf(stderr, "Can't open %s\n", file);
++						return 1;
++					}
++				}
++			default:
++				/* exit for errno  ENOLCK & other OS Error */
++				exit(EXIT_FAILURE);
++		}
+ 	}
+ 
+ 	pid = fork();
