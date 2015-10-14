@@ -91,6 +91,7 @@ define Build/Compile
 		ARCH="$(ARCH)" \
 		SKIP_STRIP=y \
 		LDLIBS="$(LDLIBS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		$(BB_MAKE_VERBOSE) \
 		all
 	rm -rf $(PKG_INSTALL_DIR)
@@ -102,6 +103,7 @@ define Build/Compile
 		ARCH="$(ARCH)" \
 		CONFIG_PREFIX="$(PKG_INSTALL_DIR)" \
 		LDLIBS="$(LDLIBS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		$(BB_MAKE_VERBOSE) \
 		install
 endef
