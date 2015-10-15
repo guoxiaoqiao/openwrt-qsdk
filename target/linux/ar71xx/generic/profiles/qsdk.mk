@@ -81,7 +81,8 @@ define Profile/QSDK_Premium_Router
 	  qca-acfg whc qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat qca-ssdk-shell \
 	  qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand \
-	  qca-wifi-fw-hw1-10.2 qca-wifi-fw-hw1-10.2-lteu qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
+	  qca-wifi-fw-hw1-10.2 qca-wifi-fw-hw1-10.2-atf qca-wifi-fw-hw1-10.2-lteu \
+	  qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
 endef
 
 define Profile/QSDK_Premium_Router/Description
