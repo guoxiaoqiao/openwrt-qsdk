@@ -86,7 +86,7 @@ define Profile/QSDK_Premium_Router
 	  streamboost kmod-fast-classifier $(STORAGE) $(PACKAGES_WIFI_10_2) \
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
-	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand streamboost3
+	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand
 endef
 
 define Profile/QSDK_Premium_Router/Description
@@ -111,7 +111,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand \
-	  qca-legacy-uboot-db12x-16M streamboost3
+	  qca-legacy-uboot-db12x-16M
 endef
 
 define Profile/QSDK_Premium_Beeliner_Router/Description
