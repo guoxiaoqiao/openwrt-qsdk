@@ -8,10 +8,11 @@
  
  #ifdef ANDROID
  #include <sys/capability.h>
-@@ -180,58 +181,45 @@
+@@ -155,59 +156,46 @@ int os_gmtime(os_time_t t, struct os_tm
+ 	return 0;
  }
  
- 
+-
 -#ifdef __APPLE__
 -#include <fcntl.h>
 -static int os_daemon(int nochdir, int noclose)
@@ -21,12 +22,13 @@
 +	int pid = 0, i, devnull;
  
 -	if (chdir("/") < 0)
+-		return -1;
 +#if defined(__uClinux__) || defined(__sun__)
- 		return -1;
--
++	return -1;
++#else /* defined(__uClinux__) || defined(__sun__) */
+ 
 -	devnull = open("/dev/null", O_RDWR);
 -	if (devnull < 0)
-+#else /* defined(__uClinux__) || defined(__sun__) */
 +#ifndef __APPLE__
 +	pid = fork();
 +	if (pid < 0)
