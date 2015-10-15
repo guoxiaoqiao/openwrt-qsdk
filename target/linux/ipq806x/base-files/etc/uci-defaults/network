@@ -16,14 +16,19 @@ ucidef_set_interface_loopback
 board=$(ipq806x_board_name)
 
 case "$board" in
-ap148)
-	ucidef_set_interfaces_lan_wan "eth1" "eth0"
+db149|\
+db149_1xx|\
+db149_2xx)
+	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3" "eth0"
 	ucidef_add_switch "switch0" "1" "1"
 	ucidef_add_switch_vlan "switch0" "1" "6 1 2 3 4"
 	ucidef_add_switch_vlan "switch0" "2" "0 5"
 	;;
-db149)
-	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3" "eth0"
+ap148|\
+ap148_1xx|\
+ap145|\
+ap145_1xx)
+	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	ucidef_add_switch "switch0" "1" "1"
 	ucidef_add_switch_vlan "switch0" "1" "6 1 2 3 4"
 	ucidef_add_switch_vlan "switch0" "2" "0 5"
@@ -34,6 +39,13 @@ ap161)
 	ucidef_add_switch "switch0" "1" "1" "1"
 	ucidef_add_switch_vlan "switch0" "1" "6 4"
 	ucidef_add_switch_vlan "switch0" "2" "0 1 2 3"
+	;;
+ap160_2xx)
+	ucidef_set_interface_bond "bond0" "2" "eth1 eth2 eth3" "2"
+	ucidef_set_interface_lan "bond0 eth0"
+	ucidef_add_switch "switch0" "1" "1" "1"
+	ucidef_add_switch_vlan "switch0" "1" "1 26"
+	ucidef_add_switch_vlan "switch0" "2" "2 3 4 27"
 	;;
 storm)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
@@ -46,6 +58,9 @@ whirlwind)
 	ucidef_add_switch "switch0" "1" "1"
 	ucidef_add_switch_vlan "switch0" "1" "6 1"
 	ucidef_add_switch_vlan "switch0" "2" "0 2"
+	;;
+ak01_1xx)
+	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	;;
 ap-dk01.1-c1|\
 ap-dk01.1-c2|\

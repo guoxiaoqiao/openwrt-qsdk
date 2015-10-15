@@ -382,7 +382,7 @@ local board=$(ipq806x_board_name)
 case "$1" in
 	false)
 		case "$board" in
-		db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161)
+		db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx)
 			akronite_ac_power ;;
 		ap-dk01.1-c1 | ap-dk01.1-c2)
 			ap_dk01_1_ac_power ;;
@@ -391,7 +391,7 @@ case "$1" in
 		esac ;;
 	true)
 		case "$board" in
-		db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161)
+		db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx)
 			akronite_battery_power ;;
 		ap-dk01.1-c1 | ap-dk01.1-c2)
 			ap_dk01_1_battery_power ;;
