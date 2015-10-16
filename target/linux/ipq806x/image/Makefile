@@ -49,7 +49,7 @@ define Image/BuildKernel/MultiDTBFIT
 
 ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
 	$(CP) $(KDIR)/Image-initramfs $(BIN_DIR)/$(IMG_PREFIX)-vmlinux-initramfs.bin
-	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/Image-initramfs,$(2),gzip,$(3),$(3))
+	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/Image-initramfs,$(2),none,$(3),$(3))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage-initramfs.itb
 endif
 	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
