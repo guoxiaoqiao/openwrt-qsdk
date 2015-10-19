@@ -60,6 +60,7 @@ int quiet;
 int no_erase;
 int mtdsize = 0;
 int erasesize = 0;
+int mtdtype = 0;
 
 int mtd_open(const char *mtd, bool block)
 {
@@ -105,8 +106,26 @@ int mtd_check_open(const char *mtd)
 	}
 	mtdsize = mtdInfo.size;
 	erasesize = mtdInfo.erasesize;
+	mtdtype = mtdInfo.type;
 
 	return fd;
+}
+
+int mtd_block_is_bad(int fd, int offset)
+{
+	int r = 0;
+	loff_t o = offset;
+
+	if (mtdtype == MTD_NANDFLASH)
+	{
+		r = ioctl(fd, MEMGETBADBLOCK, &o);
+		if (r < 0)
+		{
+			fprintf(stderr, "Failed to get erase block status\n");
+			exit(1);
+		}
+	}
+	return r;
 }
 
 int mtd_erase_block(int fd, int offset)
@@ -238,10 +257,14 @@ mtd_erase(const char *mtd)
 	for (mtdEraseInfo.start = 0;
 		 mtdEraseInfo.start < mtdsize;
 		 mtdEraseInfo.start += erasesize) {
-
-		ioctl(fd, MEMUNLOCK, &mtdEraseInfo);
-		if(ioctl(fd, MEMERASE, &mtdEraseInfo))
-			fprintf(stderr, "Failed to erase block on %s at 0x%x\n", mtd, mtdEraseInfo.start);
+		if (mtd_block_is_bad(fd, mtdEraseInfo.start)) {
+			if (!quiet)
+				fprintf(stderr, "\nSkipping bad block at 0x%x   ", mtdEraseInfo.start);
+		} else {
+			ioctl(fd, MEMUNLOCK, &mtdEraseInfo);
+			if(ioctl(fd, MEMERASE, &mtdEraseInfo))
+				fprintf(stderr, "Failed to erase block on %s at 0x%x\n", mtd, mtdEraseInfo.start);
+		}
 	}
 
 	close(fd);
@@ -296,6 +319,7 @@ mtd_write(int imagefd, const char *mtd, char *fis_layout, size_t part_offset)
 	ssize_t skip = 0;
 	uint32_t offset = 0;
 	int jffs2_replaced = 0;
+	int skip_bad_blocks = 0;
 
 #ifdef FIS_SUPPORT
 	static struct fis_part new_parts[MAX_ARGS];
@@ -402,6 +426,12 @@ resume:
 		if (buflen == 0)
 			break;
 
+		if (buflen < erasesize) {
+			/* Pad block to eraseblock size */
+			memset(&buf[buflen], 0xff, erasesize - buflen);
+			buflen = erasesize;
+		}
+
 		if (skip > 0) {
 			skip -= buflen;
 			buflen = 0;
@@ -439,10 +469,21 @@ resume:
 		/* need to erase the next block before writing data to it */
 		if(!no_erase)
 		{
-			while (w + buflen > e) {
+			while (w + buflen > e - skip_bad_blocks) {
 				if (!quiet)
 					fprintf(stderr, "\b\b\b[e]");
 
+				if (mtd_block_is_bad(fd, e)) {
+					if (!quiet)
+						fprintf(stderr, "\nSkipping bad block at 0x%08x   ", e);
+
+					skip_bad_blocks += erasesize;
+					e += erasesize;
+
+					// Move the file pointer along over the bad block.
+					lseek(fd, erasesize, SEEK_CUR);
+					continue;
+				}
 
 				if (mtd_erase_block(fd, e) < 0) {
 					if (next) {
