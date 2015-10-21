@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013 The Linux Foundation. All rights reserved.
+# Copyright (c) 2013, 2015 The Linux Foundation. All rights reserved.
 #
 
 include $(TOPDIR)/rules.mk
@@ -27,7 +27,7 @@ define KernelPackage/qca-nss-gmac
   DEPENDS:=@TARGET_ipq806x
   TITLE:=Kernel driver for NSS gmac
   FILES:=$(PKG_BUILD_DIR)/ipq806x/qca-nss-gmac.ko
-  AUTOLOAD:=$(call AutoLoad,50,qca-nss-gmac)
+  AUTOLOAD:=$(call AutoLoad,31,qca-nss-gmac)
 endef
 
 define KernelPackage/qca-nss-gmac/Description
