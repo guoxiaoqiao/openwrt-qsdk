@@ -11,7 +11,7 @@ USE_REFRESH=1
 RAMFS_COPY_DATA=/lib/ipq806x.sh
 RAMFS_COPY_BIN="/usr/bin/dumpimage /bin/mktemp /usr/sbin/mkfs.ubifs
 	/usr/sbin/ubiattach /usr/sbin/ubidetach /usr/sbin/ubiformat /usr/sbin/ubimkvol
-	/usr/sbin/ubiupdatevol /usr/sbin/flash_erase /usr/sbin/nandwrite"
+	/usr/sbin/ubiupdatevol"
 
 get_full_section_name() {
 	local img=$1
@@ -577,20 +577,11 @@ switch_layout() {
 do_flash_mtd() {
 	local bin=$1
 	local mtdname=$2
-	local write_command=""
 
 	local mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
-	local nor_flash=$(find /sys/bus/spi/devices/*/mtd -name $mtdpart)
 
-	if [ -z "$nor_flash" ]; then
-		flash_erase /dev/${mtdpart} 0 0
-		write_command="nandwrite -p /dev/${mtdpart} -"
-	else
-		write_command="mtd write - -e /dev/${mtdpart} /dev/${mtdpart}"
-	fi
-
-	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | ${write_command}
+	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd write - -e ${mtdname} ${mtdname}
 }
 
 do_flash_emmc() {
