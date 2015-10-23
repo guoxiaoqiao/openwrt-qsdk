@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /lib/ipq806x.sh
+. /lib/functions.sh
 
 akronite_ac_power()
 {
@@ -254,10 +255,14 @@ ap_dk04_1_ac_power()
 	ifup lan
 
 # SD/MMC Power-UP sequence
-	if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
-	then
-		sd_drvname=$(cat /tmp/sysinfo/sd_drvname)
-		echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/bind
+	local emmcblock="$(find_mmc_part "rootfs")"
+
+	if [ -z "$emmcblock" ]; then
+		if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
+		then
+			sd_drvname=$(cat /tmp/sysinfo/sd_drvname)
+			echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/bind
+		fi
 	fi
 
 	sleep 1
@@ -331,11 +336,15 @@ ap_dk04_1_battery_power()
 	fi
 	sleep 2
 #SD/MMC Power-down Sequence
-	if [ -d /sys/block/mmcblk0 ]
-	then
-		sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $4}'`
-		echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
-		echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
+	local emmcblock="$(find_mmc_part "rootfs")"
+
+	if [ -z "$emmcblock" ]; then
+		if [ -d /sys/block/mmcblk0 ]
+		then
+			sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $4}'`
+			echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
+			echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
+		fi
 	fi
 
 # LAN interface down
