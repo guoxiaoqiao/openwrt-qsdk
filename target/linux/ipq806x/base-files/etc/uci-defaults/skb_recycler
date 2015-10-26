@@ -15,7 +15,7 @@ ucidef_set_skb_recycler
 board=$(ipq806x_board_name)
 max_skbs=1024
 memtotal=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-[ memtotal -lt 131072 ] && max_skbs=512
+[ $memtotal -lt 131072 ] && max_skbs=512
 
 case "$board" in
 *)
