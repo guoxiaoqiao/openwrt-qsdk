@@ -58,6 +58,8 @@ run_ramfs() { # <command> [...]
 		/bin/sed /bin/rm /usr/bin/find /usr/bin/cut /usr/bin/basename
 
 	install_bin /sbin/mtd
+	install_bin /usr/sbin/mkfs.ext4
+
 	for file in $RAMFS_COPY_BIN; do
 		install_bin $file
 	done
