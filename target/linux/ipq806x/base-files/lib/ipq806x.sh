@@ -41,6 +41,9 @@ ipq806x_board_detect() {
 	*"AP-DK04.1-C3")
 		name="ap-dk04.1-c3"
 		;;
+	*"AP-DK04.1-C4")
+		name="ap-dk04.1-c4"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"
