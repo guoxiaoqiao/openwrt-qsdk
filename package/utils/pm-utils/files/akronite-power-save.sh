@@ -50,6 +50,17 @@ akronite_ac_power()
 	[ -d /sys/module/phy_qcom_ssusb ] || insmod phy-qcom-ssusb
 	[ -d /sys/module/dwc3 ] || insmod dwc3
 
+# SD/MMC Power-UP sequence
+	local emmcblock="$(find_mmc_part "rootfs")"
+
+	if [ -z "$emmcblock" ]; then
+		if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
+		then
+			sd_drvname=$(cat /tmp/sysinfo/sd_drvname)
+			echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/bind
+		fi
+	fi
+
 	exit 0
 }
 
@@ -121,6 +132,18 @@ akronite_battery_power()
 	[ -d /sys/module/phy_qcom_ssusb ] && rmmod phy-qcom-ssusb
 
 	sleep 1
+
+#SD/MMC Power-down Sequence
+	local emmcblock="$(find_mmc_part "rootfs")"
+
+	if [ -z "$emmcblock" ]; then
+		if [ -d /sys/block/mmcblk0 ]
+		then
+			sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $4}'`
+			echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
+			echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
+		fi
+	fi
 
 # Disabling Auto scale on NSS cores
 	echo 0 > /proc/sys/dev/nss/clock/auto_scale
