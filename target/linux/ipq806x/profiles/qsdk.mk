@@ -16,10 +16,12 @@ STORAGE:=kmod-scsi-core kmod-usb-storage \
 	kmod-fs-msdos kmod-fs-vfat \
 	e2fsprogs
 
+USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA) \
-	$(WIFI_OPEN_PKGS) $(STORAGE)
+	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET)
 endef
 
 define Profile/QSDK_Open/Description
