@@ -20,7 +20,7 @@ define KernelPackage/qca-nss-macsec
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
-  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +libpthread
+  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +libpthread +libc
   TITLE:=Kernel driver for NSS macsec
   FILES:=$(PKG_BUILD_DIR)/qca-nss-macsec.ko
   AUTOLOAD:=$(call AutoLoad,33,qca-nss-macsec)
