@@ -48,7 +48,7 @@ define Profile/QSDK_Wireless_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Wireless Router Profile
 	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos \
-	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat kmod-shortcut-fe-cm \
+	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat kmod-shortcut-fe-cm -tftp-hpa \
 	  kmod-qca-wifi-perf qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 	  qca-wpa-cli-10.4 qca-wrapd qca-wapid qca-legacy-uboot-ap152-8M \
 	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x \
