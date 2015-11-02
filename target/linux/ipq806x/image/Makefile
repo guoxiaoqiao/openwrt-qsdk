@@ -56,6 +56,7 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c1,0x80008000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c2,0x80008000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c3,0x80008000)
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c4,0x80008000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-db.dk01.1-c1,0x80008000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-db.dk02.1-c1,0x80008000)
 	$(call Image/BuildKernel/GenericFIT,qcom-ipq40xx,0x80008000)
@@ -65,7 +66,8 @@ define Image/BuildKernel
 												qcom-ipq40xx-ap.dk01.1-c1 \
 												qcom-ipq40xx-ap.dk01.1-c2 \
 												qcom-ipq40xx-db.dk01.1-c1 \
-												qcom-ipq40xx-db.dk02.1-c1"\
+												qcom-ipq40xx-db.dk02.1-c1 \
+												qcom-ipq40xx-ap.dk04.1-c4"\
 												,0x80008000)
 endef
 
