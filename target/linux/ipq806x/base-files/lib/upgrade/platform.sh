@@ -10,7 +10,7 @@ USE_REFRESH=1
 RAMFS_COPY_DATA=/lib/ipq806x.sh
 RAMFS_COPY_BIN="/usr/bin/dumpimage /bin/mktemp /usr/sbin/mkfs.ubifs
 	/usr/sbin/ubiattach /usr/sbin/ubidetach /usr/sbin/ubiformat /usr/sbin/ubimkvol
-	/usr/sbin/ubiupdatevol /usr/bin/basename"
+	/usr/sbin/ubiupdatevol /usr/bin/basename /bin/rm"
 
 get_full_section_name() {
 	local img=$1
@@ -246,6 +246,7 @@ platform_check_image() {
 		return 1
 	}
 
+	[ -f /tmp/hlos_version ] && rm -f /tmp/*_version
 	dumpimage -c $1
 	return $?
 }
