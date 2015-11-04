@@ -182,11 +182,15 @@ flash_section() {
 		rootfs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "0:SBL1";;
+		sbl2*) switch_layout boot; do_flash_partition ${sec} "0:SBL2";;
+		sbl3*) switch_layout boot; do_flash_partition ${sec} "0:SBL3";;
 		mibib*) switch_layout boot; do_flash_partition ${sec} "0:MIBIB";;
 		dtb-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DTB";;
 		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
 		ddr-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DDRPARAMS";;
+		ssd*) switch_layout boot; do_flash_partition ${sec} "0:SSD";;
 		tz*) switch_layout boot; do_flash_partition ${sec} "0:QSEE";;
+		rpm*) switch_layout boot; do_flash_partition ${sec} "0:RPM";;
 		*) echo "Section ${sec} ignored"; return 1;;
 	esac
 
