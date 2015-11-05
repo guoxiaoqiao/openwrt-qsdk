@@ -115,6 +115,10 @@ define Image/BuildKernel
 								qcom-ipq8064-v2.0-ap160_2xx \
 								qcom-ipq8064-v3.0-ap160_2xx"\
 								,0x42208000)
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx,"qcom-ipq8064-ap148_1xx \
+								qcom-ipq8064-v2.0-ap148_1xx \
+								qcom-ipq8064-v3.0-ap148_1xx"\
+								,0x42208000)
 endef
 
 define Image/UbiImage
@@ -122,6 +126,7 @@ define Image/UbiImage
 ifeq ($(1),-ipq806x)
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-db149,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-db149-fit-uImage.itb,squashfs,$(UBI_OPTS))
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148_1xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148_1xx-fit-uImage.itb,squashfs,$(UBI_OPTS))
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-ak01,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ak01-fit-uImage.itb,squashfs,$(UBI_OPTS))
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145_1xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145_1xx-fit-uImage.itb,squashfs,$(UBI_OPTS))
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145-fit-uImage.itb,squashfs,$(UBI_OPTS))
