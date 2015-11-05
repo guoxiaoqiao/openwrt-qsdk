@@ -26,13 +26,17 @@ ucidef_set_skb_recycler
 
 board=$(ipq806x_board_name)
 max_skbs=1024
+max_spare_skbs=256
 memtotal=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-[ $memtotal -lt 131072 ] && max_skbs=512
+if [ $memtotal -lt 131072 ]; then
+    max_skbs=10
+    max_spare_skbs=10
+fi
 
 case "$board" in
 *)
 	ucidef_set_skb "max_skbs" $max_skbs
-	ucidef_set_skb "max_spare_skbs" "256"
+	ucidef_set_skb "max_spare_skbs" $max_spare_skbs
 	;;
 esac
 
