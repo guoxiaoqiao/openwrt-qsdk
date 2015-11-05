@@ -54,7 +54,8 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp kmod-ipt-conntrack-qos \
 	arptables ds-lite radvd 6rd wide-dhcpv6-client ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
-	rp-pppoe-server isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 ppp-mod-pptp
+	rp-pppoe-server isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 ppp-mod-pptp \
+	map
 
 QOS:=luci-app-qos kmod-sched
 
