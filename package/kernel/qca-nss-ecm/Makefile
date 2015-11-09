@@ -76,6 +76,7 @@ endef
 
 EXTRA_CFLAGS+= \
 	-I$(STAGING_DIR)/usr/include/hyfibr \
+	-I$(STAGING_DIR)/usr/include/qca-mcs \
 	-I$(STAGING_DIR)/usr/include/qca-nss-drv \
 	-I$(STAGING_DIR)/usr/include/shortcut-fe
 
