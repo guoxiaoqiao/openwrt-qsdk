@@ -26,7 +26,7 @@ define KernelPackage/qca-nss-cfi
   FILES:=$(PKG_BUILD_DIR)/ocf/qca-nss-cfi-ocf.ko \
 	 $(PKG_BUILD_DIR)/cryptoapi/qca-nss-cfi-cryptoapi.ko \
 	 $(PKG_BUILD_DIR)/ipsec/qca-nss-ipsec.ko
-  AUTOLOAD:=$(call AutoLoad,34,qca-nss-cfi-ocf qca-nss-cfi-cryptoapi)
+  AUTOLOAD:=$(call AutoLoad,35,qca-nss-cfi-ocf qca-nss-cfi-cryptoapi qca-nss-ipsec)
 endef
 
 define KernelPackage/qca-nss-cfi/Description
