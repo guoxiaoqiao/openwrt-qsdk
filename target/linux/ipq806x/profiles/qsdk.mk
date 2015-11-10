@@ -68,7 +68,7 @@ IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6 \
 
 TEST_TOOLS:=sysstat devmem2 ethtool i2c-tools
 
-UTILS:=tftp-hpa pure-ftpd pm-utils qca-thermald-10.4 file luci-app-samba iperf \
+UTILS:=tftp-hpa pure-ftpd qca-thermald-10.4 file luci-app-samba iperf \
 	rng-tools
 
 BLUETOOTH:=bluez kmod-ath3k
@@ -96,7 +96,7 @@ define Profile/QSDK_Premium
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PREMIUM_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM) \
-		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS)
+		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) pm-utils
 endef
 
 define Profile/QSDK_Premium/Description
@@ -110,7 +110,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
-		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS)
+		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) pm-utils
 endef
 
 define Profile/QSDK_Standard/Description
