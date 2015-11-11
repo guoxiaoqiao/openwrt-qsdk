@@ -29,8 +29,8 @@ max_skbs=1024
 max_spare_skbs=256
 memtotal=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 if [ $memtotal -lt 131072 ]; then
-    max_skbs=10
-    max_spare_skbs=10
+    max_skbs=1
+    max_spare_skbs=1
 fi
 
 case "$board" in
