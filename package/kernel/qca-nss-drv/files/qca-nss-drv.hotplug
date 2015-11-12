@@ -1,14 +1,28 @@
 #!/bin/sh
 
-load_nss_fw () {
-	echo 1 > /sys/class/firmware/$DEVICENAME/loading
-	cat $1 > /sys/class/firmware/$DEVICENAME/data
-	echo 0 > /sys/class/firmware/$DEVICENAME/loading
+select_nss_fw () {
+	rm -f /lib/firmware/$DEVICENAME
+	ln -s $1 /lib/firmware/$DEVICENAME
 }
 
 [ "$ACTION" != "add" ] && exit
 
-[ "$DEVICENAME" = "qca-nss0.bin" ] &&
-	load_nss_fw /lib/firmware/qca-nss0-retail.bin
-[ "$DEVICENAME" = "qca-nss1.bin" ] &&
-	load_nss_fw /lib/firmware/qca-nss1-retail.bin
+case $DEVICENAME in
+        qca-nss0*)
+                if [ -e /lib/firmware/qca-nss0-enterprise.bin ] ; then
+                        select_nss_fw /lib/firmware/qca-nss0-enterprise.bin
+                else
+                        select_nss_fw /lib/firmware/qca-nss0-retail.bin
+                fi
+                exit
+                ;;
+        qca-nss1*)
+                if [ -e /lib/firmware/qca-nss1-enterprise.bin ] ; then
+                        select_nss_fw /lib/firmware/qca-nss1-enterprise.bin
+                else
+                        select_nss_fw /lib/firmware/qca-nss1-retail.bin
+                fi
+                exit
+                ;;
+esac
+
