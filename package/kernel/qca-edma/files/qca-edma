@@ -72,6 +72,9 @@ start() {
 	done
 
 	echo 1024 > /proc/sys/net/core/rps_sock_flow_entries
+
+	ethtool -K eth0 gro off
+	ethtool -K eth1 gro off
 }
 
 
