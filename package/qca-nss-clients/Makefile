@@ -85,6 +85,19 @@ define KernelPackage/qca-nss-drv-capwapmgr/Description
 This package contains a NSS CAPWAP Manager
 endef
 
+define KernelPackage/qca-nss-drv-portifmgr
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  DEPENDS:=kmod-qca-nss-drv
+  TITLE:=NSS Portif Manager for QCA NSS driver (IPQ806x)
+  FILES:=$(PKG_BUILD_DIR)/portifmgr/qca-nss-portifmgr.ko
+endef
+
+define KernelPackage/qca-nss-drv-portifmgr/Description
+This package contains a NSS Port Interface Manager
+endef
+
 define KernelPackage/qca-nss-drv-qdisc
   SECTION:=kernel
   CATEGORY:=Kernel modules
@@ -135,6 +148,7 @@ define Build/Compile
                 modules
 endef
 
+$(eval $(call KernelPackage,qca-nss-drv-portifmgr))
 $(eval $(call KernelPackage,qca-nss-drv-profile))
 $(eval $(call KernelPackage,qca-nss-drv-capwapmgr))
 $(eval $(call KernelPackage,qca-nss-drv-tun6rd))
