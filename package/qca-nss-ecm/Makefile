@@ -79,8 +79,12 @@ EXTRA_CFLAGS+= \
 	-I$(STAGING_DIR)/usr/include/qca-nss-drv \
 	-I$(STAGING_DIR)/usr/include/shortcut-fe
 
+# Enable these optional features via a make argument
+ECM_MAKE_OPTS:=ECM_CLASSIFIER_HYFI_ENABLE=y \
+               ECM_MULTICAST_ENABLE=y
+
 define Build/Compile
-	$(MAKE) -C "$(LINUX_DIR)" \
+	$(MAKE) -C "$(LINUX_DIR)" $(strip $(ECM_MAKE_OPTS)) \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
 		ARCH="$(LINUX_KARCH)" \
 		SUBDIRS="$(PKG_BUILD_DIR)" \
