@@ -88,9 +88,7 @@ inline struct sk_buff *skb_recycler_alloc(struct net_device *dev, unsigned int l
 		skb->data = skb->head + NET_SKB_PAD;
 		skb_reset_tail_pointer(skb);
 
-		if (dev) {
-			skb->dev = dev;
-		}
+		skb->dev = dev;
 	}
 
 	return skb;
