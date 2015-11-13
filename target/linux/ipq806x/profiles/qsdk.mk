@@ -7,7 +7,7 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell  swconfig
 QCA_EDMA:=kmod-qca-edma
 
 WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad hostapd-utils \
-		 sigma-dut-open wpa-cli
+		 sigma-dut-open wpa-cli qcmbr-10.4-netlink
 
 OPENWRT_STANDARD:= \
 	luci
