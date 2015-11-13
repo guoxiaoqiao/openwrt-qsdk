@@ -18,6 +18,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
+LOCAL_VARIANT=$(patsubst qca-nss-ecm-%,%,$(patsubst qca-nss-ecm-%,%,$(BUILD_VARIANT)))
 include $(INCLUDE_DIR)/package.mk
 
 define KernelPackage/qca-nss-ecm/Default
@@ -43,6 +44,7 @@ endef
 
 define KernelPackage/qca-nss-ecm
   $(call KernelPackage/qca-nss-ecm/Default)
+  AUTOLOAD:=$(call AutoLoad,52,ecm)
 endef
 
 define KernelPackage/qca-nss-ecm/Description
@@ -60,6 +62,36 @@ $(call KernelPackage/qca-nss-ecm/Default/install, $(1))
 	$(LN) ../init.d/qca-nss-ecm $(1)/etc/rc.d/S70qca-nss-ecm
 endef
 
+# Variant with additional features enabled for premium profile
+define KernelPackage/qca-nss-ecm-premium/Default
+$(call KernelPackage/qca-nss-ecm/Default)
+  TITLE+= (with premium features)
+  VARIANT:=premium
+  DEPENDS+=+kmod-qca-hyfi-bridge
+endef
+
+define KernelPackage/qca-nss-ecm-premium/Description/Default
+$(call KernelPackage/qca-nss-ecm/Description/Default)
+with the premium features enabled
+endef
+
+define KernelPackage/qca-nss-ecm-premium/Default/install
+$(call KernelPackage/qca-nss-ecm/install)
+endef
+
+define KernelPackage/qca-nss-ecm-premium
+$(call KernelPackage/qca-nss-ecm-premium/Default)
+AUTOLOAD:=$(call AutoLoad,52,ecm)
+endef
+
+define KernelPackage/qca-nss-ecm-premium/Description
+$(call KernelPackage/qca-nss-ecm-premium/Description/Default)
+endef
+
+define KernelPackage/qca-nss-ecm-premium/install
+$(call KernelPackage/qca-nss-ecm/install, $(1))
+endef
+
 define KernelPackage/qca-nss-ecm-noload
   $(call KernelPackage/qca-nss-ecm/Default)
   PROVIDES:=kmod-qca-nss-ecm
@@ -74,14 +106,34 @@ define KernelPackage/qca-nss-ecm-noload/install
 $(call KernelPackage/qca-nss-ecm/Default/install, $(1))
 endef
 
+define KernelPackage/qca-nss-ecm-premium-noload
+  $(call KernelPackage/qca-nss-ecm-premium/Default)
+  PROVIDES:=kmod-qca-nss-ecm-premium
+endef
+
+define KernelPackage/qca-nss-ecm-premium-noload/Description
+  $(call KernelPackage/qca-nss-ecm-premium/Description/Default)
+  When selected, this package installs the driver but does not load it at init.
+endef
+
+define KernelPackage/qca-nss-ecm-premium-noload/install
+$(call KernelPackage/qca-nss-ecm-premium/Default/install, $(1))
+endef
+
 EXTRA_CFLAGS+= \
 	-I$(STAGING_DIR)/usr/include/hyfibr \
 	-I$(STAGING_DIR)/usr/include/qca-mcs \
 	-I$(STAGING_DIR)/usr/include/qca-nss-drv \
 	-I$(STAGING_DIR)/usr/include/shortcut-fe
 
+ECM_MAKE_OPTS:=
+ifeq ($(LOCAL_VARIANT),premium)
+ECM_MAKE_OPTS+=ECM_CLASSIFIER_HYFI_ENABLE=y \
+		ECM_MULTICAST_ENABLE=y
+endif
+
 define Build/Compile
-	$(MAKE) -C "$(LINUX_DIR)" \
+	$(MAKE) -C "$(LINUX_DIR)" $(strip $(ECM_MAKE_OPTS)) \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
 		ARCH="$(LINUX_KARCH)" \
 		SUBDIRS="$(PKG_BUILD_DIR)" \
@@ -96,3 +148,5 @@ endef
 
 $(eval $(call KernelPackage,qca-nss-ecm-noload))
 $(eval $(call KernelPackage,qca-nss-ecm))
+$(eval $(call KernelPackage,qca-nss-ecm-premium-noload))
+$(eval $(call KernelPackage,qca-nss-ecm-premium))
