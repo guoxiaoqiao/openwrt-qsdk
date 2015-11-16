@@ -2,11 +2,18 @@
 # Copyright (c) 2014-2015 The Linux Foundation. All rights reserved.
 #
 
-NSS_STANDARD:= \
-	qca-nss-fw-retail \
+NSS_COMMON:= \
 	kmod-qca-nss-drv \
 	kmod-qca-nss-gmac \
 	kmod-qca-edma
+
+NSS_STANDARD:= \
+	qca-nss-fw-retail \
+
+NSS_ENTERPRISE:= \
+	qca-nss-fw-enterprise \
+        qca-nss-fw-enterprise_custA \
+	qca-nss-fw-enterprise_custC \
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
@@ -14,8 +21,10 @@ NSS_MACSEC:= \
 
 QCA_ECM:= kmod-qca-nss-ecm
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
+QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
 NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2
+NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
@@ -38,7 +47,7 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-dakota-perf qca-wifi-fw-hw5-10.4-asic \
 
 WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo
 
-WIFI_10_4_FW_PREMIUM_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic
+WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic
 
 OPENWRT_STANDARD:= \
 	luci openssl-util
@@ -83,7 +92,7 @@ VIDEO:=kmod-qpic_panel_ertft
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(NETWORKING) $(UTILS) \
 		$(BLUETOOTH) $(QCA_ECM) $(NSS_CRYPTO) $(NSS_CLIENTS) $(QOS) $(TEST_TOOLS) alsa
 endef
@@ -96,8 +105,8 @@ $(eval $(call Profile,QSDK_Open))
 
 define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PREMIUM_PKGS) $(STORAGE) $(CD_ROUTER) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) pm-utils \
@@ -113,7 +122,7 @@ $(eval $(call Profile,QSDK_Premium))
 
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) pm-utils
 endef
@@ -124,3 +133,19 @@ define Profile/QSDK_Standard/Description
 endef
 
 $(eval $(call Profile,QSDK_Standard))
+
+define Profile/QSDK_Enterprise
+	NAME:=Qualcomm-Atheros SDK Enterprise Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_ENTERPRISE) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) pm-utils \
+		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
+		$(IPSEC) $(CD_ROUTER)
+endef
+
+define Profile/QSDK_Enterprise/Description
+	QSDK Enterprise package set configuration.
+	Enables qca-wifi 10.4 packages
+endef
+
+$(eval $(call Profile,QSDK_Enterprise))
