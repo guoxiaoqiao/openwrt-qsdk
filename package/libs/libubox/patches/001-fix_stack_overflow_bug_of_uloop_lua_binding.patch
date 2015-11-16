@@ -1,0 +1,34 @@
+From 9565bf86ae48c47c744467e30b2219cf9cd70fbf Mon Sep 17 00:00:00 2001
+From: Xiongfei Guo <xfguo@credosemi.com>
+Date: Fri, 20 Jun 2014 10:31:17 +0000
+Subject: [PATCH] Fix stack overflow bug of uloop lua binding.
+
+The static variable `state` in `lua/uloop.c` should be clean after every callback.
+
+Signed-off-by: Xiongfei(Alex) Guo <xfguo@credosemi.com>
+---
+ uloop.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/lua/uloop.c b/lua/uloop.c
+index 51f53c2..5922e04 100644
+--- a/lua/uloop.c
++++ b/lua/uloop.c
+@@ -43,6 +43,7 @@ static void ul_timer_cb(struct uloop_timeout *t)
+ 
+ 	lua_getglobal(state, "__uloop_cb");
+ 	lua_rawgeti(state, -1, tout->r);
++	lua_remove(state, -2);
+ 	lua_call(state, 0, 0);
+ }
+ 
+@@ -133,6 +134,7 @@ static void ul_process_cb(struct uloop_process *p, int ret)
+ 	lua_getglobal(state, "__uloop_cb");
+ 	lua_rawgeti(state, -1, proc->r);
+ 	luaL_unref(state, -2, proc->r);
++	lua_remove(state, -2);
+ 	lua_pushinteger(state, ret >> 8);
+ 	lua_call(state, 1, 0);
+ }
+--
+1.7.9.5
