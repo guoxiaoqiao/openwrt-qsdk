@@ -176,6 +176,7 @@ ap135dual_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs
 ap135nand_mtdlayout=mtdparts=ath79-nand:256k(u-boot),256k(u-boot-env),512k(art),6m(kernel),30m(rootfs),219m(rootfs_data) norootfssplit
 rubberduck_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 ap136_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1472k(kernel),64k(art),7744k@0x50000(firmware)
+ap137_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 ap143_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1472k(kernel),64k(art),7808k@0x50000(firmware)
 ap143_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 ap143_mtdlayout_32M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),256k(reserve)ro,16128k(user),16000k@0x50000(firmware)
@@ -829,6 +830,7 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP135,ap135,AP135,ttyS0,115200,$$(
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP135DUAL,ap135-dual,AP135-DUAL,ttyS0,115200,$$(ap135dual_mtdlayout),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_128k),AP135NAND,ap135-nand,AP135-DUAL,ttyS0,115200,$$(ap135nand_mtdlayout),6291456,31457280,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP136,ap136,AP136,ttyS0,115200,$$(ap136_mtdlayout),1507328,6488064,RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),AP137_16M,ap137-16M,AP137,ttyS0,115200,$$(ap137_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(ap143_mtdlayout_8M),1441792,6488064,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),1507328,14876672,RKuImage))
@@ -1055,6 +1057,7 @@ define Image/Build/Profile/QSDK_Premium_Router
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/AP135NAND,$(1))
+	$(call Image/Build/Profile/AP137_16M,$(1))
 	$(call Image/Build/Profile/AP152_16M,$(1))
 	$(call Image/Build/Profile/AP151_16M,$(1))
 	$(call Image/Build/Profile/AP147_16M,$(1))

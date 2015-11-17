@@ -44,6 +44,9 @@ get_status_led() {
 	ap136)
 		status_led="ap136:green:status"
 		;;
+	ap137)
+		status_led="ap137:green:status"
+		;;
 	ap81)
 		status_led="ap81:green:status"
 		;;
