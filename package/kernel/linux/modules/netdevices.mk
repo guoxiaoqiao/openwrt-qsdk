@@ -109,6 +109,33 @@ endef
 
 $(eval $(call KernelPackage,mii))
 
+define KernelPackage/aq_phy
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Aquantia PHY Driver
+  KCONFIG:=CONFIG_AQ_PHY
+  FILES:=$(LINUX_DIR)/drivers/net/phy/aq_phy.ko
+  AUTOLOAD:=$(call AutoLoad,10,aq_phy)
+endef
+
+define KernelPackage/aq_phy/description
+  Aquantia PHY Driver
+endef
+
+$(eval $(call KernelPackage,aq_phy))
+
+define KernelPackage/qca_85xx_sw
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=QCA 85xx Switch Driver
+  KCONFIG:=CONFIG_QCA_85XX_SWITCH
+  FILES:=$(LINUX_DIR)/drivers/net/phy/qca_85xx_sw.ko
+  AUTOLOAD:=$(call AutoLoad,40,qca_85xx_sw)
+endef
+
+define KernelPackage/qca_85xx_sw/description
+  QCA 85xx Switch Driver
+endef
+
+$(eval $(call KernelPackage,qca_85xx_sw))
 
 define KernelPackage/et131x
   SUBMENU:=$(NETWORK_DEVICES_MENU)
