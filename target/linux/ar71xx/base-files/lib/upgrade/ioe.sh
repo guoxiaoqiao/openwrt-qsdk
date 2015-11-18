@@ -21,6 +21,8 @@ platform_add_ramfs_ioe_tools()
 	install_bin /bin/busybox /usr/bin/cut /usr/bin/sed
 	install_bin /usr/bin/md5sum
 	install_bin /usr/sbin/nandwrite
+	install_bin /usr/sbin/ubiattach
+	install_bin /usr/sbin/ubidetach
 	install_file /etc/fw_env.config
 }
 append sysupgrade_pre_upgrade platform_add_ramfs_ioe_tools
@@ -175,6 +177,9 @@ platform_do_upgrade_ioe() {
 	local file=$1
 	local name=$2
 	local fw="firmware"
+	local ubi_vol="0"
+	local rootfs="rootfs"
+	local rootfs_data="rootfs_data"
 	local valid_env=$(fw_printenv | grep "bootcmd=bootp")
 
 	[ -n "$valid_env" ] && {
@@ -192,8 +197,19 @@ platform_do_upgrade_ioe() {
 		mtd_fw=$(cat /proc/mtd |grep $fw |cut -f1 -d ":")
 		mtd_dev="/dev/$mtd_fw"
 
+		ubidetach -d $ubi_vol
 		mtd erase $mtd_dev
+		mtd_ubi_rootfs="/dev/$(cat /proc/mtd |grep $rootfs |cut -f1 -d ":")"
 		dd if=$file bs=2048 | nandwrite -p $mtd_dev -
+		ubiattach -p $mtd_ubi_rootfs
+		sleep 2
+		mtd_ubi_rootfs_data="$(cat /proc/mtd |grep $rootfs_data |cut -f1 -d ":" | awk ' // {sub(/mtd/, "", $0);print("/dev/mtdblock"$0)}')"
+		echo $mtd_ubi_rootfs_data
+		mount -t jffs2 $mtd_ubi_rootfs_data /mnt
+		echo $CONF_TAR
+		tar xzf $CONF_TAR -C /mnt
+		sync
+		umount /mnt
 	else
 		get_image "$1" | mtd -j "$CONF_TAR" write - $fw
 	fi
