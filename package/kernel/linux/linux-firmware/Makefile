@@ -5,13 +5,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=linux-firmware
-PKG_VERSION:=20150106
+PKG_VERSION:=20151119
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_VERSION:=78535e88bfb95e2f50afb6f9e728df0fbec2cddc
+PKG_SOURCE_VERSION:=3de1c437e75320c0d2f23dc990fac741f0bcc3ca
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)
 
 include $(INCLUDE_DIR)/package.mk
