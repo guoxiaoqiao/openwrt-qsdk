@@ -97,7 +97,7 @@ static struct ath79_spi_controller_data cus531_spi0_cdata =
 static struct ath79_spi_controller_data cus531_spi1_cdata =
 {
 	.cs_type	= ATH79_SPI_CS_TYPE_INTERNAL,
-	.is_flash	= true,
+	.is_flash	= false,
 	.cs_line	= 1,
 };
 
