@@ -27,8 +27,10 @@ ppp_generic_setup() {
 	json_get_vars ipv6 demand keepalive username password pppd_options
 	[ "$ipv6" = 1 ] || ipv6=""
 	if [ "${demand:-0}" -gt 0 ]; then
+		[ "$ipv6" = 1 ] && ipv6="ipv6 ,::0a70:7070 ipv6cp-use-persistent"
 		demand="precompiled-active-filter /etc/ppp/filter demand idle $demand"
 	else
+		[ "$ipv6" = 1 ] && ipv6="+ipv6"
 		demand="persist"
 	fi
 
@@ -43,7 +45,7 @@ ppp_generic_setup() {
 		nodetach ipparam "$config" \
 		ifname "${proto:-ppp}-$config" \
 		${keepalive:+lcp-echo-interval $interval lcp-echo-failure ${keepalive%%[, ]*}} \
-		${ipv6:++ipv6} \
+		$ipv6 \
 		nodefaultroute \
 		usepeerdns \
 		$demand maxfail 1 \
