@@ -57,6 +57,9 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp kmod-ipt-conntrack-qos \
 
 QOS:=luci-app-qos kmod-sched
 
+HYFI:=hyfi hyfi-ui      # no PLC support
+HYFI_PLC:=hyfi-plc hyfi-ui  # with PLC support
+
 #These packages depend on SWITCH_SSDK_PKGS
 IGMPSNOOING_RSTP:=rstp qca-mcs-apps
 
@@ -94,7 +97,8 @@ define Profile/QSDK_Premium
 		$(WIFI_10_4_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
-		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) pm-utils
+		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) pm-utils \
+		$(HYFI)
 endef
 
 define Profile/QSDK_Premium/Description
