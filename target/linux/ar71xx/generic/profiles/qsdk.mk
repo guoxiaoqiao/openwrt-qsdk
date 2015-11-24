@@ -86,7 +86,8 @@ define Profile/QSDK_Premium_Router
 	  streamboost kmod-fast-classifier $(STORAGE) $(PACKAGES_WIFI_10_2) \
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-hnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
-	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand
+	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand \
+	  qca-legacy-uboot-ap137-16M
 endef
 
 define Profile/QSDK_Premium_Router/Description
