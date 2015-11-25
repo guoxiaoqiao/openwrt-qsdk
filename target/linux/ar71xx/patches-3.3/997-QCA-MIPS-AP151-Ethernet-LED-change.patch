@@ -1,0 +1,17 @@
+diff --git a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+index d86c997..de6a58c 100644
+--- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
++++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+@@ -890,6 +890,12 @@
+ #define QCA953X_GPIO_OUT_MUX_LED_LINK4		44
+ #define QCA953X_GPIO_OUT_MUX_LED_LINK5		45
+ 
++#define QCA956X_GPIO_OUT_MUX_LED_LINK1		35
++#define QCA956X_GPIO_OUT_MUX_LED_LINK2		34
++#define QCA956X_GPIO_OUT_MUX_LED_LINK3		17
++#define QCA956X_GPIO_OUT_MUX_LED_LINK4		16
++#define QCA956X_GPIO_OUT_MUX_LED_LINK5		36
++
+ #define QCA956X_GPIO_REG_OUT_FUNC0	0x2c
+ #define QCA956X_GPIO_REG_OUT_FUNC1	0x30
+ #define QCA956X_GPIO_REG_OUT_FUNC2	0x34
