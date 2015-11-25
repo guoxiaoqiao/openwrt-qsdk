@@ -61,7 +61,7 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp kmod-ipt-conntrack-qos \
 
 QOS:=luci-app-qos kmod-sched
 
-MAP_PKGS:=map kmod-nat46
+MAP_PKGS:=map-t
 
 #These packages depend on SWITCH_SSDK_PKGS
 IGMPSNOOING_RSTP:=rstp qca-mcs-apps
