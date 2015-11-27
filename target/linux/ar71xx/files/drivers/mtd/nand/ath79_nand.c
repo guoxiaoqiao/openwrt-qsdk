@@ -167,6 +167,8 @@ static int ath79_nand_hw_init(ath79_nand_priv * ath79_priv)
 	// Put into reset
 	tmp_io_addr =
 	    ioremap(AR71XX_RESET_BASE + AR934X_RESET_REG_RESET_MODULE, 4);
+	if (tmp_io_addr == NULL)
+		return EIO;
 	rddata = ioread32(tmp_io_addr);
 	iowrite32(rddata | AR934X_RESET_NANDF, tmp_io_addr);
 	udelay(250);
@@ -275,7 +277,9 @@ static int ath79_rw_oob(struct mtd_info *mtd, struct nand_chip *chip, int rw,
 	if (!(dmastatus & 1)) {
 		dev_err(ath79_priv->dev, "%s: unfinished DMA. status = 0x%x\n",
 			__func__, dmastatus);
-		ath79_nand_hw_init(ath79_priv);
+		if (ath79_nand_hw_init(ath79_priv)) {
+			status = -EIO;
+		}
 		/* is this for killing unfinished DMA ??? */
 		iowrite32(1, ath79_priv->ddr_io_addr);
 		while (ioread32(ath79_priv->ddr_io_addr) & 1) ;
@@ -411,7 +415,9 @@ static int ath79_rw_page(struct mtd_info *mtd, struct nand_chip *chip, int rw,
 	if (!(dmastatus & 1)) {
 		dev_err(ath79_priv->dev, "%s: unfinished DMA. status = 0x%x\n",
 			__func__, dmastatus);
-		ath79_nand_hw_init(ath79_priv);
+		if (ath79_nand_hw_init(ath79_priv)) {
+			status = -EIO;
+		}
 		/* is this for killing unfinished DMA ??? */
 		iowrite32(1, ath79_priv->ddr_io_addr);
 		while (ioread32(ath79_priv->ddr_io_addr) & 1) ;
@@ -782,7 +788,11 @@ static int __devinit ath79_nand_probe(struct platform_device *pdev)
 	    NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB | NAND_BBT_SCAN2NDPAGE;
 
 	/* initialise the NAND controller hardware */
-	ath79_nand_hw_init(ath79_priv);
+	if (ath79_nand_hw_init(ath79_priv)) {
+		dev_err(&pdev->dev, "nand hardware init error\n");
+		err = -EIO;
+		goto out_err_hw_init;
+	}
 
 	err = nand_scan_ident(mtd, 1, NULL);
 	if (err) {
