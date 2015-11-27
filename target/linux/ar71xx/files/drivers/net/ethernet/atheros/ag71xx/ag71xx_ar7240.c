@@ -637,6 +637,9 @@ static int ar7240sw_reset(struct ar7240sw *as)
 	struct mii_bus *mii = as->mii_bus;
 	int ret;
 	int i;
+	u8 mask;
+
+	mask = ~as->swdata->phy_poll_mask;
 
 	/* Set all ports to disabled state. */
 	for (i = 0; i < AR7240_NUM_PORTS; i++)
@@ -654,6 +657,8 @@ static int ar7240sw_reset(struct ar7240sw *as)
 
 	/* setup PHYs */
 	for (i = 0; i < AR7240_NUM_PHYS; i++) {
+		if (!(mask & BIT(i)))
+			continue;
 		ar7240sw_phy_write(mii, i, MII_ADVERTISE,
 				   ADVERTISE_ALL | ADVERTISE_PAUSE_CAP |
 				   ADVERTISE_PAUSE_ASYM);
