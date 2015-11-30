@@ -111,7 +111,7 @@ static void __init ap151_gpio_led_setup(void)
 	ath79_gpio_direction_select(AP151_GPIO_LED_LAN3, true);
 	ath79_gpio_direction_select(AP151_GPIO_LED_LAN4, true);
 
-	/* TODO: attach link status to GPIO
+	/*attach link status to GPIO*/
 	ath79_gpio_output_select(AP151_GPIO_LED_WAN,
 			QCA956X_GPIO_OUT_MUX_LED_LINK5);
 	ath79_gpio_output_select(AP151_GPIO_LED_LAN1,
@@ -122,7 +122,6 @@ static void __init ap151_gpio_led_setup(void)
 			QCA956X_GPIO_OUT_MUX_LED_LINK3);
 	ath79_gpio_output_select(AP151_GPIO_LED_LAN4,
 			QCA956X_GPIO_OUT_MUX_LED_LINK4);
-	*/
 
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(ap151_leds_gpio),
 			ap151_leds_gpio);
