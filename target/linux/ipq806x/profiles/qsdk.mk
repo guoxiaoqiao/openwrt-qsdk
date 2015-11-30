@@ -20,10 +20,12 @@ USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
 
 UTILS:=luci-app-samba
 
+NETWORKING:=bridge
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA) \
-	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS)
+	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING)
 endef
 
 define Profile/QSDK_Open/Description
