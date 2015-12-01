@@ -56,6 +56,7 @@ $(call Package/openssl/Default)
   CATEGORY:=Libraries
   DEPENDS:=+zlib
   TITLE+= (libraries)
+  ABI_VERSION:=$(PKG_VERSION)
   MENU:=1
 endef
 
