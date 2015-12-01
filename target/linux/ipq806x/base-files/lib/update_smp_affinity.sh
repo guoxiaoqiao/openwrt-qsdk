@@ -6,7 +6,7 @@
 . /lib/ipq806x.sh
 
 enable_smp_affinity_wifi() {
-        irq_wifi=`grep -m1 ath10k_pci /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+        irq_wifi=`grep -E -m1 'ath10k_pci|ath10k_ahb' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
 
 	# Enable smp_affinity for ath10k driver
 	if [ -n "$irq_wifi" ]; then
@@ -16,7 +16,10 @@ enable_smp_affinity_wifi() {
 		board=$(ipq806x_board_name)
 		device="$1"
 		hwcaps=$(cat /sys/class/net/$device/hwcaps)
+
+		[ -n "$device" ] && {
 		irq_affinity_num=`grep $device /proc/interrupts | cut -d ':' -f 1 | tr -d ' '`
+		}
 
 		case "${hwcaps}" in
 			*11an/ac)
