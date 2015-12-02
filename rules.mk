@@ -116,7 +116,7 @@ STAGING_DIR_ROOT:=$(STAGING_DIR)/root-$(BOARD)
 BUILD_LOG_DIR:=$(TOPDIR)/logs
 PKG_INFO_DIR := $(STAGING_DIR)/pkginfo
 
-TARGET_PATH:=$(subst $(space),:,$(filter-out .,$(filter-out ./,$(subst :,$(space),$(PATH)))))
+TARGET_PATH:=$(STAGING_DIR_HOST)/bin:$(subst $(space),:,$(filter-out .,$(filter-out ./,$(subst :,$(space),$(PATH)))))
 TARGET_CFLAGS:=$(TARGET_OPTIMIZATION)$(if $(CONFIG_DEBUG), -g3) $(EXTRA_OPTIMIZATION)
 TARGET_CXXFLAGS = $(TARGET_CFLAGS)
 TARGET_ASFLAGS_DEFAULT = $(TARGET_CFLAGS)
@@ -216,6 +216,7 @@ SED:=$(STAGING_DIR_HOST)/bin/sed -i -e
 CP:=cp -fpR
 LN:=ln -sf
 XARGS:=xargs -r
+PERL:=$(STAGING_DIR_HOST)/bin/perl -w
 
 BASH:=bash
 TAR:=tar
