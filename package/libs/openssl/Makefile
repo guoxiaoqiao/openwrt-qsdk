@@ -8,17 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssl
-PKG_VERSION:=1.0.1j
-PKG_RELEASE:=4
+PKG_VERSION:=1.0.2d
+PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 
-PKG_BUILD_PARALLEL:=1
+PKG_BUILD_PARALLEL:=0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.openssl.org/source/ \
 	ftp://ftp.funet.fi/pub/crypt/mirrors/ftp.openssl.org/source \
 	ftp://ftp.sunet.se/pub/security/tools/net/openssl/source/
-PKG_MD5SUM:=f7175c9cd3c39bb1907ac8bba9df8ed3
+PKG_MD5SUM:=38dd619b2e77cbac69b99f52a053d25a
 
 PKG_LICENSE:=SSLEAY OPENSSL
 PKG_LICENSE_FILES:=LICENSE
@@ -118,6 +118,8 @@ else
   OPENSSL_OPTIONS+=no-sse2
   ifeq ($(CONFIG_mips)$(CONFIG_mipsel),y)
     OPENSSL_TARGET:=linux-mips-openwrt
+#  else ifeq ($(CONFIG_arm)$(CONFIG_armeb),y)
+#    OPENSSL_TARGET:=linux-armv4-openwrt
   else
     OPENSSL_TARGET:=linux-generic-openwrt
     OPENSSL_OPTIONS+=no-perlasm
@@ -156,7 +158,7 @@ TARGET_CFLAGS += $(FPIC)
 define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
 		CC="$(TARGET_CC)" \
-		ASFLAGS="$(TARGET_ASFLAGS) -c" \
+		ASFLAGS="$(TARGET_ASFLAGS) -I$(PKG_BUILD_DIR)/crypto -c" \
 		AR="$(TARGET_CROSS)ar r" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		OPENWRT_OPTIMIZATION_FLAGS="$(TARGET_CFLAGS)" \
@@ -164,7 +166,7 @@ define Build/Compile
 		all
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
 		CC="$(TARGET_CC)" \
-		ASFLAGS="$(TARGET_ASFLAGS) -c" \
+		ASFLAGS="$(TARGET_ASFLAGS) -I$(PKG_BUILD_DIR)/crypto -c" \
 		AR="$(TARGET_CROSS)ar r" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		OPENWRT_OPTIMIZATION_FLAGS="$(TARGET_CFLAGS)" \
