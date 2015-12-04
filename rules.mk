@@ -76,6 +76,7 @@ SCRIPT_DIR:=$(TOPDIR)/scripts
 BUILD_DIR_BASE:=$(TOPDIR)/build_dir
 BUILD_DIR_HOST:=$(BUILD_DIR_BASE)/host
 STAGING_DIR_HOST:=$(TOPDIR)/staging_dir/host
+PREBUILT_DIR:=$(TOPDIR)/prebuilt/$(BOARD)
 ifeq ($(CONFIG_EXTERNAL_TOOLCHAIN),)
   GCCV:=$(call qstrip,$(CONFIG_GCC_VERSION))
   LIBC:=$(call qstrip,$(CONFIG_LIBC))
