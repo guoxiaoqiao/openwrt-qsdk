@@ -57,7 +57,7 @@ akronite_ac_power()
 		if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
 		then
 			sd_drvname=$(cat /tmp/sysinfo/sd_drvname)
-			echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/bind
+			echo $sd_drvname > /sys/bus/amba/drivers/mmci-pl18x/bind
 		fi
 	fi
 
@@ -139,9 +139,9 @@ akronite_battery_power()
 	if [ -z "$emmcblock" ]; then
 		if [ -d /sys/block/mmcblk0 ]
 		then
-			sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $4}'`
+			sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $5}'`
 			echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
-			echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
+			echo $sd_drvname > /sys/bus/amba/drivers/mmci-pl18x/unbind
 		fi
 	fi
 
