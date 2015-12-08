@@ -35,8 +35,8 @@ akronite_ac_power()
 	[ -f /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend ] && {
 		echo 0 > /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend
 	}
-	[ -f sys/devices/soc.2/29000000.sata/ahci_sata_suspend ] && {
-		echo 0 > sys/devices/soc.2/29000000.sata/ahci_sata_suspend
+	[ -f sys/devices/soc.2/29000000.sata/ipq_ahci_suspend ] && {
+		echo 0 > sys/devices/soc.2/29000000.sata/ipq_ahci_suspend
 	}
 
 	sleep 1
@@ -105,16 +105,16 @@ akronite_battery_power()
 	[ -f /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend ] && {
 		echo 1 > /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend
 	}
-	[ -f /sys/devices/soc.2/29000000.sata/ahci_sata_suspend ] && {
-		echo 1 > /sys/devices/soc.2/29000000.sata/ahci_sata_suspend
+	[ -f /sys/devices/soc.2/29000000.sata/ipq_ahci_suspend ] && {
+		echo 1 > /sys/devices/soc.2/29000000.sata/ipq_ahci_suspend
 	}
 
 # USB Power-down Sequence
 	[ -d /sys/module/dwc3_ipq ] && rmmod dwc3-ipq
+	[ -d /sys/module/dwc3 ] && rmmod dwc3
 	[ -d /sys/module/dwc3_qcom ] && rmmod dwc3-qcom
 	[ -d /sys/module/phy-qcom-hsusb ] && rmmod phy-qcom-hsusb
 	[ -d /sys/module/phy-qcom-ssusb ] && rmmod phy-qcom-ssusb
-	[ -d /sys/module/dwc3 ] && rmmod dwc3
 
 	sleep 1
 
