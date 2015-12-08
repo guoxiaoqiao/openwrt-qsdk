@@ -22,10 +22,13 @@ UTILS:=luci-app-samba
 
 NETWORKING:=bridge
 
+COREBSP_UTILS:=pm-utils
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA) \
-	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING)
+	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
+	$(COREBSP_UTILS)
 endef
 
 define Profile/QSDK_Open/Description
