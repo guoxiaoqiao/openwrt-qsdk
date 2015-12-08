@@ -44,10 +44,10 @@ akronite_ac_power()
 
 # USB Power-UP Sequence
 	[ -d /sys/module/dwc3_ipq ] || insmod dwc3-ipq
-	[ -d /sys/module/dwc3_qcom ] && insmod dwc3-qcom
-	[ -d /sys/module/phy-qcom-hsusb ] && insmod phy-qcom-hsusb
-	[ -d /sys/module/phy-qcom-ssusb ] && insmod phy-qcom-ssusb
-	[ -d /sys/module/dwc3 ] && insmod dwc3
+	[ -d /sys/module/dwc3_qcom ] || insmod dwc3-qcom
+	[ -d /sys/module/phy_qcom_hsusb ] || insmod phy-qcom-hsusb
+	[ -d /sys/module/phy_qcom_ssusb ] || insmod phy-qcom-ssusb
+	[ -d /sys/module/dwc3 ] || insmod dwc3
 
 	exit 0
 }
@@ -116,8 +116,8 @@ akronite_battery_power()
 	[ -d /sys/module/dwc3_ipq ] && rmmod dwc3-ipq
 	[ -d /sys/module/dwc3 ] && rmmod dwc3
 	[ -d /sys/module/dwc3_qcom ] && rmmod dwc3-qcom
-	[ -d /sys/module/phy-qcom-hsusb ] && rmmod phy-qcom-hsusb
-	[ -d /sys/module/phy-qcom-ssusb ] && rmmod phy-qcom-ssusb
+	[ -d /sys/module/phy_qcom_hsusb ] && rmmod phy-qcom-hsusb
+	[ -d /sys/module/phy_qcom_ssusb ] && rmmod phy-qcom-ssusb
 
 	sleep 1
 
