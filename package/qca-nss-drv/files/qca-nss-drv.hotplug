@@ -1,6 +1,7 @@
 #!/bin/sh
 
 load_nss_fw () {
+	ls -l $1 | awk ' { print $9,$5 } '> /dev/console
 	echo 1 > /sys/class/firmware/$DEVICENAME/loading
 	cat $1 > /sys/class/firmware/$DEVICENAME/data
 	echo 0 > /sys/class/firmware/$DEVICENAME/loading
