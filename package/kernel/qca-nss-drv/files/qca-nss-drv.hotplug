@@ -3,6 +3,7 @@
 select_nss_fw () {
 	rm -f /lib/firmware/$DEVICENAME
 	ln -s $1 /lib/firmware/$DEVICENAME
+	ls -l /lib/firmware/$DEVICENAME | awk ' { print $9,$5 } '> /dev/console
 }
 
 [ "$ACTION" != "add" ] && exit
