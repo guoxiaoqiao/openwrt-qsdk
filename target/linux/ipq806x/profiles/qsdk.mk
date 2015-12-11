@@ -13,7 +13,8 @@ OPENWRT_STANDARD:= \
 	luci
 
 STORAGE:=kmod-scsi-core kmod-usb-storage \
-	kmod-fs-msdos kmod-fs-vfat \
+	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs \
+	kmod-nls-cp437 kmod-nls-iso8859-1 \
 	e2fsprogs
 
 USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
