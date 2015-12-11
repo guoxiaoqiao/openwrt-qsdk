@@ -36,6 +36,7 @@ install_bin() { # <file> [ <symlink> ... ]
 pivot() { # <new_root> <old_root>
 	mount | grep "on $1 type" 2>&- 1>&- || mount -o bind $1 $1
 	mkdir -p $1$2 $1/proc $1/sys $1/dev $1/tmp $1/overlay && \
+	ln -s /tmp $1/var && \
 	mount -o move /proc $1/proc && \
 	pivot_root $1 $1$2 || {
         umount $1 $1
