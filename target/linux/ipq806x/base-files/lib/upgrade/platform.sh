@@ -10,7 +10,7 @@ USE_REFRESH=1
 RAMFS_COPY_DATA=/lib/ipq806x.sh
 RAMFS_COPY_BIN="/usr/bin/dumpimage /bin/mktemp /usr/sbin/mkfs.ubifs
 	/usr/sbin/ubiattach /usr/sbin/ubidetach /usr/sbin/ubiformat /usr/sbin/ubimkvol
-	/usr/sbin/ubiupdatevol /usr/bin/basename /bin/rm"
+	/usr/sbin/ubiupdatevol /usr/bin/basename /bin/rm /usr/bin/find"
 
 get_full_section_name() {
 	local img=$1
@@ -67,17 +67,18 @@ image_is_FIT() {
 
 switch_layout() {
 	local layout=$1
+	local boot_layout=`find -name boot_layout`
 
 	# Layout switching is only required as the  boot images (up to u-boot)
 	# use 512 user data bytes per code word, whereas Linux uses 516 bytes.
 	# It's only applicable for NAND flash. So let's return if we don't have
 	# one.
 
-	[ -d /sys/devices/platform/msm_nand/ ] || return
+	[ -n "$boot_layout" ] || return
 
 	case "${layout}" in
-		boot|1) echo 1 > /sys/devices/platform/msm_nand/boot_layout;;
-		linux|0) echo 0 > /sys/devices/platform/msm_nand/boot_layout;;
+		boot|1) echo 1 > $boot_layout;;
+		linux|0) echo 0 > $boot_layout;;
 		*) echo "Unknown layout \"${layout}\"";;
 	esac
 }
@@ -168,6 +169,17 @@ do_flash_ubi() {
 	ubiformat /dev/${mtdpart} -y -f /tmp/${bin}.bin
 }
 
+do_flash_tz() {
+	local sec=$1
+	local mtdpart=$(grep "\0:QSEE\"" /proc/mtd | awk -F: '{print $1}')
+
+	if [ -n "$mtdpart" ]; then
+		do_flash_partition ${sec} "0:QSEE"
+	else
+		do_flash_partition ${sec} "0:TZ"
+	fi
+}
+
 to_upper ()
 {
 	echo $1 | awk '{print toupper($0)}'
@@ -188,8 +200,9 @@ flash_section() {
 		dtb-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DTB";;
 		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
 		ddr-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DDRPARAMS";;
+		ddr-${board}-*) switch_layout boot; do_flash_partition ${sec} "0:DDRCONFIG";;
 		ssd*) switch_layout boot; do_flash_partition ${sec} "0:SSD";;
-		tz*) switch_layout boot; do_flash_partition ${sec} "0:QSEE";;
+		tz*) switch_layout boot; do_flash_tz ${sec};;
 		rpm*) switch_layout boot; do_flash_partition ${sec} "0:RPM";;
 		*) echo "Section ${sec} ignored"; return 1;;
 	esac
