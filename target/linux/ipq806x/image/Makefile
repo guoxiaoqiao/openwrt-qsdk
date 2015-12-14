@@ -68,6 +68,7 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk01.1-c1,0x80208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk01.1-c2,0x80208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c1,0x80208000)
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk06.1-c1,0x80208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c2,0x80208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c3,0x80208000)
 	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c4,0x80208000)
@@ -81,7 +82,8 @@ define Image/BuildKernel
 																qcom-ipq40xx-ap.dk01.1-c2 \
 																qcom-ipq40xx-db.dk01.1-c1 \
 																qcom-ipq40xx-db.dk02.1-c1 \
-																qcom-ipq40xx-ap.dk04.1-c4"\
+																qcom-ipq40xx-ap.dk04.1-c4 \
+																qcom-ipq40xx-ap.dk06.1-c1"\
 																,0x80208000)
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-db149,"qcom-ipq8064-db149 \
 								qcom-ipq8064-v2.0-db149 \
