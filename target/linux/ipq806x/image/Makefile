@@ -30,11 +30,12 @@ define Image/BuildKernel/FIT
 	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb,gzip,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb $(BIN_DIR)/$(IMG_PREFIX)-$(1).dtb
-ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
+endef
+
+define Image/BuildKernel/FITInitramfs
 	$(CP) $(KDIR)/Image-initramfs $(BIN_DIR)/$(IMG_PREFIX)-vmlinux-initramfs.bin
 	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image-initramfs, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb, none,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage-initramfs.itb
-endif
 endef
 
 define Image/Prepare
@@ -57,33 +58,32 @@ define Image/BuildKernel/MultiDTBFIT
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 endef
 
-define Image/BuildKernel
+# some tree's don't have all the device tree's so we filter out
+# the ones that are not present
+# $(1) is the filter to apply
+FindDeviceTrees ?= $(notdir $(basename $(shell find $(LINUX_DIR)/arch/arm/boot/dts/ -name $(1)*.dts 2>/dev/null)))
+
+define Image/BuildKernel/template
 	$(CP) $(KDIR)/vmlinux$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,$(IPQ806X_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-v2.0-ap148,$(IPQ806X_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-db149,$(IPQ806X_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-storm,$(IPQ806X_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-whirlwind,$(IPQ806X_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-r3pc,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-r3pc-wifi,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk01.1-c1,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk01.1-c2,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c1,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c2,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c3,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c4,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-db.dk01.1-c1,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-db.dk02.1-c1,$(IPQ40XX_KERNEL_LOADADDR))
+
+	$(foreach device, $(call FindDeviceTrees, qcom-ipq8064-), \
+		$(call Image/BuildKernel/$(1),$(device),$(IPQ806X_KERNEL_LOADADDR));)
+
+	$(foreach device, $(call FindDeviceTrees, qcom-ipq40xx-), \
+		$(call Image/BuildKernel/$(1),$(device),$(IPQ40XX_KERNEL_LOADADDR));)
+endef
+
+define Image/BuildKernel
+	$(call Image/BuildKernel/template,FIT)
+
 	$(call Image/BuildKernel/GenericFIT,qcom-ipq40xx,$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq40xx-ap.dkxx,"qcom-ipq40xx-ap.dk04.1-c1 \
-												qcom-ipq40xx-ap.dk04.1-c2 \
-												qcom-ipq40xx-ap.dk04.1-c3 \
-												qcom-ipq40xx-ap.dk01.1-c1 \
-												qcom-ipq40xx-ap.dk01.1-c2 \
-												qcom-ipq40xx-db.dk01.1-c1 \
-												qcom-ipq40xx-db.dk02.1-c1 \
-												qcom-ipq40xx-ap.dk04.1-c4"\
-												,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq40xx-ap.dkxx, \
+		$(call FindDeviceTrees, qcom-ipq40xx-ap) $(call FindDeviceTrees, qcom-ipq40xx-db), \
+		$(IPQ40XX_KERNEL_LOADADDR))
+endef
+
+define Image/BuildKernel/Initramfs
+	$(call Image/BuildKernel/template,FITInitramfs)
 endef
 
 define Image/Build/squashfs
