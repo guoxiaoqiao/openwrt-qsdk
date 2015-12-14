@@ -118,6 +118,8 @@ hostapd_common_add_bss_config() {
 		wep_rekey eap_reauth_period \
 		wpa_group_rekey wpa_pair_rekey wpa_master_rekey
 
+	config_add_string wps_config
+
 	config_add_boolean rsn_preauth auth_cache
 	config_add_int ieee80211w
 
@@ -175,12 +177,13 @@ hostapd_set_bss_options() {
 
 	local bss_conf
 	local wep_rekey wpa_group_rekey wpa_pair_rekey wpa_master_rekey wpa_key_mgmt
+	local wps_config
 
 	json_get_vars \
 		wep_rekey wpa_group_rekey wpa_pair_rekey wpa_master_rekey \
 		maxassoc max_inactivity disassoc_low_ack isolate auth_cache \
 		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 \
-		wps_device_type wps_device_name wps_manufacturer wps_pin \
+		wps_device_type wps_config wps_device_name wps_manufacturer wps_pin \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
 		iapp_interface
 
@@ -311,7 +314,7 @@ hostapd_set_bss_options() {
 	set_default wps_label 0
 	set_default wps_pbc_in_m1 0
 
-	config_methods=
+	config_methods=$wps_config
 	[ "$wps_pushbutton" -gt 0 ] && append config_methods push_button
 	[ "$wps_label" -gt 0 ] && append config_methods label
 
@@ -320,6 +323,10 @@ hostapd_set_bss_options() {
 		set_default wps_device_type "6-0050F204-1"
 		set_default wps_device_name "OpenWrt AP"
 		set_default wps_manufacturer "openwrt.org"
+		set_default wps_model_name "WAP"
+		set_default wps_model_number "123"
+		set_default wps_serial_number "12345"
+		set_default wps_pin "12345670"
 
 		wps_state=2
 		[ -n "$wps_configured" ] && wps_state=1
