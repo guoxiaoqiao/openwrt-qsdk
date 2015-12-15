@@ -11,11 +11,13 @@ MAINTAINER:=John Crispin <blogic@openwrt.org>
 
 LINUX_VERSION:=3.18.21
 
-CONFIG_KERNEL_GIT_CLONE_URI:=$(TOPDIR)/qca/src/linux
-CONFIG_KERNEL_GIT_BRANCH:=""
-CONFIG_KERNEL_GIT_LOCAL_REPOSITORY:=""
-
 KERNELNAME:=zImage Image dtbs
+
+# check .config for an overridden Linux dir, otherwise use qca/src/linux
+CONFIG_EXTERNAL_KERNEL_TREE=$(shell \
+	grep -q CONFIG_EXTERNAL_KERNEL_TREE=\"\" $(TOPDIR)/.config && \
+	echo '$(TOPDIR)/qca/src/linux' || \
+	sed -n 's,CONFIG_EXTERNAL_KERNEL_TREE="\(.*\)",\1,p' $(TOPDIR)/.config)
 
 include $(INCLUDE_DIR)/target.mk
 DEFAULT_PACKAGES += \
