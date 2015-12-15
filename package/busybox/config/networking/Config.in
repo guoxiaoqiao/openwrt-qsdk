@@ -893,7 +893,7 @@ config BUSYBOX_CONFIG_FEATURE_TELNETD_INETD_WAIT
 
 config BUSYBOX_CONFIG_TFTP
 	bool "tftp"
-	default n
+	default y
 	help
 	  This enables the Trivial File Transfer Protocol client program. TFTP
 	  is usually used for simple, small transfers such as a root image
@@ -901,7 +901,7 @@ config BUSYBOX_CONFIG_TFTP
 
 config BUSYBOX_CONFIG_TFTPD
 	bool "tftpd"
-	default n
+	default y
 	help
 	  This enables the Trivial File Transfer Protocol server program.
 	  It expects that stdin is a datagram socket and a packet
@@ -914,7 +914,7 @@ comment "Common options for tftp/tftpd"
 
 config BUSYBOX_CONFIG_FEATURE_TFTP_GET
 	bool "Enable 'tftp get' and/or tftpd upload code"
-	default n
+	default y
 	depends on BUSYBOX_CONFIG_TFTP || BUSYBOX_CONFIG_TFTPD
 	help
 	  Add support for the GET command within the TFTP client. This allows
@@ -926,7 +926,7 @@ config BUSYBOX_CONFIG_FEATURE_TFTP_GET
 
 config BUSYBOX_CONFIG_FEATURE_TFTP_PUT
 	bool "Enable 'tftp put' and/or tftpd download code"
-	default n
+	default y
 	depends on BUSYBOX_CONFIG_TFTP || BUSYBOX_CONFIG_TFTPD
 	help
 	  Add support for the PUT command within the TFTP client. This allows
