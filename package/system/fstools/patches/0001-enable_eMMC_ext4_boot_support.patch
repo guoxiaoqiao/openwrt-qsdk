@@ -276,3 +276,15 @@ index 0000000..3dcd658
  	}
  
  	volume_init(v);
+--- a/libfstools/find.c
++++ b/libfstools/find.c
+@@ -102,7 +102,8 @@
+ 
+ 			if (mtd_only &&
+ 			    strncmp(t, "jffs2", 5) &&
+-			    strncmp(t, "ubifs", 5)) {
++			    strncmp(t, "ubifs", 5) &&
++			    strncmp(t, "ext4", 4)) {
+ 				fclose(fp);
+ 				ULOG_ERR("block is mounted with wrong fs\n");
+ 				return NULL;
