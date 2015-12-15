@@ -44,6 +44,20 @@ define KernelPackage/qca-nss-drv-l2tp/Description
 Kernel modules for NSS connection manager - Support for l2tp tunnel
 endef
 
+define KernelPackage/qca-nss-drv-pptp
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  TITLE:=Kernel driver for NSS (connection manager) - PPTP
+  DEPENDS:=kmod-qca-nss-drv kmod-pptp
+  FILES:=$(PKG_BUILD_DIR)/pptp/qca-nss-pptp.ko
+  AUTOLOAD:=$(call AutoLoad,51,qca-nss-pptp)
+endef
+
+define KernelPackage/qca-nss-drv-pptp/Description
+Kernel modules for NSS connection manager - Support for PPTP tunnel
+endef
+
 define KernelPackage/qca-nss-drv-tunipip6
   SECTION:=kernel
   CATEGORY:=Kernel modules
@@ -130,6 +144,7 @@ $(eval $(call KernelPackage,qca-nss-drv-profile))
 $(eval $(call KernelPackage,qca-nss-drv-capwapmgr))
 $(eval $(call KernelPackage,qca-nss-drv-tun6rd))
 $(eval $(call KernelPackage,qca-nss-drv-l2tpv2))
+$(eval $(call KernelPackage,qca-nss-drv-pptp))
 $(eval $(call KernelPackage,qca-nss-drv-tunipip6))
 $(eval $(call KernelPackage,qca-nss-drv-ipsecmgr))
 $(eval $(call KernelPackage,qca-nss-drv-qdisc))
