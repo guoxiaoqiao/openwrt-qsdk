@@ -903,6 +903,20 @@ endef
 
 $(eval $(call KernelPackage,thermal-imx))
 
+define KernelPackage/bootconfig
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Bootconfig partition for failsafe
+  KCONFIG:=CONFIG_BOOTCONFIG_PARTITION
+  FILES:=$(LINUX_DIR)/drivers/platform/msm/bootconfig.ko
+  AUTOLOAD:=$(call AutoLoad,56,bootconfig)
+endef
+
+define KernelPackage/bootconfig/description
+  Bootconfig partition for failsafe
+endef
+
+$(eval $(call KernelPackage,bootconfig))
+
 
 define KernelPackage/thermal-kirkwood
   SUBMENU:=$(OTHER_MENU)
