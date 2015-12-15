@@ -55,6 +55,23 @@ define Profile/QSDK_Open_Router/Description
 endef
 $(eval $(call Profile,QSDK_Open_Router))
 
+define Profile/Upstream
+	$(Profile/Default)
+	NAME:=Upstream Profile
+	PACKAGES:=-kmod-ath9k -wpad-mini hostapd hostapd-utils kmod-qca-ath9k kmod-qca-ath \
+	  wpa-supplicant-p2p wpa-cli dnsmasq-dhcpv6 wide-dhcpv6-client qca-ssdk-shell \
+	  kmod-qca-ssdk-nohnat iwinfo wireless-tools uhttpd
+endef
+
+define Profile/Upstream/Description
+  Upstream package set configuration.
+  This profile includes only default source packages and is designed to fit in a 8M flash. It supports:
+  - Default packages
+  - IPv4/IPv6
+  - Integrated 11abgn support using the ath9k driver
+endef
+$(eval $(call Profile,Upstream))
+
 define Profile/QSDK_Wireless_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Wireless Router Profile

@@ -1083,6 +1083,15 @@ define Image/Build/Profile/QSDK_Open_Router
 	$(call Image/Build/Profile/AP152_16M,$(1))
 endef
 
+define Image/Build/Profile/Upstream
+	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135DUAL,$(1))
+	$(call Image/Build/Profile/AP147_8M,$(1))
+	$(call Image/Build/Profile/AP151_8M,$(1))
+	$(call Image/Build/Profile/AP152_8M,$(1))
+	$(call Image/Build/Profile/DB120,$(1))
+endef
+
 define Image/Build/Profile/QSDK_IoE_Device
 	$(call Image/Build/Profile/AP143,$(1))
 	$(call Image/Build/Profile/CUS531,$(1))
