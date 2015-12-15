@@ -120,8 +120,8 @@ do_flash_bootconfig() {
 	local mtdname=$2
 
 	# Fail safe upgrade
-	if [ -f /proc/boot_info/getbinary ]; then
-		cat /proc/boot_info/getbinary > /tmp/${bin}.bin
+	if [ -f /proc/boot_info/getbinary_${bin} ]; then
+		cat /proc/boot_info/getbinary_${bin} > /tmp/${bin}.bin
 		do_flash_partition $bin $mtdname
 	fi
 }
@@ -132,8 +132,6 @@ do_flash_failsafe_partition() {
 	local emmcblock
 
 	# Fail safe upgrade
-	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
-	[ -f /proc/boot_info/$mtdname/upgraded ] && echo 1 > /proc/boot_info/$mtdname/upgraded
 	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
 		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
 	}
@@ -153,13 +151,10 @@ do_flash_ubi() {
 	local mtdname=$2
 	local mtdpart
 
-	# Fail safe upgrade
-	[ -f /proc/boot_info/upgradeinprogress ] && echo 1 > /proc/boot_info/upgradeinprogress
-	[ -f /proc/boot_info/$mtdname/upgraded ] && echo 1 > /proc/boot_info/$mtdname/upgraded
-
 	mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	ubidetach -f -p /dev/${mtdpart}
 
+	# Fail safe upgrade
 	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
 		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
 	}
@@ -174,9 +169,9 @@ do_flash_tz() {
 	local mtdpart=$(grep "\0:QSEE\"" /proc/mtd | awk -F: '{print $1}')
 
 	if [ -n "$mtdpart" ]; then
-		do_flash_partition ${sec} "0:QSEE"
+		do_flash_failsafe_partition ${sec} "0:QSEE"
 	else
-		do_flash_partition ${sec} "0:TZ"
+		do_flash_failsafe_partition ${sec} "0:TZ"
 	fi
 }
 
@@ -192,18 +187,19 @@ flash_section() {
 	case "${sec}" in
 		hlos*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:HLOS";;
 		rootfs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
+		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "0:SBL1";;
-		sbl2*) switch_layout boot; do_flash_partition ${sec} "0:SBL2";;
-		sbl3*) switch_layout boot; do_flash_partition ${sec} "0:SBL3";;
+		sbl2*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:SBL2";;
+		sbl3*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:SBL3";;
 		mibib*) switch_layout boot; do_flash_partition ${sec} "0:MIBIB";;
 		dtb-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DTB";;
 		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
 		ddr-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DDRPARAMS";;
-		ddr-${board}-*) switch_layout boot; do_flash_partition ${sec} "0:DDRCONFIG";;
+		ddr-${board}-*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:DDRCONFIG";;
 		ssd*) switch_layout boot; do_flash_partition ${sec} "0:SSD";;
 		tz*) switch_layout boot; do_flash_tz ${sec};;
-		rpm*) switch_layout boot; do_flash_partition ${sec} "0:RPM";;
+		rpm*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:RPM";;
 		*) echo "Section ${sec} ignored"; return 1;;
 	esac
 
@@ -306,7 +302,8 @@ platform_do_upgrade() {
 
 		switch_layout linux
 		# update bootconfig to register that fw upgrade has been done
-		do_flash_bootconfig bootconfig "BOOTCONFIG"
+		do_flash_bootconfig bootconfig "0:BOOTCONFIG"
+		do_flash_bootconfig bootconfig1 "0:BOOTCONFIG1"
 		platform_version_upgrade
 
 		erase_emmc_config
