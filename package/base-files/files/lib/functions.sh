@@ -7,7 +7,7 @@
 find_mmc_part() {
 	local DEVNAME PARTNAME
 
-	if grep -q rootfs /proc/mtd; then
+	if grep -q "$1" /proc/mtd; then
 		echo "" && return 0
 	fi
 
