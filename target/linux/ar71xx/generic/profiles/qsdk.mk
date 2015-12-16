@@ -6,7 +6,7 @@ STORAGE:=kmod-fs-ext4 kmod-usb-storage kmod-usb2 kmod-fs-msdos kmod-fs-ntfs \
 	kmod-fs-vfat ntfs-3g kmod-nls-cp437 kmod-nls-iso8859-1
 
 define Profile/QSDK_Base
-	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp tftp-hpa mcproxy \
+	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp mcproxy \
 	  kmod-ipt-nathelper-rtsp kmod-ipv6 \
 	  quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
