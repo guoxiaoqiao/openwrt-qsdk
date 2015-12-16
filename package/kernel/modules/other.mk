@@ -696,6 +696,20 @@ endef
 
 $(eval $(call KernelPackage,regmap-spi))
 
+define KernelPackage/bootconfig
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Bootconfig partition for failsafe
+  KCONFIG:=CONFIG_BOOTCONFIG_PARTITION
+  FILES:=$(LINUX_DIR)/drivers/platform/msm/bootconfig.ko
+  AUTOLOAD:=$(call AutoLoad,56,bootconfig)
+endef
+
+define KernelPackage/bootconfig/description
+  Bootconfig partition for failsafe
+endef
+
+$(eval $(call KernelPackage,bootconfig))
+
 define KernelPackage/regmap-i2c
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Generic register i2c map support

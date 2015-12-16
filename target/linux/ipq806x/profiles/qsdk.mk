@@ -45,6 +45,8 @@ BLUETOOTH:=kmod-qca-ath3k bluez btconfig
 HYFI:=hyfi hyfi-ui
 HYFI_PLC:=hyfi-plc hyfi-ui
 
+FAILSAFE:=kmod-bootconfig
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES+=kmod-ath9k wpad-mini \
@@ -67,7 +69,8 @@ define Profile/QSDK_Standard
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
-		$(PACKAGES_WIFI_10_2) $(BLUETOOTH) kmod-qca-wil6210 wigig-firmware-ipdock iwinfo
+		$(PACKAGES_WIFI_10_2) $(BLUETOOTH) kmod-qca-wil6210 wigig-firmware-ipdock iwinfo \
+		$(FAILSAFE)
 endef
 
 define Profile/QSDK_Standard/Description
@@ -88,7 +91,7 @@ define Profile/QSDK_Standard_Beeliner
 		kmod-qca-nss-drv-pptp \
 		luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
-		$(PACKAGES_WIFI_10_4) kmod-qca-wil6210 wigig-firmware iwinfo
+		$(PACKAGES_WIFI_10_4) kmod-qca-wil6210 wigig-firmware iwinfo $(FAILSAFE)
 endef
 
 define Profile/QSDK_Standard_Beeliner/Description
@@ -105,7 +108,7 @@ define Profile/QSDK_Enterprise
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
 	PACKAGES+=luci-app-openswan kmod-crypto-ocf \
 		$(PACKAGES_NSS_ENTERPRISE) \
-		$(PACKAGES_WIFI_10_2)
+		$(PACKAGES_WIFI_10_2) $(FAILSAFE)
 endef
 
 define Profile/QSDK_Enterprise/Description
@@ -118,7 +121,7 @@ define Profile/QSDK_Enterprise_Beeliner
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
 	PACKAGES+=luci-app-openswan kmod-crypto-ocf \
                 $(PACKAGES_NSS_ENTERPRISE) \
-                $(PACKAGES_WIFI_10_4)
+                $(PACKAGES_WIFI_10_4) $(FAILSAFE)
 endef
 
 define Profile/QSDK_Enterprise_Beeliner/Description
