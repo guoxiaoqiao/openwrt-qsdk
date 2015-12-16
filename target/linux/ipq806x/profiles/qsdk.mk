@@ -79,9 +79,7 @@ AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
 #These packages depend on SWITCH_SSDK_PKGS
 IGMPSNOOING_RSTP:=rstp qca-mcs-apps
 
-IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6 \
-	perl perlbase-base perlbase-config perlbase-essential perlbase-getopt\
-	perlbase-getopt
+IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6
 
 TEST_TOOLS:=sysstat devmem2 ethtool i2c-tools
 
