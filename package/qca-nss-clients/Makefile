@@ -4,7 +4,7 @@ include $(INCLUDE_DIR)/kernel.mk
 PKG_NAME:=qca-nss-clients
 PKG_SOURCE_PROTO:=git
 PKG_BRANCH:=master
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 include $(INCLUDE_DIR)/local-development.mk
 ifeq ($(DUMP)$(PKG_VERSION),)
@@ -127,8 +127,8 @@ define KernelPackage/qca-nss-drv-ipsecmgr
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
   TITLE:=Kernel driver for NSS (ipsec manager) - ipsecmgr
-  DEPENDS:=kmod-qca-nss-drv
-  FILES:=$(PKG_BUILD_DIR)/qca-nss-ipsecmgr.ko
+  DEPENDS:=kmod-qca-nss-drv +kmod-qca-nss-crypto
+  FILES:=$(PKG_BUILD_DIR)/ipsecmgr/qca-nss-ipsecmgr.ko
   AUTOLOAD:=$(call AutoLoad,34,qca-nss-ipsecmgr)
 endef
 
