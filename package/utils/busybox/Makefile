@@ -114,6 +114,11 @@ define Package/busybox/install
 	$(INSTALL_BIN) ./files/sysntpd $(1)/etc/init.d/sysntpd
 	$(INSTALL_BIN) ./files/ntpd-hotplug $(1)/usr/sbin/ntpd-hotplug
 	-rm -rf $(1)/lib64
+ifneq ($(CONFIG_BUSYBOX_CONFIG_FEATURE_USE_INITTAB),)
+	mkdir -p $(1)/etc/init.d
+	$(CP) ./files/etc/inittab $(1)/etc/inittab
+	$(CP) ./files/etc/init.d/rcS $(1)/etc/init.d/rcS
+endif
 endef
 
 $(eval $(call BuildPackage,busybox))

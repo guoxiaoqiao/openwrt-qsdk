@@ -1,0 +1,3 @@
+#!/bin/sh
+mkdir -p /proc && mount -t proc none /proc
+mkdir -p /sys && mount -t sysfs none /sys
