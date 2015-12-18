@@ -658,7 +658,7 @@ flash_section() {
 
 	local board=$(ipq806x_board_name)
 	case "${sec}" in
-		hlos*) switch_layout linux; do_flash_failsafe_partition ${sec} "kernel";;
+		hlos*) switch_layout linux; do_flash_failsafe_partition ${sec} "HLOS";;
 		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "SBL1";;
