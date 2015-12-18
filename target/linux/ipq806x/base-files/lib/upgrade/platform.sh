@@ -67,7 +67,7 @@ image_is_FIT() {
 
 switch_layout() {
 	local layout=$1
-	local boot_layout=`find -name boot_layout`
+	local boot_layout=`find / -name boot_layout`
 
 	# Layout switching is only required as the  boot images (up to u-boot)
 	# use 512 user data bytes per code word, whereas Linux uses 516 bytes.
