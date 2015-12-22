@@ -1,3 +1,6 @@
+diff --git a/package/system/fstools/patches/001-add_emmc_firstboot.patch b/package/system/fstools/patches/001-add_emmc_firstboot.patch
+new file mode 100644
+index 0000000..3dcd658
 --- a/dev/null
 +++ b/libfstools/ext4.c
 @@ -0,0 +1,168 @@
@@ -181,7 +184,7 @@
  		libfstools/find.c)
 --- a/mount_root.c
 +++ b/mount_root.c
-@@ -62,6 +62,7 @@
+@@ -68,6 +68,7 @@
  
  	case FS_JFFS2:
  	case FS_UBIFS:
@@ -191,26 +194,26 @@
  
 --- a/libfstools/libfstools.h
 +++ b/libfstools/libfstools.h
-@@ -25,6 +25,7 @@
+@@ -26,6 +26,7 @@
  	FS_JFFS2,
  	FS_DEADCODE,
  	FS_UBIFS,
 +	FS_EXT4FS,
  };
  
- extern char const *extroot_prefix;
+ enum fs_state {
 --- a/libfstools/overlay.c
 +++ b/libfstools/overlay.c
-@@ -54,7 +54,7 @@
+@@ -93,7 +93,7 @@
  static int
  overlay_mount(struct volume *v, char *fs)
  {
 -	if (mkdir("/tmp/overlay", 0755)) {
 +	if (mkdir("/tmp/overlay", 0755) && errno != EEXIST) {
- 		fprintf(stderr, "failed to mkdir /tmp/overlay: %s\n", strerror(errno));
+ 		ULOG_ERR("failed to mkdir /tmp/overlay: %s\n", strerror(errno));
  		return -1;
  	}
-@@ -146,6 +146,7 @@
+@@ -188,6 +188,7 @@
  jffs2_switch(struct volume *v)
  {
  	char *mp;
@@ -218,7 +221,7 @@
  	int ret = -1;
  
  	if (find_overlay_mount("overlayfs:/tmp/root"))
-@@ -162,6 +163,11 @@
+@@ -204,6 +205,11 @@
  		return -1;
  	}
  
@@ -229,25 +232,24 @@
 +
  	switch (volume_identify(v)) {
  	case FS_NONE:
- 		fprintf(stderr, "no jffs2 marker found\n");
-@@ -195,6 +201,16 @@
+ 		ULOG_ERR("no jffs2 marker found\n");
+@@ -237,6 +243,15 @@
  			ret = -1;
  		}
  		break;
-+
 +	case FS_EXT4FS:
 +		ret = overlay_mount(v, "ext4");
 +		if (ret)
 +			break;
 +		if (mount_move("/tmp", "", "/overlay") || fopivot("/overlay", "/rom")) {
-+			fprintf(stderr, "switching to ext4 failed\n");
-+			ret = -1;
++			ULOG_ERR("switching to ext4 failed\n");
++			ret= -1;
 +		}
 +		break;
  	}
- 	return ret;
- }
-@@ -214,6 +230,9 @@
+ 
+ 	if (ret)
+@@ -262,6 +277,9 @@
  	case FS_UBIFS:
  		fstype = "ubifs";
  		break;
@@ -256,4 +258,4 @@
 +		break;
  	}
  
- 	if (mount(v->blk, "/tmp/overlay", fstype, MS_NOATIME, NULL)) {
+ 	volume_init(v);
