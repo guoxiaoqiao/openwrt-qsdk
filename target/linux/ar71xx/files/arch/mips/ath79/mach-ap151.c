@@ -37,15 +37,23 @@
 #include "dev-wmac.h"
 
 #define AP151_GPIO_LED_WLAN_2G		19
-#define AP151_GPIO_LED_WPS              1
+#define AP151_GPIO_LED_WLAN_2G_V2	22
+#define AP151_GPIO_LED_WPS		1
+#define AP151_GPIO_LED_SYS_V2		2
 
 #define AP151_GPIO_LED_WAN              2
+#define AP151_GPIO_LED_WAN_V2		19
 #define AP151_GPIO_LED_LAN1             15
+#define AP151_GPIO_LED_LAN1_V2		21
 #define AP151_GPIO_LED_LAN2             16
+#define AP151_GPIO_LED_LAN2_V2		16
 #define AP151_GPIO_LED_LAN3             21
+#define AP151_GPIO_LED_LAN3_V2		15
 #define AP151_GPIO_LED_LAN4             22
+#define AP151_GPIO_LED_LAN4_V2		14
 
 #define AP151_GPIO_BTN_WPS              14
+#define AP151_GPIO_BTN_WPS_V2		1
 
 #define AP151_KEYS_POLL_INTERVAL        20     /* msecs */
 #define AP151_KEYS_DEBOUNCE_INTERVAL    (3 * AP151_KEYS_POLL_INTERVAL)
@@ -53,6 +61,31 @@
 #define AP151_MAC0_OFFSET               0
 #define AP151_MAC1_OFFSET               6
 #define AP151_WMAC_CALDATA_OFFSET       0x1000
+
+#define AP151_MAX_LED_WPS_GPIOS		6
+#define AP151_MAX_BOARD_VERSION		2
+
+#define AP151_V2_ID			18
+#define AP151_WMAC1_CALDATA_OFFSET	0x5000
+#define BOARDID_OFFSET			0x20
+
+#define BOARD_V1                0
+#define BOARD_V2                1
+
+enum GPIO {
+        WAN,
+        LAN1,
+        LAN2,
+        LAN3,
+        LAN4
+};
+
+unsigned char ap151_gpios[AP151_MAX_BOARD_VERSION][AP151_MAX_LED_WPS_GPIOS] __initdata = {
+        {AP151_GPIO_LED_WAN, AP151_GPIO_LED_LAN1, AP151_GPIO_LED_LAN2,
+        AP151_GPIO_LED_LAN3, AP151_GPIO_LED_LAN4, AP151_GPIO_BTN_WPS},
+        {AP151_GPIO_LED_WAN_V2, AP151_GPIO_LED_LAN1_V2, AP151_GPIO_LED_LAN2_V2,
+        AP151_GPIO_LED_LAN3_V2, AP151_GPIO_LED_LAN4_V2, AP151_GPIO_BTN_WPS_V2}
+};
 
 static struct gpio_led ap151_leds_gpio[] __initdata = {
 	{
@@ -64,32 +97,7 @@ static struct gpio_led ap151_leds_gpio[] __initdata = {
 		.name		= "ap151:green:wlan",
 		.gpio		= AP151_GPIO_LED_WLAN_2G,
 		.active_low	= 1,
-	},
-	{
-		.name		= "ap151:green:wan",
-		.gpio		= AP151_GPIO_LED_WAN,
-		.active_low	= 1,
-	},
-	{
-		.name		= "ap151:green:lan1",
-		.gpio		= AP151_GPIO_LED_LAN1,
-		.active_low	= 1,
-	},
-	{
-		.name		= "ap151:green:lan2",
-		.gpio		= AP151_GPIO_LED_LAN2,
-		.active_low	= 1,
-	},
-	{
-		.name		= "ap151:green:lan3",
-		.gpio		= AP151_GPIO_LED_LAN3,
-		.active_low	= 1,
-	},
-	{
-		.name		= "ap151:green:lan4",
-		.gpio		= AP151_GPIO_LED_LAN4,
-		.active_low	= 1,
-	},
+	}
 };
 
 static struct gpio_keys_button ap151_gpio_keys[] __initdata = {
@@ -103,25 +111,32 @@ static struct gpio_keys_button ap151_gpio_keys[] __initdata = {
 	},
 };
 
-static void __init ap151_gpio_led_setup(void)
+static void __init ap151_gpio_led_setup(int board_version)
 {
-	ath79_gpio_direction_select(AP151_GPIO_LED_WAN, true);
-	ath79_gpio_direction_select(AP151_GPIO_LED_LAN1, true);
-	ath79_gpio_direction_select(AP151_GPIO_LED_LAN2, true);
-	ath79_gpio_direction_select(AP151_GPIO_LED_LAN3, true);
-	ath79_gpio_direction_select(AP151_GPIO_LED_LAN4, true);
+	ath79_gpio_direction_select(ap151_gpios[board_version][WAN], true);
+	ath79_gpio_direction_select(ap151_gpios[board_version][LAN1], true);
+	ath79_gpio_direction_select(ap151_gpios[board_version][LAN2], true);
+	ath79_gpio_direction_select(ap151_gpios[board_version][LAN3], true);
+	ath79_gpio_direction_select(ap151_gpios[board_version][LAN4], true);
 
 	/*attach link status to GPIO*/
-	ath79_gpio_output_select(AP151_GPIO_LED_WAN,
+	ath79_gpio_output_select(ap151_gpios[board_version][WAN],
 			QCA956X_GPIO_OUT_MUX_LED_LINK5);
-	ath79_gpio_output_select(AP151_GPIO_LED_LAN1,
+	ath79_gpio_output_select(ap151_gpios[board_version][LAN1],
 			QCA956X_GPIO_OUT_MUX_LED_LINK1);
-	ath79_gpio_output_select(AP151_GPIO_LED_LAN2,
+	ath79_gpio_output_select(ap151_gpios[board_version][LAN2],
 			QCA956X_GPIO_OUT_MUX_LED_LINK2);
-	ath79_gpio_output_select(AP151_GPIO_LED_LAN3,
+	ath79_gpio_output_select(ap151_gpios[board_version][LAN3],
 			QCA956X_GPIO_OUT_MUX_LED_LINK3);
-	ath79_gpio_output_select(AP151_GPIO_LED_LAN4,
+	ath79_gpio_output_select(ap151_gpios[board_version][LAN4],
 			QCA956X_GPIO_OUT_MUX_LED_LINK4);
+
+	if (board_version == BOARD_V2) {
+		ap151_leds_gpio[0].gpio = AP151_GPIO_LED_SYS_V2;
+		ap151_leds_gpio[0].active_low = 0;
+		ap151_leds_gpio[1].gpio = AP151_GPIO_LED_WLAN_2G_V2;
+		ap151_gpio_keys[0].gpio = AP151_GPIO_BTN_WPS_V2;
+	}
 
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(ap151_leds_gpio),
 			ap151_leds_gpio);
@@ -134,9 +149,16 @@ static void __init ap151_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
 
+	u8 board_id = *(u8 *) (art + AP151_WMAC1_CALDATA_OFFSET + BOARDID_OFFSET);
+	pr_info("AP151 Reference Board Id is %d\n",(u8)board_id);
+
 	ath79_register_m25p80(NULL);
 
-	ap151_gpio_led_setup();
+	if (board_id == AP151_V2_ID) {
+		ap151_gpio_led_setup(BOARD_V2);
+	} else {
+		ap151_gpio_led_setup(BOARD_V1);
+	}
 
 	ath79_register_usb();
 	ath79_register_pci();

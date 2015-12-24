@@ -35,16 +35,24 @@
 #include "pci.h"
 
 #define AP147_GPIO_LED_WLAN		12
+#define AP147_GPIO_LED_WLAN_V2		4
 #define AP147_GPIO_LED_WPS		13
+#define AP147_GPIO_LED_SYS_V2		1
 #define AP147_GPIO_LED_STATUS		13
 
 #define AP147_GPIO_LED_WAN		4
+#define AP147_GPIO_LED_WAN_V2		2
 #define AP147_GPIO_LED_LAN1		16
+#define AP147_GPIO_LED_LAN1_V2		15
 #define AP147_GPIO_LED_LAN2		15
+#define AP147_GPIO_LED_LAN2_V2		16
 #define AP147_GPIO_LED_LAN3		14
+#define AP147_GPIO_LED_LAN3_V2		0
 #define AP147_GPIO_LED_LAN4		11
+#define AP147_GPIO_LED_LAN4_V2		3
 
 #define AP147_GPIO_BTN_WPS		17
+#define AP147_GPIO_BTN_WPS_V2		14
 
 #define AP147_KEYS_POLL_INTERVAL	20	/* msecs */
 #define AP147_KEYS_DEBOUNCE_INTERVAL	(3 * AP147_KEYS_POLL_INTERVAL)
@@ -53,10 +61,35 @@
 #define AP147_MAC1_OFFSET		6
 #define AP147_WMAC_CALDATA_OFFSET	0x1000
 
+#define AP147_MAX_LED_WPS_GPIOS         6
+#define AP147_MAX_BOARD_VERSION         2
+
+#define AP147_V2_ID			17
+#define AP147_WMAC1_CALDATA_OFFSET	0x5000
+#define BOARDID_OFFSET			0x20
+
+#define BOARD_V1		0
+#define BOARD_V2		1
+
+enum GPIO {
+	WAN,
+	LAN1,
+	LAN2,
+	LAN3,
+	LAN4
+};
+
+unsigned char ap147_gpios[AP147_MAX_BOARD_VERSION][AP147_MAX_LED_WPS_GPIOS] __initdata = {
+	{AP147_GPIO_LED_WAN, AP147_GPIO_LED_LAN1, AP147_GPIO_LED_LAN2,
+	AP147_GPIO_LED_LAN3, AP147_GPIO_LED_LAN4, AP147_GPIO_BTN_WPS},
+	{AP147_GPIO_LED_WAN_V2, AP147_GPIO_LED_LAN1_V2, AP147_GPIO_LED_LAN2_V2,
+	AP147_GPIO_LED_LAN3_V2, AP147_GPIO_LED_LAN4_V2, AP147_GPIO_BTN_WPS_V2}
+};
+
 static struct gpio_led ap147_leds_gpio[] __initdata = {
 	{
 		.name		= "ap147:green:status",
-		.gpio		= AP147_GPIO_LED_STATUS,
+		.gpio		= AP147_GPIO_LED_WPS,
 		.active_low	= 1,
 	},
 	{
@@ -77,25 +110,31 @@ static struct gpio_keys_button ap147_gpio_keys[] __initdata = {
 	},
 };
 
-static void __init ap147_gpio_led_setup(void)
+static void __init ap147_gpio_led_setup(int board_version)
 {
-	ath79_gpio_direction_select(AP147_GPIO_LED_WAN, true);
-	ath79_gpio_direction_select(AP147_GPIO_LED_LAN1, true);
-	ath79_gpio_direction_select(AP147_GPIO_LED_LAN2, true);
-	ath79_gpio_direction_select(AP147_GPIO_LED_LAN3, true);
-	ath79_gpio_direction_select(AP147_GPIO_LED_LAN4, true);
+	ath79_gpio_direction_select(ap147_gpios[board_version][WAN], true);
+	ath79_gpio_direction_select(ap147_gpios[board_version][LAN1], true);
+	ath79_gpio_direction_select(ap147_gpios[board_version][LAN2], true);
+	ath79_gpio_direction_select(ap147_gpios[board_version][LAN3], true);
+	ath79_gpio_direction_select(ap147_gpios[board_version][LAN4], true);
 
-	ath79_gpio_output_select(AP147_GPIO_LED_WAN,
+	ath79_gpio_output_select(ap147_gpios[board_version][WAN],
 			QCA953X_GPIO_OUT_MUX_LED_LINK5);
-	ath79_gpio_output_select(AP147_GPIO_LED_LAN1,
+	ath79_gpio_output_select(ap147_gpios[board_version][LAN1],
 			QCA953X_GPIO_OUT_MUX_LED_LINK1);
-	ath79_gpio_output_select(AP147_GPIO_LED_LAN2,
+	ath79_gpio_output_select(ap147_gpios[board_version][LAN2],
 			QCA953X_GPIO_OUT_MUX_LED_LINK2);
-	ath79_gpio_output_select(AP147_GPIO_LED_LAN3,
+	ath79_gpio_output_select(ap147_gpios[board_version][LAN3],
 			QCA953X_GPIO_OUT_MUX_LED_LINK3);
-	ath79_gpio_output_select(AP147_GPIO_LED_LAN4,
+	ath79_gpio_output_select(ap147_gpios[board_version][LAN4],
 			QCA953X_GPIO_OUT_MUX_LED_LINK4);
 
+	if (board_version == BOARD_V2) {
+		ap147_leds_gpio[0].active_low = 0;
+		ap147_leds_gpio[0].gpio = AP147_GPIO_LED_SYS_V2;
+		ap147_leds_gpio[1].gpio = AP147_GPIO_LED_WLAN_V2;
+		ap147_gpio_keys[0].gpio = AP147_GPIO_BTN_WPS_V2;
+	}
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(ap147_leds_gpio),
 			ap147_leds_gpio);
 	ath79_register_gpio_keys_polled(-1, AP147_KEYS_POLL_INTERVAL,
@@ -107,9 +146,20 @@ static void __init ap147_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
 
+	u8 board_id = *(u8 *) (art + AP147_WMAC1_CALDATA_OFFSET + BOARDID_OFFSET);
+	pr_info("AP147 Reference Board Id is %d\n",(u8)board_id);
 	ath79_register_m25p80(NULL);
 
-	ap147_gpio_led_setup();
+	if (board_id == AP147_V2_ID) {
+		/* Disabling the JTAG due to conflicting GPIO's.
+		 * Can be re-enabled dynamically by writing appropriate
+		 * value to GPIO_FUNCTION_ADDRESS register
+		 */
+		ath79_gpio_function_enable(AR934X_GPIO_FUNC_JTAG_DISABLE);
+		ap147_gpio_led_setup(BOARD_V2);
+	} else {
+		ap147_gpio_led_setup(BOARD_V1);
+	}
 
 	ath79_register_usb();
 	ath79_register_pci();
