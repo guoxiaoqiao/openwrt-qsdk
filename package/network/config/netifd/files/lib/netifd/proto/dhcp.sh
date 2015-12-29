@@ -19,15 +19,14 @@ proto_dhcp_init_config() {
 	proto_config_add_string zone6rd
 	proto_config_add_string zone
 	proto_config_add_string mtu6rd
-	proto_config_add_string customroutes
 }
 
 proto_dhcp_setup() {
 	local config="$1"
 	local iface="$2"
 
-	local ipaddr hostname clientid vendorid broadcast reqopts iface6rd sendopts delegate zone6rd zone mtu6rd customroutes
-	json_get_vars ipaddr hostname clientid vendorid broadcast reqopts iface6rd sendopts delegate zone6rd zone mtu6rd customroutes
+	local ipaddr hostname clientid vendorid broadcast reqopts iface6rd sendopts delegate zone6rd zone mtu6rd
+	json_get_vars ipaddr hostname clientid vendorid broadcast reqopts iface6rd sendopts delegate zone6rd zone mtu6rd
 
 	local opt dhcpopts
 	for opt in $reqopts; do
@@ -45,7 +44,6 @@ proto_dhcp_setup() {
 	[ -n "$zone6rd" ] && proto_export "ZONE6RD=$zone6rd"
 	[ -n "$zone" ] && proto_export "ZONE=$zone"
 	[ -n "$mtu6rd" ] && proto_export "MTU6RD=$mtu6rd"
-	[ -n "$customroutes" ] && proto_export "CUSTOMROUTES=$customroutes"
 	[ "$delegate" = "0" ] && proto_export "IFACE6RD_DELEGATE=0"
 
 	proto_export "INTERFACE=$config"
