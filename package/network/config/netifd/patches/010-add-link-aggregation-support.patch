@@ -500,7 +500,7 @@
 +
 +                diff = 0;
 +                uci_blob_diff(tb_dev, otb_dev, &device_attr_list, &diff);
-+                if (diff)
++                if (diff & ~(1 << DEV_ATTR_IFNAME))
 +                    ret = DEV_CONFIG_RESTART;
 +
 +                blobmsg_parse(bonding_attrs, __BONDING_ATTR_MAX, otb_br,
@@ -543,7 +543,6 @@
 +
 +        return dev;
 +}
-
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -14,7 +14,7 @@
@@ -553,11 +552,11 @@
 -	config.c device.c bridge.c vlan.c alias.c
 +	config.c device.c bridge.c bonding.c vlan.c alias.c
  	macvlan.c ubus.c vlandev.c wireless.c)
-
-
+ 
+ 
 --- a/config.c
 +++ b/config.c
-@@ -72,13 +72,31 @@
+@@ -72,6 +72,25 @@
  	return 0;
  }
  
@@ -579,18 +578,20 @@
 +
 +	return 0;
 +}
++
  static void
  config_parse_interface(struct uci_section *s, bool alias)
  {
- 	struct interface *iface;
+@@ -79,7 +98,7 @@
  	const char *type = NULL, *disabled;
  	struct blob_attr *config;
+ 	struct device *dev;
 -	bool bridge = false;
 +	bool is_simple_device = true;
  
  	disabled = uci_lookup_option_string(uci_ctx, s, "disabled");
  	if (disabled && !strcmp(disabled, "1"))
-@@ -92,7 +110,13 @@
+@@ -93,7 +112,13 @@
  		if (config_parse_bridge_interface(s))
  			return;
  
@@ -605,7 +606,7 @@
  	}
  
  	uci_to_blob(&b, s, &interface_attr_list);
-@@ -104,7 +128,7 @@
+@@ -105,7 +130,7 @@
  	if (iface->proto_handler && iface->proto_handler->config_params)
  		uci_to_blob(&b, s, iface->proto_handler->config_params);
  
@@ -614,7 +615,7 @@
  		iface->device_config = true;
  
  	config = blob_memdup(b.head);
-@@ -176,6 +200,8 @@
+@@ -193,6 +218,8 @@
  				devtype = &vlandev_device_type;
  			else if (!strcmp(type, "bridge"))
  				devtype = &bridge_device_type;
@@ -625,17 +626,17 @@
  			else if (!strcmp(type, "tunnel"))
 --- a/device.h
 +++ b/device.h
-@@ -210,6 +210,7 @@
+@@ -165,6 +165,7 @@
+ extern const struct uci_blob_param_list device_attr_list;
+ extern const struct device_type simple_device_type;
+ extern const struct device_type bridge_device_type;
++extern const struct device_type bonding_device_type;
  extern const struct device_type tunnel_device_type;
  extern const struct device_type macvlan_device_type;
  extern const struct device_type vlandev_device_type;
-+extern const struct device_type bonding_device_type;
- 
- void device_lock(void);
- void device_unlock(void);
 --- a/interface.c
 +++ b/interface.c
-@@ -1143,6 +1143,7 @@
+@@ -1020,6 +1020,7 @@
  
  	if_old->device_config = if_new->device_config;
  	if_old->config_autostart = if_new->config_autostart;
@@ -676,10 +677,9 @@
  int system_vlan_add(struct device *dev, int id)
  {
  	D(SYSTEM, "vconfig add %s %d\n", dev->ifname, id);
- 
 --- a/system-linux.c
 +++ b/system-linux.c
-@@ -523,6 +523,15 @@
+@@ -416,6 +416,16 @@
  	return ioctl(sock_ioctl, SIOCBRDELBR, bridge->ifname);
  }
  
@@ -692,11 +692,12 @@
 +	return 0;
 +}
 +
++
  static int system_bridge_if(const char *bridge, struct device *dev, int cmd, void *data)
  {
  	struct ifreq ifr;
-@@ -536,6 +545,17 @@
- 	return ioctl(sock_ioctl, cmd, &ifr);
+@@ -440,6 +450,17 @@
+ 	return true;
  }
  
 +static bool system_is_bonding(const char *name, char *buf, int buflen)
@@ -710,11 +711,11 @@
 +	return true;
 +}
 +
- static bool system_is_bridge(const char *name, char *buf, int buflen)
+ static char *system_get_bridge(const char *name, char *buf, int buflen)
  {
- 	struct stat st;
-@@ -573,6 +593,34 @@
- 	return path + 1;
+ 	char *path;
+@@ -474,6 +495,34 @@
+ 	system_set_sysctl(dev_buf, "1");
  }
  
 +static struct device *system_get_bonding(const char *name, char *buf, int buflen)
@@ -726,7 +727,7 @@
 +	snprintf(path, sizeof(path), "/sys/class/net/%s/master/ifindex", name);
 +	f = fopen(path, "r");
 +	if (!f)
-+		return NULL;
++	return NULL;
 +
 +	len = fread(buf, 1, buflen - 1, f);
 +	fclose(f);
@@ -745,11 +746,11 @@
 +	return device_get(devname, false);
 +}
 +
- static void
- system_bridge_set_wireless(struct device *bridge, struct device *dev)
+ int system_bridge_addif(struct device *bridge, struct device *dev)
  {
-@@ -611,6 +659,28 @@
- 	return ret;
+ 	char *oldbr;
+@@ -494,6 +543,28 @@
+ 	return system_bridge_if(bridge->ifname, dev, SIOCBRDELIF, NULL);
  }
  
 +int system_bonding_addif(struct device *bonding, struct device *dev)
@@ -774,10 +775,10 @@
 +	return 0;
 +}
 +
- int system_bridge_delif(struct device *bridge, struct device *dev)
+ static int system_if_resolve(struct device *dev)
  {
- 	return system_bridge_if(bridge->ifname, dev, SIOCBRDELIF, NULL);
-@@ -800,11 +870,18 @@
+ 	struct ifreq ifr;
+@@ -678,11 +749,18 @@
  {
  	static char buf[256];
  	char *bridge;
@@ -796,7 +797,7 @@
  	system_if_flags(dev->ifname, 0, IFF_UP);
  
  	if (system_is_bridge(dev->ifname, buf, sizeof(buf))) {
-@@ -819,6 +896,12 @@
+@@ -697,6 +775,12 @@
  		system_bridge_if(bridge, dev, SIOCBRDELIF, NULL);
  	}
  
@@ -809,8 +810,8 @@
  	system_if_clear_entries(dev, RTM_GETROUTE, AF_INET);
  	system_if_clear_entries(dev, RTM_GETADDR, AF_INET);
  	system_if_clear_entries(dev, RTM_GETROUTE, AF_INET6);
-@@ -826,6 +909,23 @@
- 	system_set_disable_ipv6(dev, "0");
+@@ -756,6 +840,22 @@
+ 	return 0;
  }
  
 +int system_bonding_addbonding(struct device *bonding, struct bonding_config *cfg)
@@ -826,17 +827,16 @@
 +	snprintf(policy, sizeof(policy), "%s", cfg->xmit_hash_policy);
 +	system_set_dev_sysctl("/sys/class/net/%s/bonding/xmit_hash_policy",
 +				bonding->ifname, policy);
-+
 +	return 0;
 +}
 +
- static inline unsigned long
- sec_to_jiffies(int val)
+ int system_macvlan_add(struct device *macvlan, struct device *dev, struct macvlan_config *cfg)
  {
+ 	struct nl_msg *msg;
 --- a/system.h
 +++ b/system.h
-@@ -61,6 +61,11 @@
- 	int hash_max;
+@@ -59,6 +59,11 @@
+ 	int max_age;
  };
  
 +struct bonding_config {
@@ -847,7 +847,7 @@
  enum macvlan_opt {
  	MACVLAN_OPT_MACADDR = (1 << 0),
  };
-@@ -105,6 +110,11 @@
+@@ -103,6 +108,11 @@
  int system_bridge_addif(struct device *bridge, struct device *dev);
  int system_bridge_delif(struct device *bridge, struct device *dev);
  

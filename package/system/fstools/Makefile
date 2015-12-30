@@ -1,14 +1,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fstools
-PKG_VERSION:=2015-05-24
+PKG_VERSION:=2015-02-25
 
 PKG_RELEASE=$(PKG_SOURCE_VERSION)
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://nbd.name/fstools.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=09027fc86babc3986027a0e677aca1b6999a9e14
+PKG_SOURCE_VERSION:=4b68e9f9ea894bf58d31e26ca5ed92c81b1a115e
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
 CMAKE_INSTALL:=1
 PKG_CHECK_FORMAT_SECURITY:=0
@@ -55,7 +55,7 @@ define Package/fstools/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/{mount_root,jffs2reset,snapshot_tool} $(1)/sbin/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libfstools.so $(1)/lib/
 	$(INSTALL_BIN) ./files/snapshot $(1)/sbin/
-	$(LN) jffs2reset $(1)/sbin/jffs2mark
+	ln -s /sbin/jffs2reset $(1)/sbin/jffs2mark
 endef
 
 define Package/block-mount/install
@@ -67,8 +67,8 @@ define Package/block-mount/install
 
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/block $(1)/sbin/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libblkid-tiny.so $(1)/lib/
-	$(LN) ../../sbin/block $(1)/usr/sbin/swapon
-	$(LN) ../../sbin/block $(1)/usr/sbin/swapoff
+	ln -s /sbin/block $(1)/usr/sbin/swapon
+	ln -s /sbin/block $(1)/usr/sbin/swapoff
 
 endef
 
