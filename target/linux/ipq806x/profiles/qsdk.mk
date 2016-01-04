@@ -1,7 +1,3 @@
-#
-# Copyright (c) 2013, 2015 The Linux Foundation. All rights reserved.
-#
-
 define Profile/QSDK_Base
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp \
 	  kmod-usb-storage kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
@@ -38,7 +34,8 @@ PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
 	openswan-nss kmod-qca-nss-crypto kmod-qca-nss-cfi \
 	kmod-qca-nss-drv-profile kmod-qca-nss-drv-capwapmgr \
 	qca-nss-fw-enterprise kmod-qca-nss-drv-ipsecmgr \
-	qca-nss-fw-enterprise_custA qca-nss-fw-enterprise_custC
+	qca-nss-fw-enterprise_custA qca-nss-fw-enterprise_custC \
+	kmod-qca-nss-drv-dtlsmgr
 
 BLUETOOTH:=kmod-qca-ath3k bluez btconfig
 

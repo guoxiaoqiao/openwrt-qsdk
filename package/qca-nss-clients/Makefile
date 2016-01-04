@@ -16,6 +16,20 @@ PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
+define KernelPackage/qca-nss-drv-dtlsmgr
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Devices
+  TITLE:=Kernel driver for NSS (connection manager) - dtlsmgr
+  DEPENDS:=@TARGET_ipq806x +kmod-qca-nss-drv +kmod-qca-nss-crypto
+  FILES:=$(PKG_BUILD_DIR)/dtls/qca-nss-dtlsmgr.ko
+  AUTOLOAD:=$(call AutoLoad,50,qca-nss-dtlsmgr)
+endef
+
+define KernelPackage/qca-nss-drv-dtls/Description
+Kernel modules for NSS connection manager - Support for DTLS sessions
+endef
+
 define KernelPackage/qca-nss-drv-tun6rd
   SECTION:=kernel
   CATEGORY:=Kernel modules
@@ -153,6 +167,11 @@ EXTRA_CFLAGS+= \
 	-I$(STAGING_DIR)/usr/include/qca-nss-gmac \
 	-I$(STAGING_DIR)/usr/include/qca-nss-crypto
 
+define Build/InstallDev
+	mkdir -p $(1)/usr/include/qca-nss-clients
+	$(CP) $(PKG_BUILD_DIR)/exports/* $(1)/usr/include/qca-nss-clients/
+endef
+
 define Build/Compile
         $(MAKE) -C "$(LINUX_DIR)" \
                 CROSS_COMPILE="$(TARGET_CROSS)" \
@@ -166,6 +185,7 @@ $(eval $(call KernelPackage,qca-nss-drv-portifmgr))
 $(eval $(call KernelPackage,qca-nss-drv-profile))
 $(eval $(call KernelPackage,qca-nss-drv-capwapmgr))
 $(eval $(call KernelPackage,qca-nss-drv-tun6rd))
+$(eval $(call KernelPackage,qca-nss-drv-dtlsmgr))
 $(eval $(call KernelPackage,qca-nss-drv-l2tpv2))
 $(eval $(call KernelPackage,qca-nss-drv-pptp))
 $(eval $(call KernelPackage,qca-nss-drv-tunipip6))
