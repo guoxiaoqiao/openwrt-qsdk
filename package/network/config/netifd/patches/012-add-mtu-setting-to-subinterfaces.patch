@@ -1,0 +1,18 @@
+diff -Nur a/system-linux.c netifd-2015-09-10/system-linux.c
+--- a/system-linux.c	2015-12-28 14:01:10.571399347 -0800
++++ netifd-2015-09-10/system-linux.c	2015-12-28 14:01:35.671399979 -0800
+@@ -644,6 +644,14 @@
+ 	char *oldbr;
+ 	int ret = 0;
+ 
++	if (bridge->settings.flags & DEV_OPT_MTU) {
++		struct ifreq ifr;
++		memset(&ifr, 0, sizeof(ifr));
++		strncpy(ifr.ifr_name, dev->ifname, sizeof(ifr.ifr_name));
++		ifr.ifr_mtu = bridge->settings.mtu;
++		ioctl(sock_ioctl, SIOCSIFMTU, &ifr);
++	}
++
+ 	oldbr = system_get_bridge(dev->ifname, dev_buf, sizeof(dev_buf));
+ 	if (!oldbr || strcmp(oldbr, bridge->ifname) != 0)
+ 		ret = system_bridge_if(bridge->ifname, dev, SIOCBRADDIF, NULL);
