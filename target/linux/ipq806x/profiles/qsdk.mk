@@ -27,11 +27,13 @@ COREBSP_UTILS:=pm-utils
 
 BLUETOOTH:=kmod-bluetooth bluez-examples bluez-libs bluez-utils
 
+KPI:=iperf sysstat
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA) \
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
-	$(COREBSP_UTILS) $(BLUETOOTH)
+	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI)
 endef
 
 define Profile/QSDK_Open/Description
