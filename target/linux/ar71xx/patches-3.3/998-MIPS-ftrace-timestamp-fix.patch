@@ -1,0 +1,200 @@
+diff --git a/include/linux/ftrace_event.h b/include/linux/ftrace_event.h
+index c3da42d..e07fb79 100644
+--- a/include/linux/ftrace_event.h
++++ b/include/linux/ftrace_event.h
+@@ -86,6 +86,11 @@ struct trace_iterator {
+ 	cpumask_var_t		started;
+ };
+ 
++enum trace_iter_flags {
++	TRACE_FILE_LAT_FMT	= 1,
++	TRACE_FILE_ANNOTATE	= 2,
++	TRACE_FILE_TIME_IN_NS	= 4,
++};
+ 
+ struct trace_event;
+ 
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index c4579f1..c292532 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -434,10 +434,11 @@ static const char *trace_options[] = {
+ static struct {
+ 	u64 (*func)(void);
+ 	const char *name;
++	int in_ns;		/* is this clock in nanoseconds? */
+ } trace_clocks[] = {
+-	{ trace_clock_local,	"local" },
+-	{ trace_clock_global,	"global" },
+-	{ trace_clock_counter,	"counter" },
++	{ trace_clock_local,	"local",	1 },
++	{ trace_clock_global,	"global",	1 },
++	{ trace_clock_counter,	"counter",	0 },
+ };
+ 
+ int trace_clock_id;
+@@ -2321,6 +2322,10 @@ __tracing_open(struct inode *inode, struct file *file)
+ 	if (ring_buffer_overruns(iter->tr->buffer))
+ 		iter->iter_flags |= TRACE_FILE_ANNOTATE;
+ 
++	/* Output in nanoseconds only if we are using a clock in nanoseconds. */
++	if (trace_clocks[trace_clock_id].in_ns)
++		iter->iter_flags |= TRACE_FILE_TIME_IN_NS;
++
+ 	/* stop the trace while dumping */
+ 	tracing_stop();
+ 
+@@ -3207,6 +3212,10 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ 	if (trace_flags & TRACE_ITER_LATENCY_FMT)
+ 		iter->iter_flags |= TRACE_FILE_LAT_FMT;
+ 
++	/* Output in nanoseconds only if we are using a clock in nanoseconds. */
++	if (trace_clocks[trace_clock_id].in_ns)
++		iter->iter_flags |= TRACE_FILE_TIME_IN_NS;
++
+ 	iter->cpu_file = cpu_file;
+ 	iter->tr = &global_trace;
+ 	mutex_init(&iter->mutex);
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index b93ecba..7607ce4 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -387,10 +387,6 @@ void tracing_start_sched_switch_record(void);
+ int register_tracer(struct tracer *type);
+ void unregister_tracer(struct tracer *type);
+ int is_tracing_stopped(void);
+-enum trace_file_type {
+-	TRACE_FILE_LAT_FMT	= 1,
+-	TRACE_FILE_ANNOTATE	= 2,
+-};
+ 
+ extern cpumask_var_t __read_mostly tracing_buffer_mask;
+ 
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index d9c07f0..b3839ed 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -608,24 +608,54 @@ lat_print_generic(struct trace_seq *s, struct trace_entry *entry, int cpu)
+ 	return trace_print_lat_fmt(s, entry);
+ }
+ 
+-static unsigned long preempt_mark_thresh = 100;
++static unsigned long preempt_mark_thresh_us = 100;
+ 
+ static int
+-lat_print_timestamp(struct trace_seq *s, u64 abs_usecs,
+-		    unsigned long rel_usecs)
++lat_print_timestamp(struct trace_iterator *iter, u64 next_ts)
+ {
+-	return trace_seq_printf(s, " %4lldus%c: ", abs_usecs,
+-				rel_usecs > preempt_mark_thresh ? '!' :
+-				  rel_usecs > 1 ? '+' : ' ');
++	unsigned long verbose = trace_flags & TRACE_ITER_VERBOSE;
++	unsigned long in_ns = iter->iter_flags & TRACE_FILE_TIME_IN_NS;
++	unsigned long long abs_ts = iter->ts - iter->tr->time_start;
++	unsigned long long rel_ts = next_ts - iter->ts;
++	struct trace_seq *s = &iter->seq;
++
++	if (in_ns) {
++		abs_ts = ns2usecs(abs_ts);
++		rel_ts = ns2usecs(rel_ts);
++	}
++
++	if (verbose && in_ns) {
++		unsigned long abs_usec = do_div(abs_ts, USEC_PER_MSEC);
++		unsigned long abs_msec = (unsigned long)abs_ts;
++		unsigned long rel_usec = do_div(rel_ts, USEC_PER_MSEC);
++		unsigned long rel_msec = (unsigned long)rel_ts;
++
++		return trace_seq_printf(
++				s, "[%08llx] %ld.%03ldms (+%ld.%03ldms): ",
++				ns2usecs(iter->ts),
++				abs_msec, abs_usec,
++				rel_msec, rel_usec);
++	} else if (verbose && !in_ns) {
++		return trace_seq_printf(
++				s, "[%016llx] %lld (+%lld): ",
++				iter->ts, abs_ts, rel_ts);
++	} else if (!verbose && in_ns) {
++		return trace_seq_printf(
++				s, " %4lldus%c: ",
++				abs_ts,
++				rel_ts > preempt_mark_thresh_us ? '!' :
++				rel_ts > 1 ? '+' : ' ');
++	} else { /* !verbose && !in_ns */
++		return trace_seq_printf(s, " %4lld: ", abs_ts);
++	}
+ }
+ 
+ int trace_print_context(struct trace_iterator *iter)
+ {
+ 	struct trace_seq *s = &iter->seq;
+ 	struct trace_entry *entry = iter->ent;
+-	unsigned long long t = ns2usecs(iter->ts);
+-	unsigned long usec_rem = do_div(t, USEC_PER_SEC);
+-	unsigned long secs = (unsigned long)t;
++	unsigned long long t;
++	unsigned long secs, usec_rem;
+ 	char comm[TASK_COMM_LEN];
+ 	int ret;
+ 
+@@ -642,8 +672,13 @@ int trace_print_context(struct trace_iterator *iter)
+ 			return 0;
+ 	}
+ 
+-	return trace_seq_printf(s, " %5lu.%06lu: ",
+-				secs, usec_rem);
++	if (iter->iter_flags & TRACE_FILE_TIME_IN_NS) {
++		t = ns2usecs(iter->ts);
++		usec_rem = do_div(t, USEC_PER_SEC);
++		secs = (unsigned long)t;
++		return trace_seq_printf(s, " %5lu.%06lu: ", secs, usec_rem);
++	} else
++		return trace_seq_printf(s, " %12llu: ", iter->ts);
+ }
+ 
+ int trace_print_lat_context(struct trace_iterator *iter)
+@@ -657,36 +692,29 @@ int trace_print_lat_context(struct trace_iterator *iter)
+ 			   *next_entry = trace_find_next_entry(iter, NULL,
+ 							       &next_ts);
+ 	unsigned long verbose = (trace_flags & TRACE_ITER_VERBOSE);
+-	unsigned long abs_usecs = ns2usecs(iter->ts - iter->tr->time_start);
+-	unsigned long rel_usecs;
+ 
+ 	/* Restore the original ent_size */
+ 	iter->ent_size = ent_size;
+ 
+ 	if (!next_entry)
+ 		next_ts = iter->ts;
+-	rel_usecs = ns2usecs(next_ts - iter->ts);
+ 
+ 	if (verbose) {
+ 		char comm[TASK_COMM_LEN];
+ 
+ 		trace_find_cmdline(entry->pid, comm);
+ 
+-		ret = trace_seq_printf(s, "%16s %5d %3d %d %08x %08lx [%08llx]"
+-				       " %ld.%03ldms (+%ld.%03ldms): ", comm,
+-				       entry->pid, iter->cpu, entry->flags,
+-				       entry->preempt_count, iter->idx,
+-				       ns2usecs(iter->ts),
+-				       abs_usecs / USEC_PER_MSEC,
+-				       abs_usecs % USEC_PER_MSEC,
+-				       rel_usecs / USEC_PER_MSEC,
+-				       rel_usecs % USEC_PER_MSEC);
++		ret = trace_seq_printf(
++				s, "%16s %5d %3d %d %08x %08lx ",
++				comm, entry->pid, iter->cpu, entry->flags,
++				entry->preempt_count, iter->idx);
+ 	} else {
+ 		ret = lat_print_generic(s, entry, iter->cpu);
+-		if (ret)
+-			ret = lat_print_timestamp(s, abs_usecs, rel_usecs);
+ 	}
+ 
++	if (ret)
++		ret = lat_print_timestamp(iter, next_ts);
++
+ 	return ret;
+ }
+ 
