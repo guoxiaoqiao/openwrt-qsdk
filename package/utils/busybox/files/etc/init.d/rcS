@@ -1,3 +1,5 @@
 #!/bin/sh
 mkdir -p /proc && mount -t proc none /proc
 mkdir -p /sys && mount -t sysfs none /sys
+#echo /bin/mdev > /proc/sys/kernel/hotplug
+mdev -s
