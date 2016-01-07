@@ -1,0 +1,15 @@
+diff -Nur a/interface-ip.c netifd-2013-05-13/interface-ip.c
+--- a/interface-ip.c	2015-12-21 17:38:33.983325074 -0800
++++ netifd-2013-05-13/interface-ip.c	2015-12-21 17:41:10.979329028 -0800
+@@ -843,7 +843,10 @@
+ 
+ int interface_ip_resolve_v6_rtable(int ifindex)
+ {
+-	return ifindex + 1000;
++	/*
++	 * there is no option to set up the ip6 route table, use default 0
++	 */
++	return 0;
+ }
+ 
+ void
