@@ -8,6 +8,14 @@ UBINIZE_OPTS = -m 2048 -p 128KiB
 
 E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
+ifeq ($(strip $(call CompareKernelPatchVer,$(KERNEL_PATCHVER),ge,3.18.0)),1)
+IPQ806X_KERNEL_LOADADDR = 0x42008000
+IPQ40XX_KERNEL_LOADADDR = 0x80008000
+else
+IPQ806X_KERNEL_LOADADDR = 0x42208000
+IPQ40XX_KERNEL_LOADADDR = 0x80208000
+endif
+
 define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
 	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
@@ -44,22 +52,22 @@ endef
 
 define Image/BuildKernel
 	$(CP) $(KDIR)/vmlinux$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,0x42008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-v2.0-ap148,0x42008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-db149,0x42008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-storm,0x42008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq8064-whirlwind,0x42008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-r3pc,0x80008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-r3pc-wifi,0x80008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk01.1-c1,0x80008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk01.1-c2,0x80008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c1,0x80008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c2,0x80008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c3,0x80008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c4,0x80008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-db.dk01.1-c1,0x80008000)
-	$(call Image/BuildKernel/FIT,qcom-ipq40xx-db.dk02.1-c1,0x80008000)
-	$(call Image/BuildKernel/GenericFIT,qcom-ipq40xx,0x80008000)
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-ap148,$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-v2.0-ap148,$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-db149,$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-storm,$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq8064-whirlwind,$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-r3pc,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-r3pc-wifi,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk01.1-c1,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk01.1-c2,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c1,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c2,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c3,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-ap.dk04.1-c4,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-db.dk01.1-c1,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/FIT,qcom-ipq40xx-db.dk02.1-c1,$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/GenericFIT,qcom-ipq40xx,$(IPQ40XX_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq40xx-ap.dkxx,"qcom-ipq40xx-ap.dk04.1-c1 \
 												qcom-ipq40xx-ap.dk04.1-c2 \
 												qcom-ipq40xx-ap.dk04.1-c3 \
@@ -68,7 +76,7 @@ define Image/BuildKernel
 												qcom-ipq40xx-db.dk01.1-c1 \
 												qcom-ipq40xx-db.dk02.1-c1 \
 												qcom-ipq40xx-ap.dk04.1-c4"\
-												,0x80008000)
+												,$(IPQ40XX_KERNEL_LOADADDR))
 endef
 
 define Image/Build/squashfs
