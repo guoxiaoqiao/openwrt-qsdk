@@ -40,8 +40,8 @@ ipq806x_power_auto() {
 	echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold_multi_core
 
 	# Change the CPU load threshold below which frequency is down-scaled to
-	# 10% (down_threshold = up_threshold - down_differential)
-	echo 40 > /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+	# 20% (down_threshold = up_threshold - down_differential)
+	echo 30 > /sys/devices/system/cpu/cpufreq/ondemand/down_differential
 
 	# Set sync_freq and optimal_freq used for multicore scenarios to max
 	# freq
