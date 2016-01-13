@@ -12,12 +12,27 @@ init_switch() {
 	setup_switch
 }
 
+set_usb_interface() {
+	local ifname=$1
+
+	uci batch <<EOF
+set network.usb='interface'
+set network.usb.ifname='$ifname'
+set network.usb.proto='dhcp'
+set network.usb6='interface'
+set network.usb6.ifname='@usb'
+set network.usb6.proto='dhcpv6'
+commit
+EOF
+}
+
 start_charlietalk() {
 	local SERVICE_DAEMONIZE=1
 	local SERVICE_WRITE_PID=1
 	local disabled
 
 	config_load charlietalk && {
+		set_usb_interface usb0
 		config_get_bool disabled usb0 'disabled' '1'
 		[ $disabled -eq 0 ] || {
 			return 1
