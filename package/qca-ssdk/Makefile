@@ -54,6 +54,7 @@ endef
 
 QCASSDK_CONFIG_OPTS+= TOOL_PATH=$(TOOLCHAIN_DIR)/bin/ \
                 SYS_PATH=$(LINUX_DIR) \
+                KERN_SRC_PATH=$(LINUX_SRC_DIR) \
                 TOOLPREFIX=$(TARGET_CROSS) \
                 KVER=$(LINUX_VERSION) \
                 ARCH=$(LINUX_KARCH)
