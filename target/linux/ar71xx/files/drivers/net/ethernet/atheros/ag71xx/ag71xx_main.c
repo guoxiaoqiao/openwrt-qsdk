@@ -1089,6 +1089,8 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
 		ag71xx_add_ar8216_header(ag, skb);
 	}
 
+	dma_cache_sync(NULL, skb->data, skb->len, DMA_TO_DEVICE);
+
 	len = skb->len;
 	if (unlikely(len <= 0)) {
 		DBG("%s: packet len is too small\n", dev->name);
@@ -1385,16 +1387,51 @@ static int ag71xx_tx_packets(struct ag71xx *ag, struct net_device *dev,
 	return sent;
 }
 
+#ifndef CONFIG_AG71XX_RX_NO_REPLENISH
+static void ag71xx_rx_replenish(struct ag71xx *ag)
+{
+	struct ag71xx_ring *ring = &ag->rx_ring;
+	struct ag71xx_buf *dirty = ring->dirty;
+	struct ag71xx_buf *curr = ring->curr;
+	unsigned int rx_buf_size = ag->rx_buf_size;
+	unsigned int rx_buf_offset = ag->rx_buf_offset;
+
+	while (ring->used < ring->size) {
+		if (dirty->skb) {
+			printk("error: should be NULL\n");
+			break;
+		}
+		dirty->skb = dev_alloc_skb(rx_buf_size + rx_buf_offset);
+		if (unlikely(!dirty->skb)) {
+			printk("error: couldn't alloc new skb\n");
+			break;
+		}
+		skb_reserve(dirty->skb, rx_buf_offset);
+		dirty->desc->data = (u32)dma_map_single(&ag->dev->dev,
+				dirty->skb->data, rx_buf_size, DMA_FROM_DEVICE);
+		wmb();
+		dirty->dma_addr = (dma_addr_t)dirty->desc->data;
+		dirty->desc->ctrl = DESC_EMPTY;
+		ring->used ++;
+		dirty = dirty->next;
+	}
+	ring->dirty = dirty;
+}
+#endif
+
 static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limit)
 {
 	struct ag71xx_ring *ring = &ag->rx_ring;
 	struct ag71xx_buf *curr = ring->curr;
 	struct ag71xx_desc *desc = curr->desc;
+#ifdef CONFIG_AG71XX_RX_NO_REPLENISH
 	unsigned int rx_buf_size = ag->rx_buf_size;
 	unsigned int rx_buf_offset = ag->rx_buf_offset;
+#endif
 	int received = 0;
 	struct sk_buff *skb;
 	bool has_ar8216;
+	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
 
 	has_ar8216 = ag71xx_has_ar8216(ag);
 
@@ -1409,7 +1446,9 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
 	do {
 		u32 desc_ctrl;
 		struct sk_buff *next_skb;
+#ifdef CONFIG_AG71XX_RX_NO_REPLENISH
 		struct sk_buff *new_skb;
+#endif
 		int pktlen;
 
 		/*
@@ -1417,20 +1456,27 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
 		 */
 		desc_ctrl = desc->ctrl;
 		if (unlikely(desc_ctrl & DESC_EMPTY)) {
-			/* enable this WAR only for AP152 which has only one gamc */
-			if (ag71xx_get_pdata(ag)->is_qca9561 && (ag71xx_gmac_num == 1)) {
-				u32 rx_status = ag71xx_rr_fast(ag->rx_status_reg);
-				if ((((rx_status >> 16) & 0xff) > 1) && (desc->ctrl & DESC_EMPTY)) {
-					while(desc->ctrl & DESC_EMPTY) {
-						curr = curr->next;
-						desc = curr->desc;
-						skb = curr->skb;
-					}
+			pdata->ddr_flush();
+			desc_ctrl = desc->ctrl;
+			if (unlikely(desc_ctrl & DESC_EMPTY)) {
+				/* enable this WAR only for AP152 which has only one gamc */
+				if (ag71xx_get_pdata(ag)->is_qca9561 && (ag71xx_gmac_num == 1)) {
+					u32 rx_status = ag71xx_rr_fast(ag->rx_status_reg);
+					if ((((rx_status >> 16) & 0xff) > 1) && (desc->ctrl & DESC_EMPTY)) {
+						while(desc->ctrl & DESC_EMPTY) {
+							curr = curr->next;
+							desc = curr->desc;
+							skb = curr->skb;
+						}
+					} else
+						break;
 				} else
 					break;
-			} else
-				break;
+			}
 		}
+
+		if (likely(skb->len != 0))
+                        dma_cache_sync(NULL, skb->data, skb->len, DMA_FROM_DEVICE);
 
 		/*
 		 * Speed up eth_type_trans() since it will inspect the packet
@@ -1440,7 +1486,7 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
 		 */
 		prefetch(skb->data);
 		prefetch(&skb->protocol);
-
+#ifdef CONFIG_AG71XX_RX_NO_REPLENISH
 		/*
 		 * When we receive a packet we also allocate a new buffer.  If
 		 * for some reason we can't allocate the buffer then we're not
@@ -1470,8 +1516,12 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
 						rx_buf_size, DMA_FROM_DEVICE);
 
 		desc->data = (u32)curr->dma_addr;
+		wmb();
 		desc->ctrl = DESC_EMPTY;
-
+#else
+		curr->skb = NULL;
+		ring->used --;
+#endif
 		/*
 		 * Move forward to what will be the next RX descriptor.
 		 */
@@ -1542,6 +1592,9 @@ next:
 	ag71xx_wr_flush(ag->rx_status_reg);
 
 	ring->curr = curr;
+#ifndef CONFIG_AG71XX_RX_NO_REPLENISH
+	ag71xx_rx_replenish(ag);
+#endif
 	return received;
 }
 
