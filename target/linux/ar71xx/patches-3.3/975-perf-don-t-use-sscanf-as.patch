@@ -12,7 +12,7 @@ diff --git a/tools/perf/util/trace-event-parse.c b/tools/perf/util/trace-event-p
 index 1a8d4dc..923267f 100644
 --- a/tools/perf/util/trace-event-parse.c
 +++ b/tools/perf/util/trace-event-parse.c
-@@ -151,7 +151,7 @@ void parse_proc_kallsyms(char *file, unsigned int size __unused)
+@@ -151,7 +151,7 @@ void parse_proc_kallsyms(char *file, uns
  	char *line;
  	char *next = NULL;
  	char *addr_str;
@@ -21,7 +21,7 @@ index 1a8d4dc..923267f 100644
  	int ret __used;
  	int i;
  
-@@ -159,13 +159,12 @@ void parse_proc_kallsyms(char *file, unsigned int size __unused)
+@@ -159,13 +159,19 @@ void parse_proc_kallsyms(char *file, uns
  	while (line) {
  		item = malloc_or_die(sizeof(*item));
  		item->mod = NULL;
@@ -30,9 +30,17 @@ index 1a8d4dc..923267f 100644
 -			     &ch,
 -			     (float *)(void *)&item->func,
 -			     (float *)(void *)&item->mod);
-+		addr_str = strtok_r(line, " ", &fmt);
- 		item->addr = strtoull(addr_str, NULL, 16);
+-		item->addr = strtoull(addr_str, NULL, 16);
 -		free(addr_str);
++		addr_str = strtok_r(line, " ", &fmt);
++
++		if (addr_str) {
++			item->addr = strtoull(addr_str, NULL, 16);
++		} else {
++			printf("%s:%d: strtok_r() failed.\n", __func__, __LINE__);
++			exit(1);
++		}
++
 +		/* skip character */
 +		strtok_r(NULL, " ", &fmt);
 +		item->func = strtok_r(NULL, "\t", &fmt);
@@ -40,6 +48,6 @@ index 1a8d4dc..923267f 100644
  
  		/* truncate the extra ']' */
  		if (item->mod)
--- 
+--
 2.2.1
 
