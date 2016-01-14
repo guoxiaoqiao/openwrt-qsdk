@@ -18,7 +18,7 @@
 DTB="";
 FDT="";
 CONFIG="";
-DTB_NAME="";
+CONFIG_ID="";
 
 usage() {
 	echo "Usage: `basename $0` -A arch -C comp -a addr -e entry" \
@@ -38,7 +38,7 @@ usage() {
 # Generating FDT COnfiguration for all the dtb files
 Generate_FDT () {
 	FDT="$FDT
-		fdt@$DTB_NAME {
+		fdt@$CONFIG_ID {
 			description = \"${ARCH_UPPER} OpenWrt ${DEVICE} device tree blob\";
 			data = /incbin/(\"${1}\");
 			type = \"flat_dt\";
@@ -56,10 +56,10 @@ Generate_FDT () {
 
 Generate_Config () {
 	CONFIG="$CONFIG
-		config@$DTB_NAME {
+		config@$CONFIG_ID {
 			description = \"OpenWrt\";
 			kernel = \"kernel@1\";
-			fdt = \"fdt@$DTB_NAME\";
+			fdt = \"fdt@$CONFIG_ID\";
 		};
 "
 }
@@ -92,11 +92,13 @@ ARCH_UPPER=`echo $ARCH | tr '[:lower:]' '[:upper:]'`
 
 # Conditionally create fdt information
 if [ -n "${DTB}" ]; then
+	CONFIG_ID=($DTB)
 	for dtb in $DTB
 	do
-		DTB_NAME=$(basename $dtb .dtb | sed -e 's/^\([^\(.*?-?\)]*-\)//g');
+		CONFIG_ID=$([ ${#CONFIG_ID[@]} == 1 ] && echo ${#CONFIG_ID[@]} || basename $dtb .dtb | sed -e 's/^\([^\(.*?-?\)]*-\)//g');
 		Generate_FDT $dtb
 		Generate_Config
+
 	done
 else
 	CONFIG="
