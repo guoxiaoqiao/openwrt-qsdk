@@ -494,6 +494,7 @@ define BuildImage
 	$(foreach fs,$(TARGET_FILESYSTEMS),
 		$(call Image/Build,$(fs))
 	)
+	$(call Image/mkfs/ubifs_fit,-ipq40xx)
 	$(call Image/mkfs/ubifs)
 	$(call Image/Checksum,md5sum --binary,md5sums)
 	$(call Image/Checksum,openssl dgst -sha256,sha256sums)
