@@ -37,8 +37,8 @@ endef
 
 define Build/InstallDev
 	mkdir -p $(1)/usr/include/crypto
-	$(CP) $(HDR_SRC_DIR)/cryptodev.h $(1)/usr/include/crypto
-	$(CP) $(HDR_SRC_DIR)/ocf-compat.h $(1)/usr/include/crypto
+	$(CP) $(HDR_SRC_DIR)/cryptodev.h $(1)/usr/include/crypto || true
+	$(CP) $(HDR_SRC_DIR)/ocf-compat.h $(1)/usr/include/crypto || true
 endef
 
 $(eval $(call BuildPackage,ocf-crypto-headers))
