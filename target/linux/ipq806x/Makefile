@@ -20,6 +20,7 @@ CONFIG_EXTERNAL_KERNEL_TREE=$(shell \
 
 ifneq ($(CONFIG_EXTERNAL_KERNEL_TREE),"")
   $(eval _LINUX_DIR:=$(CONFIG_EXTERNAL_KERNEL_TREE))
+  $(shell touch $(_LINUX_DIR)/.scmversion)
   _LINUX_MAJOR:=$(shell sed -n 's,VERSION = \([0-9]*\)$$,\1,p' $(_LINUX_DIR)/Makefile)
   _LINUX_MINOR:=$(shell sed -n 's,PATCHLEVEL = \([0-9]*\)$$,\1,p' $(_LINUX_DIR)/Makefile)
   _LINUX_SUBLEVEL:=$(shell sed -n 's,SUBLEVEL = \([0-9]*\)$$,\1,p' $(_LINUX_DIR)/Makefile)
