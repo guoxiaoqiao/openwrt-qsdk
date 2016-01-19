@@ -273,6 +273,9 @@ $(eval $(call nf_add,NFNETLINK_LOG,CONFIG_NETFILTER_NETLINK_LOG, $(P_XT)nfnetlin
 
 $(eval $(call nf_add,NFNETLINK_QUEUE,CONFIG_NETFILTER_NETLINK_QUEUE, $(P_XT)nfnetlink_queue))
 
+# mark2prio
+$(eval $(call nf_add,IPT_MARK2PRIO,CONFIG_NETFILTER_XT_TARGET_MARK2PRIO, $(P_XT)ipt_mark2prio))
+
 #
 # ebtables
 #

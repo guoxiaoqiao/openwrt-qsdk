@@ -506,6 +506,20 @@ endef
 
 $(eval $(call KernelPackage,ipt-u32))
 
+define KernelPackage/ipt-mark2prio
+  TITLE:=mark2prio support
+  KCONFIG:= CONFIG_NETFILTER_XT_TARGET_MARK2PRIO
+  FILES:= $(LINUX_DIR)/net/netfilter/xt_mark2prio.ko
+  AUTOLOAD:= $(call AutoLoad,50,xt_mark2prio)
+  $(call AddDepends/ipt)
+endef
+
+define KernelPackage/ipt-mark2prio/description
+  Kernel modules for copying mark to priority
+endef
+
+$(eval $(call KernelPackage,ipt-mark2prio))
+
 define KernelPackage/ipt-ct-sctp
   TITLE:=SCTP conntrack kernel modules
   KCONFIG:= CONFIG_NF_CT_PROTO_SCTP
