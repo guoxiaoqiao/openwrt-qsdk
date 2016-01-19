@@ -2,14 +2,13 @@
 mkdir -p /proc && mount -t proc none /proc
 mkdir -p /sys && mount -t sysfs none /sys
 mount -t debugfs none /sys/kernel/debug/
-#echo /bin/mdev > /proc/sys/kernel/hotplug
+udevd --daemon
+udevadm trigger
 
 # load modules
 for m in /lib/modules/$(uname -r)/*; do
 	modprobe $(basename $m .ko)
 done
-
-mdev -s
 
 # setup udhcpc client scropt
 [ ! -f /usr/share/udhcpc/default.script ] && {
