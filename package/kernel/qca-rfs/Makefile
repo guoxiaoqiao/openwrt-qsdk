@@ -59,10 +59,12 @@ define Build/Compile
 		modules
 endef
 
+ifneq ($(CONFIG_PACKAGE_kmod-qca-rfs),)
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include/qca-rfs
 	$(CP) -rf $(PKG_BUILD_DIR)/rfs_dev.h $(1)/usr/include/qca-rfs
 endef
+endif
 
 define KernelPackage/qca-rfs/install
 	$(INSTALL_DIR) $(1)/etc/init.d
