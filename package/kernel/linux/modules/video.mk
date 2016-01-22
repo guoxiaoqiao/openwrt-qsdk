@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2009 David Cooper <dave@kupesoft.com>
-# Copyright (C) 2006-2010 OpenWrt.org
+# Copyright (C) 2006-2010, 2015-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -77,6 +77,33 @@ endef
 
 $(eval $(call KernelPackage,fb-cfb-imgblt))
 
+define KernelPackage/qpic_panel_ili_qvga
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=ILI QVGA Panel support
+  KCONFIG:=CONFIG_FB_MSM_QPIC_ILI_QVGA_PANEL
+  FILES:=$(LINUX_DIR)/drivers/video/msm/mdss/qpic_panel_ili_qvga.ko
+  AUTOLOAD:=$(call AutoLoad,07,qpic_panel_ili_qvga)
+endef
+
+define KernelPackage/qpic_panel_ili_qvga/description
+ Kernel support for qpic_panel_ili_qvga  lcd panel
+endef
+
+$(eval $(call KernelPackage,qpic_panel_ili_qvga))
+
+define KernelPackage/qpic_panel_ertft
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=ERT TFT  Panel support
+  KCONFIG:=CONFIG_FB_MSM_QPIC_ER_SSD1963_PANEL
+  FILES:=$(LINUX_DIR)/drivers/video/msm/mdss/qpic_panel_er_ssd1963.ko
+  AUTOLOAD:=$(call AutoLoad,07,qpic_panel_er_ssd1963)
+endef
+
+define KernelPackage/qpic_panel_ertft/description
+ Kernel support for qpic_panel_ertft  lcd panel
+endef
+
+$(eval $(call KernelPackage,qpic_panel_ertft))
 
 define KernelPackage/video-core
   SUBMENU:=$(VIDEO_MENU)
