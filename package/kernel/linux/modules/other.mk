@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2015 OpenWrt.org
+# Copyright (C) 2006-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -903,6 +903,21 @@ define KernelPackage/thermal-imx/description
 endef
 
 $(eval $(call KernelPackage,thermal-imx))
+
+
+define KernelPackage/bootconfig
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Bootconfig partition for failsafe
+  KCONFIG:=CONFIG_BOOTCONFIG_PARTITION
+  FILES:=$(LINUX_DIR)/drivers/platform/msm/bootconfig.ko
+  AUTOLOAD:=$(call AutoLoad,56,bootconfig)
+endef
+
+define KernelPackage/bootconfig/description
+  Bootconfig partition for failsafe
+endef
+
+$(eval $(call KernelPackage,bootconfig))
 
 
 define KernelPackage/thermal-kirkwood

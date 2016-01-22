@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2011 OpenWrt.org
+# Copyright (C) 2006-2011, 2015-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -646,3 +646,19 @@ define KernelPackage/crypto-mv-cesa
 endef
 
 $(eval $(call KernelPackage,crypto-mv-cesa))
+
+
+define KernelPackage/crypto-qcrypto
+  TITLE:=Qualcomm crypto CE engine
+  KCONFIG:= \
+	CONFIG_CRYPTO_DEV_QCRYPTO \
+	CONFIG_CRYPTO_DEV_QCEDEV
+  FILES:= \
+	$(LINUX_DIR)/drivers/crypto/msm/qcrypto.ko \
+	$(LINUX_DIR)/drivers/crypto/msm/qcedev.ko
+  AUTOLOAD:=$(call AutoLoad,09,qcrypto)
+  DEPENDS:=@TARGET_ipq806x +kmod-crypto-manager +kmod-crypto-aes +kmod-crypto-hash +kmod-crypto-des
+  $(call AddDepends/crypto)
+endef
+
+$(eval $(call KernelPackage,crypto-qcrypto))
