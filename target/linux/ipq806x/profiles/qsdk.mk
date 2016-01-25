@@ -138,6 +138,7 @@ define Profile/QSDK_Standard
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
+		qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw6-10.4-asic \
 		$(FAIL_SAFE)
 endef
 
