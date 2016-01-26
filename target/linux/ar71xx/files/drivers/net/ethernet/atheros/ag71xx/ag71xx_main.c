@@ -698,7 +698,11 @@ static void ag71xx_hw_stop(struct ag71xx *ag)
 	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
 
 	if (pdata->is_qca9561 && ag->phy_dev) {
-		ar8216_phy_write((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS, 0x0);
+		u32 value = 0;
+
+                value = ar8216_phy_read((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS);
+                value &= (~((1<<2)|(1<<3)));
+                ar8216_phy_write((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS, value);
 	}
 	ag71xx_wr(ag, AG71XX_REG_MAC_CFG1,0x0);
 	ag71xx_wr(ag, AG71XX_REG_INT_ENABLE, 0);
@@ -744,7 +748,11 @@ static void ag71xx_hw_setup(struct ag71xx *ag)
 	u32 reg_val = 0;
 
 	if (pdata->is_qca9561 && ag->phy_dev) {
-		ar8216_phy_write((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS, 0x0);
+		u32 value = 0;
+
+                value = ar8216_phy_read((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS);
+                value &= (~((1<<2)|(1<<3)));
+                ar8216_phy_write((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS, value);
 	}
 
 	/* setup MAC configuration registers */
@@ -861,7 +869,11 @@ static void ag71xx_hw_start(struct ag71xx *ag)
 
 	if(pdata->is_qca9561 &&  ag->phy_dev) {
 		/* Enable Switch Mac0's - tx,rx,flowctrl,duplx ,speed */
-		ar8216_phy_write((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS, 0xfe);
+		u32 value = 0;
+
+                value = ar8216_phy_read((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS);
+                value |= 0xfe;
+                ar8216_phy_write((u32)ag->phy_dev->priv, AR8327_REG_PORT0_STATUS, value);
 	}
 	ag71xx_wr(ag, AG71XX_REG_MAC_CFG1, MAC_CFG1_INIT);
 }
@@ -1405,7 +1417,19 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
 		 */
 		desc_ctrl = desc->ctrl;
 		if (unlikely(desc_ctrl & DESC_EMPTY)) {
-			break;
+			/* enable this WAR only for AP152 which has only one gamc */
+			if (ag71xx_get_pdata(ag)->is_qca9561 && (ag71xx_gmac_num == 1)) {
+				u32 rx_status = ag71xx_rr_fast(ag->rx_status_reg);
+				if ((((rx_status >> 16) & 0xff) > 1) && (desc->ctrl & DESC_EMPTY)) {
+					while(desc->ctrl & DESC_EMPTY) {
+						curr = curr->next;
+						desc = curr->desc;
+						skb = curr->skb;
+					}
+				} else
+					break;
+			} else
+				break;
 		}
 
 		/*

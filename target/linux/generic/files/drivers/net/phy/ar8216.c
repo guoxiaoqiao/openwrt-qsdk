@@ -1789,7 +1789,7 @@ ar8216_sw_hw_apply(struct switch_dev *dev)
 				egress = AR8216_OUT_STRIP_VLAN;
 			ingress = AR8216_IN_SECURE;
 		} else {
-			pvid = i;
+			pvid = 0;
 			egress = AR8216_OUT_KEEP;
 			ingress = AR8216_IN_PORT_ONLY;
 		}
