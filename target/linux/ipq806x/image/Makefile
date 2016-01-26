@@ -61,7 +61,7 @@ endef
 # some tree's don't have all the device tree's so we filter out
 # the ones that are not present
 # $(1) is the filter to apply
-FindDeviceTrees ?= $(notdir $(basename $(shell find $(LINUX_DIR)/arch/arm/boot/dts/ -name $(1)*.dts 2>/dev/null)))
+FindDeviceTrees ?= $(notdir $(basename $(shell find $(LINUX_DIR)/arch/arm/boot/dts/ -name $(1)*.dts $(2) 2>/dev/null)))
 
 define Image/BuildKernel/template
 	$(CP) $(KDIR)/vmlinux$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
@@ -80,6 +80,33 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq40xx-ap.dkxx, \
 		$(call FindDeviceTrees, qcom-ipq40xx-ap) $(call FindDeviceTrees, qcom-ipq40xx-db), \
 		$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
+		$(call FindDeviceTrees, qcom-ipq8064-*ap148_1xx), \
+		$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148, \
+		$(call FindDeviceTrees, qcom-ipq8064-*ap148,-not -name *ap148_1xx*), \
+		$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-db149, \
+		$(call FindDeviceTrees, qcom-ipq8064-*db149), \
+		$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ak01, \
+		$(call FindDeviceTrees, qcom-ipq8064-*ak01), \
+		$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145_1xx, \
+		$(call FindDeviceTrees, qcom-ipq8064-*ap145_1xx), \
+		$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145, \
+		$(call FindDeviceTrees, qcom-ipq8064-*ap145,-not -name *ap145_1xx*), \
+		$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap160_2xx, \
+		$(call FindDeviceTrees, qcom-ipq8064-*ap160_2xx), \
+		$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap160, \
+		$(call FindDeviceTrees, qcom-ipq8064-*ap160,-not -name *ap160_2xx*), \
+		$(IPQ806X_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap161, \
+		$(call FindDeviceTrees, qcom-ipq8064-*ap161), \
+		$(IPQ806X_KERNEL_LOADADDR))
 endef
 
 define Image/BuildKernel/Initramfs
