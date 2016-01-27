@@ -70,9 +70,12 @@ endef
 define Package/charlietalk/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_DIR) $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/usr/lib/charlietalk
+	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/GobiSampleCM/charlietalkd $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/GobiSampleCM/libgobicm.so $(1)/usr/lib/
-	$(CP) ./files/* $(1)/
+	$(INSTALL_DATA) ./files/etc/config/charlietalk $(1)/etc/config/
+	$(INSTALL_DATA) ./files/usr/lib/charlietalk/lte_channel_table.txt $(1)/usr/lib/charlietalk/
 endef
 
 $(eval $(call KernelPackage,$(PKG_NAME)))
