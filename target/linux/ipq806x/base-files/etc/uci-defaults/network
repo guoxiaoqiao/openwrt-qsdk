@@ -77,6 +77,17 @@ ap-dk04.1-c3)
 	ucidef_add_switch_ext "switch0" "QosPtMode" "4" "dscp" "enable"
 	ucidef_add_switch_ext "switch0" "QosPtMode" "5" "dscp" "enable"
 	;;
+ap-dk04.1-c4)
+	ucidef_set_interfaces_lan_wan "eth1" "eth0"
+	ucidef_add_switch "switch0" "1" "1"
+	ucidef_add_switch_vlan "switch0" "1" "0t 1 2 3"
+	ucidef_add_switch_vlan "switch0" "2" "0t 4 5"
+	ucidef_add_switch_ext "switch0" "QosPtMode" "1" "dscp" "enable"
+	ucidef_add_switch_ext "switch0" "QosPtMode" "2" "dscp" "enable"
+	ucidef_add_switch_ext "switch0" "QosPtMode" "3" "dscp" "enable"
+	ucidef_add_switch_ext "switch0" "QosPtMode" "4" "dscp" "enable"
+	ucidef_add_switch_ext "switch0" "QosPtMode" "5" "dscp" "enable"
+	;;
 *)
 	echo "Unsupported hardware. Network interfaces not intialized"
 	;;
