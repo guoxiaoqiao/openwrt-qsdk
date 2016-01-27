@@ -20,6 +20,7 @@ ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
 	$(call Image/mkfs/ubifs/generate,$(1))
 	$(call Image/Build,ubi,$(1))
+	$(call Image/UbiImage,$(1))
 endef
 endif
 
@@ -111,6 +112,20 @@ endef
 
 define Image/BuildKernel/Initramfs
 	$(call Image/BuildKernel/template,FITInitramfs)
+endef
+
+define Image/UbiImage
+
+ifeq ($(1),-ipq806x)
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-db149,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-db149-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ak01,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ak01-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145_1xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145_1xx-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap161,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap161-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160_2xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160_2xx-fit-uImage.itb,squashfs,$(UBI_OPTS))
+endif
 endef
 
 define Image/Build/squashfs
