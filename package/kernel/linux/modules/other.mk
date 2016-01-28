@@ -10,11 +10,27 @@ OTHER_MENU:=Other modules
 WATCHDOG_DIR:=watchdog
 
 
+define KernelPackage/6lowpan-iphc
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=6LoWPAN shared code
+  KCONFIG:=CONFIG_6LOWPAN_IPHC
+  FILES:=$(LINUX_DIR)/net/ieee802154/6lowpan_iphc.ko
+  DEPENDS:=@LINUX_3_14
+  AUTOLOAD:=$(call AutoProbe,6lowpan_iphc)
+endef
+
+define KernelPackage/6lowpan-iphc/description
+  Shared 6lowpan code for IEEE 802.15.4 and Bluetooth.
+endef
+
+$(eval $(call KernelPackage,6lowpan-iphc))
+
 define KernelPackage/6lowpan
   SUBMENU:=$(OTHER_MENU)
   TITLE:=6LoWPAN shared code
   KCONFIG:=CONFIG_6LOWPAN
   FILES:=$(LINUX_DIR)/net/6lowpan/6lowpan.ko
+  DEPENDS:=@LINUX_3_18
   AUTOLOAD:=$(call AutoProbe,6lowpan)
 endef
 
@@ -28,7 +44,7 @@ $(eval $(call KernelPackage,6lowpan))
 define KernelPackage/bluetooth
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Bluetooth support
-  DEPENDS:=@USB_SUPPORT +kmod-usb-core +kmod-crypto-hash +kmod-crypto-ecb +kmod-lib-crc16 +kmod-hid
+  DEPENDS:=@USB_SUPPORT +kmod-usb-core +kmod-crypto-hash +kmod-crypto-ecb +kmod-lib-crc16 +kmod-hid +LINUX_3_14:kmod-6lowpan-iphc
   KCONFIG:= \
 	CONFIG_BLUEZ \
 	CONFIG_BLUEZ_L2CAP \
@@ -73,7 +89,7 @@ $(eval $(call KernelPackage,bluetooth))
 define KernelPackage/bluetooth_6lowpan
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Bluetooth 6LoWPAN support
-  DEPENDS:=+kmod-6lowpan +kmod-bluetooth
+  DEPENDS:=+LINUX_3_14:kmod-6lowpan-iphc +LINUX_3_18:kmod-6lowpan +kmod-bluetooth
   KCONFIG:=CONFIG_BT_6LOWPAN
   FILES:=$(LINUX_DIR)/net/bluetooth/bluetooth_6lowpan.ko
   AUTOLOAD:=$(call AutoProbe,bluetooth_6lowpan)
