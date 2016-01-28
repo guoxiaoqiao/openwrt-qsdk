@@ -1,8 +1,6 @@
-diff --git a/hostapd/config_file.c b/hostapd/config_file.c
-index 49f8320..732d4d7 100644
 --- a/hostapd/config_file.c
 +++ b/hostapd/config_file.c
-@@ -1160,9 +1160,21 @@ static int hostapd_config_vht_capab(struct hostapd_config *conf,
+@@ -1116,13 +1116,23 @@ static int hostapd_config_vht_capab(stru
  	if (os_strstr(capab, "[BF-ANTENNA-2]") &&
  	    (conf->vht_capab & VHT_CAP_SU_BEAMFORMEE_CAPABLE))
  		conf->vht_capab |= (1 << VHT_CAP_BEAMFORMEE_STS_OFFSET);
@@ -23,12 +21,14 @@ index 49f8320..732d4d7 100644
 +		conf->vht_capab |= (3 << VHT_CAP_SOUNDING_DIMENSION_OFFSET);
  	if (os_strstr(capab, "[MU-BEAMFORMER]"))
  		conf->vht_capab |= VHT_CAP_MU_BEAMFORMER_CAPABLE;
+-	if (os_strstr(capab, "[MU-BEAMFORMEE]"))
+-		conf->vht_capab |= VHT_CAP_MU_BEAMFORMEE_CAPABLE;
  	if (os_strstr(capab, "[VHT-TXOP-PS]"))
-diff --git a/hostapd/hostapd.conf b/hostapd/hostapd.conf
-index 00fc142..ac5f4e7 100644
+ 		conf->vht_capab |= VHT_CAP_VHT_TXOP_PS;
+ 	if (os_strstr(capab, "[HTC-VHT]"))
 --- a/hostapd/hostapd.conf
 +++ b/hostapd/hostapd.conf
-@@ -582,14 +582,16 @@ wmm_ac_vo_acm=0
+@@ -564,14 +564,16 @@ wmm_ac_vo_acm=0
  # 0 = Not supported (default)
  # 1 = Supported
  #
@@ -47,6 +47,26 @@ index 00fc142..ac5f4e7 100644
  # Beamformer's capability indicating the maximum value of the NUM_STS parameter
  # in the TXVECTOR of a VHT NDP
  # If SU beamformer capable, set to maximum value minus 1
--- 
-1.9.1
-
+@@ -582,11 +584,6 @@ wmm_ac_vo_acm=0
+ # 0 = Not supported or sent by Non-AP STA (default)
+ # 1 = Supported
+ #
+-# MU Beamformee Capable: [MU-BEAMFORMEE]
+-# Indicates support for operation as an MU beamformee
+-# 0 = Not supported or sent by AP (default)
+-# 1 = Supported
+-#
+ # VHT TXOP PS: [VHT-TXOP-PS]
+ # Indicates whether or not the AP supports VHT TXOP Power Save Mode
+ #  or whether or not the STA is in VHT TXOP Power Save mode
+--- a/tests/hwsim/test_ap_vht.py
++++ b/tests/hwsim/test_ap_vht.py
+@@ -160,7 +160,7 @@ def test_ap_vht_capab_not_supported(dev,
+                    "ieee80211n": "1",
+                    "ieee80211ac": "1",
+                    "vht_oper_chwidth": "1",
+-                   "vht_capab": "[MAX-MPDU-7991][MAX-MPDU-11454][VHT160][VHT160-80PLUS80][RXLDPC][SHORT-GI-80][SHORT-GI-160][TX-STBC-2BY1][RX-STBC-1][RX-STBC-12][RX-STBC-123][RX-STBC-1234][SU-BEAMFORMER][SU-BEAMFORMEE][BF-ANTENNA-2][SOUNDING-DIMENSION-2][MU-BEAMFORMER][MU-BEAMFORMEE][VHT-TXOP-PS][HTC-VHT][MAX-A-MPDU-LEN-EXP0][MAX-A-MPDU-LEN-EXP7][VHT-LINK-ADAPT2][VHT-LINK-ADAPT3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]",
++                   "vht_capab": "[MAX-MPDU-7991][MAX-MPDU-11454][VHT160][VHT160-80PLUS80][RXLDPC][SHORT-GI-80][SHORT-GI-160][TX-STBC-2BY1][RX-STBC-1][RX-STBC-12][RX-STBC-123][RX-STBC-1234][SU-BEAMFORMER][SU-BEAMFORMEE][BF-ANTENNA-2][SOUNDING-DIMENSION-2][MU-BEAMFORMER][VHT-TXOP-PS][HTC-VHT][MAX-A-MPDU-LEN-EXP0][MAX-A-MPDU-LEN-EXP7][VHT-LINK-ADAPT2][VHT-LINK-ADAPT3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]",
+                    "vht_oper_centr_freq_seg0_idx": "42",
+                    "require_vht": "1" }
+         hapd = hostapd.add_ap(apdev[0]['ifname'], params, wait_enabled=False)
