@@ -157,7 +157,7 @@
  #include "drivers/driver.h"
  #include "wpa_supplicant_i.h"
  #include "config.h"
-@@ -277,6 +278,10 @@ static void calculate_update_time(const 
+@@ -277,6 +278,10 @@ static void calculate_update_time(const
  static void wpa_bss_copy_res(struct wpa_bss *dst, struct wpa_scan_res *src,
  			     struct os_reltime *fetch_time)
  {
@@ -195,14 +195,14 @@
  	       "[-p<driver_param>] \\\n"
  	       "        [-b<br_ifname>] [-e<entropy file>]"
  #ifdef CONFIG_DEBUG_FILE
-@@ -84,6 +84,7 @@ static void usage(void)
- #endif /* CONFIG_DEBUG_LINUX_TRACING */
- 	printf("  -t = include timestamp in debug messages\n"
+@@ -74,6 +74,7 @@ static void usage(void)
+ 	       "  -g = global ctrl_interface\n"
+ 	       "  -G = global ctrl_interface group\n"
  	       "  -h = show this help text\n"
-+		   "  -H = connect to a hostapd instance to manage state changes\n"
- 	       "  -L = show license (BSD)\n"
- 	       "  -o = override driver parameter for new interfaces\n"
- 	       "  -O = override ctrl_interface parameter for new interfaces\n"
++	       "  -H = connect to a hostapd instance to manage state changes\n"
+ 	       "  -i = interface name\n"
+ 	       "  -I = additional configuration file\n"
+ 	       "  -K = include keys (passwords, etc.) in debug output\n"
 @@ -175,7 +176,7 @@ int main(int argc, char *argv[])
  
  	for (;;) {

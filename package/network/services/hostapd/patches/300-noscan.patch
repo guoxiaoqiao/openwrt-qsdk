@@ -21,13 +21,14 @@
  	int require_ht;
 --- a/src/ap/hw_features.c
 +++ b/src/ap/hw_features.c
-@@ -461,7 +461,7 @@ static int ieee80211n_check_40mhz(struct
- 	struct wpa_driver_scan_params params;
+@@ -461,7 +461,8 @@ static int ieee80211n_check_40mhz(struct
  	int ret;
  
--	if (!iface->conf->secondary_channel)
-+	if (!iface->conf->secondary_channel || iface->conf->noscan)
- 		return 0; /* HT40 not used */
+ 	/* Check that HT40 is used and PRI / SEC switch is allowed */
+-	if (!iface->conf->secondary_channel || iface->conf->no_pri_sec_switch)
++	if (!iface->conf->secondary_channel || iface->conf->no_pri_sec_switch
++	    || iface->conf->noscan)
+ 		return 0;
  
  	hostapd_set_state(iface, HAPD_IFACE_HT_SCAN);
 --- a/src/ap/ieee802_11_ht.c
