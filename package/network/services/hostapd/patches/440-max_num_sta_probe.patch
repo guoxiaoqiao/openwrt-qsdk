@@ -1,6 +1,6 @@
 --- a/src/ap/beacon.c
 +++ b/src/ap/beacon.c
-@@ -642,6 +642,10 @@ void handle_probe_req(struct hostapd_dat
+@@ -664,6 +664,10 @@ void handle_probe_req(struct hostapd_dat
  		return;
  	}
  
