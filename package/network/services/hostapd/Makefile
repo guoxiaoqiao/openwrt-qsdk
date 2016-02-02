@@ -218,7 +218,7 @@ define Package/wpa-supplicant-mesh
   $(Package/wpa-supplicant)
   TITLE:=WPA Supplicant (with 802.11s and SAE)
   DEPENDS:=$(DRV_DEPENDS) @(!TARGET_uml||BROKEN)
-  CONFLICTS:=wpad wpad-mesh wpad-mesh
+  CONFLICTS:=wpad wpad-mini wpad-mesh
   VARIANT:=supplicant-mesh
 endef
 
