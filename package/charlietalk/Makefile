@@ -41,7 +41,7 @@ define Package/charlietalk
    TITLE:=Qualcomm GobiNet Connection Manager
    SECTION:=utils
    CATEGORY:=Utilities
-   DEPENDS:=+libpthread +libc +librt +libstdcpp +kmod-gobinet
+   DEPENDS:=+libpthread +libc +librt +libstdcpp +libuci +kmod-qca-wifi-10.4-unified-profile +kmod-gobinet
    VARIANT:=charlietalk
 endef
 
