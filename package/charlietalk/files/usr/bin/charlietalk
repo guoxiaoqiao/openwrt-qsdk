@@ -1,0 +1,47 @@
+#!/bin/sh /etc/rc.common
+
+configure_usb_interface() {
+	local disabled=$1
+	config_load network && {
+		config_get ifname usb ifname
+		if [ -z "$ifname" ] && [ $disabled -eq 0 ]; then {
+			uci set network.usb='interface'
+			uci set network.usb.ifname='usb0'
+			uci set network.usb.proto='dhcp'
+			uci set network.usb6='interface'
+			uci set network.usb6.ifname='@usb'
+			uci set network.usb6.proto='dhcpv6'
+			uci commit
+		}
+		elif [ -n "$ifname" ] && [ $disabled -ne 0 ]; then {
+			uci delete network.usb
+			uci delete network.usb6
+			uci commit
+		}
+		fi
+	}
+}
+
+start() {
+	local SERVICE_DAEMONIZE=1
+	local SERVICE_WRITE_PID=1
+	local disabled
+
+	config_load charlietalk && {
+		config_get_bool disabled usb0 'disabled' '1'
+		configure_usb_interface $disabled
+		[ $disabled -eq 0 ] || {
+			return 1
+		}
+		service_start /usr/bin/charlietalkd
+		sleep 1
+	}
+}
+
+stop() {
+	config_load charlietalk && {
+		config_get_bool disabled usb0 'disabled' '1'
+		configure_usb_interface $disabled
+		service_stop /usr/bin/charlietalkd
+	}
+}
