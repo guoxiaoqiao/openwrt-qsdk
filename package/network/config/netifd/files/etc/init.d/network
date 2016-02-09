@@ -12,36 +12,6 @@ init_switch() {
 	setup_switch
 }
 
-set_usb_interface() {
-	local ifname=$1
-
-	uci batch <<EOF
-set network.usb='interface'
-set network.usb.ifname='$ifname'
-set network.usb.proto='dhcp'
-set network.usb6='interface'
-set network.usb6.ifname='@usb'
-set network.usb6.proto='dhcpv6'
-commit
-EOF
-}
-
-start_charlietalk() {
-	local SERVICE_DAEMONIZE=1
-	local SERVICE_WRITE_PID=1
-	local disabled
-
-	config_load charlietalk && {
-		set_usb_interface usb0
-		config_get_bool disabled usb0 'disabled' '1'
-		[ $disabled -eq 0 ] || {
-			return 1
-		}
-		service_start /usr/bin/charlietalkd
-		sleep 1
-	}
-}
-
 start_service() {
 	init_switch
 
@@ -54,7 +24,7 @@ start_service() {
 		echo '/tmp/%e.%p.%s.%t.core' > /proc/sys/kernel/core_pattern
 	}
 	procd_close_instance
-	start_charlietalk
+	charlietalk start
 }
 
 reload_service() {
@@ -65,9 +35,7 @@ reload_service() {
 
 stop_service() {
 	/sbin/wifi down
-	config_load charlietalk && {
-		service_stop /usr/bin/charlietalkd
-	}
+	charlietalk stop
 }
 
 service_running() {
