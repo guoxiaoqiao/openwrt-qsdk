@@ -74,6 +74,7 @@ define Package/charlietalk/install
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/GobiSampleCM/charlietalkd $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/GobiSampleCM/libgobicm.so $(1)/usr/lib/
+	$(INSTALL_BIN) ./files/usr/bin/charlietalk $(1)/usr/bin/
 	$(INSTALL_DATA) ./files/etc/config/charlietalk $(1)/etc/config/
 	$(INSTALL_DATA) ./files/usr/lib/charlietalk/lte_channel_table.txt $(1)/usr/lib/charlietalk/
 endef
