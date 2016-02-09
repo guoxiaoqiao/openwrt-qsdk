@@ -91,7 +91,7 @@ config KERNEL_DEBUG_LL
 config KERNEL_DYNAMIC_DEBUG 
 	bool "Compile the kernel with dynamic printk"
 	select KERNEL_DEBUG_FS
-	default n
+	default y
 	help
 	  Compiles debug level messages into the kernel, which would not
 	  otherwise be available at runtime. These messages can then be
