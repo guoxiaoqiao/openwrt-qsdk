@@ -529,6 +529,11 @@ wpa_supplicant_prepare_interface() {
 		_w_modestr="mode=1"
 	}
 
+	[[ "$mode" = mesh ]] && {
+		user_mpm="user_mpm=1"
+		mesh_ctrl_interface="ctrl_interface=$_rpath"
+	}
+
 	wpa_supplicant_teardown_interface "$ifname"
 	cat > "$_config" <<EOF
 $ap_scan
@@ -621,6 +626,17 @@ wpa_supplicant_add_network() {
 			esac
 			append network_data "eap=$(echo $eap_type | tr 'a-z' 'A-Z')" "$N$T"
 		;;
+		sae)
+			local passphrase
+
+			key_mgmt="$wpa_key_mgmt"
+			if [ ${#key} -eq 64 ]; then
+				passphrase="psk=${key}"
+			else
+				passphrase="psk=\"${key}\""
+			fi
+			append network_data "$passphrase" "$N$T"
+		;;
 	esac
 
 	[ "$mode" = mesh ] || {
@@ -669,6 +685,9 @@ wpa_supplicant_add_network() {
 	[ -n "$ibss_htmode" ] && append network_data "htmode=$ibss_htmode" "$N$T"
 
 	cat >> "$_config" <<EOF
+$mesh_ctrl_interface
+$user_mpm
+
 network={
 	$scan_ssid
 	ssid="$ssid"
