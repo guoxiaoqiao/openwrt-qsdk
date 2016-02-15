@@ -975,6 +975,12 @@ void ath79_init_eth_pdata(unsigned int id)
 		}
 
 		pdata->ddr_flush = ath79_ddr_no_flush;
+		if (id == 0 && ATH79_SOC_QCA956X == ath79_soc) {
+			pdata->ddr_flush = ath79_ddr_flush_ge0;
+		}
+		else if (id == 1 && ATH79_SOC_QCA956X == ath79_soc) {
+			pdata->ddr_flush = ath79_ddr_flush_ge1;
+		}
 		pdata->has_gbit = 1;
 		pdata->is_ar724x = 1;
 
