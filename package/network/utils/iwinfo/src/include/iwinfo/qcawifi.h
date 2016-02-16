@@ -55,6 +55,7 @@ int qcawifi_get_noise(const char *ifname, int *buf);
 int qcawifi_get_quality(const char *ifname, int *buf);
 int qcawifi_get_quality_max(const char *ifname, int *buf);
 int qcawifi_get_encryption(const char *ifname, char *buf);
+int qcawifi_get_phyname(const char *ifname, char *buf);
 int qcawifi_get_assoclist(const char *ifname, char *buf, int *len);
 int qcawifi_get_txpwrlist(const char *ifname, char *buf, int *len);
 int qcawifi_get_scanlist(const char *ifname, char *buf, int *len);
@@ -86,6 +87,7 @@ static const struct iwinfo_ops qcawifi_ops = {
 	.hardware_id      = qcawifi_get_hardware_id,
 	.hardware_name    = qcawifi_get_hardware_name,
 	.encryption       = qcawifi_get_encryption,
+	.phyname          = qcawifi_get_phyname,
 	.assoclist        = qcawifi_get_assoclist,
 	.txpwrlist        = qcawifi_get_txpwrlist,
 	.scanlist         = qcawifi_get_scanlist,
