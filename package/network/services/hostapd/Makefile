@@ -1,5 +1,4 @@
-#
-# Copyright (C) 2006-2012 OpenWrt.org
+# Copyright (C) 2006-2014 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,29 +7,26 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hostapd
-PKG_VERSION:=2015-01-20
+PKG_VERSION:=2015-03-25
 PKG_RELEASE:=1
-PKG_REV:=a60dbbce443d62c403492549a1353ed1a3eaefb4
+PKG_REV:=8278138e679174b1ec8af7f169c2810a8888e202
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://w1.fi/hostap.git
+PKG_SOURCE_URL:=git://w1.fi/srv/git/hostap.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_SOURCE_PROTO:=git
 # PKG_MIRROR_MD5SUM:=4e7c1f97edd7514535056fce54ae053a
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
+PKG_LICENSE:=BSD-3-Clause
 
 PKG_BUILD_PARALLEL:=1
-
-PKG_BUILD_DEPENDS:= \
-	PACKAGE_kmod-madwifi:madwifi \
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_WPA_SUPPLICANT_NO_TIMESTAMP_CHECK \
 	CONFIG_PACKAGE_kmod-ath9k \
 	CONFIG_PACKAGE_kmod-mac80211 \
-	CONFIG_PACKAGE_kmod-madwifi \
 	CONFIG_PACKAGE_hostapd \
 	CONFIG_PACKAGE_hostapd-mini \
 	CONFIG_PACKAGE_kmod-hostap \
@@ -51,6 +47,10 @@ ifeq ($(LOCAL_TYPE),supplicant)
 		CONFIG_WPA_SUPPLICANT_INTERNAL \
 		CONFIG_WPA_SUPPLICANT_OPENSSL
   endif
+  ifeq ($(LOCAL_VARIANT),mesh)
+    PKG_CONFIG_DEPENDS += \
+		CONFIG_WPA_SUPPLICANT_OPENSSL
+  endif
 endif
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
@@ -65,12 +65,10 @@ endif
 
 DRIVER_MAKEOPTS= \
 	CONFIG_DRIVER_NL80211=$(CONFIG_PACKAGE_kmod-mac80211) \
-	CONFIG_DRIVER_MADWIFI=$(CONFIG_PACKAGE_kmod-madwifi) \
 	CONFIG_DRIVER_HOSTAP=$(CONFIG_PACKAGE_kmod-hostap) \
 	CONFIG_IEEE80211N=$(HOSTAPD_IEEE80211N) \
 	CONFIG_IEEE80211W=$(CONFIG_PACKAGE_kmod-ath10k) \
 	CONFIG_DRIVER_WEXT=$(CONFIG_DRIVER_WEXT_SUPPORT) \
-	$(if $(CONFIG_WPA_RFKILL_SUPPORT),NEED_RFKILL=y)
 
 ifneq ($(LOCAL_TYPE),hostapd)
   ifdef CONFIG_WPA_SUPPLICANT_OPENSSL
@@ -79,15 +77,23 @@ ifneq ($(LOCAL_TYPE),hostapd)
       TARGET_LDFLAGS += -lcrypto -lssl
     endif
   endif
+  ifeq ($(LOCAL_VARIANT),mesh)
+    DRIVER_MAKEOPTS += CONFIG_TLS=openssl
+    TARGET_LDFLAGS += -lcrypto -lssl
+  endif
   ifdef CONFIG_WPA_SUPPLICANT_NO_TIMESTAMP_CHECK
     TARGET_CFLAGS += -DNO_TIMESTAMP_CHECK
+  endif
+  ifdef CONFIG_WPA_RFKILL_SUPPORT
+    DRIVER_MAKEOPTS += NEED_RFKILL=y
   endif
   DRIVER_MAKEOPTS += \
 	CONFIG_DRIVER_ROBOSWITCH=$(CONFIG_PACKAGE_kmod-switch)
 endif
 
-ifdef CONFIG_USE_EGLIBC
+ifdef CONFIG_USE_GLIBC
   TARGET_LDFLAGS += -lrt
+  TARGET_LDFLAGS_C += -lrt
 endif
 
 DRV_DEPENDS:=+PACKAGE_kmod-mac80211:libnl @(!TARGET_avr32||BROKEN)
@@ -97,13 +103,14 @@ define Package/hostapd/Default
   CATEGORY:=Network
   TITLE:=IEEE 802.1x Authenticator
   URL:=http://hostap.epitest.fi/
-  DEPENDS:=$(DRV_DEPENDS) +libubus +libnl
+  DEPENDS:=$(DRV_DEPENDS) +hostapd-common +libubus +libnl
 endef
 
 define Package/hostapd
 $(call Package/hostapd/Default)
   TITLE+= (full)
   VARIANT:=full
+  CONFLICTS:=wpad wpad-mini wpad-mesh
 endef
 
 define Package/hostapd/description
@@ -115,6 +122,7 @@ define Package/hostapd-mini
 $(call Package/hostapd/Default)
   TITLE+= (WPA-PSK only)
   VARIANT:=mini
+  CONFLICTS:=wpad wpad-mini wpad-mesh
 endef
 
 define Package/hostapd-mini/description
@@ -124,7 +132,7 @@ endef
 define Package/hostapd-utils
   $(call Package/hostapd/Default)
   TITLE+= (utils)
-  DEPENDS:=@PACKAGE_hostapd||PACKAGE_hostapd-mini||PACKAGE_wpad||PACKAGE_wpad-mini
+  DEPENDS:=@PACKAGE_hostapd||PACKAGE_hostapd-mini||PACKAGE_wpad||PACKAGE_wpad-mesh||PACKAGE_wpad-mini
 endef
 
 define Package/hostapd-utils/description
@@ -136,13 +144,14 @@ define Package/wpad/Default
   SECTION:=net
   CATEGORY:=Network
   TITLE:=IEEE 802.1x Authenticator/Supplicant
+  DEPENDS:=$(DRV_DEPENDS) +hostapd-common +libubus
   URL:=http://hostap.epitest.fi/
 endef
 
 define Package/wpad
 $(call Package/wpad/Default)
   TITLE+= (full)
-  DEPENDS:=$(DRV_DEPENDS) +WPA_SUPPLICANT_OPENSSL:libopenssl +libubus +libnl
+  DEPENDS+=+WPA_SUPPLICANT_OPENSSL:libopenssl +libnl
   VARIANT:=wpad-full
 endef
 
@@ -154,12 +163,24 @@ endef
 define Package/wpad-mini
 $(call Package/wpad/Default)
   TITLE+= (WPA-PSK only)
-  DEPENDS:=$(DRV_DEPENDS) +libubus +libnl
+  DEPENDS:=$(DRV_DEPENDS) +libnl
   VARIANT:=wpad-mini
 endef
 
 define Package/wpad-mini/description
  This package contains a minimal IEEE 802.1x/WPA Authenticator and Supplicant (WPA-PSK only).
+endef
+
+define Package/wpad-mesh
+$(call Package/wpad/Default)
+  TITLE+= (with 802.11s mesh and SAE support)
+  DEPENDS:=$(DRV_DEPENDS) +libubus +libopenssl +@CONFIG_WPA_SUPPLICANT_OPENSSL
+  CONFLICTS:=@WPA_SUPPLICANT_INTERNAL
+  VARIANT:=wpad-mesh
+endef
+
+define Package/wpad-mesh/description
+ This package contains a minimal IEEE 802.1x/WPA Authenticator and Supplicant (with 802.11s mesh and SAE support).
 endef
 
 define Package/wpa-supplicant
@@ -168,6 +189,7 @@ define Package/wpa-supplicant
   TITLE:=WPA Supplicant
   URL:=http://hostap.epitest.fi/wpa_supplicant/
   DEPENDS:=$(DRV_DEPENDS) +WPA_SUPPLICANT_OPENSSL:libopenssl
+  CONFLICTS:=wpad wpad-mini wpad-mesh
   VARIANT:=supplicant-full
 endef
 
@@ -183,6 +205,7 @@ define Package/wpa-supplicant-p2p
   $(Package/wpa-supplicant)
   TITLE:=WPA Supplicant (with Wi-Fi P2P support)
   DEPENDS:=$(DRV_DEPENDS)
+  CONFLICTS:=wpad wpad-mini wpad-mesh
   VARIANT:=supplicant-p2p
 endef
 
@@ -190,10 +213,23 @@ define Package/wpa-supplicant-p2p/Description
   WPA Supplicant (with Wi-Fi P2P support)
 endef
 
+define Package/wpa-supplicant-mesh
+  $(Package/wpa-supplicant)
+  TITLE:=WPA Supplicant (with 802.11s and SAE)
+  DEPENDS:=$(DRV_DEPENDS)
+  CONFLICTS:=wpad wpad-mesh wpad-mesh
+  VARIANT:=supplicant-mesh
+endef
+
+define Package/wpa-supplicant-mesh/Description
+  WPA Supplicant (variant with 802.11s and SAE support)
+endef
+
 define Package/wpa-supplicant-mini
   $(Package/wpa-supplicant)
   TITLE:=WPA Supplicant (minimal version)
   DEPENDS:=$(DRV_DEPENDS)
+  CONFLICTS:=wpad wpad-mini wpad-mesh
   VARIANT:=supplicant-mini
 endef
 
@@ -204,7 +240,7 @@ endef
 define Package/wpa-cli
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=@PACKAGE_wpa-supplicant||PACKAGE_wpa-supplicant-p2p||PACKAGE_wpad-mini||PACKAGE_wpad
+  DEPENDS:=@PACKAGE_wpa-supplicant||PACKAGE_wpa-supplicant-p2p||PACKAGE_wpad-mini||PACKAGE_wpad||PACKAGE_wpad-mesh
   TITLE:=WPA Supplicant command line interface
 endef
 
@@ -223,6 +259,15 @@ define Package/hostapd-common-old
   SECTION:=net
   CATEGORY:=Network
 endef
+
+define Package/eapol-test
+  TITLE:=802.1x authentication test utility
+  SECTION:=net
+  CATEGORY:=Network
+  VARIANT:=supplicant-full
+  DEPENDS:=$(DRV_DEPENDS)
+endef
+
 
 ifneq ($(wildcard $(PKG_BUILD_DIR)/.config_*),$(subst .configured_,.config_,$(STAMP_CONFIGURED)))
   define Build/Configure/rebuild
@@ -246,7 +291,6 @@ TARGET_CPPFLAGS := \
 	-I$(STAGING_DIR)/usr/include/libnl3 \
 	-I$(PKG_BUILD_DIR)/src/crypto \
 	$(TARGET_CPPFLAGS) \
-	-I$(CURDIR)/madwifi \
 	-D_GNU_SOURCE \
 	$(if $(CONFIG_WPA_MSG_MIN_PRIORITY),-DCONFIG_MSG_MIN_PRIORITY=$(CONFIG_WPA_MSG_MIN_PRIORITY))
 
@@ -266,7 +310,7 @@ define Build/RunMake
 		$(TARGET_CONFIGURE_OPTS) \
 		$(DRIVER_MAKEOPTS) \
 		LIBS="$(TARGET_LDFLAGS)" \
-		LIBS_c="" \
+		LIBS_c="$(TARGET_LDFLAGS_C)" \
 		BCHECK= \
 		$(2)
 endef
@@ -307,8 +351,15 @@ define Build/Compile/supplicant
 	)
 endef
 
+define Build/Compile/supplicant-full
+	$(call Build/RunMake,wpa_supplicant, \
+		eapol_test \
+	)
+endef
+
 define Build/Compile
 	$(Build/Compile/$(LOCAL_TYPE))
+	$(Build/Compile/$(BUILD_VARIANT))
 endef
 
 define Install/hostapd
@@ -348,10 +399,11 @@ define Package/wpad/install
 	$(call Install/hostapd,$(1))
 	$(call Install/supplicant,$(1))
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/wpad $(1)/usr/sbin/
-	ln -sf wpad $(1)/usr/sbin/hostapd
-	ln -sf wpad $(1)/usr/sbin/wpa_supplicant
+	$(LN) wpad $(1)/usr/sbin/hostapd
+	$(LN) wpad $(1)/usr/sbin/wpa_supplicant
 endef
 Package/wpad-mini/install = $(Package/wpad/install)
+Package/wpad-mesh/install = $(Package/wpad/install)
 
 define Package/wpa-supplicant/install
 	$(call Install/supplicant,$(1))
@@ -367,14 +419,24 @@ ifneq ($(LOCAL_TYPE),hostapd)
   endef
 endif
 
+ifeq ($(BUILD_VARIANT),supplicant-full)
+  define Package/eapol-test/install
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(CP) $(PKG_BUILD_DIR)/wpa_supplicant/eapol_test $(1)/usr/sbin/
+  endef
+endif
+
 $(eval $(call BuildPackage,hostapd))
 $(eval $(call BuildPackage,hostapd-mini))
 $(eval $(call BuildPackage,wpad))
+$(eval $(call BuildPackage,wpad-mesh))
 $(eval $(call BuildPackage,wpad-mini))
 $(eval $(call BuildPackage,wpa-supplicant))
+$(eval $(call BuildPackage,wpa-supplicant-mesh))
 $(eval $(call BuildPackage,wpa-supplicant-mini))
 $(eval $(call BuildPackage,wpa-supplicant-p2p))
 $(eval $(call BuildPackage,wpa-cli))
 $(eval $(call BuildPackage,hostapd-utils))
 $(eval $(call BuildPackage,hostapd-common))
 $(eval $(call BuildPackage,hostapd-common-old))
+$(eval $(call BuildPackage,eapol-test))

@@ -122,6 +122,7 @@ hostapd_common_add_bss_config() {
 	config_add_int dae_port
 
 	config_add_string nasid
+	config_add_string ownip
 	config_add_string iapp_interface
 	config_add_string eap_type ca_cert client_cert identity auth priv_key priv_key_pwd
 
@@ -237,7 +238,7 @@ hostapd_set_bss_options() {
 				acct_server acct_secret acct_port \
 				dae_client dae_secret dae_port \
 				nasid rsn_preauth iapp_interface \
-				eap_reauth_period
+				ownip eap_reauth_period
 
 			# legacy compatibility
 			[ -n "$auth_server" ] || json_get_var auth_server server
@@ -273,6 +274,7 @@ hostapd_set_bss_options() {
 			[ -n "$eap_server" ] && append bss_conf "eap_server=$eap_server" "$N"
 			[ -n "$eapol_version" ] && append bss_conf "eapol_version=$eapol_version" "$N"
 			append bss_conf "nas_identifier=$nasid" "$N"
+                        [ -n "$ownip" ] && append bss_conf "own_ip_addr=$ownip" "$N"
 			append bss_conf "eapol_key_index_workaround=$eapol_key_index_workaround" "$N"
 			append bss_conf "ieee8021x=1" "$N"
 			append bss_conf "wpa_key_mgmt=WPA-EAP" "$N"
@@ -293,6 +295,7 @@ hostapd_set_bss_options() {
 
 	set_default wps_pushbutton 0
 	set_default wps_label 0
+	set_default wps_pbc_in_m1 0
 
 	config_methods=$wps_config
 	[ "$wps_pushbutton" -gt 0 ] && append config_methods push_button
