@@ -551,7 +551,7 @@ static char * print_phyname(const struct iwinfo_ops *iw, const char *ifname)
 {
 	static char buf[32];
 
-	if (!iw->phyname(ifname, buf))
+	if (iw->phyname && !iw->phyname(ifname, buf))
 		return buf;
 
 	return "?";
