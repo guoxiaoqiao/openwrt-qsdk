@@ -791,13 +791,16 @@
  {
  	u8 *resp;
  	struct ieee802_11_elems elems;
-@@ -550,8 +550,14 @@ void handle_probe_req(struct hostapd_dat
+@@ -550,11 +550,17 @@ void handle_probe_req(struct hostapd_dat
+ 	const u8 *ie;
  	size_t ie_len;
- 	struct sta_info *sta = NULL;
  	size_t i, resp_len;
 +	int ssi_signal = fi->ssi_signal;
  	int noack;
  	enum ssid_match_result res;
+ 	int ret;
+ 	u16 csa_offs[2];
+ 	size_t csa_offs_len;
 +	struct hostapd_ubus_request req = {
 +		.type = HOSTAPD_UBUS_PROBE_REQ,
 +		.mgmt_frame = mgmt,
