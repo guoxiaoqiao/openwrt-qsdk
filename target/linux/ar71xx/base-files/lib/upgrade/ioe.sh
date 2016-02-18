@@ -188,7 +188,7 @@ platform_do_upgrade_ioe() {
 	sync
 
 	nand=$(echo $name | grep "nand");
-	if [ -n "$nand" ]; then
+	if [ -n "$nand" ] || [ "$name" = "cus532k" ]; then
 		mtd_fw=$(cat /proc/mtd |grep $fw |cut -f1 -d ":")
 		mtd_dev="/dev/$mtd_fw"
 

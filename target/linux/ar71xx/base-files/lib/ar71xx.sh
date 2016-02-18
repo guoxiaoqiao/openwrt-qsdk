@@ -286,6 +286,9 @@ ar71xx_board_detect() {
 	*"DB120 reference board")
 		name="db120"
 		;;
+	*"CUS532K board")
+		name="cus532k"
+		;;
 	*"DIR-505 rev. A1")
 		name="dir-505-a1"
 		;;
