@@ -12,7 +12,7 @@ PKG_RELEASE:=1
 PKG_REV:=8278138e679174b1ec8af7f169c2810a8888e202
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=git://w1.fi/srv/git/hostap.git
+PKG_SOURCE_URL:=http://w1.fi/hostap.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_SOURCE_PROTO:=git
@@ -218,7 +218,7 @@ define Package/wpa-supplicant-mesh
   $(Package/wpa-supplicant)
   TITLE:=WPA Supplicant (with 802.11s and SAE)
   DEPENDS:=$(DRV_DEPENDS) @(!TARGET_uml||BROKEN)
-  CONFLICTS:=wpad wpad-mesh wpad-mesh
+  CONFLICTS:=wpad wpad-mini wpad-mesh
   VARIANT:=supplicant-mesh
 endef
 
