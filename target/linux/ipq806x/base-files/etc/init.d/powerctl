@@ -34,8 +34,8 @@ ipq806x_power_auto() {
 	echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
 
 	# Change the CPU load threshold above which frequency is up-scaled to
-	# turbo frequency,to 50%
-	echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+	# turbo frequency,to 30%
+	echo 30 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
 }
 
 ipq40xx_power_auto() {
