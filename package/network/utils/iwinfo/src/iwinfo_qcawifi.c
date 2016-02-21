@@ -710,6 +710,26 @@ int qcawifi_get_encryption(const char *ifname, char *buf)
 	return 0;
 }
 
+int qcawifi_get_phyname(const char *ifname, char *buf)
+{
+       const char *wifidev;
+
+       wifidev = qcawifi_isvap(ifname, NULL);
+
+       if (wifidev)
+       {
+               strncpy(buf, wifidev, IFNAMSIZ);
+               return 0;
+       }
+       else if (qcawifi_iswifi(ifname))
+       {
+               strncpy(buf, ifname, IFNAMSIZ);
+               return 0;
+       }
+
+       return -1;
+}
+
 int qcawifi_get_assoclist(const char *ifname, char *buf, int *len)
 {
 	int bl, tl, noise;
