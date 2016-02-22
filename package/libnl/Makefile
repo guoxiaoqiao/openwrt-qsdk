@@ -15,6 +15,8 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.infradead.org/~tgr/libnl/files/
 PKG_MD5SUM:=6fe7136558a9071e70673dcda38545b3
 
+PKG_FIXUP:=autoreconf
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/libnl
