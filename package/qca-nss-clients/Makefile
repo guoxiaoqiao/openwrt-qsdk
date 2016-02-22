@@ -104,7 +104,7 @@ define KernelPackage/qca-nss-drv-capwapmgr
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Devices
-  DEPENDS:=kmod-qca-nss-drv +libnl-bf
+  DEPENDS:=kmod-qca-nss-drv +libnl
   TITLE:=NSS CAPWAP Manager for QCA NSS driver (IPQ806x)
   FILES:=$(PKG_BUILD_DIR)/capwapmgr/qca-nss-capwapmgr.ko
 endef
