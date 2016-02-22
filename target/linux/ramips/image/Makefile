@@ -201,6 +201,10 @@ ralink_default_fw_size_16M=16121856
 BuildFirmware/Default16M/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(ralink_default_fw_size_16M),$(4))
 BuildFirmware/Default16M/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
 
+ralink_default_fw_size_32M=33226752
+BuildFirmware/Default32M/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(ralink_default_fw_size_32M),$(4))
+BuildFirmware/Default32M/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
+
 # Build images for a custom sized flash layout
 # $(1) = squashfs/initramfs
 # $(2) = lowercase board name
@@ -542,7 +546,7 @@ define BuildFirmware/HLKRM04/initramfs
 	$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
 	mkhilinkfw -e -i$(call imgname,$(1),$(2))-uImage.bin -o $(call imgname,$(1),$(2))-factory.bin;
 endef
-Image/Build/Profile/HLKRM04=$(call BuildFirmware/HLKRM04/$(1),$(1),hlk-rm04,HLKRM04,HLK-RM02)
+Image/Build/Profile/HLKRM04=$(call BuildFirmware/HLKRM04/$(1),$(1),hlk-rm04,HLKRM04,HLK-RM04)
 
 Image/Build/Profile/HT-TM02=$(call BuildFirmware/Default8M/$(1),$(1),ht-tm02,HT-TM02)
 
@@ -626,6 +630,8 @@ define BuildFirmware/WHRG300N/squashfs
 endef
 BuildFirmware/WHRG300N/initramfs=$(call BuildFirmware/OF/initramfs,$(1),whr-g300n,WHR-G300N)
 Image/Build/Profile/WHRG300N=$(call BuildFirmware/WHRG300N/$(1),$(1))
+
+Image/Build/Profile/WIZFI630A=$(call BuildFirmware/Default16M/$(1),$(1),wizfi630a,WIZFI630A)
 
 Image/Build/Profile/WIZARD8800=$(call BuildFirmware/Default8M/$(1),$(1),wizard-8800,WIZARD8800,Linux Kernel Image)
 
@@ -761,6 +767,7 @@ define Image/Build/Profile/Default
 	$(call Image/Build/Profile/WCR150GN,$(1))
 	$(call Image/Build/Profile/WHRG300N,$(1))
 	$(call Image/Build/Profile/WIZARD8800,$(1))
+	$(call Image/Build/Profile/WIZFI630A,$(1))
 	$(call Image/Build/Profile/WL_330N,$(1))
 	$(call Image/Build/Profile/WL_330N3G,$(1))
 	$(call Image/Build/Profile/WL341V3,$(1))
@@ -921,7 +928,7 @@ endif
 #
 
 ifeq ($(SUBTARGET),mt7621)
-  TARGET_DEVICES += mt7621 wsr-600 wsr-1166 dir-860l-b1 firewrt pbr-m1 re6500
+  TARGET_DEVICES += mt7621 wsr-600 wsr-1166 dir-860l-b1 firewrt pbr-m1 re6500 zbt-wg2626
 endif
 
 define Device/mt7621
@@ -967,6 +974,11 @@ define Device/pbr-m1
   IMAGE_SIZE := $(ralink_default_fw_size_16M)
 endef
 
+define Device/zbt-wg2626
+  DTS := ZBT-WG2626
+  IMAGE_SIZE := $(ralink_default_fw_size_16M)
+endef
+
 #
 # MT7628 Profiles
 #
@@ -976,6 +988,21 @@ Image/Build/Profile/MT7628=$(call BuildFirmware/Default4M/$(1),$(1),mt7628,MT762
 ifeq ($(SUBTARGET),mt7628)
 define Image/Build/Profile/Default
 	$(call Image/Build/Profile/MT7628,$(1))
+endef
+endif
+
+
+#
+# MT7688 Profiles
+#
+
+Image/Build/Profile/MT7688=$(call BuildFirmware/Default4M/$(1),$(1),mt7628,MT7628)
+Image/Build/Profile/LinkIt7688=$(call BuildFirmware/Default32M/$(1),$(1),LinkIt7688,LINKIT7688)
+
+ifeq ($(SUBTARGET),mt7628)
+define Image/Build/Profile/Default
+	$(call Image/Build/Profile/MT7688,$(1))
+	$(call Image/Build/Profile/LinkIt7688,$(1))
 endef
 endif
 
