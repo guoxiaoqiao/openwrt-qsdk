@@ -147,7 +147,7 @@ define Profile/QSDK_Enterprise
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) pm-utils \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
-		$(IPSEC) $(CD_ROUTER)
+		$(IPSEC) $(CD_ROUTER) $(AQ_PHY)
 endef
 
 define Profile/QSDK_Enterprise/Description
