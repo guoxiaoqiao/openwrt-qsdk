@@ -689,6 +689,7 @@ LUA_WRAP_STRING(qcawifi,ssid)
 LUA_WRAP_STRING(qcawifi,bssid)
 LUA_WRAP_STRING(qcawifi,country)
 LUA_WRAP_STRING(qcawifi,hardware_name)
+LUA_WRAP_STRING(qcawifi,phyname)
 LUA_WRAP_STRUCT(qcawifi,mode)
 LUA_WRAP_STRUCT(qcawifi,assoclist)
 LUA_WRAP_STRUCT(qcawifi,txpwrlist)
@@ -848,6 +849,7 @@ static const luaL_reg R_qcawifi[] = {
 	LUA_REG(qcawifi,mbssid_support),
 	LUA_REG(qcawifi,hardware_id),
 	LUA_REG(qcawifi,hardware_name),
+	LUA_REG(qcawifi,phyname),
 	{ NULL, NULL }
 };
 #endif
