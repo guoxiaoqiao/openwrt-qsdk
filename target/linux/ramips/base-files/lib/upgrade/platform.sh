@@ -60,6 +60,8 @@ platform_check_image() {
 	ht-tm02 | \
 	hw550-3g | \
 	ip2202 | \
+	linkits7688 | \
+	linkits7688d | \
 	m2m | \
 	m3 | \
 	m4 | \
@@ -103,6 +105,7 @@ platform_check_image() {
 	whr-300hp2 |\
 	whr-600d |\
 	whr-1166d |\
+	wizfi630a |\
 	wsr-600 |\
 	wl-330n | \
 	wl-330n3g | \
@@ -123,8 +126,9 @@ platform_check_image() {
 	xiaomi-miwifi-mini |\
 	y1 |\
 	y1s |\
-	zte-q7 |\
-	zbt-wa05)
+	zbt-wa05 |\
+	zbt-wg2626 |\
+	zte-q7)
 		[ "$magic" != "27051956" ] && {
 			echo "Invalid image type."
 			return 1
@@ -193,4 +197,9 @@ disable_watchdog() {
 	}
 }
 
+blink_led() {
+	. /etc/diag.sh; set_state upgrade
+}
+
 append sysupgrade_pre_upgrade disable_watchdog
+append sysupgrade_pre_upgrade blink_led
