@@ -62,7 +62,7 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Standard
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-ecm $(HYFI_PLC) kmod-qca-nss-drv-profile \
+	PACKAGES+=streamboost-noload kmod-qca-nss-ecm $(HYFI) kmod-qca-nss-drv-profile \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
@@ -82,7 +82,7 @@ $(eval $(call Profile,QSDK_Standard))
 define Profile/QSDK_Standard_Beeliner
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Beeliner Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-ecm $(HYFI_PLC) \
+	PACKAGES+=streamboost-noload kmod-qca-nss-ecm $(HYFI) \
 		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		kmod-qca-nss-drv-l2tpv2 \
 		kmod-qca-nss-drv-pptp \
