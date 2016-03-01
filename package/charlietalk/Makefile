@@ -49,6 +49,8 @@ define Package/charlietalk/description
    Qualcomm GobiNet Connection Manager
 endef
 
+TARGET_CXXFLAGS += -lpthread -lrt -luci
+
 define Build/Configure
 	$(call Build/Compile/gobinet)
 endef
@@ -59,6 +61,7 @@ define Build/Compile/gobinet
                 ARCH="$(LINUX_KARCH)" \
                 SUBDIRS="$(PKG_BUILD_DIR)/GobiNet" \
                 EXTRA_CFLAGS="$(EXTRA_CFLAGS)" \
+                CXXFLAGS="$(TARGET_CXXFLAGS)" \
                 modules
 endef
 
