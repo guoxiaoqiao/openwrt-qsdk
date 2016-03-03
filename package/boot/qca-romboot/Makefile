@@ -10,7 +10,7 @@ PKG_SOURCE_PROTO:=git
 PKG_VERSION:=master
 PKG_RELEASE:=1
 
-LOCAL_SRC=$(TOPDIR)/qca/src/bootdrv
+LOCAL_SRC=$(TOPDIR)/qca/src/qca-romboot
 include $(INCLUDE_DIR)/local-development.mk
 ifeq ($(DUMP)$(PKG_VERSION),)
   PKG_VERSION:=$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
