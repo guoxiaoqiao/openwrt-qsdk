@@ -332,6 +332,9 @@ platform_check_image() {
 	cus531 | \
 	cus531-dual | \
 	cus531-nand | \
+	cus531mp3 | \
+	cus531mp3-dual | \
+	cus531mp3-nand | \
 	cus532k)
 		platform_check_image_ioe "$1" && return 0
 		return 1
@@ -390,6 +393,9 @@ platform_do_upgrade() {
 	cus531 | \
 	cus531-dual | \
 	cus531-nand | \
+	cus531mp3 | \
+	cus531mp3-dual | \
+	cus531mp3-nand | \
 	cus532k)
 		platform_do_upgrade_ioe "$ARGV" "$board"
 		;;
