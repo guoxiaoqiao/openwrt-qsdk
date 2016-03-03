@@ -46,6 +46,12 @@
 
 #define CUS531_GPIO_BTN_WPS		14
 
+#define CUS531MP3_GPIO_BT_ACTIVE	0
+#define CUS531MP3_GPIO_BT_PRIORITY	1
+#define CUS531MP3_GPIO_WL_ACTIVE	2
+
+#define CUS531_GPIO_FUNC_MUX_WL_ACTIVE	53
+
 #define CUS531_KEYS_POLL_INTERVAL	20
 #define CUS531_KEYS_DEBOUNCE_INTERVAL	(3 * CUS531_KEYS_POLL_INTERVAL)
 
@@ -85,6 +91,24 @@ static void __init cus531_gpio_led_setup(void)
 	ath79_register_gpio_keys_polled(-1, CUS531_KEYS_POLL_INTERVAL,
 					ARRAY_SIZE(cus531_gpio_keys),
 					cus531_gpio_keys);
+}
+
+static void __init cus531mp3_btcoex_gpio_setup(void)
+{
+	/* Disable JTAG */
+	ath79_gpio_function_enable(AR934X_GPIO_FUNC_JTAG_DISABLE);
+
+	/* Initial direction */
+	ath79_gpio_direction_select(CUS531MP3_GPIO_WL_ACTIVE, true);
+	ath79_gpio_direction_select(CUS531MP3_GPIO_BT_ACTIVE, false);
+	ath79_gpio_direction_select(CUS531MP3_GPIO_BT_PRIORITY, false);
+
+	ath79_gpio_output_select(CUS531MP3_GPIO_WL_ACTIVE,
+				 CUS531_GPIO_FUNC_MUX_WL_ACTIVE);
+	ath79_gpio_input_select(CUS531MP3_GPIO_BT_ACTIVE,
+				AR934X_GPIO_IN_MUX_BT_ACTIVE);
+	ath79_gpio_input_select(CUS531MP3_GPIO_BT_PRIORITY,
+				AR934X_GPIO_IN_MUX_BT_PRIORITY);
 }
 
 static struct ath79_spi_controller_data cus531_spi0_cdata =
@@ -188,9 +212,39 @@ static void __init cus531_nand_setup(void)
 	cus531_common_setup();
 }
 
+static void __init cus531mp3_common_setup(void)
+{
+	cus531_common_setup();
+	cus531mp3_btcoex_gpio_setup();
+}
+
+static void __init cus531mp3_setup(void)
+{
+	ath79_register_m25p80(NULL);
+	cus531mp3_common_setup();
+}
+
+static void __init cus531mp3_dual_setup(void)
+{
+	ath79_register_m25p80_multi(NULL);
+	cus531mp3_common_setup();
+}
+
+static void __init cus531mp3_nand_setup(void)
+{
+	ath79_register_spi(&cus531_spi_data, cus531_spi_info, 2);
+	cus531mp3_common_setup();
+}
+
 MIPS_MACHINE(ATH79_MACH_CUS531, "CUS531", "Qualcomm Atheros CUS531 reference board",
 	     cus531_setup);
 MIPS_MACHINE(ATH79_MACH_CUS531_DUAL, "CUS531-DUAL", "Qualcomm Atheros CUS531 dual reference board",
 	     cus531_dual_setup);
 MIPS_MACHINE(ATH79_MACH_CUS531_NAND, "CUS531-NAND", "Qualcomm Atheros CUS531 nand reference board",
 	     cus531_nand_setup);
+MIPS_MACHINE(ATH79_MACH_CUS531MP3, "CUS531MP3", "Qualcomm Atheros CUS531 MP3 reference board",
+	     cus531mp3_setup);
+MIPS_MACHINE(ATH79_MACH_CUS531MP3_DUAL, "CUS531MP3-DUAL", "Qualcomm Atheros CUS531 MP3 dual reference board",
+	     cus531mp3_dual_setup);
+MIPS_MACHINE(ATH79_MACH_CUS531MP3_NAND, "CUS531MP3-NAND", "Qualcomm Atheros CUS531 MP3 nand reference board",
+	     cus531mp3_nand_setup);
