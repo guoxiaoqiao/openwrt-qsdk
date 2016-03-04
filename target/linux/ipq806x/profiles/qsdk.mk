@@ -29,7 +29,7 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-unified-profile kmod-art2 \
 	qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw3-10.4-asic \
 	qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw4-10.4-emu_m2m qca-wifi-fw-hw4-10.4-emu_bb \
 	qca-thermald-10.4 qca-wifi-fw-hw6-10.4-asic qca-wifi-fw-hw7-10.4-asic \
-	qca-wifi-fw-hw10-10.4-asic qca-wifi-fw-hw8-10.4-asic
+	qca-wifi-fw-hw10-10.4-asic
 
 
 PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
