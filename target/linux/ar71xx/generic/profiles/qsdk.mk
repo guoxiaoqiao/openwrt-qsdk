@@ -18,7 +18,8 @@ define Profile/QSDK_IoE_Device
 	  qca-legacy-uboot-cus531-16M qca-legacy-uboot-cus531-dual \
 	  qca-legacy-uboot-cus531-nand qca-legacy-uboot-cus531-32M \
 	  qca-legacy-uboot-cus532k qca-legacy-uboot-cus531mp3-nand \
-	  mtd-utils mtd-utils-nandwrite rng-tools mtd-utils-ubiattach mtd-utils-ubidetach
+	  mtd-utils mtd-utils-nandwrite rng-tools mtd-utils-ubiattach mtd-utils-ubidetach \
+	  qca-legacy-uboot-ap121-8M qca-legacy-uboot-ap121-16M
 endef
 
 define Profile/QSDK_IoE_Device/Description
