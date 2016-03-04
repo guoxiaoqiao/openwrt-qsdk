@@ -89,6 +89,8 @@ define Package/qca-legacy-uboot/nand
   $$(eval $$(call BuildPackage,qca-legacy-uboot-$(1)))
 endef
 
+$(eval $(call Package/qca-legacy-uboot/nor,ap121-8M))
+$(eval $(call Package/qca-legacy-uboot/nor,ap121-16M))
 $(eval $(call Package/qca-legacy-uboot/nor,ap143-16M))
 $(eval $(call Package/qca-legacy-uboot/nor,ap143-32M))
 $(eval $(call Package/qca-legacy-uboot/nor,cus531-16M))
