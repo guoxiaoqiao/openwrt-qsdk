@@ -187,7 +187,8 @@ default_prerm() {
 }
 
 default_postinst() {
-	local pkgname rusers
+	local pkgname rusers ret
+	ret=0
 	pkgname=$(basename ${1%.*})
 	rusers=$(grep "Require-User:" ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.control)
 	[ -n "$rusers" ] && {
@@ -228,7 +229,10 @@ default_postinst() {
 		done
 	}
 
-	[ -f ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.postinst-pkg ] && ( . ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.postinst-pkg )
+	if [ -f ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.postinst-pkg ]; then
+		( . ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.postinst-pkg )
+		ret=$?
+	fi
 	[ -n "${IPKG_INSTROOT}" ] || rm -f /tmp/luci-indexcache 2>/dev/null
 
 	[ "$PKG_UPGRADE" = "1" ] || for i in `cat ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.list | grep "^/etc/init.d/"`; do
@@ -238,7 +242,7 @@ default_postinst() {
 			$i start
 		}
 	done
-	return 0
+	return $ret
 }
 
 include() {
