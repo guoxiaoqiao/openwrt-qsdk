@@ -306,7 +306,7 @@ int main(int argc, char *argv[])
 			size_t v4offset = (legacy) ? 9 : 10;
 			memcpy(&ipv6addr.s6_addr[v4offset], &ipv4addr, 4);
 			memcpy(&ipv6addr.s6_addr[v4offset + 4], &psid16, 2);
-			bmemcpy(&ipv6addr, &pd, pdlen);
+			bmemcpy(&ipv6addr, &pd, (ealen + prefix6len) < pdlen ? (ealen + prefix6len) : pdlen);
 		}
 
 		++rulecnt;
