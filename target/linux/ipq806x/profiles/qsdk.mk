@@ -36,7 +36,7 @@ QCA_RFS:= kmod-qca-rfs
 SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell  swconfig
 SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
-WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad hostapd-utils \
+WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad-mesh hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
 		 athtestcmd
 
@@ -147,7 +147,7 @@ define Profile/QSDK_Enterprise
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) pm-utils \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
-		$(IPSEC) $(CD_ROUTER)
+		$(IPSEC) $(CD_ROUTER) $(AQ_PHY)
 endef
 
 define Profile/QSDK_Enterprise/Description
