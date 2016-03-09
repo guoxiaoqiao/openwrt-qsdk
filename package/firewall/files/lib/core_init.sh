@@ -40,11 +40,18 @@ fw_load_defaults() {
 		boolean accept_source_route 0 \
 		boolean custom_chains 1 \
 		boolean disable_ipv6 0 \
+		boolean disabled 0 \
 	} || return
 	[ -n "$FW_DEFAULTS_APPLIED" ] && {
 		fw_log error "duplicate defaults section detected, skipping"
 		return 1
 	}
+
+	if [ $defaults_disabled == 1 ]; then
+		echo "Firewall is disabled in configuration!!"
+		return 2
+	fi
+
 	FW_DEFAULTS_APPLIED=1
 
 	FW_DEFAULT_INPUT_POLICY=$defaults_input

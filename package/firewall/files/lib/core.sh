@@ -23,6 +23,9 @@ fw_start() {
 
 	echo "Loading defaults"
 	fw_config_once fw_load_defaults defaults
+	if [ $? == 1 ]; then
+		return 1
+	fi
 
 	echo "Loading zones"
 	config_foreach fw_load_zone zone
