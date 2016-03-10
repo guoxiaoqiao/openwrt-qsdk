@@ -214,24 +214,40 @@ static void __init cus531_nand_setup(void)
 
 static void __init cus531mp3_common_setup(void)
 {
+	ath79_wmac_set_btcoex_pin(CUS531MP3_GPIO_BT_ACTIVE,
+				  CUS531MP3_GPIO_BT_PRIORITY,
+				  CUS531MP3_GPIO_WL_ACTIVE);
+
 	cus531_common_setup();
 	cus531mp3_btcoex_gpio_setup();
 }
 
 static void __init cus531mp3_setup(void)
 {
+	ath79_wmac_set_btcoex_pin(CUS531MP3_GPIO_BT_ACTIVE,
+				  CUS531MP3_GPIO_BT_PRIORITY,
+				  CUS531MP3_GPIO_WL_ACTIVE);
+
 	ath79_register_m25p80(NULL);
 	cus531mp3_common_setup();
 }
 
 static void __init cus531mp3_dual_setup(void)
 {
+	ath79_wmac_set_btcoex_pin(CUS531MP3_GPIO_BT_ACTIVE,
+				  CUS531MP3_GPIO_BT_PRIORITY,
+				  CUS531MP3_GPIO_WL_ACTIVE);
+
 	ath79_register_m25p80_multi(NULL);
 	cus531mp3_common_setup();
 }
 
 static void __init cus531mp3_nand_setup(void)
 {
+	ath79_wmac_set_btcoex_pin(CUS531MP3_GPIO_BT_ACTIVE,
+				  CUS531MP3_GPIO_BT_PRIORITY,
+				  CUS531MP3_GPIO_WL_ACTIVE);
+
 	ath79_register_spi(&cus531_spi_data, cus531_spi_info, 2);
 	cus531mp3_common_setup();
 }
