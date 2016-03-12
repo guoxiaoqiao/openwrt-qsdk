@@ -21,6 +21,9 @@ fw_config_once() { # <function> <type>
 	config_foreach fw_config__once "$type"
 
 	$func $config "$@"
+	if [ $? == 2 ]; then
+		return 1
+	fi
 }
 
 fw_config_get_section() { # <config> <prefix> <type> <name> <default> ...
