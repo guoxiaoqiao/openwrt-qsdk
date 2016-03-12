@@ -35,8 +35,8 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-unified-profile kmod-art2 \
 PACKAGES_NSS_ENTERPRISE:=kmod-qca-nss-ecm-noload kmod-openswan-nss \
 	openswan-nss kmod-qca-nss-crypto kmod-qca-nss-cfi \
 	kmod-qca-nss-drv-profile kmod-qca-nss-drv-capwapmgr \
-	qca-nss-fw2-enterprise kmod-qca-nss-drv-ipsecmgr \
-	qca-nss-fw2-enterprise_custA qca-nss-fw2-enterprise_custC \
+	qca-nss-fw-enterprise kmod-qca-nss-drv-ipsecmgr \
+	qca-nss-fw-enterprise_custA qca-nss-fw-enterprise_custC \
 	kmod-qca-nss-drv-dtlsmgr
 
 BLUETOOTH:=kmod-qca-ath3k bluez btconfig
@@ -64,8 +64,8 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Standard
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-ecm $(HYFI_PLC) kmod-qca-nss-drv-profile \
-		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw2-retail \
+	PACKAGES+=streamboost-noload kmod-qca-nss-ecm $(HYFI) kmod-qca-nss-drv-profile \
+		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
 		$(PACKAGES_WIFI_10_2) $(BLUETOOTH) kmod-qca-wil6210 wigig-firmware-ipdock iwinfo \
@@ -84,8 +84,8 @@ $(eval $(call Profile,QSDK_Standard))
 define Profile/QSDK_Standard_Beeliner
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Standard Beeliner Profile
-	PACKAGES+=streamboost-noload kmod-qca-nss-ecm $(HYFI_PLC) \
-		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw2-retail \
+	PACKAGES+=streamboost-noload kmod-qca-nss-ecm $(HYFI) \
+		kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 qca-nss-fw-retail \
 		kmod-qca-nss-drv-l2tpv2 \
 		kmod-qca-nss-drv-pptp \
 		luci-app-openswan openswan-nss kmod-openswan-nss \
