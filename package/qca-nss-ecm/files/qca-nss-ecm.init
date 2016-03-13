@@ -1,6 +1,6 @@
 #!/bin/sh  /etc/rc.common
 #
-# Copyright (c) 2014 The Linux Foundation. All rights reserved.
+# Copyright (c) 2014-2016 The Linux Foundation. All rights reserved.
 #
 # The shebang above has an extra space intentially to avoid having
 # openwrt build scripts automatically enable this package starting
@@ -36,7 +36,28 @@ load_ecm() {
 }
 
 unload_ecm() {
-	[ -d /sys/module/ecm ] && rmmod ecm
+	#
+	# Based on the underlying acceleration engine, gracefully
+	# stop the ECM and unload the module.
+	#
+	if [ -d /sys/module/ecm ]; then
+		if [ -d /sys/kernel/debug/ecm/ecm_nss_ipv4 ]; then
+			echo 1 > /sys/kernel/debug/ecm/ecm_nss_ipv4/stop
+			echo 1 > /sys/kernel/debug/ecm/ecm_nss_ipv6/stop
+
+		elif [ -d /sys/kernel/debug/ecm/ecm_sfe_ipv4 ]; then
+			echo 1 > /sys/kernel/debug/ecm/ecm_sfe_ipv4/stop
+			echo 1 > /sys/kernel/debug/ecm/ecm_sfe_ipv6/stop
+		else
+			echo "WARNING: There is not any ECM frontend"
+			return 1
+		fi
+
+		echo 1 > /sys/kernel/debug/ecm/ecm_db/defunct_all
+		sleep 1;
+
+		rmmod ecm
+	fi
 
 	sysctl -w net.bridge.bridge-nf-call-ip6tables=0
 	sysctl -w net.bridge.bridge-nf-call-iptables=0
