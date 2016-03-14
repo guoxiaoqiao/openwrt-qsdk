@@ -71,6 +71,7 @@ define Package/qca-legacy-uboot/nor
 
   define Package/qca-legacy-uboot-$(1)/install
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/$(UBOOT_IMAGE)
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/tools/spi_prog/prog_free.bin $(BIN_DIR)/
   endef
 
   $$(eval $$(call BuildPackage,qca-legacy-uboot-$(1)))
