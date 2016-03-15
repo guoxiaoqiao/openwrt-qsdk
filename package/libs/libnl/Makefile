@@ -40,12 +40,14 @@ define Build/Compile
 		install
 endef
 
+ifneq ($(CONFIG_PACKAGE_libnl),)
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
 	mkdir -p $(1)/usr/include/libnl
 	$(CP) $(PKG_BUILD_DIR)/include/linux $(1)/usr/include/libnl/
 endef
+endif
 
 define Package/libnl/install
 	$(INSTALL_DIR) $(1)/usr/lib
