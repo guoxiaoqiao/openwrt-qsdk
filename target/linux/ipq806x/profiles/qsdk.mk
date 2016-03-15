@@ -48,7 +48,7 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile qca-wifi-fw-hw5-10.4-asic \
 
 WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo
 
-WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic
+WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw11-10.4-asic
 
 OPENWRT_STANDARD:= \
 	luci openssl-util
