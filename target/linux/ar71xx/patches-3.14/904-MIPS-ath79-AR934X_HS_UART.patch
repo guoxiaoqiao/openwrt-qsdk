@@ -74,7 +74,7 @@ Index: linux-3.14/arch/mips/ath79/gpio.c
 +	unsigned int reg;
 +	u32 t, s;
 +
-+	BUG_ON(!soc_is_ar934x());
++	BUG_ON(!soc_is_ar934x() && !soc_is_qca953x());
 +
 +	if (gpio >= AR934X_GPIO_COUNT)
 +		return;
