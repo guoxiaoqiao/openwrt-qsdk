@@ -8,12 +8,12 @@ NSS_COMMON:= \
 	kmod-qca-edma
 
 NSS_STANDARD:= \
-	qca-nss-fw-retail \
+	qca-nss-fw2-retail \
 
 NSS_ENTERPRISE:= \
-	qca-nss-fw-enterprise \
-        qca-nss-fw-enterprise_custA \
-	qca-nss-fw-enterprise_custC \
+	qca-nss-fw2-enterprise \
+        qca-nss-fw2-enterprise_custA \
+	qca-nss-fw2-enterprise_custC \
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
