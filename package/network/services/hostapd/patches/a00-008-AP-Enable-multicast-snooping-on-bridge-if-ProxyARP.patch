@@ -15,30 +15,8 @@
  	return 0;
  }
  
---- a/src/drivers/driver.h
-+++ b/src/drivers/driver.h
-@@ -1555,6 +1555,7 @@ enum drv_br_port_attr {
- 
- enum drv_br_net_param {
- 	DRV_BR_NET_PARAM_GARP_ACCEPT,
-+	DRV_BR_MULTICAST_SNOOPING,
- };
- 
- struct drv_acs_params {
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
-@@ -8198,9 +8198,9 @@ static const char * drv_br_net_param_str
- 	switch (param) {
- 	case DRV_BR_NET_PARAM_GARP_ACCEPT:
- 		return "arp_accept";
-+	default:
-+		return NULL;
- 	}
--
--	return NULL;
- }
- 
- 
 @@ -8212,6 +8212,13 @@ static int wpa_driver_br_set_net_param(v
  	const char *param_txt;
  	int ip_version = 4;
@@ -53,11 +31,3 @@
  	param_txt = drv_br_net_param_str(param);
  	if (param_txt == NULL)
  		return -EINVAL;
-@@ -8227,6 +8234,7 @@ static int wpa_driver_br_set_net_param(v
- 	os_snprintf(path, sizeof(path), "/proc/sys/net/ipv%d/conf/%s/%s",
- 		    ip_version, bss->brname, param_txt);
- 
-+set_val:
- 	if (linux_write_system_file(path, val))
- 		return -1;
- 
