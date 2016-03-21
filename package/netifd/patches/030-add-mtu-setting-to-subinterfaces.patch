@@ -1,7 +1,6 @@
-diff -Nur a/system-linux.c netifd-2013-05-13/system-linux.c
---- a/system-linux.c	2014-02-24 11:32:47.767408367 +0800
-+++ netifd-2013-05-13/system-linux.c	2014-02-24 11:37:16.147413405 +0800
-@@ -288,7 +288,19 @@
+--- a/system-linux.c
++++ b/system-linux.c
+@@ -288,7 +288,23 @@ int system_bonding_delbonding(struct dev
  
  	return 0;
  }
@@ -10,10 +9,14 @@ diff -Nur a/system-linux.c netifd-2013-05-13/system-linux.c
 +	struct ifreq ifr;
 +
 +	if(!dev) return 0;
-+
-+	memset(&ifr, 0, sizeof(ifr));
++	struct device * parent = system_if_get_parent(dev);
  
++	memset(&ifr, 0, sizeof(ifr));
++
 +	ifr.ifr_addr.sa_family = AF_INET;
++	if (parent)
++		system_set_mtu(parent, mtu, data);
++
 +	strncpy(ifr.ifr_name, dev->ifname, sizeof(ifr.ifr_name));
 +	ifr.ifr_mtu = mtu;
 +	return ioctl(sock_ioctl, SIOCSIFMTU, &ifr);
@@ -21,7 +24,7 @@ diff -Nur a/system-linux.c netifd-2013-05-13/system-linux.c
  static int system_bridge_if(const char *bridge, struct device *dev, int cmd, void *data)
  {
  	struct ifreq ifr;
-@@ -382,6 +394,11 @@
+@@ -382,6 +398,11 @@ int system_bridge_addif(struct device *b
  	char *oldbr;
  
  	system_set_disable_ipv6(dev, "1");
@@ -33,7 +36,7 @@ diff -Nur a/system-linux.c netifd-2013-05-13/system-linux.c
  	oldbr = system_get_bridge(dev->ifname, dev_buf, sizeof(dev_buf));
  	if (oldbr && !strcmp(oldbr, bridge->ifname))
  		return 0;
-@@ -392,6 +409,9 @@
+@@ -392,6 +413,9 @@ int system_bridge_addif(struct device *b
  int system_bridge_delif(struct device *bridge, struct device *dev)
  {
  	system_set_disable_ipv6(dev, "0");
@@ -43,3 +46,12 @@ diff -Nur a/system-linux.c netifd-2013-05-13/system-linux.c
  	return system_bridge_if(bridge->ifname, dev, SIOCBRDELIF, NULL);
  }
  
+@@ -779,7 +803,7 @@ system_if_apply_settings(struct device *
+ 	strncpy(ifr.ifr_name, dev->ifname, sizeof(ifr.ifr_name));
+ 	if (s->flags & DEV_OPT_MTU) {
+ 		ifr.ifr_mtu = s->mtu;
+-		if (ioctl(sock_ioctl, SIOCSIFMTU, &ifr) < 0)
++		if (system_set_mtu(dev, s->mtu, NULL) < 0)
+ 			s->flags &= ~DEV_OPT_MTU;
+ 	}
+ 	if (s->flags & DEV_OPT_TXQUEUELEN) {
