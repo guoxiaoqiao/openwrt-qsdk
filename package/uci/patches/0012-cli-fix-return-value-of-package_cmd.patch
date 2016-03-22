@@ -1,0 +1,45 @@
+From 54ca5ae34788d4fc6afc10dfbed69517badf5cd8 Mon Sep 17 00:00:00 2001
+From: Yousong Zhou <yszhou4tech@gmail.com>
+Date: Wed, 18 Mar 2015 12:44:44 +0800
+Subject: [PATCH] cli: fix return value of package_cmd().
+
+It's a bug revealed by commit 446e774 "cli: properly unload package
+before quit".  The current code would exit with value 1 even if
+uci_export() succceeded.
+
+Signed-off-by: Yousong Zhou <yszhou4tech@gmail.com>
+---
+ cli.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/cli.c b/cli.c
+index b647f77..557472e 100644
+--- a/cli.c
++++ b/cli.c
+@@ -305,10 +305,13 @@ static int package_cmd(int cmd, char *tuple)
+ 		}
+ 		if (uci_commit(ctx, &ptr.p, false) != UCI_OK) {
+ 			cli_perror();
++			goto out;
+ 		}
+ 		break;
+ 	case CMD_EXPORT:
+-		uci_export(ctx, stdout, ptr.p, true);
++		if (uci_export(ctx, stdout, ptr.p, true) != UCI_OK) {
++			goto out;
++		}
+ 		break;
+ 	case CMD_SHOW:
+ 		if (!(ptr.flags & UCI_LOOKUP_COMPLETE)) {
+@@ -333,6 +336,8 @@ static int package_cmd(int cmd, char *tuple)
+ 		break;
+ 	}
+ 
++	ret = 0;
++
+ out:
+ 	if (ptr.p)
+ 		uci_unload(ctx, ptr.p);
+-- 
+1.7.9.5
+
