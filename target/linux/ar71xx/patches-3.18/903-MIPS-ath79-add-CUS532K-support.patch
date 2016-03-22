@@ -30,11 +30,11 @@
         select SOC_AR933X
 --- a/arch/mips/ath79/Makefile
 +++ b/arch/mips/ath79/Makefile
-@@ -62,6 +62,7 @@ obj-$(CONFIG_ATH79_MACH_CUS531)		+= mach-cus531.o
- obj-$(CONFIG_ATH79_MACH_CUS531_DUAL)	+= mach-cus531.o
- obj-$(CONFIG_ATH79_MACH_CUS531_NAND)	+= mach-cus531.o
+@@ -62,6 +62,7 @@
+ obj-$(CONFIG_ATH79_MACH_CUS531MP3_NAND) += mach-cus531.o
+ obj-$(CONFIG_ATH79_MACH_CPE510)		+= mach-cpe510.o
  obj-$(CONFIG_ATH79_MACH_DB120)		+= mach-db120.o
 +obj-$(CONFIG_ATH79_MACH_CUS532K)		+= mach-cus532k.o
- obj-$(CONFIG_ATH79_MACH_DIR_505_A1)	+= mach-dir-505-a1.o
- obj-$(CONFIG_ATH79_MACH_DIR_600_A1)	+= mach-dir-600-a1.o
- obj-$(CONFIG_ATH79_MACH_DIR_615_C1)	+= mach-dir-615-c1.o
+ obj-$(CONFIG_ATH79_MACH_DLAN_PRO_500_WP)	+= mach-dlan-pro-500-wp.o
+ obj-$(CONFIG_ATH79_MACH_DLAN_PRO_1200_AC)	+= mach-dlan-pro-1200-ac.o
+ obj-$(CONFIG_ATH79_MACH_DGL_5500_A1)	+= mach-dgl-5500-a1.o
