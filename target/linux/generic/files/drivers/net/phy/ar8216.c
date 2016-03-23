@@ -1416,7 +1416,6 @@ ar8327_init_cpuport(struct ar8216_priv *priv, int port)
 		return;
 	}
 
-//	t = AR8216_PORT_STATUS_TXMAC | AR8216_PORT_STATUS_RXMAC;
 	t = 0;
 	t |= cfg->duplex ? AR8216_PORT_STATUS_DUPLEX : 0;
 	t |= cfg->rxpause ? AR8216_PORT_STATUS_RXFLOW : 0;
@@ -1434,8 +1433,8 @@ ar8327_init_cpuport(struct ar8216_priv *priv, int port)
 	}
 	priv->write(priv, AR8327_REG_PORT_STATUS(port), t);
 	udelay(800);
-/*	t |= AR8216_PORT_STATUS_TXMAC | AR8216_PORT_STATUS_RXMAC;
-	priv->write(priv, AR8327_REG_PORT_STATUS(port), t);*/
+	t |= AR8216_PORT_STATUS_TXMAC | AR8216_PORT_STATUS_RXMAC;
+	priv->write(priv, AR8327_REG_PORT_STATUS(port), t);
 }
 
 static void
@@ -1453,9 +1452,9 @@ ar8327_init_port(struct ar8216_priv *priv, int port)
 	    ((port == 6) && pdata->pad6_cfg)) {
 	        ar8327_init_cpuport(priv, port);
 	} else {
-		t = priv->read(priv, AR8327_REG_PORT_STATUS(port));
+		/*t = priv->read(priv, AR8327_REG_PORT_STATUS(port));
 		t |= AR8216_PORT_STATUS_LINK_AUTO;
-		priv->write(priv, AR8327_REG_PORT_STATUS(port), t);
+		priv->write(priv, AR8327_REG_PORT_STATUS(port), t);*/
 	}
 
 	priv->write(priv, AR8327_REG_PORT_HEADER(port), 0);
@@ -2355,7 +2354,7 @@ static void ar8xxx_phy_powerdown(struct ar8216_priv *priv)
 	bus = priv->phy->bus;
 
 	for (i = 0; i < AR8327_NUM_PHYS; i++) {
-		mdiobus_write(bus, i, MII_BMCR, BMCR_PDOWN);
+		mdiobus_write(bus, i, MII_BMCR, BMCR_FULLDPLX|BMCR_FULLDPLX);
 
 		ar8216_phy_dbg_read(priv, i, AR8337_PHY_DEBUG_GREEN, &phy_val);
 		phy_val &= (~(AR8337_PHY_GATE_CLK_IN1000));
@@ -2846,7 +2845,7 @@ ar8216_read_status(struct phy_device *phydev)
 	struct ar8216_priv *priv = phydev->priv;
 	struct switch_port_link link;
 	struct switch_dev *dev;
-	int ret = 0;
+	int ret;
 	int i, port_status = 0;
 
 	if (phydev->addr != 0)
