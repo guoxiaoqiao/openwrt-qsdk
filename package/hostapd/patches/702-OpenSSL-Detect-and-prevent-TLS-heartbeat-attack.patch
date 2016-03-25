@@ -1,0 +1,113 @@
+From bb52293e712e392d11bdc2bafd00208968cee748 Mon Sep 17 00:00:00 2001
+From: Jouni Malinen <jouni@qca.qualcomm.com>
+Date: Wed, 9 Apr 2014 13:02:53 +0300
+Subject: [PATCH] OpenSSL: Detect and prevent TLS heartbeat attack
+
+Some OpenSSL versions have vulnerability in TLS heartbeat request
+processing. Check the processed message to determine if the attack has
+been used and if so, do not send the response to the peer. This does not
+prevent the buffer read overflow within OpenSSL, but this prevents the
+attacker from receiving the information.
+
+This change is an additional layer of protection if some yet to be
+identified paths were to expose this OpenSSL vulnerability. However, the
+way OpenSSL is used for EAP-TLS/TTLS/PEAP/FAST in hostapd/wpa_supplicant
+was already rejecting the messages before the response goes out and as
+such, this additional change is unlikely to be needed to avoid the
+issue.
+
+Signed-off-by: Jouni Malinen <jouni@qca.qualcomm.com>
+---
+ src/crypto/tls_openssl.c |   44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+
+diff --git a/src/crypto/tls_openssl.c b/src/crypto/tls_openssl.c
+index d4c6b8b..58a07cf 100644
+--- a/src/crypto/tls_openssl.c
++++ b/src/crypto/tls_openssl.c
+@@ -105,6 +105,7 @@ struct tls_connection {
+ 	unsigned int ca_cert_verify:1;
+ 	unsigned int cert_probe:1;
+ 	unsigned int server_cert_only:1;
++	unsigned int invalid_hb_used:1;
+ 
+ 	u8 srv_cert_hash[32];
+ 
+@@ -984,6 +985,26 @@ int tls_get_errors(void *ssl_ctx)
+ 	return count;
+ }
+ 
++
++static void tls_msg_cb(int write_p, int version, int content_type,
++		       const void *buf, size_t len, SSL *ssl, void *arg)
++{
++	struct tls_connection *conn = arg;
++	const u8 *pos = buf;
++
++	wpa_printf(MSG_DEBUG, "OpenSSL: %s ver=0x%x content_type=%d",
++		   write_p ? "TX" : "RX", version, content_type);
++	wpa_hexdump_key(MSG_MSGDUMP, "OpenSSL: Message", buf, len);
++	if (content_type == 24 && len >= 3 && pos[0] == 1) {
++		size_t payload_len = WPA_GET_BE16(pos + 1);
++		if (payload_len + 3 > len) {
++			wpa_printf(MSG_ERROR, "OpenSSL: Heartbeat attack detected");
++			conn->invalid_hb_used = 1;
++		}
++	}
++}
++
++
+ struct tls_connection * tls_connection_init(void *ssl_ctx)
+ {
+ 	SSL_CTX *ssl = ssl_ctx;
+@@ -1008,6 +1029,8 @@ struct tls_connection * tls_connection_init(void *ssl_ctx)
+ 
+ 	conn->context = context;
+ 	SSL_set_app_data(conn->ssl, conn);
++	SSL_set_msg_callback(conn->ssl, tls_msg_cb);
++	SSL_set_msg_callback_arg(conn->ssl, conn);
+ 	options = SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 |
+ 		SSL_OP_SINGLE_DH_USE;
+ #ifdef SSL_OP_NO_COMPRESSION
+@@ -2642,10 +2665,25 @@ openssl_connection_handshake(struct tls_connection *conn,
+ 	out_data = openssl_handshake(conn, in_data, server);
+ 	if (out_data == NULL)
+ 		return NULL;
++	if (conn->invalid_hb_used) {
++		wpa_printf(MSG_INFO, "TLS: Heartbeat attack detected - do not send response");
++		wpabuf_free(out_data);
++		return NULL;
++	}
+ 
+ 	if (SSL_is_init_finished(conn->ssl) && appl_data && in_data)
+ 		*appl_data = openssl_get_appl_data(conn, wpabuf_len(in_data));
+ 
++	if (conn->invalid_hb_used) {
++		wpa_printf(MSG_INFO, "TLS: Heartbeat attack detected - do not send response");
++		if (appl_data) {
++			wpabuf_free(*appl_data);
++			*appl_data = NULL;
++		}
++		wpabuf_free(out_data);
++		return NULL;
++	}
++
+ 	return out_data;
+ }
+ 
+@@ -2747,6 +2785,12 @@ struct wpabuf * tls_connection_decrypt(void *tls_ctx,
+ 	}
+ 	wpabuf_put(buf, res);
+ 
++	if (conn->invalid_hb_used) {
++		wpa_printf(MSG_INFO, "TLS: Heartbeat attack detected - do not send response");
++		wpabuf_free(buf);
++		return NULL;
++	}
++
+ 	return buf;
+ }
+ 
+-- 
+1.7.9.5
+
