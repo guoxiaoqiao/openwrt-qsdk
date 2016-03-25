@@ -1,0 +1,31 @@
+From 04e533e24944afa9d3bbaf86b2223e184198d603 Mon Sep 17 00:00:00 2001
+From: Jouni Malinen <jouni@qca.qualcomm.com>
+Date: Wed, 25 Sep 2013 12:53:00 +0300
+Subject: [PATCH] Fix language string length validation in parse_lang_string()
+
+The language string length needs to be validated to hit into the
+three-octet lang field in struct hostapd_lang_string before copying
+this. Invalid configuration entries in hostapd.conf could have resulted
+in buffer overflow.
+
+Signed-hostap: Jouni Malinen <jouni@qca.qualcomm.com>
+---
+ hostapd/config_file.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/hostapd/config_file.c b/hostapd/config_file.c
+index 0b4fd77..49b6a41 100644
+--- a/hostapd/config_file.c
++++ b/hostapd/config_file.c
+@@ -1299,7 +1299,7 @@ static int parse_lang_string(struct hostapd_lang_string **array,
+ 	*sep++ = '\0';
+ 
+ 	clen = os_strlen(pos);
+-	if (clen < 2)
++	if (clen < 2 || clen > sizeof(ls->lang))
+ 		return -1;
+ 	nlen = os_strlen(sep);
+ 	if (nlen > 252)
+-- 
+1.7.9.5
+
