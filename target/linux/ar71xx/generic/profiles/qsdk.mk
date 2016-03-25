@@ -7,7 +7,7 @@ define Profile/QSDK_IoE_Device
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp \
 	  tftp-hpa mcproxy kmod-ipt-nathelper-rtsp kmod-ipv6 \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
-	  sysstat iperf devmem2 ip ethtool ip6tables
+	  sysstat iperf devmem2 ip ethtool ip6tables -swconfig
 
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini \
 	  alljoyn alljoyn-about alljoyn-c alljoyn-config alljoyn-controlpanel \
