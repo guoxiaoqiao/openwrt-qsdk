@@ -1,0 +1,40 @@
+From 471debb0b3428be24a05ab553b6eea2263d93f4f Mon Sep 17 00:00:00 2001
+From: Jouni Malinen <j@w1.fi>
+Date: Tue, 9 Dec 2014 13:19:22 +0200
+Subject: [PATCH] Fix OpenSSL 0.9.8za patch for EAP-FAST support
+
+OpenSSL 0.9.8za added a fix for CVE-2014-0224 and the original fix broke
+EAP-FAST support due to forgotten SSL3_FLAGS_CCS_OK marking for
+tls_session_secret_cb. Fix for this regression was added into OpenSSL
+1.x and newer. The same fix is needed in this backport patch for
+0.9.8za.
+
+Signed-off-by: Jouni Malinen <j@w1.fi>
+---
+ patches/openssl-0.9.8za-tls-extensions.patch |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/patches/openssl-0.9.8za-tls-extensions.patch b/patches/openssl-0.9.8za-tls-extensions.patch
+index 3ae5aa9..82bfe23 100644
+--- a/patches/openssl-0.9.8za-tls-extensions.patch
++++ b/patches/openssl-0.9.8za-tls-extensions.patch
+@@ -12,7 +12,7 @@ command line.
+ diff -upr openssl-0.9.8za.orig/ssl/s3_clnt.c openssl-0.9.8za/ssl/s3_clnt.c
+ --- openssl-0.9.8za.orig/ssl/s3_clnt.c	2014-06-05 11:09:26.000000000 +0300
+ +++ openssl-0.9.8za/ssl/s3_clnt.c	2014-06-05 20:37:09.221387312 +0300
+-@@ -767,6 +767,21 @@ int ssl3_get_server_hello(SSL *s)
++@@ -767,6 +767,22 @@ int ssl3_get_server_hello(SSL *s)
+  		goto f_err;
+  		}
+  
+@@ -27,6 +27,7 @@ diff -upr openssl-0.9.8za.orig/ssl/s3_clnt.c openssl-0.9.8za/ssl/s3_clnt.c
+ +			{
+ +			s->session->cipher=pref_cipher ?
+ +				pref_cipher : ssl_get_cipher_by_char(s,p+j);
+++			s->s3->flags |= SSL3_FLAGS_CCS_OK;
+ +			}
+ +		}
+ +#endif /* OPENSSL_NO_TLSEXT */
+-- 
+1.7.9.5
+
