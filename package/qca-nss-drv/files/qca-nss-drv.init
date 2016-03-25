@@ -1,6 +1,6 @@
 #!/bin/sh /etc/rc.common
 #
-# Copyright (c) 2014 The Linux Foundation. All rights reserved.
+# Copyright (c) 2014, 2016 The Linux Foundation. All rights reserved.
 
 START=70
 
@@ -10,6 +10,6 @@ start() {
 	[ -n "$irq_nss_rps" ] && echo 2 > /proc/irq/$irq_nss_rps/smp_affinity
 
 	# Enable NSS RPS
-	sysctl -w dev.nss.general.rps=1 >/dev/null 2>/dev/null
+	sysctl -w dev.nss.n2hcfg.rps=1 >/dev/null 2>/dev/null
 
 }
