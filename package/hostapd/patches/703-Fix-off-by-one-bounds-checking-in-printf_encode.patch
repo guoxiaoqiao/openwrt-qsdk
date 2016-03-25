@@ -1,0 +1,39 @@
+From 5dff6dff63063fa78061fcb6b0931c6e981dd994 Mon Sep 17 00:00:00 2001
+From: Stuart Henderson <sthen@openbsd.org>
+Date: Mon, 2 Jun 2014 15:53:23 +0300
+Subject: [PATCH] Fix off-by-one bounds checking in printf_encode()
+
+The off-by-one error in printf_encode() bounds checking could have
+allowed buffer overflow with 0x00 being written to the memory position
+following the last octet of the target buffer. Since this output is used
+as \0-terminated string, the following operation would likely read past
+the buffer as well. Either of these operations can result in the process
+dying either due to buffer overflow protection or by a read from
+unallowed address.
+
+This has been seen to cause wpa_supplicant crash on OpenBSD when control
+interface client attaches (debug print shows the client socket address).
+Similarly, it may be possible to trigger the issue in RADIUS/EAP server
+implementation within hostapd with a suitable constructed user name.
+
+Signed-off-by: Stuart Henderson <sthen@openbsd.org>
+---
+ src/utils/common.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/utils/common.c b/src/utils/common.c
+index 39751d4..7dc4797 100644
+--- a/src/utils/common.c
++++ b/src/utils/common.c
+@@ -350,7 +350,7 @@ void printf_encode(char *txt, size_t maxlen, const u8 *data, size_t len)
+ 	size_t i;
+ 
+ 	for (i = 0; i < len; i++) {
+-		if (txt + 4 > end)
++		if (txt + 4 >= end)
+ 			break;
+ 
+ 		switch (data[i]) {
+-- 
+1.7.9.5
+
