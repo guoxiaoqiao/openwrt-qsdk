@@ -1,0 +1,40 @@
+From b19c14ca2ea5594d37bd3492ad147047eed4703f Mon Sep 17 00:00:00 2001
+From: Steven Barth <steven@midlink.org>
+Date: Tue, 28 May 2013 20:47:33 +0200
+Subject: [PATCH] IPv6: fix address-lifetime overflows on 64-bit architectures
+
+---
+ system-linux.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/system-linux.c b/system-linux.c
+index f5c900d..c6d81e6 100644
+--- a/system-linux.c
++++ b/system-linux.c
+@@ -918,17 +918,21 @@ static int system_addr(struct device *dev, struct device_addr *addr, int cmd)
+ 		struct ifa_cacheinfo cinfo = {0xffffffffU, 0xffffffffU, 0, 0};
+ 
+ 		if (addr->preferred_until) {
+-			int preferred = addr->preferred_until - now;
++			int64_t preferred = addr->preferred_until - now;
+ 			if (preferred < 0)
+ 				preferred = 0;
++			else if (preferred > UINT32_MAX)
++				preferred = UINT32_MAX;
+ 
+ 			cinfo.ifa_prefered = preferred;
+ 		}
+ 
+ 		if (addr->valid_until) {
+-			int valid = addr->valid_until - now;
++			int64_t valid = addr->valid_until - now;
+ 			if (valid <= 0)
+ 				return -1;
++			else if (valid > UINT32_MAX)
++				valid = UINT32_MAX;
+ 
+ 			cinfo.ifa_valid = valid;
+ 		}
+-- 
+1.8.2.1
+
