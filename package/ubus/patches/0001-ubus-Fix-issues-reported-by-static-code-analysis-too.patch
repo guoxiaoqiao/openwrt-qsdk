@@ -1,0 +1,138 @@
+From 7798d56301b7264cbcea0a6a9225a210154c693a Mon Sep 17 00:00:00 2001
+From: Hans Dedecker <dedeckeh@gmail.com>
+Date: Mon, 13 Apr 2015 18:18:36 +0200
+Subject: [PATCH] ubus: Fix issues reported by static code analysis tool
+ Klocwork
+
+Signed-off-by: Hans Dedecker <dedeckeh@gmail.com>
+---
+ examples/client.c |  4 +++-
+ examples/server.c |  3 +++
+ lua/ubus.c        | 19 +++++++++++++++++--
+ ubusd_event.c     |  3 ++-
+ ubusd_obj.c       |  3 +++
+ ubusd_proto.c     |  9 +++++++--
+ 6 files changed, 35 insertions(+), 6 deletions(-)
+
+diff --git a/examples/server.c b/examples/server.c
+index b8b751e..e0cde0b 100644
+--- a/examples/server.c
++++ b/examples/server.c
+@@ -93,6 +93,9 @@ static int test_hello(struct ubus_context *ctx, struct ubus_object *obj,
+ 		msgstr = blobmsg_data(tb[HELLO_MSG]);
+ 
+ 	hreq = calloc(1, sizeof(*hreq) + strlen(format) + strlen(obj->name) + strlen(msgstr) + 1);
++	if (!hreq)
++		return UBUS_STATUS_UNKNOWN_ERROR;
++
+ 	sprintf(hreq->data, format, obj->name, msgstr);
+ 	ubus_defer_request(ctx, req, &hreq->req);
+ 	hreq->timeout.cb = test_hello_reply;
+diff --git a/lua/ubus.c b/lua/ubus.c
+index 92fb0a1..362f932 100644
+--- a/lua/ubus.c
++++ b/lua/ubus.c
+@@ -382,6 +382,9 @@ static int ubus_lua_load_methods(lua_State *L, struct ubus_method *m)
+ 
+ 	/* setup the policy pointers */
+ 	p = malloc(sizeof(struct blobmsg_policy) * plen);
++	if (!p)
++		return 1;
++
+ 	memset(p, 0, sizeof(struct blobmsg_policy) * plen);
+ 	m->policy = p;
+ 	lua_pushnil(L);
+@@ -417,6 +420,9 @@ static struct ubus_object* ubus_lua_load_object(lua_State *L)
+ 
+ 	/* setup object pointers */
+ 	obj = malloc(sizeof(struct ubus_lua_object));
++	if (!obj)
++		return NULL;
++
+ 	memset(obj, 0, sizeof(struct ubus_lua_object));
+ 	obj->o.name = lua_tostring(L, -2);
+ 
+@@ -427,6 +433,11 @@ static struct ubus_object* ubus_lua_load_object(lua_State *L)
+ 
+ 	/* setup type pointers */
+ 	obj->o.type = malloc(sizeof(struct ubus_object_type));
++	if (!obj->o.type) {
++		free(obj);
++		return NULL;
++	}
++
+ 	memset(obj->o.type, 0, sizeof(struct ubus_object_type));
+ 	obj->o.type->name = lua_tostring(L, -2);
+ 	obj->o.type->id = 0;
+@@ -529,10 +540,11 @@ ubus_lua_call_cb(struct ubus_request *req, int type, struct blob_attr *msg)
+ {
+ 	lua_State *L = (lua_State *)req->priv;
+ 
+-	if (!msg)
++	if (!msg && L)
+ 		lua_pushnil(L);
+ 
+-	ubus_lua_parse_blob_array(L, blob_data(msg), blob_len(msg), true);
++	if (msg && L)
++		ubus_lua_parse_blob_array(L, blob_data(msg), blob_len(msg), true);
+ }
+ 
+ static int
+ 
+diff --git a/ubusd_event.c b/ubusd_event.c
+index 85031a6..6d4ddcf 100644
+--- a/ubusd_event.c
++++ b/ubusd_event.c
+@@ -267,6 +267,7 @@ void ubusd_event_init(void)
+ {
+ 	ubus_init_string_tree(&patterns, true);
+ 	event_obj = ubusd_create_object_internal(NULL, UBUS_SYSTEM_OBJECT_EVENT);
+-	event_obj->recv_msg = ubusd_event_recv;
++	if (event_obj != NULL)
++		event_obj->recv_msg = ubusd_event_recv;
+ }
+ 
+diff --git a/ubusd_obj.c b/ubusd_obj.c
+index 8923821..62c2331 100644
+--- a/ubusd_obj.c
++++ b/ubusd_obj.c
+@@ -58,6 +58,9 @@ static struct ubus_object_type *ubus_create_obj_type(struct blob_attr *sig)
+ 	int rem;
+ 
+ 	type = calloc(1, sizeof(*type));
++	if (!type)
++		return NULL;
++
+ 	type->refcount = 1;
+ 
+ 	if (!ubus_alloc_id(&obj_types, &type->id, 0))
+diff --git a/ubusd_proto.c b/ubusd_proto.c
+index 6b068eb..991a70a 100644
+--- a/ubusd_proto.c
++++ b/ubusd_proto.c
+@@ -487,6 +487,9 @@ void ubus_notify_subscription(struct ubus_object *obj)
+ 	blob_put_int8(&b, UBUS_ATTR_ACTIVE, active);
+ 
+ 	ub = ubus_msg_from_blob(false);
++	if (!ub)
++		return;
++
+ 	ubus_msg_init(ub, UBUS_MSG_NOTIFY, ++obj->invoke_seq, 0);
+ 	ubus_msg_send(obj->client, ub, true);
+ }
+@@ -500,8 +503,10 @@ void ubus_notify_unsubscribe(struct ubus_subscription *s)
+ 	blob_put_int32(&b, UBUS_ATTR_TARGET, s->target->id.id);
+ 
+ 	ub = ubus_msg_from_blob(false);
+-	ubus_msg_init(ub, UBUS_MSG_UNSUBSCRIBE, ++s->subscriber->invoke_seq, 0);
+-	ubus_msg_send(s->subscriber->client, ub, true);
++	if (ub != NULL) {
++		ubus_msg_init(ub, UBUS_MSG_UNSUBSCRIBE, ++s->subscriber->invoke_seq, 0);
++		ubus_msg_send(s->subscriber->client, ub, true);
++	}
+ 
+ 	ubus_unsubscribe(s);
+ }
+-- 
+2.7.2
+
