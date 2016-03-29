@@ -74,8 +74,8 @@ QOS:=luci-app-qos kmod-sched
 
 MAP_PKGS:=map-t
 
-HYFI:=hyfi hyfi-ui      # no PLC support
-HYFI_PLC:=hyfi-plc hyfi-ui  # with PLC support
+HYFI:=hyfi hyfi-ui
+PLC:=qca-plc-fw qca-plc-serv
 
 AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
 #These packages depend on SWITCH_SSDK_PKGS
@@ -118,7 +118,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) pm-utils \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA)
+		$(MAP_PKGS) $(PLC) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA)
 endef
 
 define Profile/QSDK_Premium/Description
