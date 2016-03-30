@@ -41,8 +41,13 @@ enable_smp_affinity_wifi() {
 
 		case "$board" in
 			ap-dk0*)
+			if [ $device == "wifi2" ]; then
+				# Assign core 1 for wifi2. For ap-dkXX,wifi2 is always the third radio
+				smp_affinity=2
+			else
 				# Assign Core 3 (or) 4 for Dakota based on hwcaps
 				smp_affinity=$(($smp_affinity << 2))
+			fi
 			;;
 		esac
 
