@@ -44,7 +44,7 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
 	mkdir -p $(1)/usr/include/libnl
-	$(CP) $(PKG_BUILD_DIR)/include/linux $(1)/usr/include/libnl/
+	$(CP) $(PKG_BUILD_DIR)/include/* $(1)/usr/include/libnl/
 endef
 
 define Package/libnl/install
