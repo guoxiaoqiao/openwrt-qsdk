@@ -128,6 +128,7 @@ endef
 define Image/UbiImage
 
 ifeq ($(1),-ipq806x)
+	$(eval UBI_OPTS:="-m 2048 -p 128KiB")
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-db149,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-db149-fit-uImage.itb,squashfs,$(UBI_OPTS))
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-fit-uImage.itb,squashfs,$(UBI_OPTS))
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148_1xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148_1xx-fit-uImage.itb,squashfs,$(UBI_OPTS))
