@@ -292,7 +292,8 @@ static inline struct ag71xx_platform_data *ag71xx_get_pdata(struct ag71xx *ag)
 #define AG71XX_IG_ACL_FRA_DISABLE	0x60000000
 
 #define AG71XX_CFG_3_HD_VAL	0x00f00040
-#define AG71XX_FIFO_TH_HD_VAL	0x00880060
+#define AG71XX_FIFO_TH_HD_HALF_VAL	0x00880060
+#define AG71XX_FIFO_TH_HD_FULL_VAL	0x01d80160
 
 #define MAC_CFG1_TXE		BIT(0)	/* Tx Enable */
 #define MAC_CFG1_STX		BIT(1)	/* Synchronize Tx Enable */
