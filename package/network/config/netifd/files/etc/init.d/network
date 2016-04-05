@@ -30,6 +30,9 @@ start_service() {
 		echo '/tmp/%e.%p.%s.%t.core' > /proc/sys/kernel/core_pattern
 	}
 	procd_close_instance
+	[ -f /usr/bin/lte-cm ] && {
+		/usr/bin/lte-cm start
+	}
 }
 
 reload_service() {
@@ -40,6 +43,9 @@ reload_service() {
 
 stop() {
 	/sbin/wifi down
+	[ -f /usr/bin/lte-cm ] && {
+		/usr/bin/lte-cm stop
+	}
 	procd_kill network ''
 	network_cleanup
 }
