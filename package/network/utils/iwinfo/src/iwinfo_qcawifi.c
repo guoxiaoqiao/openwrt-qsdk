@@ -228,7 +228,7 @@ static int get80211priv(const char *ifname, int op, void *data, size_t len)
 static char * qcawifi_isvap(const char *ifname, const char *wifiname)
 {
 	int fd, ln;
-	char path[32];
+	char path[64];
 	char *ret = NULL;
 	static char name[IFNAMSIZ];
 
@@ -263,7 +263,7 @@ static int qcawifi_iswifi(const char *ifname)
 	int fd, ln;
 	int ret = 0;
 	char prot[16];
-	char path[32];
+	char path[64];
 
 	/* qcawifi has a "hwcaps" file in wifiN sysfs to define the
 	 * protocol actually supported by the hardware */
