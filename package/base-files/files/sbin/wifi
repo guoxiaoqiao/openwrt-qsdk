@@ -158,7 +158,7 @@ wifi_reload() {
 }
 
 wifi_detect() {
-	for driver in ${2:-$DRIVERS}; do (
+	for driver in ${1:-$DRIVERS}; do (
 		if eval "type detect_$driver" 2>/dev/null >/dev/null; then
 			eval "detect_$driver" || echo "$driver: Detect failed" >&2
 		else
