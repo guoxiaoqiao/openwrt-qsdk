@@ -1475,6 +1475,10 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
 			}
 		}
 
+		if (unlikely(!skb)) {
+			break;
+		}
+
 		if (likely(skb->len != 0))
                         dma_cache_sync(NULL, skb->data, skb->len, DMA_FROM_DEVICE);
 
