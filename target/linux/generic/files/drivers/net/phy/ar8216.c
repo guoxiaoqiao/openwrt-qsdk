@@ -1408,6 +1408,8 @@ ar8327_init_cpuport(struct ar8216_priv *priv, int port)
 	case 6:
 		cfg = &pdata->port6_cfg;
 		break;
+	default:
+		return;
 	}
 
 	if (!cfg->force_link) {
@@ -2354,7 +2356,7 @@ static void ar8xxx_phy_powerdown(struct ar8216_priv *priv)
 	bus = priv->phy->bus;
 
 	for (i = 0; i < AR8327_NUM_PHYS; i++) {
-		mdiobus_write(bus, i, MII_BMCR, BMCR_FULLDPLX|BMCR_FULLDPLX);
+		mdiobus_write(bus, i, MII_BMCR, BMCR_SPEED1000|BMCR_FULLDPLX);
 
 		ar8216_phy_dbg_read(priv, i, AR8337_PHY_DEBUG_GREEN, &phy_val);
 		phy_val &= (~(AR8337_PHY_GATE_CLK_IN1000));
