@@ -1,18 +1,55 @@
-diff -Nur a/system-linux.c netifd-2015-09-10/system-linux.c
---- a/system-linux.c	2015-12-28 14:01:10.571399347 -0800
-+++ netifd-2015-09-10/system-linux.c	2015-12-28 14:01:35.671399979 -0800
-@@ -644,6 +644,14 @@
+--- a/system-linux.c
++++ b/system-linux.c
+@@ -509,11 +509,33 @@ static struct device *system_get_bonding
+ 	return device_get(devname, false);
+ }
+ 
++static int system_set_mtu(struct device * dev, int mtu, void * data)
++{
++        struct ifreq ifr;
++
++        if(!dev) return 0;
++        struct device * parent = system_if_get_parent(dev);
++
++        memset(&ifr, 0, sizeof(ifr));
++
++        ifr.ifr_addr.sa_family = AF_INET;
++        if (parent)
++                system_set_mtu(parent, mtu, data);
++
++        strncpy(ifr.ifr_name, dev->ifname, sizeof(ifr.ifr_name));
++        ifr.ifr_mtu = mtu;
++        return ioctl(sock_ioctl, SIOCSIFMTU, &ifr);
++}
++
+ int system_bridge_addif(struct device *bridge, struct device *dev)
+ {
  	char *oldbr;
  	int ret = 0;
  
 +	if (bridge->settings.flags & DEV_OPT_MTU) {
-+		struct ifreq ifr;
-+		memset(&ifr, 0, sizeof(ifr));
-+		strncpy(ifr.ifr_name, dev->ifname, sizeof(ifr.ifr_name));
-+		ifr.ifr_mtu = bridge->settings.mtu;
-+		ioctl(sock_ioctl, SIOCSIFMTU, &ifr);
++		system_set_mtu(dev,bridge->settings.mtu,NULL);
 +	}
 +
  	oldbr = system_get_bridge(dev->ifname, dev_buf, sizeof(dev_buf));
  	if (!oldbr || strcmp(oldbr, bridge->ifname) != 0)
  		ret = system_bridge_if(bridge->ifname, dev, SIOCBRADDIF, NULL);
+@@ -526,6 +548,9 @@ int system_bridge_addif(struct device *b
+ 
+ int system_bridge_delif(struct device *bridge, struct device *dev)
+ {
++	if (bridge->settings.flags & DEV_OPT_MTU) {
++		system_set_mtu(dev,1500,NULL);
++	}
+ 	return system_bridge_if(bridge->ifname, dev, SIOCBRDELIF, NULL);
+ }
+ 
+@@ -1064,7 +1089,7 @@ system_if_apply_settings(struct device *
+ 	strncpy(ifr.ifr_name, dev->ifname, sizeof(ifr.ifr_name));
+ 	if (s->flags & DEV_OPT_MTU & apply_mask) {
+ 		ifr.ifr_mtu = s->mtu;
+-		if (ioctl(sock_ioctl, SIOCSIFMTU, &ifr) < 0)
++		if (system_set_mtu(dev,dev->settings.mtu,NULL) < 0)
+ 			s->flags &= ~DEV_OPT_MTU;
+ 	}
+ 	if (s->flags & DEV_OPT_TXQUEUELEN & apply_mask) {
