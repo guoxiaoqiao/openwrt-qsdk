@@ -15,7 +15,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.infradead.org/~tgr/libnl/files/
 PKG_MD5SUM:=6fe7136558a9071e70673dcda38545b3
 
-PKG_FIXUP:=autoreconf
+PKG_FIXUP:=libtool
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -45,7 +45,7 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
 	mkdir -p $(1)/usr/include/libnl
-	$(CP) $(PKG_BUILD_DIR)/include/linux $(1)/usr/include/libnl/
+	$(CP) $(PKG_BUILD_DIR)/include/* $(1)/usr/include/libnl/
 endef
 endif
 
