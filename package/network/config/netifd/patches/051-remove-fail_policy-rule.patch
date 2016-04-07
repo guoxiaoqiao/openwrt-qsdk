@@ -1,0 +1,13 @@
+diff -Nur a/interface-ip.c netifd-2014-09-08/interface-ip.c
+--- a/interface-ip.c	2016-04-07 10:22:06.993836911 -0700
++++ netifd-2014-09-08/interface-ip.c	2016-04-07 10:22:30.457837502 -0700
+@@ -1201,9 +1201,6 @@
+ 	if (ip->iface && ip->iface->l3_dev.dev) {
+ 		set_ip_lo_policy(enabled, true, ip->iface);
+ 		set_ip_lo_policy(enabled, false, ip->iface);
+-
+-		set_ip_source_policy(enabled, true, IPRULE_PRIORITY_REJECT + ip->iface->l3_dev.dev->ifindex,
+-			NULL, 0, 0, ip->iface, "failed_policy");
+ 	}
+ }
+ 
