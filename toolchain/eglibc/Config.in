@@ -7,10 +7,12 @@ choice
 
 	config EGLIBC_USE_VERSION_2_15
 		bool "eglibc 2.15"
+		depends on BROKEN
 		select EGLIBC_VERSION_2_15
 
 	config EGLIBC_USE_VERSION_2_19
 		bool "eglibc 2.19"
+		depends on BROKEN
 		select EGLIBC_VERSION_2_19
 
 endchoice

@@ -23,7 +23,7 @@ QCA_ECM:= kmod-qca-nss-ecm
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
 QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
-NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp
+NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp kmod-qca-nss-drv-map-t
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
@@ -74,8 +74,8 @@ QOS:=luci-app-qos kmod-sched
 
 MAP_PKGS:=map-t
 
-HYFI:=hyfi hyfi-ui      # no PLC support
-HYFI_PLC:=hyfi-plc hyfi-ui  # with PLC support
+HYFI:=hyfi hyfi-ui
+PLC:=qca-plc-fw qca-plc-serv
 
 AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
 #These packages depend on SWITCH_SSDK_PKGS
@@ -90,6 +90,8 @@ UTILS:=tftp-hpa pure-ftpd qca-thermald-10.4 file luci-app-samba iperf \
 
 BLUETOOTH:=bluez kmod-ath3k
 
+BLUETOPIA:=bluetopia
+
 FAILSAFE:= kmod-bootconfig
 
 AUDIO:=kmod-sound-soc-ipq40xx alsa
@@ -100,7 +102,7 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
 		$(WIFI_OPEN_PKGS) $(STORAGE) $(CD_ROUTER) $(NETWORKING) $(UTILS) \
-		$(BLUETOOTH) $(QCA_ECM) $(NSS_CRYPTO) $(NSS_CLIENTS) $(QOS) $(TEST_TOOLS) alsa
+		$(BLUETOOTH) $(MAP_PKGS) $(QCA_ECM) $(NSS_CRYPTO) $(NSS_CLIENTS) $(QOS) $(TEST_TOOLS) alsa
 endef
 
 define Profile/QSDK_Open/Description
@@ -113,10 +115,10 @@ define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
-		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
+		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) pm-utils \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE)
+		$(MAP_PKGS) $(PLC) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA)
 endef
 
 define Profile/QSDK_Premium/Description
