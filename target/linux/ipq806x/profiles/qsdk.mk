@@ -118,7 +118,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) pm-utils \
-		$(MAP_PKGS) $(PLC) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA)
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA)
 endef
 
 define Profile/QSDK_Premium/Description
