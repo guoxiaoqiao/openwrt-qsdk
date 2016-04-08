@@ -981,8 +981,9 @@ $(eval $(call SingleProfile,ZyXEL,$(fs_64k),NBG_460N_550N_550NH,nbg460n_550n_550
 
 $(eval $(call MultiProfile,AP121,AP121_2M AP121_4M))
 $(eval $(call MultiProfile,AP143,AP143_8M AP143_16M AP143_32M AP143_32M_DUAL))
-$(eval $(call MultiProfile,AP147,AP147_8M AP147_16M))
-$(eval $(call MultiProfile,AP152,AP152_8M AP152_16M))
+$(eval $(call MultiProfile,AP147,AP147_16M AP147_8M))
+$(eval $(call MultiProfile,AP151,AP151_16M AP151_8M))
+$(eval $(call MultiProfile,AP152,AP152_16M AP152_8M))
 $(eval $(call MultiProfile,CUS531,CUS531_16M CUS531_32M CUS531DUAL CUS531NAND CUS531_32M_DUAL CUS531DUAL_DUAL CUS531NAND_DUAL))
 $(eval $(call MultiProfile,EWDORIN, EWDORINAP EWDORINRT))
 $(eval $(call MultiProfile,TEW652BRP,TEW652BRP_FW TEW652BRP_RECOVERY))
