@@ -90,8 +90,6 @@ UTILS:=tftp-hpa pure-ftpd qca-thermald-10.4 file luci-app-samba iperf \
 
 BLUETOOTH:=bluez kmod-ath3k
 
-BLUETOPIA:=bluetopia
-
 FAILSAFE:= kmod-bootconfig
 
 AUDIO:=kmod-sound-soc-ipq40xx alsa
@@ -115,10 +113,10 @@ define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
-		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) pm-utils \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA)
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE)
 endef
 
 define Profile/QSDK_Premium/Description
