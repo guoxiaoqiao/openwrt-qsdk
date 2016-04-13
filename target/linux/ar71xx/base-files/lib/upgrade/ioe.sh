@@ -193,7 +193,7 @@ platform_do_upgrade_ioe() {
 		echo $mtd_ubi_rootfs_data
 		mount -t jffs2 $mtd_ubi_rootfs_data /mnt
 		echo $CONF_TAR
-		tar xzf $CONF_TAR -C /mnt
+		tar xzf $CONF_TAR -C /mnt/upper
 		sync
 		umount /mnt
 	else
