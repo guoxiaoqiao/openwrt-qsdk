@@ -10,6 +10,12 @@ START=70
 
 CONF_FILE=/etc/sysctl.d/qca-nss-ecm.conf
 
+EXTRA_COMMANDS="enable_ecm disable_ecm"
+EXTRA_HELP=<<EOF
+        enable_ecm  Enables the ECM's frontend functionality
+        disable_ecm Disables the ECM's frontend functionality
+EOF
+
 support_bridge() {
 	#NSS support bridge acceleration
 	[ -d /sys/kernel/debug/ecm/ecm_nss_conntrack_notifier ] && return 0
@@ -40,7 +46,7 @@ stop_ecm() {
 	fi
 }
 
-enable() {
+enable_ecm() {
 	#
 	# Based on the underlying acceleration engine, gracefully
 	# stop the ECM and defunct the connections.
@@ -58,7 +64,7 @@ enable() {
 	fi
 }
 
-disable() {
+disable_ecm() {
 	stop_ecm
 	defunct_ecm
 }
@@ -70,10 +76,16 @@ load_sfe() {
 }
 
 load_ecm() {
-	[ -d /sys/module/ecm ] || {
+	#
+	# If ECM is already loaded, make sure its frontends are enabled
+	# and functional. Otherwise load it.
+	#
+	if [ -d /sys/module/ecm ]; then
+		enable_ecm
+	else
 		load_sfe
 		insmod ecm
-	}
+	fi
 
 	support_bridge && {
 		sysctl -w net.bridge.bridge-nf-call-ip6tables=1
@@ -87,7 +99,7 @@ unload_ecm() {
 	# stop the ECM and unload the module.
 	#
 	if [ -d /sys/module/ecm ]; then
-		disable
+		disable_ecm
 		rmmod ecm
 		sleep 1
 	fi
