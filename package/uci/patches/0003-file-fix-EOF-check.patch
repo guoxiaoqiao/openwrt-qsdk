@@ -1,0 +1,28 @@
+From def58eba24cc53f8761903145fef8db65e6e4760 Mon Sep 17 00:00:00 2001
+From: Yousong Zhou <yszhou4tech@gmail.com>
+Date: Tue, 16 Dec 2014 15:00:06 +0800
+Subject: [PATCH] file: fix EOF check.
+
+Signed-off-by: Yousong Zhou <yszhou4tech@gmail.com>
+---
+ file.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/file.c b/file.c
+index 1d2718a..3f02c11 100644
+--- a/file.c
++++ b/file.c
+@@ -48,8 +48,8 @@ __private void uci_getln(struct uci_context *ctx, int offset)
+ 		pctx->buf = uci_malloc(ctx, LINEBUF);
+ 		pctx->bufsz = LINEBUF;
+ 	}
+-	/* `offset' may off by one */
+-	if (offset >= pctx->bufsz) {
++	/* It takes 2 slots for fgets to read 1 char. */
++	if (offset >= pctx->bufsz - 1) {
+ 		pctx->bufsz *= 2;
+ 		pctx->buf = uci_realloc(ctx, pctx->buf, pctx->bufsz);
+ 	}
+-- 
+1.7.9.5
+

@@ -1,0 +1,41 @@
+From 32815cf4959c3219b8b6051efcf045c0d829dc10 Mon Sep 17 00:00:00 2001
+From: Yousong Zhou <yszhou4tech@gmail.com>
+Date: Tue, 16 Dec 2014 15:00:14 +0800
+Subject: [PATCH] delta: add a simple duplication check when adding delta
+ path.
+
+Signed-off-by: Yousong Zhou <yszhou4tech@gmail.com>
+---
+ delta.c |    2 ++
+ uci.h   |    2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/delta.c b/delta.c
+index 082633b..b56df5b 100644
+--- a/delta.c
++++ b/delta.c
+@@ -87,6 +87,8 @@ int uci_add_delta_path(struct uci_context *ctx, const char *dir)
+ 
+ 	UCI_HANDLE_ERR(ctx);
+ 	UCI_ASSERT(ctx, dir != NULL);
++	if (!strcmp(dir, ctx->savedir))
++		return -1;
+ 	e = uci_alloc_generic(ctx, UCI_TYPE_PATH, dir, sizeof(struct uci_element));
+ 	uci_list_add(&ctx->delta_path, &e->list);
+ 
+diff --git a/uci.h b/uci.h
+index 36c8890..eb7470c 100644
+--- a/uci.h
++++ b/uci.h
+@@ -262,6 +262,8 @@ extern int uci_set_confdir(struct uci_context *ctx, const char *dir);
+  *
+  * This function allows you to add directories, which contain 'overlays'
+  * for the active config, that will never be committed.
++ * Caller of this API should ensure that no duplicate entries (including the
++ * default search path, e.g. `UCI_SAVEDIR') should be added.
+  */
+ extern int uci_add_delta_path(struct uci_context *ctx, const char *dir);
+ 
+-- 
+1.7.9.5
+
