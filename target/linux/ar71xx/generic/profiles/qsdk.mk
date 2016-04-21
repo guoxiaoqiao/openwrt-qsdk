@@ -125,7 +125,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
-	  kmod-fast-classifier $(STORAGE) $(PACKAGES_WIFI_10_4) \
+	  streamboost kmod-fast-classifier $(STORAGE) $(PACKAGES_WIFI_10_4) \
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand \
@@ -138,6 +138,7 @@ define Profile/QSDK_Premium_Beeliner_Router/Description
   - Bridging and routing networking
   - QCA-WiFi driver 10.4 configuration
   - LuCI web configuration interface
+  - Streamboost
   - USB hard drive support
   - Samba
   - IPv4/IPv6
