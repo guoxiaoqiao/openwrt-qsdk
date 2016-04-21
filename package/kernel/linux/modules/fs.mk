@@ -7,6 +7,43 @@
 
 FS_MENU:=Filesystems
 
+define KernelPackage/fs-fscache
+  SUBMENU:=$(FS_MENU)
+  TITLE:=General filesystem local cache manager
+  DEPENDS:=
+  KCONFIG:=\
+	CONFIG_FSCACHE=m \
+	CONFIG_FSCACHE_STATS=y \
+	CONFIG_FSCACHE_HISTOGRAM=n \
+	CONFIG_FSCACHE_DEBUG=n \
+	CONFIG_FSCACHE_OBJECT_LIST=n \
+	CONFIG_CACHEFILES=y \
+	CONFIG_CACHEFILES_DEBUG=n \
+	CONFIG_CACHEFILES_HISTOGRAM=n
+  FILES:=$(LINUX_DIR)/fs/fscache/fscache.ko
+  AUTOLOAD:=$(call AutoLoad,29,fscache)
+endef
+
+$(eval $(call KernelPackage,fs-fscache))
+
+define KernelPackage/fs-afs
+  SUBMENU:=$(FS_MENU)
+  TITLE:=Andrew FileSystem client
+  DEPENDS:=+kmod-rxrpc +kmod-dnsresolver +kmod-fs-fscache
+  KCONFIG:=\
+	CONFIG_AFS_FS=m \
+	CONFIG_AFS_DEBUG=n \
+	CONFIG_AFS_FSCACHE=y
+  FILES:=$(LINUX_DIR)/fs/afs/kafs.ko
+  AUTOLOAD:=$(call AutoLoad,30,kafs)
+endef
+
+define KernelPackage/fs-afs/description
+  Kernel module for Andrew FileSystem client support
+endef
+
+$(eval $(call KernelPackage,fs-afs))
+
 define KernelPackage/fs-autofs4
   SUBMENU:=$(FS_MENU)
   TITLE:=AUTOFS4 filesystem support
@@ -84,6 +121,21 @@ endef
 
 $(eval $(call KernelPackage,fs-configfs))
 
+define KernelPackage/fs-cramfs
+  SUBMENU:=$(FS_MENU)
+  TITLE:=Compressed RAM/ROM filesystem support
+  DEPENDS:=+kmod-lib-zlib
+  KCONFIG:= \
+	CONFIG_CRAMFS
+  FILES:=$(LINUX_DIR)/fs/cramfs/cramfs.ko
+  AUTOLOAD:=$(call AutoLoad,30,cramfs)
+endef
+
+define KernelPackage/fs-cramfs/description
+ Kernel module for cramfs support
+endef
+
+$(eval $(call KernelPackage,fs-cramfs))
 
 define KernelPackage/fs-exportfs
   SUBMENU:=$(FS_MENU)
@@ -220,7 +272,7 @@ $(eval $(call KernelPackage,fs-msdos))
 define KernelPackage/fs-nfs
   SUBMENU:=$(FS_MENU)
   TITLE:=NFS filesystem support
-  DEPENDS:=+kmod-fs-nfs-common
+  DEPENDS:=+kmod-fs-nfs-common +kmod-dnsresolver
   KCONFIG:= \
 	CONFIG_NFS_FS \
 	CONFIG_NFS_USE_LEGACY_DNS=n \
@@ -240,12 +292,24 @@ define KernelPackage/fs-nfs/description
  Kernel module for NFS support
 endef
 
+define KernelPackage/fs-nfs/config
+  if PACKAGE_kmod-fs-nfs
+       config KERNEL_NFS_V4
+               bool "Support NFSv4 in NFS client"
+               depends on PACKAGE_kmod-fs-sunrpc-auth-rpcgss
+               default n
+               help
+                 Select this option to support NFSv4 in the NFS server
+  endif
+endef
+
 $(eval $(call KernelPackage,fs-nfs))
 
 
 define KernelPackage/fs-nfs-common
   SUBMENU:=$(FS_MENU)
   TITLE:=Common NFS filesystem modules
+  DEPENDS:=+kmod-lib-oid-registry
   KCONFIG:= \
 	CONFIG_LOCKD \
 	CONFIG_SUNRPC
@@ -258,34 +322,38 @@ endef
 $(eval $(call KernelPackage,fs-nfs-common))
 
 
-define KernelPackage/fs-nfs-common-v4
+define KernelPackage/fs-sunrpc-auth-rpcgss
   SUBMENU:=$(FS_MENU)
-  TITLE:=Common NFS V4 filesystem modules
-  KCONFIG+=\
-	CONFIG_SUNRPC_GSS\
-	CONFIG_NFS_V4=y\
-	CONFIG_NFSD_V4=y
-  DEPENDS:= @BROKEN
-  FILES+=$(LINUX_DIR)/net/sunrpc/auth_gss/auth_rpcgss.ko
-  AUTOLOAD=$(call AutoLoad,30,auth_rpcgss)
+  TITLE:=GSS authentication for SUN RPC
+  DEPENDS:=+kmod-fs-nfs-common
+  KCONFIG:=CONFIG_SUNRPC_GSS
+  FILES:= \
+       $(LINUX_DIR)/net/sunrpc/auth_gss/auth_rpcgss.ko
+  AUTOLOAD:=$(call AutoLoad,30,auth_rpcgss)
 endef
 
-define KernelPackage/fs-nfs-common-v4/description
- Kernel modules for NFS V4 & NFSD V4 kernel support
-endef
-
-$(eval $(call KernelPackage,fs-nfs-common-v4))
-
+$(eval $(call KernelPackage,fs-sunrpc-auth-rpcgss))
 
 define KernelPackage/fs-nfsd
   SUBMENU:=$(FS_MENU)
   TITLE:=NFS kernel server support
-  DEPENDS:=+kmod-fs-nfs-common +kmod-fs-exportfs
-  KCONFIG:= \
+  DEPENDS:=+kmod-fs-nfs-common +kmod-fs-exportfs +kmod-fs-sunrpc-auth-rpcgss
+  KCONFIG= \
 	CONFIG_NFSD \
 	CONFIG_NFSD_FAULT_INJECTION=n
   FILES:=$(LINUX_DIR)/fs/nfsd/nfsd.ko
   AUTOLOAD:=$(call AutoLoad,40,nfsd)
+endef
+
+define KernelPackage/fs-nfsd/config
+  if PACKAGE_kmod-fs-nfsd
+       config KERNEL_NFSD_V4
+               bool "Support NFSv4 in NFS server"
+               depends on PACKAGE_kmod-fs-sunrpc-auth-rpcgss
+               default n
+               help
+                 Select this option to support NFSv4 in the NFS server
+  endif
 endef
 
 define KernelPackage/fs-nfsd/description

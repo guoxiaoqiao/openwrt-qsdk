@@ -203,23 +203,4 @@ menu "Global build settings"
 			bool "libstdc++"
 	endchoice
 
-	menu "Security Mitigations"
-
-	config ENABLE_SSP
-		bool "Enable stack protection (-fstack-protector)"
-		default y
-		select SSP_SUPPORT
-		help
-		  If enabled, the packages and libc will be built with
-		  stack protection, a security mitigation that prevents
-		  buffer overflows from being exploitable.
-
-	config ENABLE_RELRO
-		bool "Enable RELRO (-Wl,-z,relro,-z,now)"
-		default y
-		help
-		  If enabled, the packages and libc will be built with read only
-		  relocation entries, preventing exploits from overwriting
-		  sensitive sections in an ELF file that can lead to code execution.
-	endmenu
 endmenu

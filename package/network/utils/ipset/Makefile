@@ -23,7 +23,12 @@ PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
+define Package/ipset/Default
+  DEPENDS:= @(!(TARGET_ps3||TARGET_pxcab)||BROKEN)
+endef
+
 define Package/ipset
+$(call Package/ipset/Default)
   SECTION:=net
   CATEGORY:=Network
   DEPENDS+= +kmod-ipt-ipset +libmnl
@@ -66,6 +71,7 @@ define Package/ipset/install
 endef
 
 define KernelPackage/ipt-ipset
+$(call Package/ipset/Default)
   SUBMENU:=Netfilter Extensions
   TITLE:=IPset netfilter modules
   DEPENDS+= +kmod-ipt-core +kmod-nfnetlink

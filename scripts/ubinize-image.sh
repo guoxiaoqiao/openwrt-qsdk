@@ -104,6 +104,7 @@ while [ "$1" ]; do
 		;;
 	esac
 done
+
 if [ ! -r "$rootfs" -o ! -r "$kernel" -a ! "$outfile" ]; then
 	echo "syntax: $0 [--uboot-env] [--kernel kernelimage] rootfs out [ubinize opts]"
 	exit 1

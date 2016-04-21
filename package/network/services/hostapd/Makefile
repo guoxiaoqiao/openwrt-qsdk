@@ -1,4 +1,5 @@
-# Copyright (C) 2006-2014 OpenWrt.org
+#
+# Copyright (C) 2006-2015 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -19,14 +20,17 @@ PKG_SOURCE_PROTO:=git
 # PKG_MIRROR_MD5SUM:=4e7c1f97edd7514535056fce54ae053a
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
-PKG_LICENSE:=BSD-3-Clause
 
 PKG_BUILD_PARALLEL:=1
+
+PKG_BUILD_DEPENDS:= \
+	PACKAGE_kmod-madwifi:madwifi \
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_WPA_SUPPLICANT_NO_TIMESTAMP_CHECK \
 	CONFIG_PACKAGE_kmod-ath9k \
 	CONFIG_PACKAGE_kmod-mac80211 \
+	CONFIG_PACKAGE_kmod-madwifi \
 	CONFIG_PACKAGE_hostapd \
 	CONFIG_PACKAGE_hostapd-mini \
 	CONFIG_PACKAGE_kmod-hostap \
@@ -71,6 +75,8 @@ DRIVER_MAKEOPTS= \
 	CONFIG_IEEE80211N=$(HOSTAPD_IEEE80211N) \
 	CONFIG_IEEE80211W=$(CONFIG_PACKAGE_kmod-ath10k) \
 	CONFIG_DRIVER_WEXT=$(CONFIG_DRIVER_WEXT_SUPPORT) \
+	CONFIG_DRIVER_MADWIFI=$(CONFIG_PACKAGE_kmod-madwifi) \
+	$(if $(CONFIG_WPA_RFKILL_SUPPORT),NEED_RFKILL=y)
 
 ifneq ($(LOCAL_TYPE),hostapd)
   ifdef CONFIG_WPA_SUPPLICANT_OPENSSL
@@ -93,7 +99,7 @@ ifneq ($(LOCAL_TYPE),hostapd)
 	CONFIG_DRIVER_ROBOSWITCH=$(CONFIG_PACKAGE_kmod-switch)
 endif
 
-ifdef CONFIG_USE_GLIBC
+ifdef CONFIG_USE_EGLIBC
   TARGET_LDFLAGS += -lrt
   TARGET_LDFLAGS_C += -lrt
 endif
@@ -321,7 +327,7 @@ define Build/Compile/wpad
 	echo ` \
 		$(call Build/RunMake,hostapd,-s MULTICALL=1 dump_cflags); \
 		$(call Build/RunMake,wpa_supplicant,-s MULTICALL=1 dump_cflags) | \
-		sed -e 's,-n ,,g' -e 's^$(TARGET_CFLAGS)^^' \
+		sed -e 's,-n ,,g' -e 's,$(TARGET_CFLAGS),,' \
 	` > $(PKG_BUILD_DIR)/.cflags
 	+$(call Build/RunMake,hostapd, \
 		CFLAGS="$$$$(cat $(PKG_BUILD_DIR)/.cflags)" \

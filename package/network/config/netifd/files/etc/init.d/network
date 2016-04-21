@@ -24,9 +24,7 @@ start_service() {
 		echo '/tmp/%e.%p.%s.%t.core' > /proc/sys/kernel/core_pattern
 	}
 	procd_close_instance
-	[ -f /usr/bin/lte-cm ] && {
-		lte-cm start
-	}
+	charlietalk start
 }
 
 reload_service() {
@@ -37,9 +35,7 @@ reload_service() {
 
 stop_service() {
 	/sbin/wifi down
-	[ -f /usr/bin/lte-cm ] && {
-		lte-cm stop
-	}
+	charlietalk stop
 }
 
 service_running() {

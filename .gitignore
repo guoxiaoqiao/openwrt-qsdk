@@ -11,10 +11,11 @@
 /tmp
 /logs
 /feeds
+/qca
+/feeds.conf
 /files
 /package/feeds
 /package/openwrt-packages
-/qca
 *.orig
 *.rej
 *~

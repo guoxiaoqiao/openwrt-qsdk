@@ -32,10 +32,8 @@ ppp_generic_setup() {
 		ipv6=1
 	fi
 	if [ "${demand:-0}" -gt 0 ]; then
-		[ "$ipv6" = 1 ] && ipv6="ipv6 ,::0a70:7070 ipv6cp-use-persistent"
 		demand="precompiled-active-filter /etc/ppp/filter demand idle $demand"
 	else
-		[ "$ipv6" = 1 ] && ipv6="+ipv6"
 		demand="persist"
 	fi
 	[ "${keepalive:-0}" -lt 1 ] && keepalive=""
@@ -51,7 +49,7 @@ ppp_generic_setup() {
 		nodetach ipparam "$config" \
 		ifname "$pppname" \
 		${keepalive:+lcp-echo-interval $interval lcp-echo-failure ${keepalive%%[, ]*}} \
-		$ipv6 \
+		${ipv6:++ipv6} \
 		nodefaultroute \
 		usepeerdns \
 		$demand maxfail 1 \
@@ -186,7 +184,6 @@ proto_pptp_setup() {
 	json_get_var server server && {
 		for ip in $(resolveip -t 5 "$server"); do
 			( proto_add_host_dependency "$config" "$ip" )
-			echo "$ip" >> /tmp/server.pptp-${config}
 			serv_addr=1
 		done
 	}
@@ -212,8 +209,6 @@ proto_pptp_setup() {
 }
 
 proto_pptp_teardown() {
-	local interface="$1"
-	rm -f /tmp/server.pptp-${interface}
 	ppp_generic_teardown "$@"
 }
 
