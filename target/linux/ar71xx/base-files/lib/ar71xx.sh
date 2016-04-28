@@ -330,6 +330,9 @@ ar71xx_board_detect() {
 	*"AirRouter")
 		name="airrouter"
 		;;
+	*"ALFA Network AP120C")
+		name="alfa-ap120c"
+		;;
 	*"ALFA Network AP96")
 		name="alfa-ap96"
 		;;
@@ -764,6 +767,9 @@ ar71xx_board_detect() {
 	*"TL-WA901ND v3")
 		name="tl-wa901nd-v3"
 		;;
+	*"TL-WA901ND v4")
+		name="tl-wa901nd-v4"
+		;;
 	*"TL-WDR3500")
 		name="tl-wdr3500"
 		;;
@@ -898,6 +904,9 @@ ar71xx_board_detect() {
 		;;
 	*"WNR1000 V2")
 		name="wnr1000-v2"
+		;;
+	*WPN824N)
+		name="wpn824n"
 		;;
 	*WRT160NL)
 		name="wrt160nl"
