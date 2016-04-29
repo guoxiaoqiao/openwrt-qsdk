@@ -1,0 +1,37 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2015 Linux Foundation. All rights reserved.
+#
+
+START=40
+USE_PROCD=1
+
+validate_skb_recycler_section() {
+	uci_validate_section skb_recycler skb "${1}" \
+		'max_skbs:uinteger' \
+		'max_spare_skbs:uinteger'
+
+	return $?
+}
+
+skb_recycler_config() {
+	local cfg="$1"
+
+	local max_skbs max_spare_skbs
+
+	validate_skb_recycler_section "${1}" || {
+		echo "validation failed"
+		return 1
+	}
+
+	[ -n "$max_skbs" ] && echo "$max_skbs" > /proc/net/skb_recycler/max_skbs
+	[ -n "$max_spare_skbs" ] && echo "$max_spare_skbs" > /proc/net/skb_recycler/max_spare_skbs
+}
+
+reload_service() {
+	config_load skb_recycler
+	config_foreach skb_recycler_config skb
+}
+
+start_service() {
+	reload_service
+}
