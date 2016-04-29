@@ -31,6 +31,8 @@ define Image/BuildKernel/FIT
 	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb,gzip,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb $(BIN_DIR)/$(IMG_PREFIX)-$(1).dtb
+	mkdir -p $(BIN_DIR)/dtbs/
+	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064*.dtb $(BIN_DIR)/dtbs/
 endef
 
 define Image/BuildKernel/FITInitramfs
