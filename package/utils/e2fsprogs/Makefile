@@ -116,12 +116,12 @@ endef
 define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR)/util \
 		BUILDCC="$(HOSTCC)" \
-		CFLAGS="" \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="" \
-		LDFLAGS="" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		subst
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
-		LDFLAGS=-Wl,--gc-sections \
+		LDFLAGS="-Wl,--gc-sections $(TARGET_LDFLAGS)" \
 		BUILDCC="$(HOSTCC)" \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
 		LIBBLKID="$(PKG_BUILD_DIR)/lib/libblkid.a -luuid" \
