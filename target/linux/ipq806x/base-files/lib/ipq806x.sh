@@ -14,11 +14,26 @@ ipq806x_board_detect() {
 	machine=$(cat /proc/device-tree/model)
 
 	case "$machine" in
+	*"DB149")
+		name="db149"
+		;;
+	*"DB149-1XX")
+		name="db149_1xx"
+		;;
+	*"DB149-2XX")
+		name="db149_2xx"
+		;;
 	*"AP148")
 		name="ap148"
 		;;
-	*"DB149")
-		name="db149"
+	*"AP148-1XX")
+		name="ap148_1xx"
+		;;
+	*"AP145")
+		name="ap145"
+		;;
+	*"AP145-1XX")
+		name="ap145_1xx"
 		;;
 	*"AP160")
 		name="ap160"
@@ -26,11 +41,17 @@ ipq806x_board_detect() {
 	*"AP161")
 		name="ap161"
 		;;
+	*"AP160-2XX")
+		name="ap160_2xx"
+		;;
 	*"STORM")
 		name="storm"
 		;;
 	*"WHIRLWIND")
 		name="whirlwind"
+		;;
+	*"AK01-1XX")
+		name="ak01_1xx"
 		;;
 	*"AP-DK01.1-C1")
 		name="ap-dk01.1-c1"
@@ -49,6 +70,9 @@ ipq806x_board_detect() {
 		;;
 	*"AP-DK04.1-C4")
 		name="ap-dk04.1-c4"
+		;;
+	*"AP-DK06.1-C1")
+		name="ap-dk06.1-c1"
 		;;
 	esac
 
