@@ -20,6 +20,12 @@ ipq806x_board_detect() {
 	*"DB149")
 		name="db149"
 		;;
+	*"AP160")
+		name="ap160"
+		;;
+	*"AP161")
+		name="ap161"
+		;;
 	*"STORM")
 		name="storm"
 		;;

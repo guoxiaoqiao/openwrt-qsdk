@@ -28,6 +28,13 @@ db149)
 	ucidef_add_switch_vlan "switch0" "1" "6 1 2 3 4"
 	ucidef_add_switch_vlan "switch0" "2" "0 5"
 	;;
+ap160|\
+ap161)
+	ucidef_set_interfaces_lan_wan "eth1 eth2" "eth0"
+	ucidef_add_switch "switch0" "1" "1" "1"
+	ucidef_add_switch_vlan "switch0" "1" "6 4"
+	ucidef_add_switch_vlan "switch0" "2" "0 1 2 3"
+	;;
 storm)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	ucidef_add_switch "switch0" "1" "1"
