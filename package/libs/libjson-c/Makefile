@@ -27,11 +27,6 @@ include $(INCLUDE_DIR)/package.mk
 
 TARGET_CFLAGS += $(FPIC)
 
-CONFIGURE_ARGS += \
-	ac_cv_func_strdup=yes \
-	ac_cv_func_strncasecmp=yes \
-	ac_cv_func_snprintf=yes
-
 define Package/libjson-c
   SECTION:=libs
   CATEGORY:=Libraries

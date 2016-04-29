@@ -1,12 +1,5 @@
 # Copyright (C) 2006-2013 OpenWrt.org
 
-find_mtd_index() {
-	local PART="$(grep "\"$1\"" /proc/mtd | awk -F: '{print $1}')"
-	local INDEX="${PART##mtd}"
-
-	echo ${INDEX}
-}
-
 find_mtd_chardev() {
 	local INDEX=$(find_mtd_index "$1")
 	local PREFIX=/dev/mtd
@@ -89,6 +82,7 @@ macaddr_canonicalize()
 	local mac="$1"
 	local canon=""
 
+	mac=$(echo -n $mac | tr -d \")
 	[ ${#mac} -gt 17 ] && return
 	[ -n "${mac//[a-fA-F0-9\.: -]/}" ] && return
 

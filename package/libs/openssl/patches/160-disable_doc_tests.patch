@@ -37,8 +37,8 @@
  build_libs: build_libcrypto build_libssl openssl.pc
  
 @@ -530,7 +530,7 @@ dist:
-       @$(MAKE) SDIRS='$(SDIRS)' clean
-       @$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
+ 	@$(MAKE) SDIRS='$(SDIRS)' clean
+ 	@$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
  
 -install: all install_docs install_sw
 +install: all install_sw
@@ -48,8 +48,8 @@
 --- a/Makefile.org
 +++ b/Makefile.org
 @@ -528,7 +528,7 @@ dist:
-       @$(MAKE) SDIRS='$(SDIRS)' clean
-       @$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
+ 	@$(MAKE) SDIRS='$(SDIRS)' clean
+ 	@$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
  
 -install: all install_docs install_sw
 +install: all install_sw

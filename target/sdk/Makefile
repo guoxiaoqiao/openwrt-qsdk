@@ -31,8 +31,7 @@ EXCLUDE_DIRS:=*/ccache \
 	*.install.clean \
 	*.install.flags \
 	*.install \
-	*/doc \
-	$(STAGING_SUBDIR_TARGET)/usr/bin
+	*/doc
 
 SDK_DIRS = \
 		$(STAGING_SUBDIR_HOST) \
@@ -109,6 +108,7 @@ $(BIN_DIR)/$(SDK_NAME).tar.bz2: clean
 	cat $(TOPDIR)/feeds.conf.default \
 		>> $(SDK_BUILD_DIR)/feeds.conf.default
 	$(SED) 's,^# REVISION:=.*,REVISION:=$(REVISION),g' $(SDK_BUILD_DIR)/include/version.mk
+	$(SED) '/LINUX_VERMAGIC:=/ { s,unknown,$(LINUX_VERMAGIC),g }' $(SDK_BUILD_DIR)/include/kernel.mk
 	find $(SDK_BUILD_DIR) -name .git | $(XARGS) rm -rf
 	find $(SDK_BUILD_DIR) -name .svn | $(XARGS) rm -rf
 	find $(SDK_BUILD_DIR) -name CVS | $(XARGS) rm -rf

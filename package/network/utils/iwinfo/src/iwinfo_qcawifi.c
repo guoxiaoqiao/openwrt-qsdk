@@ -19,9 +19,23 @@
  * This file is based on: src/iwinfo_madwifi.c
  */
 
-#include "iwinfo/qcawifi.h"
-#include "iwinfo/wext.h"
+#include <fcntl.h>
 
+/* The driver is using only one "_" character in front of endianness macros
+ * whereas the uClibc is using "__" */
+#include <endian.h>
+#if __BYTE_ORDER == __BIG_ENDIAN
+#define _BYTE_ORDER _BIG_ENDIAN
+#elif __BYTE_ORDER == __LITTLE_ENDIAN
+#define _BYTE_ORDER _LITTLE_ENDIAN
+#else
+#error "__BYTE_ORDER undefined"
+#endif
+
+#include "iwinfo.h"
+#include "iwinfo/utils.h"
+#include "ieee80211_external.h"
+#include "iwinfo_wext.h"
 
 /*
  * Madwifi ISO 3166 to Country/Region Code mapping.
@@ -338,17 +352,17 @@ void qcawifi_close(void)
 
 int qcawifi_get_mode(const char *ifname, int *buf)
 {
-	return wext_get_mode(ifname, buf);
+	return wext_ops.mode(ifname, buf);
 }
 
 int qcawifi_get_ssid(const char *ifname, char *buf)
 {
-	return wext_get_ssid(ifname, buf);
+	return wext_ops.ssid(ifname, buf);
 }
 
 int qcawifi_get_bssid(const char *ifname, char *buf)
 {
-	return wext_get_bssid(ifname, buf);
+	return wext_ops.bssid(ifname, buf);
 }
 
 int qcawifi_get_channel(const char *ifname, int *buf)
@@ -398,7 +412,7 @@ int qcawifi_get_frequency(const char *ifname, int *buf)
 
 int qcawifi_get_txpower(const char *ifname, int *buf)
 {
-	return wext_get_txpower(ifname, buf);
+	return wext_ops.txpower(ifname, buf);
 }
 
 int qcawifi_get_bitrate(const char *ifname, int *buf)
@@ -441,7 +455,7 @@ int qcawifi_get_bitrate(const char *ifname, int *buf)
 		}
 
 		/* Return whatever wext tells us ... */
-		return wext_get_bitrate(ifname, buf);
+		return wext_ops.bitrate(ifname, buf);
 	}
 
 	return -1;
@@ -487,7 +501,7 @@ int qcawifi_get_signal(const char *ifname, int *buf)
 		}
 
 		/* Return whatever wext tells us ... */
-		return wext_get_signal(ifname, buf);
+		return wext_ops.signal(ifname, buf);
 	}
 
 	return -1;
@@ -495,7 +509,7 @@ int qcawifi_get_signal(const char *ifname, int *buf)
 
 int qcawifi_get_noise(const char *ifname, int *buf)
 {
-	return wext_get_noise(ifname, buf);
+	return wext_ops.noise(ifname, buf);
 }
 
 int qcawifi_get_quality(const char *ifname, int *buf)
@@ -538,7 +552,7 @@ int qcawifi_get_quality(const char *ifname, int *buf)
 		}
 
 		/* Return whatever wext tells us ... */
-		return wext_get_quality(ifname, buf);
+		return wext_ops.quality(ifname, buf);
 	}
 
 	return -1;
@@ -546,7 +560,7 @@ int qcawifi_get_quality(const char *ifname, int *buf)
 
 int qcawifi_get_quality_max(const char *ifname, int *buf)
 {
-	return wext_get_quality_max(ifname, buf);
+	return wext_ops.quality_max(ifname, buf);
 }
 
 int qcawifi_get_encryption(const char *ifname, char *buf)
@@ -800,7 +814,7 @@ int qcawifi_get_txpwrlist(const char *ifname, char *buf, int *len)
 	{
 		if( (res = qcawifi_ifadd(ifname)) != NULL )
 		{
-			rc = wext_get_txpwrlist(res, buf, len);
+			rc = wext_ops.txpwrlist(res, buf, len);
 			qcawifi_ifdel(res);
 		}
 	}
@@ -808,7 +822,7 @@ int qcawifi_get_txpwrlist(const char *ifname, char *buf, int *len)
 	/* Its an athX ... */
 	else if( !!qcawifi_isvap(ifname, NULL) )
 	{
-		rc = wext_get_txpwrlist(ifname, buf, len);
+		rc = wext_ops.txpwrlist(ifname, buf, len);
 	}
 
 	return rc;
@@ -834,7 +848,7 @@ int qcawifi_get_scanlist(const char *ifname, char *buf, int *len)
 				{
 					if( iwinfo_ifup(e->d_name) )
 					{
-						ret = wext_get_scanlist(e->d_name, buf, len);
+						ret = wext_ops.scanlist(e->d_name, buf, len);
 						break;
 					}
 				}
@@ -850,13 +864,13 @@ int qcawifi_get_scanlist(const char *ifname, char *buf, int *len)
 			{
 				if( iwinfo_ifup(res) )
 				{
-					wext_get_scanlist(res, buf, len);
+					wext_ops.scanlist(res, buf, len);
 					sleep(1);
 
-					wext_get_scanlist(res, buf, len);
+					wext_ops.scanlist(res, buf, len);
 					sleep(1);
 
-					ret = wext_get_scanlist(res, buf, len);
+					ret = wext_ops.scanlist(res, buf, len);
 				}
 
 				iwinfo_ifdown(res);
@@ -868,7 +882,7 @@ int qcawifi_get_scanlist(const char *ifname, char *buf, int *len)
 	/* Got athX device? */
 	else if( !!qcawifi_isvap(ifname, NULL) )
 	{
-		ret = wext_get_scanlist(ifname, buf, len);
+		ret = wext_ops.scanlist(ifname, buf, len);
 	}
 
 	return ret;
@@ -1054,7 +1068,7 @@ int qcawifi_get_hardware_id(const char *ifname, char *buf)
 	struct iwinfo_hardware_id *ids;
 	struct iwinfo_hardware_entry *e;
 
-	if (wext_get_hardware_id(ifname, buf))
+	if (wext_ops.hardware_id(ifname, buf))
 		return iwinfo_hardware_id_from_mtd((struct iwinfo_hardware_id *)buf);
 
 	return 0;

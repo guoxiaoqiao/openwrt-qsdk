@@ -1,6 +1,5 @@
 DEVICE_TYPE:=terminal
 BOARDNAME:=Artec ThinCan
-LINUX_VERSION:=3.10.34
 CPU_TYPE := geode
 FEATURES += broken
 
@@ -15,8 +14,6 @@ DEFAULT_PACKAGES:=\
 	udevtrigger \
 	kmod-fs-msdos \
 	kmod-fs-vfat \
-	kmod-fs-ext2 \
-	kmod-fs-ext3 \
 	kmod-fs-ext4 \
 	kmod-usb-core \
 	kmod-usb-ohci \

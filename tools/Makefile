@@ -35,17 +35,17 @@ tools-$(CONFIG_TARGET_x86) += qemu
 tools-$(CONFIG_TARGET_mxs) += elftosb
 tools-$(CONFIG_TARGET_brcm2708) += mtools dosfstools
 tools-$(CONFIG_TARGET_ar71xx) += lzma-old squashfs
-tools-$(CONFIG_TARGET_ipq806x) += ramdump-parser
 tools-y += lzma squashfs4
 tools-$(BUILD_B43_TOOLS) += b43-tools
 tools-$(BUILD_PPL_CLOOG) += ppl cloog
+tools-$(CONFIG_USE_SPARSE) += sparse
 tools-y += coccinelle
 
 # builddir dependencies
 $(curdir)/bison/compile := $(curdir)/flex/install
 $(curdir)/flex/compile := $(curdir)/automake/install
 $(curdir)/pkg-config/compile := $(curdir)/sed/install
-$(curdir)/libtool/compile := $(curdir)/sed/install
+$(curdir)/libtool/compile := $(curdir)/sed/install $(curdir)/m4/install
 $(curdir)/squashfs/compile := $(curdir)/lzma-old/install
 $(curdir)/squashfs4/compile := $(curdir)/xz/install
 $(curdir)/quilt/compile := $(curdir)/sed/install $(curdir)/autoconf/install $(curdir)/findutils/install
@@ -72,6 +72,7 @@ $(curdir)/sdcc/compile := $(curdir)/bison/install
 $(curdir)/b43-tools/compile := $(curdir)/bison/install
 $(curdir)/padjffs2/compile := $(curdir)/findutils/install
 $(curdir)/cloog/compile := $(curdir)/ppl/install
+$(curdir)/bc/compile := $(curdir)/bison/install
 $(curdir)/findutils/compile := $(curdir)/bison/install
 
 ifneq ($(CONFIG_CCACHE),)
@@ -114,7 +115,7 @@ $(STAGING_DIR_HOST)/.prepared: $(TMP_DIR)/.build
 define PrepareCommand
 $(STAGING_DIR_HOST)/bin/$(1): $(STAGING_DIR)/.prepared
 	@mkdir -p "$$(dir $$@)"; rm -f "$$@"
-	@export FILE="$$$$(which $(2) 2>/dev/null | head -n1)"; [ -n "$$$$FILE" ] || { \
+	@export FILE="$$$$(which $(2) 2>/dev/null | grep -v 'not found' | head -n1)"; [ -n "$$$$FILE" ] || { \
 		echo "Command $(1) not found."; false; \
 	}; ln -s "$$$$FILE" "$$@"
 
@@ -123,6 +124,7 @@ endif
 
 $(STAGING_DIR_HOST)/bin/stat: $(STAGING_DIR)/.prepared
 	@mkdir -p "$(dir $@)"; rm -f $@
+	@rm -f $@
 	@if stat --version > /dev/null 2>&1; then \
 		ln -s `which stat` $@; \
 	elif gstat --version > /dev/null 2>&1; then \

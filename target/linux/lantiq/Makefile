@@ -8,10 +8,10 @@ include $(TOPDIR)/rules.mk
 
 BOARD:=lantiq
 BOARDNAME:=Lantiq
-FEATURES:=squashfs ubifs
+FEATURES:=squashfs
 SUBTARGETS=xway xrx200
 
-LINUX_VERSION:=3.10.34
+KERNEL_PATCHVER:=3.10
 
 CPU_TYPE:=mips32r2
 

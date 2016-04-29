@@ -115,8 +115,8 @@ config_get_bool() {
 	local _tmp
 	config_get _tmp "$2" "$3" "$4"
 	case "$_tmp" in
-		1|on|true|enabled) _tmp=1;;
-		0|off|false|disabled) _tmp=0;;
+		1|on|true|yes|enabled) _tmp=1;;
+		0|off|false|no|disabled) _tmp=0;;
 		*) _tmp="$4";;
 	esac
 	export ${NO_EXPORT:+-n} "$1=$_tmp"
@@ -181,13 +181,19 @@ include() {
 	done
 }
 
-find_mtd_part() {
-        local PART="$(grep "\"$1\"" /proc/mtd | awk -F: '{print $1}')"
-        local PREFIX=/dev/mtdblock
+find_mtd_index() {
+	local PART="$(grep "\"$1\"" /proc/mtd | awk -F: '{print $1}')"
+	local INDEX="${PART##mtd}"
 
-        PART="${PART##mtd}"
-        [ -d /dev/mtdblock ] && PREFIX=/dev/mtdblock/
-        echo "${PART:+$PREFIX$PART}"
+	echo ${INDEX}
+}
+
+find_mtd_part() {
+	local INDEX=$(find_mtd_index "$1")
+	local PREFIX=/dev/mtdblock
+
+	[ -d /dev/mtdblock ] && PREFIX=/dev/mtdblock/
+	echo "${INDEX:+$PREFIX$INDEX}"
 }
 
 group_add() {

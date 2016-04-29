@@ -1,3 +1,4 @@
+
 #
 # Copyright (C) 2006-2010 OpenWrt.org
 #
@@ -277,6 +278,40 @@ endef
 $(eval $(call KernelPackage,ipt-ulog))
 
 
+define KernelPackage/ipt-nflog
+  TITLE:=Module for user-space packet logging
+  KCONFIG:=$(KCONFIG_IPT_NFLOG)
+  FILES:=$(foreach mod,$(IPT_NFLOG-m),$(LINUX_DIR)/net/$(mod).ko)
+  AUTOLOAD:=$(call AutoProbe,$(notdir $(IPT_NFLOG-m)))
+  $(call AddDepends/ipt,+kmod-nfnetlink-log)
+endef
+
+define KernelPackage/ipt-nflog/description
+ Netfilter module for user-space packet logging
+ Includes:
+ - NFLOG
+endef
+
+$(eval $(call KernelPackage,ipt-nflog))
+
+
+define KernelPackage/ipt-nfqueue
+  TITLE:=Module for user-space packet queuing
+  KCONFIG:=$(KCONFIG_IPT_NFQUEUE)
+  FILES:=$(foreach mod,$(IPT_NFQUEUE-m),$(LINUX_DIR)/net/$(mod).ko)
+  AUTOLOAD:=$(call AutoProbe,$(notdir $(IPT_NFQUEUE-m)))
+  $(call AddDepends/ipt,+kmod-nfnetlink-queue)
+endef
+
+define KernelPackage/ipt-nfqueue/description
+ Netfilter module for user-space packet queuing
+ Includes:
+ - NFQUEUE
+endef
+
+$(eval $(call KernelPackage,ipt-nfqueue))
+
+
 define KernelPackage/ipt-debug
   TITLE:=Module for debugging/development
   KCONFIG:=$(KCONFIG_IPT_DEBUG)
@@ -365,61 +400,6 @@ endef
 
 $(eval $(call KernelPackage,ipt-u32))
 
-define KernelPackage/ipt-mark2prio
-  TITLE:=mark2prio support
-  KCONFIG:= CONFIG_NETFILTER_XT_TARGET_MARK2PRIO
-  FILES:= $(LINUX_DIR)/net/netfilter/xt_mark2prio.ko
-  AUTOLOAD:= $(call AutoLoad,50,xt_mark2prio)
-  $(call AddDepends/ipt)
-endef
-
-define KernelPackage/ipt-mark2prio/description
-  Kernel modules for copying mark to priority
-endef
-
-$(eval $(call KernelPackage,ipt-mark2prio))
-
-define KernelPackage/ipt-ct-sctp
-  TITLE:=SCTP conntrack kernel modules
-  KCONFIG:= CONFIG_NF_CT_PROTO_SCTP
-  FILES:= $(LINUX_DIR)/net/netfilter/nf_conntrack_proto_sctp.ko
-  AUTOLOAD:=$(call AutoLoad,50,nf_conntrack_proto_sctp)
-  $(call AddDepends/ipt,+kmod-ipt-conntrack)
-endef
-
-define KernelPackage/ipt-ct-sctp/description
-  Kernel modules for sctp conntrack
-endef
-
-$(eval $(call KernelPackage,ipt-ct-sctp))
-
-define KernelPackage/ipt-sctp
-  TITLE:=SCTP iptables kernel modules
-  KCONFIG:=CONFIG_NETFILTER_XT_MATCH_SCTP
-  FILES:= $(LINUX_DIR)/net/netfilter/xt_sctp.ko
-  AUTOLOAD:=$(call AutoLoad,50,xt_sctp)
-  $(call AddDepends/ipt)
-endef
-
-define KernelPackage/ipt-sctp/description
-  Kernel modules for sctp iptables rules
-endef
-
-$(eval $(call KernelPackage,ipt-sctp))
-
-define KernelPackage/nat-sctp
-  TITLE:=SCTP nat kernel modules
-  KCONFIG:=CONFIG_NF_NAT_PROTO_SCTP
-  FILES:= $(LINUX_DIR)/net/netfilter/nf_nat_proto_sctp.ko
-  AUTOLOAD:=$(call AutoLoad,51,nf_nat_proto_sctp)
-  $(call AddDepends/ipt,+kmod-ipt-ct-sctp +kmod-ipt-nat +kmod-lib-crc32c)
-endef
-
-define KernelPackage/nat-sctp/description
-  Kernel modules for sctp nat
-endef
-
-$(eval $(call KernelPackage,nat-sctp))
 
 define KernelPackage/ipt-iprange
   TITLE:=Module for matching ip ranges
@@ -473,6 +453,21 @@ define KernelPackage/ip6tables/description
 endef
 
 $(eval $(call KernelPackage,ip6tables))
+
+define KernelPackage/ip6tables-extra
+  SUBMENU:=$(NF_MENU)
+  TITLE:=Extra IPv6 modules
+  DEPENDS:=+kmod-ip6tables
+  KCONFIG:=$(KCONFIG_IPT_IPV6_EXTRA)
+  FILES:=$(foreach mod,$(IPT_IPV6_EXTRA-m),$(LINUX_DIR)/net/$(mod).ko)
+  AUTOLOAD:=$(call AutoLoad,43,$(notdir $(IPT_IPV6_EXTRA-m)))
+endef
+
+define KernelPackage/ip6tables-extra/description
+ Netfilter IPv6 extra header matching modules
+endef
+
+$(eval $(call KernelPackage,ip6tables-extra))
 
 ARP_MODULES = arp_tables arpt_mangle arptable_filter
 define KernelPackage/arptables
@@ -569,10 +564,10 @@ $(eval $(call KernelPackage,ebtables-watchers))
 define KernelPackage/nfnetlink
   SUBMENU:=$(NF_MENU)
   TITLE:=Netlink-based userspace interface
-  DEPENDS:=+kmod-ipt-core
-  FILES:=$(LINUX_DIR)/net/netfilter/nfnetlink.ko
-  KCONFIG:=CONFIG_NETFILTER_NETLINK
-  AUTOLOAD:=$(call AutoProbe,nfnetlink)
+  FILES:=$(foreach mod,$(NFNETLINK-m),$(LINUX_DIR)/net/$(mod).ko)
+  KCONFIG:=$(KCONFIG_NFNETLINK)
+  AUTOLOAD:=$(call AutoProbe,$(notdir $(NFNETLINK-m)))
+  $(call AddDepends/ipt)
 endef
 
 define KernelPackage/nfnetlink/description
@@ -590,14 +585,16 @@ endef
 
 define KernelPackage/nfnetlink-log
   TITLE:=Netfilter LOG over NFNETLINK interface
-  FILES:=$(LINUX_DIR)/net/netfilter/nfnetlink_log.ko
-  KCONFIG:=CONFIG_NETFILTER_NETLINK_LOG
-  AUTOLOAD:=$(call AutoProbe,nfnetlink_log)
+  FILES:=$(foreach mod,$(NFNETLINK_LOG-m),$(LINUX_DIR)/net/$(mod).ko)
+  KCONFIG:=$(KCONFIG_NFNETLINK_LOG)
+  AUTOLOAD:=$(call AutoProbe,$(notdir $(NFNETLINK_LOG-m)))
   $(call AddDepends/nfnetlink)
 endef
 
 define KernelPackage/nfnetlink-log/description
  Kernel modules support for logging packets via NFNETLINK
+ Includes:
+ - NFLOG
 endef
 
 $(eval $(call KernelPackage,nfnetlink-log))
@@ -605,14 +602,16 @@ $(eval $(call KernelPackage,nfnetlink-log))
 
 define KernelPackage/nfnetlink-queue
   TITLE:=Netfilter QUEUE over NFNETLINK interface
-  FILES:=$(LINUX_DIR)/net/netfilter/nfnetlink_queue.ko
-  KCONFIG:=CONFIG_NETFILTER_NETLINK_QUEUE
-  AUTOLOAD:=$(call AutoProbe,nfnetlink_queue)
+  FILES:=$(foreach mod,$(NFNETLINK_QUEUE-m),$(LINUX_DIR)/net/$(mod).ko)
+  KCONFIG:=$(KCONFIG_NFNETLINK_QUEUE)
+  AUTOLOAD:=$(call AutoProbe,$(notdir $(NFNETLINK_QUEUE-m)))
   $(call AddDepends/nfnetlink)
 endef
 
 define KernelPackage/nfnetlink-queue/description
  Kernel modules support for queueing packets via NFNETLINK
+ Includes:
+ - NFQUEUE
 endef
 
 $(eval $(call KernelPackage,nfnetlink-queue))

@@ -138,8 +138,15 @@ define KernelPackage/lib-xor
   TITLE:=XOR blocks algorithm support
   HIDDEN:=1
   KCONFIG:=CONFIG_XOR_BLOCKS
+ifneq ($(wildcard $(LINUX_DIR)/arch/arm/lib/xor-neon.ko),)
+  FILES:= \
+    $(LINUX_DIR)/crypto/xor.ko \
+    $(LINUX_DIR)/arch/arm/lib/xor-neon.ko
+  AUTOLOAD:=$(call AutoProbe,xor-neon xor)
+else
   FILES:=$(LINUX_DIR)/crypto/xor.ko
   AUTOLOAD:=$(call AutoProbe,xor)
+endif
 endef
 
 define KernelPackage/lib-xor/description
@@ -195,3 +202,18 @@ define KernelPackage/lib-cordic/description
 endef
 
 $(eval $(call KernelPackage,lib-cordic))
+
+
+define KernelPackage/lib-oid-registry
+  SUBMENU:=$(LIB_MENU)
+  TITLE:=OID-Registry function support
+  KCONFIG:=CONFIG_OID_REGISTRY
+  FILES:=$(LINUX_DIR)/lib/oid_registry.ko
+  AUTOLOAD:=$(call AutoProbe,oid-registry)
+endef
+
+define KernelPackage/lib-oid-registry/description
+ Kernel module for OID-Registry function support
+endef
+
+$(eval $(call KernelPackage,lib-oid-registry))

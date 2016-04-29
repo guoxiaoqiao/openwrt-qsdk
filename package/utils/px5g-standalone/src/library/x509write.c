@@ -1004,19 +1004,19 @@ static int x509write_make_sign(x509_raw *chain, rsa_context *privkey)
  */
 static int get_random_serial(void)
 {
-	int random = 0;
-	FILE *fd;
+    int random = 0;
+    FILE *fd;
 
-	fd = fopen("/dev/urandom", "r");
+    fd = fopen("/dev/urandom", "r");
 
-	if (fd) {
-		if (fread(&random, 1, sizeof(random), fd) != sizeof(random))
-			random = 0;
+    if (fd) {
+	if (fread(&random, 1, sizeof(random), fd) != sizeof(random))
+            random = 0;
 
-		fclose(fd);
-	}
+        fclose(fd);
+    }
 
-	return random;
+    return random;
 }
 
 /*

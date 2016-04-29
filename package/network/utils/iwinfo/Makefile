@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2010-2013 Jo-Philipp Wich <xm@subsignal.org>
+# Copyright (C) 2010-2014 Jo-Philipp Wich <xm@subsignal.org>
 #
 # This is free software, licensed under the GPL 2 license.
 #
@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libiwinfo
-PKG_RELEASE:=47
+PKG_RELEASE:=51
 
 PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
 PKG_CONFIG_DEPENDS := \
@@ -28,7 +28,8 @@ PKG_BUILD_DEPENDS := \
 	PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf \
 	PACKAGE_kmod-qca-wifi-10.4-akronite-perf:kmod-qca-wifi-10.4-akronite-perf \
 	PACKAGE_kmod-qca-wifi-10.4-unified-profile:kmod-qca-wifi-10.4-unified-profile \
-	PACKAGE_kmod-qca-wifi-10.4-dakota-perf:kmod-qca-wifi-10.4-dakota-perf
+	PACKAGE_kmod-qca-wifi-10.4-dakota-perf:kmod-qca-wifi-10.4-dakota-perf \
+	CONFIG_PACKAGE_kmod-mac80211
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -38,6 +39,7 @@ define Package/libiwinfo
   CATEGORY:=Libraries
   TITLE:=Generalized Wireless Information Library (iwinfo)
   DEPENDS:=+PACKAGE_kmod-mac80211:libnl-tiny +PACKAGE_kmod-wil6210:libnl-tiny
+  ABI_VERSION:=$(PKG_RELEASE)
   MAINTAINER:=Jo-Philipp Wich <xm@subsignal.org>
 endef
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2010-2015 Jo-Philipp Wich <jow@openwrt.org>
+# Copyright (C) 2010-2014 Jo-Philipp Wich <jow@openwrt.org>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -106,10 +106,6 @@ define Package/uhttpd/conffiles
 /etc/uhttpd.crt
 /etc/uhttpd.key
 endef
-
-ifneq ($(CONFIG_USE_GLIBC),)
-  TARGET_CFLAGS += -D_DEFAULT_SOURCE
-endif
 
 TARGET_LDFLAGS += -lcrypt
 

@@ -34,8 +34,8 @@
  lint:
  	@set -e; target=lint; $(RECURSIVE_BUILD_CMD)
 @@ -523,9 +523,9 @@ dist:
-       @$(MAKE) SDIRS='$(SDIRS)' clean
-       @$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
+ 	@$(MAKE) SDIRS='$(SDIRS)' clean
+ 	@$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
  
 -install: all install_sw
 +install: install_sw
