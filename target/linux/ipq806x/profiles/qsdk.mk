@@ -70,7 +70,9 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp kmod-ipt-conntrack-qos \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
 	rp-pppoe-server isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 ppp-mod-pptp
 
-QOS:=luci-app-qos kmod-sched
+QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
+	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
+
 
 MAP_PKGS:=map-t
 
