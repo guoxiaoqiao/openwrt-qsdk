@@ -255,6 +255,18 @@ platform_check_image() {
 	return $?
 }
 
+platform_version_upgrade() {
+	local version_files="appsbl_version sbl_version tz_version hlos_version rpm_version"
+	local sys="/sys/devices/system/qfprom/qfprom0/"
+	local tmp="/tmp/"
+
+	for file in $version_files; do
+		[ -f "${tmp}${file}" ] && {
+			mv "${tmp}${file}" "${sys}"
+		}
+	done
+}
+
 platform_do_upgrade() {
 	local board=$(ipq806x_board_name)
 
@@ -280,6 +292,7 @@ platform_do_upgrade() {
 		switch_layout linux
 		# update bootconfig to register that fw upgrade has been done
 		do_flash_bootconfig bootconfig "BOOTCONFIG"
+		platform_version_upgrade
 
 		erase_emmc_config
 		return 0;
