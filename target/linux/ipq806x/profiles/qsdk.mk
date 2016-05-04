@@ -9,12 +9,12 @@ NSS_COMMON:= \
 	$(QCA_EDMA)
 
 NSS_STANDARD:= \
-	qca-nss-fw-retail \
+	qca-nss-fw2-retail \
 
 NSS_ENTERPRISE:= \
-	qca-nss-fw-enterprise \
-        qca-nss-fw-enterprise_custA \
-	qca-nss-fw-enterprise_custC \
+	qca-nss-fw2-enterprise \
+	qca-nss-fw2-enterprise_custA \
+	qca-nss-fw2-enterprise_custC \
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
@@ -39,7 +39,8 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell swconfig
 SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
 WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad-mesh hostapd-utils \
-		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink
+		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
+		 athtestcmd
 
 WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
@@ -48,7 +49,7 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
-	qca-wifi-fw-hw5-10.4-asic
+	qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic
 
 WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo
 
@@ -82,6 +83,8 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp kmod-ipt-conntrack-qos \
 	rp-pppoe-server isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 ppp-mod-pptp
 
 BLUETOOTH:=kmod-bluetooth bluez-libs bluez-utils kmod-ath3k
+
+BLUETOPIA:=bluetopia
 
 QOS:=luci-app-qos kmod-sched
 
@@ -123,7 +126,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI_PLC) $(AQ_PHY) $(FAILSAFE)
+		$(MAP_PKGS) $(HYFI_PLC) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA)
 endef
 
 define Profile/QSDK_Premium/Description
@@ -155,7 +158,7 @@ define Profile/QSDK_Enterprise
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
-		$(IPSEC) $(CD_ROUTER)
+		$(IPSEC) $(CD_ROUTER) $(AQ_PHY)
 endef
 
 define Profile/QSDK_Enterprise/Description
