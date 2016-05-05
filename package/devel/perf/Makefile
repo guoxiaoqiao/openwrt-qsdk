@@ -23,6 +23,8 @@ define Package/perf
   TITLE:=Linux performance monitoring tool
   VERSION:=$(LINUX_VERSION)-$(PKG_RELEASE)
   URL:=http://www.kernel.org
+  KCONFIG:=CONFIG_PERF_EVENTS=y \
+	  CONFIG_HW_PERF_EVENTS=y
 endef
 
 define Package/perf/description
