@@ -39,7 +39,7 @@ define dl_pack
 	$(if $(dl_pack/$(call ext,$(1))),$(dl_pack/$(call ext,$(1))),$(dl_pack/unknown))
 endef
 
-define caf_fallback
+define git_mirror_download
 	GIT_NAME=$$$$(echo $(URL) | sed -e s:.*/::g -e s/.git$$$$//g); \
 	[ -n "${CONFIG_GIT_MIRROR}" ] && \
 	git clone $(CONFIG_GIT_MIRROR)$$$$GIT_NAME $(SUBDIR) --recursive && \
@@ -97,7 +97,7 @@ define DownloadMethod/git
 		cd $(TMP_DIR)/dl && \
 		rm -rf $(SUBDIR) && \
 		[ \! -d $(SUBDIR) ] && \
-		$(call caf_fallback) || \
+		$(call git_mirror_download) || \
 		(rm -rf $(SUBDIR) &&  git clone $(URL) $(SUBDIR) --recursive && \
 		(cd $(SUBDIR) && git remote -v && git checkout $(VERSION) || \
 			(git fetch origin $(VERSION) && git checkout FETCH_HEAD && git submodule update))) && \
