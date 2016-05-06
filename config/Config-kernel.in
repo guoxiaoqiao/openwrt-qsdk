@@ -236,6 +236,42 @@ if KERNEL_DEVTMPFS
 
 endif
 
+config KERNEL_SKB_DEBUG
+	bool "Enable DEBUG Object support"
+
+if KERNEL_SKB_DEBUG
+
+	config KERNEL_DEBUG_OBJECTS
+		bool "Enable DEBUG Object support to track the lifetime of various objects"
+		default y
+
+	config KERNEL_DEBUG_OBJECTS_SELFTEST
+		bool "Enable Debug objects selftest"
+
+	config KERNEL_DEBUG_OBJECTS_FREE
+		bool "Debug objects in freed memory"
+
+	config KERNEL_DEBUG_OBJECTS_TIMERS
+		bool "Debug timer objects"
+
+	config KERNEL_DEBUG_OBJECTS_RCU_HEAD
+		bool "Debug RCU callbacks objects"
+
+	config KERNEL_DEBUG_OBJECTS_PERCPU_COUNTER
+		bool "Debug percpu counter objects"
+
+	config KERNEL_DEBUG_OBJECTS_WORK
+		bool "Debug work objects"
+
+	config KERNEL_DEBUG_OBJECTS_ENABLE_DEFAULT
+		int "debug_objects bootup default value (0-1)"
+		default 1
+
+	config KERNEL_DEBUG_OBJECTS_SKBUFF
+		bool "Debug sk_buff allocations"
+		default y
+endif
+
 #
 # CGROUP support symbols
 #
