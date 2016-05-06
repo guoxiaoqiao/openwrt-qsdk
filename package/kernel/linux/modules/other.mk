@@ -996,3 +996,18 @@ define KernelPackage/echo/description
 endef
 
 $(eval $(call KernelPackage,echo))
+
+
+define KernelPackage/fw-auth-test
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Test module for Wifi FW Authentication
+  KCONFIG:=CONFIG_FW_AUTH_TEST
+  FILES:=$(LINUX_DIR)/drivers/misc/fw_auth_test.ko
+endef
+
+define KernelPackage/fw-auth-test/description
+  This test module provides sysfs interface to provide data to test
+the FW authentication API and display the results.
+endef
+
+$(eval $(call KernelPackage,fw-auth-test))
