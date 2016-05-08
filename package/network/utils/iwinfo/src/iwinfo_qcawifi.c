@@ -1118,3 +1118,34 @@ int qcawifi_get_frequency_offset(const char *ifname, int *buf)
 	*buf = hw->frequency_offset;
 	return 0;
 }
+
+const struct iwinfo_ops qcawifi_ops = {
+	.name             = "qcawifi",
+	.probe            = qcawifi_probe,
+	.channel          = qcawifi_get_channel,
+	.frequency        = qcawifi_get_frequency,
+	.frequency_offset = qcawifi_get_frequency_offset,
+	.txpower          = qcawifi_get_txpower,
+	.txpower_offset   = qcawifi_get_txpower_offset,
+	.bitrate          = qcawifi_get_bitrate,
+	.signal           = qcawifi_get_signal,
+	.noise            = qcawifi_get_noise,
+	.quality          = qcawifi_get_quality,
+	.quality_max      = qcawifi_get_quality_max,
+	.mbssid_support   = qcawifi_get_mbssid_support,
+	.hwmodelist       = qcawifi_get_hwmodelist,
+	.mode             = qcawifi_get_mode,
+	.ssid             = qcawifi_get_ssid,
+	.bssid            = qcawifi_get_bssid,
+	.country          = qcawifi_get_country,
+	.hardware_id      = qcawifi_get_hardware_id,
+	.hardware_name    = qcawifi_get_hardware_name,
+	.encryption       = qcawifi_get_encryption,
+	.phyname          = qcawifi_get_phyname,
+	.assoclist        = qcawifi_get_assoclist,
+	.txpwrlist        = qcawifi_get_txpwrlist,
+	.scanlist         = qcawifi_get_scanlist,
+	.freqlist         = qcawifi_get_freqlist,
+	.countrylist      = qcawifi_get_countrylist,
+	.close            = qcawifi_close
+};
