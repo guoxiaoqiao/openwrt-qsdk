@@ -64,6 +64,42 @@ config KERNEL_ENABLE_DEFAULT_TRACERS
 	depends on KERNEL_FTRACE
 	default n
 
+config KERNEL_DEBUG_KMEMLEAK
+	bool "Kernel memory leak detector"
+
+if KERNEL_DEBUG_KMEMLEAK
+	config KERNEL_HAVE_DEBUG_KMEMLEAK
+		bool
+		default y
+	config KERNEL_DEBUG_KMEMLEAK_EARLY_LOG_SIZE
+		int "Maximum kmemleak early log entries"
+		default 400
+	config KERNEL_DEBUG_KMEMLEAK_TEST
+		tristate "Simple test for the kernel memory leak detector"
+	config KERNEL_DEBUG_KMEMLEAK_DEFAULT_OFF
+		bool "Default kmemleak to off"
+endif
+
+config KERNEL_FUNCTION_TRACER
+	bool "Function tracer"
+	depends on KERNEL_FTRACE
+	default n
+
+config KERNEL_FUNCTION_GRAPH_TRACER
+	bool "Function graph tracer"
+	depends on KERNEL_FUNCTION_TRACER
+	default n
+
+config KERNEL_DYNAMIC_FTRACE
+	bool "Enable/disable function tracing dynamically"
+	depends on KERNEL_FUNCTION_TRACER
+	default n
+
+config KERNEL_FUNCTION_PROFILER
+	bool "Function profiler"
+	depends on KERNEL_FUNCTION_TRACER
+	default n
+
 config KERNEL_DEBUG_KERNEL
 	bool
 	default n
