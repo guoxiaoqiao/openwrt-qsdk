@@ -18,8 +18,8 @@ endif
 
 ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
-	$(call Image/mkfs/ubifs/generate,$(1))
-	$(call Image/Build,ubi,$(1))
+	$(call Image/ubifs_128MB,$(1))
+	$(call Image/ubifs_512MB,$(1))
 	$(call Image/UbiImage,$(1))
 endef
 endif
@@ -119,6 +119,7 @@ endef
 define Image/UbiImage
 
 ifeq ($(1),-ipq806x)
+	$(eval UBI_OPTS:="-m 2048 -p 128KiB")
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-db149,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-db149-fit-uImage.itb,squashfs,$(UBI_OPTS))
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-fit-uImage.itb,squashfs,$(UBI_OPTS))
 	$(call Image/Build/UbinizeImage,qcom-ipq8064-ak01,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ak01-fit-uImage.itb,squashfs,$(UBI_OPTS))
@@ -130,13 +131,28 @@ ifeq ($(1),-ipq806x)
 endif
 endef
 
+define Image/ubifs_512MB
+
+  ifeq ($(1),-ipq40xx)
+	$(eval UBI_OPTS:="-m 4096 -p 256KiB")
+	$(call Image/mkfs/ubifs/generate,$(1))
+	$(call Image/Build,ubi,$(1),-512MB)
+  endif
+endef
+
+define Image/ubifs_128MB
+	$(eval UBI_OPTS:="-m 2048 -p 128KiB")
+	$(call Image/mkfs/ubifs/generate,$(1))
+	$(call Image/Build,ubi,$(1))
+endef
+
 define Image/Build/squashfs
 	$(call prepare_generic_squashfs,$(KDIR)/root.squashfs)
 endef
 
 define Image/Build
 	$(call Image/Build/$(1),$(1))
-	dd if=$(KDIR)/root$(2).$(1) of=$(BIN_DIR)/$(IMG_PREFIX)$(2)-$(1)-root.img bs=2k conv=sync
+	dd if=$(KDIR)/root$(2).$(1) of=$(BIN_DIR)/$(IMG_PREFIX)$(2)-$(1)-root$(3).img bs=2k conv=sync
 endef
 
 $(eval $(call BuildImage))
