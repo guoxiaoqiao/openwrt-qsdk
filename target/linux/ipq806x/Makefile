@@ -11,7 +11,7 @@ MAINTAINER:=John Crispin <blogic@openwrt.org>
 
 KERNELNAME:=zImage Image dtbs
 
-LINUX_SRC_VERSION?=3.18
+LINUX_SRC_VERSION:=$(shell basename $(TOPDIR)/qca/src/linux-*.* | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
 # check .config for an overridden Linux dir, otherwise use qca/src/linux
 CONFIG_EXTERNAL_KERNEL_TREE=$(shell \
 	grep -q CONFIG_EXTERNAL_KERNEL_TREE="[^\/]*.\/" $(TOPDIR)/.config && \
