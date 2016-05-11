@@ -34,7 +34,7 @@ endif
 include $(INCLUDE_DIR)/target.mk
 DEFAULT_PACKAGES += \
 	uboot-ipq40xx uboot-ipq806x uboot-ipq806x-fwupgrade-tools uboot-envtools \
-	kmod-leds-gpio kmod-gpio-button-hotplug kmod-button-hotplug swconfig \
+	kmod-leds-gpio kmod-button-hotplug swconfig \
 	kmod-ata-core kmod-ata-ahci kmod-ata-ahci-platform \
 	kmod-usb2 kmod-usb3 kmod-usb-dwc3-qcom kmod-usb-dwc3-ipq40xx
 
