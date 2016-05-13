@@ -166,12 +166,25 @@ do_flash_ubi() {
 
 do_flash_tz() {
 	local sec=$1
-	local mtdpart=$(grep "\0:QSEE\"" /proc/mtd | awk -F: '{print $1}')
+	local mtdpart=$(grep "\"0:QSEE\"" /proc/mtd | awk -F: '{print $1}')
+	local emmcblock="$(find_mmc_part "0:QSEE")"
 
-	if [ -n "$mtdpart" ]; then
+	if [ -n "$mtdpart" -o -e "$emmcblock" ]; then
 		do_flash_failsafe_partition ${sec} "0:QSEE"
 	else
 		do_flash_failsafe_partition ${sec} "0:TZ"
+	fi
+}
+
+do_flash_ddr() {
+	local sec=$1
+	local mtdpart=$(grep "\"0:CDT\"" /proc/mtd | awk -F: '{print $1}')
+	local emmcblock="$(find_mmc_part "0:CDT")"
+
+	if [ -n "$mtdpart" -o -e "$emmcblock" ]; then
+		do_flash_failsafe_partition ${sec} "0:CDT"
+	else
+		do_flash_failsafe_partition ${sec} "0:DDRPARAMS"
 	fi
 }
 
@@ -195,7 +208,7 @@ flash_section() {
 		mibib*) switch_layout boot; do_flash_partition ${sec} "0:MIBIB";;
 		dtb-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DTB";;
 		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
-		ddr-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DDRPARAMS";;
+		ddr-$(to_upper $board)*) switch_layout boot; do_flash_ddr ${sec};;
 		ddr-${board}-*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:DDRCONFIG";;
 		ssd*) switch_layout boot; do_flash_partition ${sec} "0:SSD";;
 		tz*) switch_layout boot; do_flash_tz ${sec};;
