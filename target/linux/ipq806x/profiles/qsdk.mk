@@ -73,7 +73,7 @@ COREBSP_UTILS:=pm-utils qca-thermald-10.4
 FAILSAFE:= kmod-bootconfig
 
 NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
-	rp-pppoe-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
+	rp-pppoe-internal-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
 	kmod-ipt-nathelper-extra kmod-ipt-nathelper-rtsp \
 	luci-app-upnp luci-app-radvd luci-app-ddns luci-proto-ipv6
 
@@ -81,7 +81,7 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp kmod-ipt-conntrack-qos \
 	arptables ds-lite radvd 6rd wide-dhcpv6-client ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
-	rp-pppoe-server isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 ppp-mod-pptp
+	rp-pppoe-internal-server isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 ppp-mod-pptp
 
 BLUETOOTH:=kmod-bluetooth bluez-libs bluez-utils kmod-ath3k
 
