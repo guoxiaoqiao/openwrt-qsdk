@@ -78,7 +78,7 @@ NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 	luci-app-upnp luci-app-radvd luci-app-ddns luci-proto-ipv6 \
 	luci-app-multiwan multiwan-internal
 
-CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp kmod-ipt-conntrack-qos \
+CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp \
 	arptables ds-lite 6rd wide-dhcpv6-client ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
