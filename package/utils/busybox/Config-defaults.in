@@ -1971,25 +1971,25 @@ config BUSYBOX_DEFAULT_FAKEIDENTD
 	default n
 config BUSYBOX_DEFAULT_FTPD
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_FTP_WRITE
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_FTPD_ACCEPT_BROKEN_LIST
 	bool
 	default n
 config BUSYBOX_DEFAULT_FEATURE_FTP_AUTHENTICATION
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FTPGET
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FTPPUT
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_FTPGETPUT_LONG_OPTIONS
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_HOSTNAME
 	bool
 	default n
