@@ -14,7 +14,7 @@ define Profile/QSDK_Base
 	  file pure-ftpd kmod-qca-nss-drv-qdisc xl2tpd ppp-mod-pptp pm-utils \
 	  kmod-qca-nss-macsec qca-thermald rng-tools perf kmod-nat-sctp kmod-aq_phy \
 	  kmod-qca_85xx_sw aq-fw-download kmod-regmap-i2c i2c-tools qca-mcs-apps \
-	  kmod-crypto-aes kmod-ipsec kmod-ipsec4 kmod-ipsec6
+	  kmod-crypto-aes kmod-ipsec kmod-ipsec4 kmod-ipsec6 lacpd
 endef
 
 PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap-10.4 qca-hostapd-cli-10.4 \
