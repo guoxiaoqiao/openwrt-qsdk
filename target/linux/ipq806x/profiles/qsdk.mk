@@ -74,7 +74,7 @@ FAILSAFE:= kmod-bootconfig
 
 NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 	rp-pppoe-internal-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
-	kmod-ipt-nathelper-extra kmod-ipt-nathelper-rtsp \
+	kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp \
 	luci-app-upnp luci-app-radvd luci-app-ddns luci-proto-ipv6 \
 	luci-app-multiwan multiwan-internal
 
