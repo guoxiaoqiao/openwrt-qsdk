@@ -74,11 +74,11 @@ FAILSAFE:= kmod-bootconfig
 
 NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 	rp-pppoe-internal-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
-	kmod-ipt-nathelper-extra kmod-ipt-nathelper-rtsp \
+	kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp \
 	luci-app-upnp luci-app-radvd luci-app-ddns luci-proto-ipv6 \
 	luci-app-multiwan multiwan-internal
 
-CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp kmod-ipt-conntrack-qos \
+CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp \
 	arptables ds-lite 6rd wide-dhcpv6-client ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
