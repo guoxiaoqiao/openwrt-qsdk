@@ -108,6 +108,8 @@ VIDEO:=kmod-qpic_panel_ertft
 
 KPI:=iperf sysstat
 
+FST:=qca-fst-manager
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA) \
@@ -129,7 +131,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI_PLC) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA)
+		$(MAP_PKGS) $(HYFI_PLC) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA) $(FST)
 endef
 
 define Profile/QSDK_Premium/Description
