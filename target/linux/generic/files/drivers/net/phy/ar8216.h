@@ -21,6 +21,7 @@
 #define BITS(_s, _n)	(((1UL << (_n)) - 1) << _s)
 
 #define AR8216_PORT_CPU	0
+#define AR8216_PORT_CPU_DUAL 6
 #define AR8216_NUM_PORTS	6
 #define AR8216_NUM_VLANS	16
 #define AR8316_NUM_VLANS	4096
