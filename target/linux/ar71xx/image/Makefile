@@ -268,8 +268,12 @@ cameo_db120_mtdlayout_8M=mtdparts=spi0.0:64k(uboot)ro,64k(nvram)ro,7872k(firmwar
 cap4200ag_mtdlayout=mtdparts=spi0.0:256k(u-boot),64k(u-boot-env),320k(custom)ro,1536k(kernel),12096k(rootfs),2048k(failsafe),64k(art),13632k@0xa0000(firmware)
 eap300v2_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),320k(custom),13632k(firmware),2048k(failsafe),64k(art)ro
 db120_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(nvram),64k(art)ro,7744k@0x50000(firmware)
+cus532k_mtdlayout=mtdparts=ar934x-nfc:256k(u-boot)ro,256k(u-boot-env)ro,2048k(uImage),128256k(rootfs),128k(dummy),128k(caldata)
 cameo_ap94_mtdlayout=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,6208k(firmware),64k(caldata)ro,1600k(unknown)ro,64k@0x7f0000(caldata_copy)
 cameo_ap94_mtdlayout_fat=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,7808k(firmware),64k(caldata)ro,64k@0x660000(caldata_orig),6208k@0x50000(firmware_orig)
+cus531_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
+cus531_mtdlayout_32M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),256k(reserve)ro,16128k(user),16000k@0x50000(firmware)
+cus531_mtdlayout_dual=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware);spi0.1:16m(user)
 esr900_mtdlayout=mtdparts=spi0.0:192k(u-boot)ro,64k(u-boot-env)ro,1408k(kernel),13248k(rootfs),1024k(manufacture)ro,64k(backup)ro,320k(storage)ro,64k(caldata)ro,14656k@0x40000(firmware)
 esr1750_mtdlayout=mtdparts=spi0.0:192k(u-boot)ro,64k(u-boot-env)ro,1408k(kernel),13248k(rootfs),1024k(manufacture)ro,64k(backup)ro,320k(storage)ro,64k(caldata)ro,14656k@0x40000(firmware)
 ew-dorin_mtdlayout_4M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),3712k(firmware),64k(art)
@@ -466,11 +470,33 @@ Image/Build/CameoAP121_8M/buildkernel=$(call MkuImageLzma,$(2),$(3) $(cameo_ap12
 Image/Build/CameoAP121_8M=$(call Image/Build/CameoHornet,$(1),$(2),$(3),$(cameo_ap121_mtdlayout_8M),$(4),$(5),$(6),0x100000)
 Image/Build/CameoAP121_8M/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(cameo_ap121_mtdlayout_8M))
 
+# $(1): rootfs type
+# $(2): Board name (small caps)
+# $(6): Board name (upper caps)
+# $(7): kernel mtd partition size
+define Image/Build/IoENAND
+	$(CP) $(KDIR)/root.squashfs-raw $(KDIR_TMP)/root.squashfs
+	echo -ne '\xde\xad\xc0\xde' > $(KDIR_TMP)/jffs2.eof
+	$(call ubinize,ubinize-IoE.ini,$(KDIR_TMP),$(KDIR_TMP)/$(2)-root.ubi,128KiB,2048,)
+	( \
+		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage \
+			of=$(call imgname,kernel,$(2)).bin conv=sync; \
+		dd if=$(KDIR_TMP)/$(2)-root.ubi \
+			of=$(call imgname,$(1),$(2)-rootfs).ubi bs=128k conv=sync; \
+	)
+	( \
+		dd if=$(call imgname,kernel,$(2)).bin bs=$(7) conv=sync; \
+		dd if=$(call imgname,$(1),$(2)-rootfs).ubi \
+	) > $(call sysupname,$(1),$(2))
+endef
+
+Image/Build/IoENAND/buildkernel=$(call MkuImageLzma,$(2),$(3) $(4))
 
 define Image/Build/Ath
 	$(eval fwsize=$(call mtdpartsize,firmware,$(4)))
 	$(eval rootsize=$(call mtdpartsize,rootfs,$(4)))
 	$(eval kernsize=$(call mtdpartsize,kernel,$(4)))
+	$(eval rootsize=$(if $(7),$(7),$(rootsize)))
 	$(call Sysupgrade/$(5),$(1),$(2),$(if $(6),$(6),$(kernsize)),$(if $(rootsize),$(rootsize),$(fwsize)))
 	if [ -e "$(call sysupname,$(1),$(2))" ]; then \
 		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage \
