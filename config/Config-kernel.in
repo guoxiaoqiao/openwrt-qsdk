@@ -296,6 +296,15 @@ if KERNEL_SKB_DEBUG
 		default y
 endif
 
+config KERNEL_SKB_RECYCLER_PREALLOC
+	bool "Enable preallocation of SKBs"
+	default n
+
+config KERNEL_SKB_RECYCLE_MAX_PREALLOC_SKBS
+	int "Number of SKBs to be preallocated"
+	depends on KERNEL_SKB_RECYCLER_PREALLOC
+	default 16384
+
 #
 # CGROUP support symbols
 #
