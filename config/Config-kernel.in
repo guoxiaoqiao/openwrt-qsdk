@@ -108,6 +108,16 @@ config KERNEL_PREEMPT_TRACER
 	bool "Preemption-off Latency Tracer"
 	default n
 
+config KERNEL_KPROBES
+	bool "Kprobes"
+	default n
+
+if KERNEL_KPROBES
+	config KERNEL_KPROBE_EVENT
+		bool
+		default y
+endif
+
 config KERNEL_DEBUG_KERNEL
 	bool
 	default n
