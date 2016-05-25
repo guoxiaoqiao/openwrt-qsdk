@@ -93,8 +93,8 @@ QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 
 MAP_PKGS:=map-t
 
-HYFI:=hyfi hyfi-ui      # no PLC support
-HYFI_PLC:=hyfi-plc hyfi-ui  # with PLC support
+HYFI:=hyfi hyfi-ui
+PLC:=qca-plc-serv qca-plc-fw
 
 AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
 #These packages depend on SWITCH_SSDK_PKGS
@@ -131,7 +131,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI_PLC) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA) $(FST)
+		$(MAP_PKGS) $(HYFI) $(PLC) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA) $(FST)
 endef
 
 define Profile/QSDK_Premium/Description
