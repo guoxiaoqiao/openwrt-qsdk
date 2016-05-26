@@ -370,12 +370,14 @@ static int ag71xx_ring_alloc(struct ag71xx *ag, struct ag71xx_ring *ring,
 	int i;
 
 	ring->desc_size = sizeof(struct ag71xx_desc);
+#ifdef CONFIG_AG71XX_DESC_ALIGN_CACHE_LINE
 	if (ring->desc_size % cache_line_size()) {
 		DBG("ag71xx: ring %p, desc size %u rounded to %u\n",
 			ring, ring->desc_size,
 			roundup(ring->desc_size, cache_line_size()));
 		ring->desc_size = roundup(ring->desc_size, cache_line_size());
 	}
+#endif
 
 #ifdef CONFIG_AG71XX_SRAM_DESCRIPTORS
 	if (id < MAX_AG71XX_USING_SRAM) {
@@ -474,18 +476,19 @@ static void ag71xx_ring_tx_init(struct ag71xx *ag)
 	struct ag71xx_ring *ring = &ag->tx_ring;
 	unsigned int mask = ring->mask;
 	unsigned int size = ring->size;
-	int i;
+	int i, next;
 
 	for (i = 0; i < size; i++) {
 		struct ag71xx_buf *buf = &ring->buf[i];
 		struct ag71xx_desc *desc = buf->desc;
 
+		next = (i >= size - 1) ? 0 : (i + 1);
 		desc->next = (u32)(ring->descs_dma +
-				   ring->desc_size * ((i + 1) & mask));
+				   ring->desc_size * next);
 
 		desc->ctrl = DESC_EMPTY;
 		buf->skb = NULL;
-		buf->next = &ring->buf[(i + 1) & mask];
+		buf->next = &ring->buf[next];
 	}
 
 	ring->curr = ring->buf;
@@ -525,15 +528,16 @@ static int ag71xx_ring_rx_init(struct ag71xx *ag)
 	unsigned int size = ring->size;
 	unsigned int rx_buf_size = ag->rx_buf_size;
 	unsigned int rx_buf_offset = ag->rx_buf_offset;
-	unsigned int i;
+	unsigned int i, next;
 
 	for (i = 0; i < size; i++) {
 		struct ag71xx_buf *buf = &ring->buf[i];
 		struct ag71xx_desc *desc = buf->desc;
 		struct sk_buff *skb;
 
+		next = (i >= size - 1) ? 0 : (i + 1);
 		desc->next = (u32)(ring->descs_dma +
-				   ring->desc_size * ((i + 1) & mask));
+				   ring->desc_size * next);
 
 		skb = dev_alloc_skb(rx_buf_size + rx_buf_offset);
 		if (unlikely(!skb)) {
@@ -543,7 +547,7 @@ static int ag71xx_ring_rx_init(struct ag71xx *ag)
 		skb_reserve(skb, rx_buf_offset);
 
 		buf->skb = skb;
-		buf->next = &ring->buf[(i + 1) & mask];
+		buf->next = &ring->buf[next];
 		buf->dma_addr = dma_map_single(&dev->dev, skb->data,
 					       rx_buf_size, DMA_FROM_DEVICE);
 
