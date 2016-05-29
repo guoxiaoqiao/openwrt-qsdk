@@ -8,14 +8,17 @@
 # See /LICENSE for more information.
 #
 
+include $(INCLUDE_DIR)/feeds.mk
+
 ifeq ($(DUMP),)
   define BuildTarget/ipkg-prebuilt
     ifeq ($(PKG_FORCE_PREBUILT)$(wildcard $(PREBUILT_DIR)/$(1)_$(VERSION)_$(PKGARCH).ipk),)
       $(BuildTarget/ipkg)
     else
       PKG_$(1):=$(1)_$(VERSION)_$(PKGARCH).ipk
+      PDIR_$(1):=$(call FeedPackageDir,$(1))
       PRE_$(1):=$(PREBUILT_DIR)/$$(PKG_$(1))
-      IPKG_$(1):=$(PACKAGE_DIR)/$$(PKG_$(1))
+      IPKG_$(1):=$$(PDIR_$(1))/$$(PKG_$(1))
       INFO_$(1):=$(IPKG_STATE_DIR)/info/$(1).list
 
       Build/InstallDev:=
@@ -56,7 +59,7 @@ ifeq ($(DUMP),)
 	$(if $(filter-out essential,$(PKG_FLAGS)),for flag in $(filter-out essential,$(PKG_FLAGS)); do $(OPKG) flag $$$$flag $(1); done,$(OPKG) flag ok $(1))
 
       $(1)-clean:
-	rm -f $(PACKAGE_DIR)/$(1)_*
+	rm -f $$(PDIR_$(1))/$(1)_*
 
       clean: $(1)-clean
     endif
