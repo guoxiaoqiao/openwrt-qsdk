@@ -115,6 +115,7 @@ define Package/busybox/install
 	$(INSTALL_BIN) ./files/telnet $(1)/etc/init.d/telnet
 	$(INSTALL_BIN) ./files/sysntpd $(1)/etc/init.d/sysntpd
 	$(INSTALL_BIN) ./files/ntpd-hotplug $(1)/usr/sbin/ntpd-hotplug
+	$(INSTALL_BIN) ./files/inetd $(1)/etc/init.d/inetd
 	-rm -rf $(1)/lib64
 ifneq ($(CONFIG_BUSYBOX_CONFIG_FEATURE_USE_INITTAB),)
 	mkdir -p $(1)/etc/init.d

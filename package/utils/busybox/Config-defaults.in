@@ -2082,25 +2082,25 @@ config BUSYBOX_DEFAULT_FEATURE_IFUPDOWN_EXTERNAL_DHCP
 	default n
 config BUSYBOX_DEFAULT_INETD
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_ECHO
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_DISCARD
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_TIME
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_DAYTIME
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_CHARGEN
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_INETD_RPC
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_IP
 	bool
 	default n
@@ -2202,7 +2202,7 @@ config BUSYBOX_DEFAULT_FEATURE_TELNETD_STANDALONE
 	default y
 config BUSYBOX_DEFAULT_FEATURE_TELNETD_INETD_WAIT
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_TFTP
 	bool
 	default y
