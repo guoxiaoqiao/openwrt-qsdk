@@ -69,7 +69,7 @@ akronite_battery_power()
 	echo "Entering Battery Mode..."
 
 # Wifi Power-down Sequence
-	wifi down
+	wifi unload
 
 # Bring Down LAN Interface
 	ifdown lan
@@ -202,7 +202,7 @@ ap_dk01_1_battery_power()
 	echo "Entering Battery Mode..."
 
 # Wifi Power-down Sequence
-	wifi down
+	wifi unload
 
 # Find scsi devices and remove it
 
@@ -327,7 +327,7 @@ ap_dk04_1_battery_power()
 	sleep 1
 
 # Wifi Power-down Sequence
-	wifi down
+	wifi unload
 
 # Find scsi devices and remove it
 
