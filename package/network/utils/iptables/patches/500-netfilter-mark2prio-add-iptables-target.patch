@@ -1,21 +1,5 @@
-From f9127918b7b06fa6d41f57baa312622e6d0d82e0 Mon Sep 17 00:00:00 2001
-From: Matthew McClintock <mmcclint@codeaurora.org>
-Date: Wed, 26 Mar 2014 17:15:09 -0500
-Subject: [PATCH] netfilter: mark2prio: add iptables target
-
-This target unconditionally copies mark to priority
-
-Signed-off-by: Matthew McClintock <mmcclint@codeaurora.org>
----
- extensions/libxt_mark2prio.c | 46 ++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
- create mode 100644 extensions/libxt_mark2prio.c
-
-diff --git a/extensions/libxt_mark2prio.c b/extensions/libxt_mark2prio.c
-new file mode 100644
-index 0000000..e76fcc9
---- /dev/null
-+++ libxt_mark2prio.c
+--- a/extensions/dev/null
++++ b/extensions/ibxt_mark2prio.c
 @@ -0,0 +1,46 @@
 +/*
 + * Copyright (c) 2013,2016 The Linux Foundation. All rights reserved.
