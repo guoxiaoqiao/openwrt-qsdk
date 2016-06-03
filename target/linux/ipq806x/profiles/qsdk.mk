@@ -46,7 +46,8 @@ WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad-mesh hostapd-utils \
 WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wpc-10.4 sigma-dut-10.4 \
-	qcmbr-10.4 qca-wrapd-10.4 qca-wapid qca-acfg-10.4 whc whc-ui
+	qcmbr-10.4 qca-wrapd-10.4 qca-wapid qca-acfg-10.4 whc whc-ui \
+	qca-lowi
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
@@ -57,10 +58,8 @@ WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo
 OPENWRT_STANDARD:= \
 	luci openssl-util
 
-STORAGE:=kmod-scsi-core kmod-usb-storage \
-	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs \
-	kmod-nls-cp437 kmod-nls-iso8859-1 \
-	e2fsprogs
+STORAGE:=kmod-scsi-core kmod-usb-storage kmod-nls-cp437 kmod-nls-iso8859-1  \
+	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs
 
 USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
 
