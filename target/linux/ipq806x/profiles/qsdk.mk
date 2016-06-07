@@ -77,7 +77,7 @@ NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 	luci-app-upnp luci-app-radvd luci-app-ddns luci-proto-ipv6 \
 	luci-app-multiwan
 
-CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp \
+CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd wide-dhcpv6-client ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
@@ -130,7 +130,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(PLC) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA) $(FST)
+		$(MAP_PKGS) $(HYFI) $(PLC) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA) $(FST) sierra-cm
 endef
 
 define Profile/QSDK_Premium/Description
