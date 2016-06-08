@@ -51,6 +51,7 @@ ifeq ($(DUMP),)
       endif
 
       $$(IPKG_$(1)):
+	mkdir -p $$(PDIR_$(1))
 	$(CP) $$(PRE_$(1)) $$@
 
       $$(INFO_$(1)): $$(IPKG_$(1))
