@@ -169,6 +169,7 @@ wifi_detect() {
 }
 
 wifi_unload() {
+	_wifi_updown "disable" "$1"
 	for driver in ${1:-$DRIVERS}; do (
 		if eval "type unload_$driver" 2>/dev/null >/dev/null; then
 			eval "unload_$driver" || echo "$driver: unload failed" >&2
@@ -187,7 +188,7 @@ wifi_load() {
 			echo "$driver: wifi load not supported" >&2
 		fi
 	); done
-	wifi_reload
+	_wifi_updown "enable" "$1"
 }
 
 start_net() {(
