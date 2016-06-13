@@ -35,6 +35,7 @@ reload_service() {
 stop() {
 	/sbin/wifi down
 	procd_kill network ''
+	killall netifd
 }
 
 service_running() {
