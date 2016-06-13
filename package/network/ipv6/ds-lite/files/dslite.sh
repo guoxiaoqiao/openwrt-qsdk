@@ -59,7 +59,7 @@ proto_dslite_setup() {
 
 	proto_add_tunnel
 	json_add_string mode ipip6
-	json_add_int mtu "${mtu:-1280}"
+	[ -n "$mtu" ] && json_add_int mtu "$mtu"
 	json_add_int ttl "${ttl:-64}"
 	json_add_string local "$ip6addr"
 	json_add_string remote "$peeraddr"
