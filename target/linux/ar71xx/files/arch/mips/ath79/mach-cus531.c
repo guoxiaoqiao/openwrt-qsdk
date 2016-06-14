@@ -37,6 +37,7 @@
 #include "dev-wmac.h"
 #include "dev-i2c.h"
 #include "machtypes.h"
+#include "pci.h"
 
 #define CUS531_GPIO_SPI_CS0		5
 #define CUS531_GPIO_SPI_CS1		11
@@ -232,6 +233,8 @@ static void __init cus531mp3_gpio_led_setup(void)
 static void __init cus531mp3_common_setup(void)
 {
 	cus531mp3_gpio_led_setup();
+	ath79_register_pci();
+
 	__cus531_common_setup();
 }
 
