@@ -8,7 +8,7 @@ UBI_OPTS = -m 2048 -p 128KiB
 
 E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
-ifeq ($(strip $(call CompareKernelPatchVer,$(KERNEL_PATCHVER),ge,3.18.0)),1)
+ifeq ($(strip $(call CompareKernelPatchVer,$(KERNEL_PATCHVER),eq,3.18)),1)
 IPQ806X_KERNEL_LOADADDR = 0x42008000
 IPQ40XX_KERNEL_LOADADDR = 0x80008000
 else
