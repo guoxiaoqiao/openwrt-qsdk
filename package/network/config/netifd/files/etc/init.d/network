@@ -15,6 +15,8 @@ init_switch() {
 start_service() {
 	init_switch
 
+	[ -e "usr/sbin/fst.sh" ] && /usr/sbin/fst.sh configure
+
 	procd_open_instance
 	procd_set_param command /sbin/netifd
 	procd_set_param respawn
