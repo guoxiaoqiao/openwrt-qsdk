@@ -111,7 +111,20 @@ ioe_update_uboot_env() {
 	get_mtdpart_offset kernel_addr "k-2"
 
 	local bootcmd_old=$(fw_printenv -n bootcmd)
-	local bootargs_old=$(fw_printenv -n bootargs)
+        local bootargs_old=$(fw_printenv -n bootargs)
+        
+        local ubi=$(fw_printenv -n bootargs |grep ubi)
+        [ -n "$ubi" ] && {
+                mtdx=$(cat /proc/mtd |grep "r-2" |cut -f1 -d ":")
+                r_n=$(echo $mtdx |cut -f2 -d "d")
+
+                while read line; do
+                        echo $line | grep -q "rootfs" || continue
+                        mtdx=$(echo $line |cut -f1 -d ":")
+                        rootfs_n=$(echo $mtdx |cut -f2 -d "d")
+                        break
+                done < /proc/mtd
+        }
 
 	v "Updating cus-531 u-boot-env..."
 	bootargs=$(fw_printenv -n bootargs | sed \
@@ -139,6 +152,7 @@ ioe_update_uboot_env() {
 		v "NAND flash detected"
 		kernel_addr=$(printf '%x' $((0x${kernel_addr} - 0x${nor0_size_nand})))
 		bootcmd="nboot 0x81000000 0 0x${kernel_addr}; run fail"
+                [ -n "$ubi" ] && bootargs=$(echo ${bootargs} | sed -e 's/ubi.mtd='"${rootfs_n}"'/ubi.mtd='"${r_n}"'/')
 	elif [ $_kernel_addr -lt $_nor0_size ]; then
 		bootcmd="bootm 0x9f${kernel_addr}; run fail"
 	else
@@ -179,7 +193,7 @@ platform_do_upgrade_ioe() {
 	sync
 
 	nand=$(echo $name | grep "nand");
-	if [ -n "$nand" ]; then
+        if [ -n "$nand" ] || [ "$name" = "cus532k" ]; then
 		mtd_fw=$(cat /proc/mtd |grep $fw |cut -f1 -d ":")
 		mtd_dev="/dev/$mtd_fw"
 
