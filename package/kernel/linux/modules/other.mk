@@ -44,7 +44,7 @@ $(eval $(call KernelPackage,6lowpan))
 define KernelPackage/bluetooth
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Bluetooth support
-  DEPENDS:=@USB_SUPPORT +kmod-usb-core +kmod-crypto-hash +kmod-crypto-ecb +kmod-lib-crc16 +kmod-hid +LINUX_3_14:kmod-6lowpan-iphc
+  DEPENDS:=@USB_SUPPORT +kmod-usb-core +kmod-crypto-hash +kmod-crypto-ecb +kmod-lib-crc16 +kmod-hid +LINUX_3_14:kmod-6lowpan-iphc +!LINUX_3_18:kmod-crypto-cmac +LINUX_4_4:kmod-regmap
   KCONFIG:= \
 	CONFIG_BLUEZ \
 	CONFIG_BLUEZ_L2CAP \
@@ -67,6 +67,11 @@ define KernelPackage/bluetooth
 	CONFIG_BT_HCIUART_H4=y \
 	CONFIG_BT_HCIUART_ATH3K=y \
 	CONFIG_BT_HIDP \
+	CONFIG_BT_DEBUGFS=n@ge4.1 \
+	CONFIG_BT_HCIUART@ge4.1 \
+	CONFIG_BT_HCIBTUSB_BCM=n@ge4.1 \
+	CONFIG_BT_HCIUART_BCM=n@ge4.1 \
+	CONFIG_BT_HCIUART_INTEL=n@ge4.1 \
 	CONFIG_HID_SUPPORT=y
   $(call AddDepends/rfkill)
   FILES:= \
@@ -76,6 +81,10 @@ define KernelPackage/bluetooth
 	$(LINUX_DIR)/net/bluetooth/hidp/hidp.ko \
 	$(LINUX_DIR)/drivers/bluetooth/hci_uart.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btusb.ko
+ifeq ($(strip $(call CompareKernelPatchVer,$(KERNEL_PATCHVER),ge,4.1.0)),1)
+  FILES+= \
+	$(LINUX_DIR)/drivers/bluetooth/btintel.ko
+endif
   AUTOLOAD:=$(call AutoProbe,bluetooth rfcomm bnep hidp hci_uart btusb)
 endef
 
