@@ -284,7 +284,9 @@ platform_version_upgrade() {
 
 	for file in $version_files; do
 		[ -f "${tmp}${file}" ] && {
-			mv "${tmp}${file}" "${sys}"
+			echo "Updating "${sys}${file}" with `cat "${tmp}${file}"`"
+			echo `cat "${tmp}${file}"` > "${sys}${file}"
+			rm -f "${tmp}${file}"
 		}
 	done
 }
