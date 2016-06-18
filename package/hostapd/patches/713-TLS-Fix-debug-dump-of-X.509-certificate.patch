@@ -1,0 +1,29 @@
+From 354e3f7959b5e01c919e8a3a1b366b4d35bc5a33 Mon Sep 17 00:00:00 2001
+From: Jouni Malinen <j@w1.fi>
+Date: Sun, 3 May 2015 00:52:59 +0300
+Subject: [PATCH 0001/1719] TLS: Fix debug dump of X.509 certificate
+
+The length of the extra data following the encoded certificate was
+printed out in debug hexdump.
+
+Signed-off-by: Jouni Malinen <j@w1.fi>
+---
+ src/tls/x509v3.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/tls/x509v3.c b/src/tls/x509v3.c
+index 742af32..b51dfcd 100644
+--- a/src/tls/x509v3.c
++++ b/src/tls/x509v3.c
+@@ -1511,7 +1511,7 @@ struct x509_certificate * x509_certificate_parse(const u8 *buf, size_t len)
+ 	if (pos + hdr.length < end) {
+ 		wpa_hexdump(MSG_MSGDUMP, "X509: Ignoring extra data after DER "
+ 			    "encoded certificate",
+-			    pos + hdr.length, end - pos + hdr.length);
++			    pos + hdr.length, end - (pos + hdr.length));
+ 		end = pos + hdr.length;
+ 	}
+ 
+-- 
+1.7.9.5
+
