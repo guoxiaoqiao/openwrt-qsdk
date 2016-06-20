@@ -12,6 +12,10 @@ init_switch() {
 	setup_switch
 }
 
+network_cleanup() {
+	killall netifd 2&> /dev/null
+}
+
 start_service() {
 	init_switch
 
@@ -37,7 +41,7 @@ reload_service() {
 stop() {
 	/sbin/wifi down
 	procd_kill network ''
-	killall netifd
+	network_cleanup
 }
 
 service_running() {
@@ -146,6 +150,7 @@ restart() {
 	sleep 1
 	trap '' TERM
 	stop "$@"
+	network_cleanup
 	start "$@"
 }
 
@@ -153,4 +158,5 @@ shutdown() {
 	ifdown -a
 	sleep 1
 	stop
+	network_cleanup
 }
