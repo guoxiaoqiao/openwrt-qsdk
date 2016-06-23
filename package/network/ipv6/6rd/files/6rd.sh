@@ -23,6 +23,8 @@ proto_6rd_setup() {
 		return
 	}
 
+	[ -z "$peeraddr" ] && peeraddr="0.0.0.0"
+
 	( proto_add_host_dependency "$cfg" "$peeraddr" "$tunlink" )
 
 	[ -z "$ipaddr" ] && {
@@ -64,6 +66,7 @@ proto_6rd_setup() {
 	json_add_int ttl "${ttl:-64}"
 	[ -n "$tos" ] && json_add_string tos "$tos"
 	json_add_string local "$ipaddr"
+	json_add_string remote "$peeraddr"
 	[ -n "$tunlink" ] && json_add_string link "$tunlink"
 
 	json_add_object 'data'
