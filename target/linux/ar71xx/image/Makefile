@@ -1270,7 +1270,6 @@ Image/Build/dLANLzma/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(4))
 # $(7): kernel mtd partition size
 define Image/Build/IoENAND
 	$(CP) $(KDIR)/root.squashfs-raw $(KDIR_TMP)/root.squashfs
-	echo -ne '\xde\xad\xc0\xde' > $(KDIR_TMP)/jffs2.eof
 	$(call ubinize,ubinize-IoE.ini,$(KDIR_TMP),$(KDIR_TMP)/$(2)-root.ubi,128KiB,2048,)
 	( \
 		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage \
