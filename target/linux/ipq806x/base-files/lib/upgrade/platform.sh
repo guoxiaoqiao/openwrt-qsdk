@@ -331,6 +331,8 @@ platform_copy_config() {
 		ubiattach -p /dev/${mtdpart}
 		mount -t ubifs ubi0:rootfs_data /tmp/overlay
 		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
+		cp /tmp/sysupgrade.tgz /tmp/overlay/
+		sync
 	elif [ -e "$emmcblock" ]; then
 		mount -t ext4 "$emmcblock" /tmp/overlay
 		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
