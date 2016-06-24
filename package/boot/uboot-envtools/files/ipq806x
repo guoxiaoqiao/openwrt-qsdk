@@ -23,10 +23,12 @@ default_uboot_env () {
 
 	if [ -z "$UBOOTENV_PART" ]; then
 		mtd_dev=$(echo $(find_mmc_part "0:APPSBLENV") | sed 's/^.\{5\}//')
-		EMMC_UBOOTENV_PART=$(cat /proc/partitions | grep $mtd_dev)
-		#convert block to bytes
-		emmc_uboot_env_size=`expr $(echo $EMMC_UBOOTENV_PART | awk '{print $3}') \* 1024`
-		uboot_env_size=0x`printf "%x" $emmc_uboot_env_size`
+		if [ -n "$mtd_dev" ]; then
+			EMMC_UBOOTENV_PART=$(cat /proc/partitions | grep $mtd_dev)
+			#convert block to bytes
+			emmc_uboot_env_size=`expr $(echo $EMMC_UBOOTENV_PART | awk '{print $3}') \* 1024`
+			uboot_env_size=0x`printf "%x" $emmc_uboot_env_size`
+		fi
 		mtd_erase=""
 	elif [ -n "$nor_flash" ]; then
 		uboot_env_size=$mtd_size
