@@ -218,12 +218,22 @@ scan_wifi() {
 	config_load "${cfgfile:-wireless}"
 }
 
+wifi_trap() {
+	for driver in ${1:-$DRIVERS}; do (
+		if eval "type trap_$driver" 2>/dev/null >/dev/null; then
+			eval "trap_$driver" >&2
+		fi
+	); done
+}
+
 DEVICES=
 DRIVERS=
 include /lib/wifi
 
 lock /var/run/wifi.lock
 scan_wifi
+
+trap 'wifi_trap; exit' INT TERM ABRT QUIT ALRM
 
 case "$1" in
 	down) wifi_updown "disable" "$2";;
