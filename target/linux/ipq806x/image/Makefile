@@ -83,33 +83,42 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq40xx-ap.dkxx, \
 		$(call FindDeviceTrees, qcom-ipq40xx-ap) $(call FindDeviceTrees, qcom-ipq40xx-db), \
 		$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
+	$(if $(wildcard ./$(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-*ap148_1xx.dtb),
+		$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap148_1xx), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard ./$(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-*ap148.dtb),
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap148,-not -name *ap148_1xx*), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard ./$(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-*dh149.dtb),
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-db149, \
 		$(call FindDeviceTrees, qcom-ipq8064-*db149), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard ./$(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-*ak01.dtb),
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ak01, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ak01), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard ./$(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-*ap145_1xx.dtb),
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145_1xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap145_1xx), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard ./$(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-*ap145.dtb),
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap145,-not -name *ap145_1xx*), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard ./$(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-*ap160_2xx.dtb),
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap160_2xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap160_2xx), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard ./$(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-*ap160.dtb),
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap160, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap160,-not -name *ap160_2xx*), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard ./$(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-*ap161.dtb),
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap161, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap161), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
 endef
 
 define Image/BuildKernel/Initramfs
@@ -120,14 +129,24 @@ define Image/UbiImage
 
 ifeq ($(1),-ipq806x)
 	$(eval UBI_OPTS:="-m 2048 -p 128KiB")
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-db149,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-db149-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ak01,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ak01-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145_1xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145_1xx-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap161,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap161-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160_2xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160_2xx-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(if $(wildcard $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-db149-fit-uImage.itb),
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-db149,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-db149-fit-uImage.itb,squashfs,$(UBI_OPTS)))
+	$(if $(wildcard $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-fit-uImage.itb),
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-fit-uImage.itb,squashfs,$(UBI_OPTS)))
+	$(if $(wildcard $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-nand-fit-uImage.itb),
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148-nand,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-nand-fit-uImage.itb,squashfs,$(UBI_OPTS)))
+	$(if $(wildcard $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ak01-fit-uImage.itb),
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ak01,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ak01-fit-uImage.itb,squashfs,$(UBI_OPTS)))
+	$(if $(wildcard $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145_1xx-fit-uImage.itb),
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145_1xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145_1xx-fit-uImage.itb,squashfs,$(UBI_OPTS)))
+	$(if $(wildcard $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145-fit-uImage.itb),
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145-fit-uImage.itb,squashfs,$(UBI_OPTS)))
+	$(if $(wildcard $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160-fit-uImage.itb),
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160-fit-uImage.itb,squashfs,$(UBI_OPTS)))
+	$(if $(wildcard $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap161-fit-uImage.itb),
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap161,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap161-fit-uImage.itb,squashfs,$(UBI_OPTS)))
+	$(if $(wildcard $(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160_2xx-fit-uImage.itb),
+	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160_2xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160_2xx-fit-uImage.itb,squashfs,$(UBI_OPTS)))
 endif
 endef
 
