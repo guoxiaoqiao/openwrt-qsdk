@@ -173,3 +173,17 @@ define Profile/QSDK_Enterprise/Description
 endef
 
 $(eval $(call Profile,QSDK_Enterprise))
+
+define Profile/QSDK_Deluxe
+	NAME:=Qualcomm-Atheros SDK Deluxe Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
+	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
+	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI)
+endef
+
+define Profile/QSDK_Deluxe/Description
+	QSDK Deluxe package set configuration.
+	Enables wifi open source packages
+endef
+
+$(eval $(call Profile,QSDK_Deluxe))
