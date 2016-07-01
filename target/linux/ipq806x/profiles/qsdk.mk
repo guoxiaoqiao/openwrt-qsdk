@@ -31,6 +31,13 @@ NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
+ifneq ($(LINUX_VERSION),3.18.21)
+	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(QOS) $(QCA_ECM) \
+	$(CD_ROUTER) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) $(IGMPSNOOING_RSTP) \
+	$(IPSEC) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) $(NSS_CRYPTO) $(NSS_CLIENTS) \
+	$(MAP_PKGS) $(FAILSAFE) -lacpd -rstp
+endif
+
 HW_CRYPTO:= kmod-crypto-qcrypto
 
 SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm kmod-shortcut-fe-drv
@@ -112,10 +119,9 @@ FST:=qca-fst-manager
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) \
-	$(NSS_COMMON) $(NSS_STANDARD) $(QOS) $(QCA_ECM) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) $(QCA_EDMA) \
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
-	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI)
+	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI) $(EXTRA_NETWORKING)
 endef
 
 define Profile/QSDK_Open/Description
