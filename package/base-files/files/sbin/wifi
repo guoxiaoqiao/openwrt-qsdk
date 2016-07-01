@@ -138,14 +138,20 @@ wifi_detect() {
 	); done
 }
 
-wifi_load() {
-	for driver in ${2:-$DRIVERS}; do (
+
+wifi_unload() {
+	wifi_updown "disable" "$1"
+	for driver in ${1:-$DRIVERS}; do (
 		if eval "type unload_$driver" 2>/dev/null >/dev/null; then
 			eval "unload_$driver" || echo "$driver: unload failed" >&2
 		else
 			echo "$driver: wifi unload not supported" >&2
 		fi
 	); done
+}
+
+wifi_load() {
+	wifi_unload
 	for driver in ${2:-$DRIVERS}; do (
 		if eval "type load_$driver" 2>/dev/null >/dev/null; then
 			eval "load_$driver" || echo "$driver: load failed" >&2
@@ -153,6 +159,7 @@ wifi_load() {
 			echo "$driver: wifi load not supported" >&2
 		fi
 	); done
+	wifi_updown "enable" "$1"
 }
 
 start_net() {(
@@ -239,6 +246,7 @@ case "$1" in
 	down) wifi_updown "disable" "$2";;
 	detect) wifi_detect "$2";;
 	load) wifi_load "$2";;
+	unload) wifi_unload "$2";;
 	--help|help) usage;;
 	*) wifi_updown "enable" "$2";;
 esac
