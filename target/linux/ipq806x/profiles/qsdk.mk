@@ -32,10 +32,10 @@ NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
 ifneq ($(LINUX_VERSION),3.18.21)
-	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(QOS) $(QCA_ECM) \
-	$(CD_ROUTER) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) $(IGMPSNOOING_RSTP) \
-	$(IPSEC) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) $(NSS_CRYPTO) $(NSS_CLIENTS) \
-	$(MAP_PKGS) $(FAILSAFE) -lacpd -rstp
+	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
+	$(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
+	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) \
+	$(NSS_CRYPTO) $(NSS_CLIENTS) $(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE)
 endif
 
 HW_CRYPTO:= kmod-crypto-qcrypto
