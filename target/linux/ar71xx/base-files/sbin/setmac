@@ -13,11 +13,13 @@
 
 . /lib/functions.sh
 
+BT_OFFSET=64
 # parse cmdline
 while [ -n "$1" ]; do
 	case "$1" in
 		-h|--help) HELP=1; break;;
 		-n) NUM="$2"; shift;;
+		-b) BT_TRIM="$2"; shift;;
 		-d) DELETE=1;;
 		-*)
 			echo "Invalid option: $1"
@@ -33,12 +35,13 @@ SEED="$@"
 
 [ -z "$SEED" -o -n "$HELP" -o -n "$ERROR" ] && {
 	cat <<EOF
-Usage: $0 [-h] [-d] <boardID>
+Usage: $0 [-h] [-d] [-n NUM] [-b BT_TRIM] <boardID>
 
 setmac options:
 	-n	number of MAC@ to set.
 		(default: number of ethX devices in the system)
 	-d	erase the ART sector before setting the MAC@
+	-b	Set BT MAC address as well as Trim value @ offset BT_OFFSET
 	-h	print this help
 
 boardID is used as a seed and expanded through md5sum to create a
@@ -58,13 +61,34 @@ EOF
 
 # Expend the seed to get pseudo-random MAC@ per device
 md5=$(echo "${SEED}" | md5sum -)
-for dev in $(seq 1 ${NUM});do
+NUM=$((${NUM}-1))
+# reduce NUM by 1 to start below loop from 0
+for dev in $(seq 0 ${NUM});do
 	str="${str}\x00\x03\x7f"
 	for byte in 0 2 4;do
 		off=$((${byte}+6*${dev}))
 		str="${str}\x${md5:${off}:2}"
 	done
 done
+if [ -n "${BT_TRIM}" ]; then
+# increaement dev to past last used MAC address from md5
+	dev=$((${dev}+1))
+# reset remaining bits to 0 until BT_OFFSET-1
+	start=$((${off}+2))
+	end=$((${BT_OFFSET}-1))
+	for byte in $(seq ${start} ${end}); do
+	        str="${str}\x00"
+	done
+# set BT MAC address
+	str="${str}\x00\x03\x7f"
+	for byte in 0 2 4;do
+		off=$((${byte}+6*${dev}))
+		str="${str}\x${md5:${off}:2}"
+	done
+# set BT TRIM
+	str="${str}\x${BT_TRIM}"
+fi
+
 echo -n -e ${str} > /tmp/macaddr
 hexdump -C /tmp/macaddr
 
