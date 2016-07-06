@@ -152,6 +152,9 @@ xconfig: scripts/config/qconf prepare-tmpinfo FORCE
 
 prepare_kernel_conf: .config FORCE
 
+clean_kernel: FORCE
+	$(_SINGLE)$(NO_TRACE_MAKE) target/linux/clean
+
 ifeq ($(wildcard staging_dir/host/bin/quilt),)
   prepare_kernel_conf:
 	@+$(SUBMAKE) -r tools/quilt/compile
@@ -254,7 +257,7 @@ package/symlinks-clean:
 help:
 	cat README
 
-distclean:
+distclean: clean_kernel
 	rm -rf bin build_dir .config* dl feeds key-build* logs package/feeds package/openwrt-packages staging_dir tmp
 	@$(_SINGLE)$(SUBMAKE) -C scripts/config clean
 
