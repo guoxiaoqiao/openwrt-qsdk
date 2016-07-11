@@ -223,6 +223,20 @@ endef
 
 $(eval $(call KernelPackage,switch-ar8216))
 
+define KernelPackage/switch-ar40xx
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Qualcomm Atheros AR40XX switch support
+  DEPENDS:=+kmod-swconfig
+  KCONFIG:=CONFIG_AR40XX_PHY
+  FILES:=$(LINUX_DIR)/drivers/net/phy/ar40xx.ko
+  AUTOLOAD:=$(call AutoLoad,30,ar40xx)
+endef
+
+define KernelPackage/switch-ar40xx/description
+ Qualcomm atheros AR40XX switch support
+endef
+
+$(eval $(call KernelPackage,switch-ar40xx))
 
 define KernelPackage/switch-ip17xx
   SUBMENU:=$(NETWORK_DEVICES_MENU)
