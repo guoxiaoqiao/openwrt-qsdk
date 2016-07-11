@@ -131,6 +131,19 @@ endef
 
 $(eval $(call Profile,AP152))
 
+define Profile/AP152SPINAND
+	NAME:=Qualcomm Atheros AP152 spinand reference board
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+endef
+
+define Profile/AP152SPINAND/Description
+	Package set optimized for the Qualcomm Atheros AP152 spinand reference board.
+	This profile differs from the original AP152 profile as it is configured
+	based on spinand driver.
+endef
+
+$(eval $(call Profile,AP152SPINAND))
+
 define Profile/AP81
 	NAME:=Atheros AP81 reference board
 	PACKAGES:=kmod-usb-core kmod-usb2
