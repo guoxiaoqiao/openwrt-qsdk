@@ -31,13 +31,6 @@ NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
-ifneq ($(LINUX_VERSION),3.18.21)
-	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
-	$(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
-	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) \
-	$(NSS_CRYPTO) $(NSS_CLIENTS) $(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE)
-endif
-
 HW_CRYPTO:= kmod-crypto-qcrypto
 
 SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm kmod-shortcut-fe-drv
@@ -117,6 +110,13 @@ VIDEO:=kmod-qpic_panel_ertft
 KPI:=iperf sysstat
 
 FST:=qca-fst-manager
+
+ifneq ($(LINUX_VERSION),3.18.21)
+	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
+	$(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
+	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) \
+	$(NSS_CRYPTO) $(NSS_CLIENTS) $(MAP_PKGS) $(AQ_PHY) $(FAILSAFE)
+endif
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
