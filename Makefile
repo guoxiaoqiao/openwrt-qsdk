@@ -49,8 +49,15 @@ printdb:
 
 prepare: $(target/stamp-compile)
 
-clean: FORCE
-	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(BIN_DIR) $(BUILD_LOG_DIR)
+clean_kernel:
+ifdef CONFIG_EXTERNAL_KERNEL_TREE
+	make target/linux/clean
+else
+	@true
+endif
+
+clean: FORCE clean_kernel
+	 rm -rf $(BUILD_DIR) $(STAGING_DIR) $(BIN_DIR) $(BUILD_LOG_DIR)
 
 dirclean: clean
 	rm -rf $(STAGING_DIR_HOST) $(TOOLCHAIN_DIR) $(BUILD_DIR_HOST) $(BUILD_DIR_TOOLCHAIN)

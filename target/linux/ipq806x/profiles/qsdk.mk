@@ -82,6 +82,7 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd wide-dhcpv6-client ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
+	isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 \
 	rp-pppoe-server ppp-mod-pptp
 
 BLUETOOTH:=kmod-bluetooth bluez-libs bluez-utils kmod-ath3k
@@ -110,11 +111,18 @@ KPI:=iperf sysstat
 
 FST:=qca-fst-manager
 
+ifneq ($(LINUX_VERSION),3.18.21)
+	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
+	$(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
+	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) \
+	$(NSS_CRYPTO) $(NSS_CLIENTS) $(MAP_PKGS) $(AQ_PHY) $(FAILSAFE)
+endif
+
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) $(QCA_EDMA) \
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
-	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI)
+	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI) $(EXTRA_NETWORKING)
 endef
 
 define Profile/QSDK_Open/Description
@@ -128,10 +136,10 @@ define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
-		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(BLUETOOTH) $(HW_CRYPTO) $(QCA_RFS) \
+		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(PLC) $(AQ_PHY) $(FAILSAFE) $(BLUETOPIA) $(FST) sierra-cm
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-sierra-driver kmod-art2
 endef
 
 define Profile/QSDK_Premium/Description
@@ -172,3 +180,17 @@ define Profile/QSDK_Enterprise/Description
 endef
 
 $(eval $(call Profile,QSDK_Enterprise))
+
+define Profile/QSDK_Deluxe
+	NAME:=Qualcomm-Atheros SDK Deluxe Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
+	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
+	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI)
+endef
+
+define Profile/QSDK_Deluxe/Description
+	QSDK Deluxe package set configuration.
+	Enables wifi open source packages
+endef
+
+$(eval $(call Profile,QSDK_Deluxe))

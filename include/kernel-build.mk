@@ -135,7 +135,8 @@ define BuildKernel
 
   clean: FORCE
 ifdef CONFIG_EXTERNAL_KERNEL_TREE
-	make -C $(LINUX_DIR) clean
+	$(if $(wildcard $(LINUX_DIR)), \
+	make -C $(LINUX_DIR) clean)
 else
 	rm -rf $(KERNEL_BUILD_DIR)
 endif
