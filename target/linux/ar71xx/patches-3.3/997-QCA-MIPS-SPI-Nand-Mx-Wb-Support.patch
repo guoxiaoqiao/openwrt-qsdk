@@ -1,0 +1,76 @@
+diff --git a/arch/mips/ath79/dev-m25p80.c b/arch/mips/ath79/dev-m25p80.c
+index c8bafe2..f4cc99f 100644
+--- a/arch/mips/ath79/dev-m25p80.c
++++ b/arch/mips/ath79/dev-m25p80.c
+@@ -37,11 +37,20 @@ static struct spi_board_info ath79_spi_info[] = {
+ 		.controller_data = &ath79_spi0_cdata,
+ 	},
+ 	{
++#ifndef CONFIG_MTD_NAND_ATH79
+ 		.bus_num	= 0,
+ 		.chip_select	= 1,
+ 		.max_speed_hz   = 25000000,
+ 		.modalias	= "m25p80",
+ 		.controller_data = &ath79_spi1_cdata,
++#else
++		.bus_num	= 0,
++		.chip_select	= 1,
++		.max_speed_hz	= 50000000,
++		.modalias	= "ath79-spinand",
++		.controller_data	= &ath79_spi1_cdata,
++		.platform_data	= NULL,
++#endif
+ 	}
+ };
+ 
+@@ -50,7 +59,7 @@ struct ath79_spi_platform_data ath79_spi_data;
+ void ath79_init_m25p80_pdata(struct flash_platform_data *pdata)
+ {
+ 	ath79_spi_data.bus_num = 0;
+-	ath79_spi_data.num_chipselect = 1;
++	ath79_spi_data.num_chipselect = 2;
+ 	ath79_spi0_cdata.is_flash = true;
+ 	ath79_spi_info[0].platform_data = pdata;
+ }
+@@ -58,7 +67,7 @@ void ath79_init_m25p80_pdata(struct flash_platform_data *pdata)
+ void __init ath79_register_m25p80(struct flash_platform_data *pdata)
+ {
+ 	ath79_init_m25p80_pdata(pdata);
+-	ath79_register_spi(&ath79_spi_data, ath79_spi_info, 1);
++	ath79_register_spi(&ath79_spi_data, ath79_spi_info, 2);
+ }
+ 
+ static struct flash_platform_data *multi_pdata;
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index d3167fa..0c91ee9 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -91,6 +91,8 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 	{"NAND 128MiB 1,8V 16-bit",	0xB1, 0, 128, 0, LP_OPTIONS16},
+ 	{"NAND 128MiB 3,3V 16-bit",	0xC1, 0, 128, 0, LP_OPTIONS16},
+ 	{"NAND 128MiB 1,8V 16-bit",     0xAD, 0, 128, 0, LP_OPTIONS16},
++	{"MX35LF1G4EAB 1G 3,3V 8-bit",	0x12, 2048, 128, 131072, 0},
++	{"W25N01GV 1G 3,3V 8-bit",	0xAA, 2048, 128, 131072, 0},
+ 
+ 	/* 2 Gigabit */
+ 	{"NAND 256MiB 1,8V 8-bit",	0xAA, 0, 256, 0, LP_OPTIONS},
+@@ -179,6 +181,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_AMD, "AMD"},
+ 	{NAND_MFR_MACRONIX, "Macronix"},
+ 	{NAND_MFR_GIGADEVICE, "Giga Device"},
++	{NAND_MFR_WINBOND, "Winbond"},
+ 	{0x0, "Unknown"}
+ };
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index d0f83a9..986c787 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -557,6 +557,7 @@ struct nand_chip {
+ #define NAND_MFR_AMD		0x01
+ #define NAND_MFR_MACRONIX	0xc2
+ #define NAND_MFR_GIGADEVICE	0xc8
++#define NAND_MFR_WINBOND	0xef
+ 
+ /**
+  * struct nand_flash_dev - NAND Flash Device ID Structure
