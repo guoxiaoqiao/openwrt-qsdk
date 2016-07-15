@@ -15,6 +15,7 @@ else
 IPQ806X_KERNEL_LOADADDR = 0x42208000
 IPQ40XX_KERNEL_LOADADDR = 0x80208000
 endif
+IPQ807X_KERNEL_LOADADDR = 0x41208000
 
 ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
@@ -32,7 +33,8 @@ define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb $(BIN_DIR)/$(IMG_PREFIX)-$(1).dtb
 	mkdir -p $(BIN_DIR)/dtbs/
-	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064*.dtb $(BIN_DIR)/dtbs/
+	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq80*.dtb $(BIN_DIR)/dtbs/
+	$(CP) $(LINUX_DIR)/arch/arm/boot/Image $(BIN_DIR)/dtbs/
 endef
 
 define Image/BuildKernel/FITInitramfs
@@ -74,6 +76,9 @@ define Image/BuildKernel/template
 
 	$(foreach device, $(call FindDeviceTrees, qcom-ipq40xx-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ40XX_KERNEL_LOADADDR));)
+
+	$(foreach device, $(call FindDeviceTrees, qcom-ipq807x-), \
+		$(call Image/BuildKernel/$(1),$(device),$(IPQ807X_KERNEL_LOADADDR));)
 endef
 
 define Image/BuildKernel
