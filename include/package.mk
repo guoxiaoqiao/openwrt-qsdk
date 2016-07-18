@@ -165,13 +165,14 @@ ifeq ($(filter autoreconf,$(Hooks/Configure/Pre)),)
 endif
 # define empty default action
 define Build/Prepare/Default
-	@: 
+	@:
 endef
 endif
 
 define Download/default
   FILE:=$(PKG_SOURCE)
   URL:=$(PKG_SOURCE_URL)
+  BRANCH:=$(PKG_SOURCE_BRANCH)
   SUBDIR:=$(PKG_SOURCE_SUBDIR)
   PROTO:=$(PKG_SOURCE_PROTO)
   $(if $(PKG_SOURCE_MIRROR),MIRROR:=$(filter 1,$(PKG_MIRROR)))
@@ -349,7 +350,7 @@ prepare-package-install:
 
 $(PACKAGE_DIR):
 	mkdir -p $@
-	
+
 dumpinfo:
 download:
 prepare:
