@@ -12,7 +12,7 @@ JFFS2_BLOCKSIZE = 64k 128k 256k
 NAND_BLOCKSIZE=2048:128k
 AR71XX_16M_ROOTFS_SIZE=14090240 #14876672 - 786432(768KB)
 AR71XX_8M_ROOTFS_SIZE=5963776  #6488064 - 524288(512KB)
-AR71XX_SPINAND_ROOTFS_SIZE=67108864
+AR71XX_DUAL_64M_ROOTFS_SIZE=62914560 #67108864 - 4194304(4M)
 #Do not modify AR71XX_*M_SYS_ROOTFS_SIZE. If size needs to be changed, modify AR71XX_*M_ROOTFS_SIZE
 AR71XX_16M_SYS_ROOTFS_SIZE=14876672 #AR71XX_16M_ROOTFS_SIZE + 786432(768KB)
 AR71XX_8M_SYS_ROOTFS_SIZE=6488064 #AR71XX_8M_ROOTFS_SIZE + 524288(768KB)
@@ -192,7 +192,7 @@ ap147_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),
 ap147_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 ap152_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1472k(kernel),64k(art),7808k@0x50000(firmware)
 ap152_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
-ap152spinand_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),64k(art),1664k(reserved1);spi0.1:64m(rootfs),2m(kernel),62m(reserved2),66m@0x0(firmware)
+ap152dual_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),1664k(reserved1),64k(art);spi0.1:64m(rootfs),2m(kernel),62m(reserved2),66m@0x0(firmware)
 ap151_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1472k(kernel),64k(art),7808k@0x50000(firmware)
 ap151_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 cus531_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
@@ -850,7 +850,7 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP151_8M,ap151-8M,AP151,ttyS0,1152
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP151_16M,ap151-16M,AP151,ttyS0,115200,$$(ap151_mtdlayout_16M),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP152_8M,ap152-8M,AP152,ttyS0,115200,$$(ap152_mtdlayout_8M),1507328,$(AR71XX_8M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP152_16M,ap152-16M,AP152,ttyS0,115200,$$(ap152_mtdlayout_16M),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
-$(eval $(call SingleProfile,AthLzma,$(fs_128k),AP152SPINAND,ap152-spinand,AP152,ttyS0,115200,$$(ap152spinand_mtdlayout),2097152,$(AR71XX_SPINAND_ROOTFS_SIZE),RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_128k),AP152DUAL,ap152-dual,AP152,ttyS0,115200,$$(ap152dual_mtdlayout),2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_16M,cus531-16M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_32M,cus531-32M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_32M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_32M_DUAL,cus531-32M-dual,CUS531,ttyS0,115200,,1507328,14876672,RKuImage))
@@ -1070,7 +1070,7 @@ define Image/Build/Profile/QSDK_Premium_Router
 	$(call Image/Build/Profile/AP135NAND,$(1))
 	$(call Image/Build/Profile/AP137_16M,$(1))
 	$(call Image/Build/Profile/AP152_16M,$(1))
-	$(call Image/Build/Profile/AP152SPINAND,$(1))
+	$(call Image/Build/Profile/AP152DUAL,$(1))
 	$(call Image/Build/Profile/AP151_16M,$(1))
 	$(call Image/Build/Profile/AP147_16M,$(1))
 endef
@@ -1080,7 +1080,7 @@ define Image/Build/Profile/QSDK_Premium_Beeliner_Router
 	$(call Image/Build/Profile/AP135DUAL,$(1))
 	$(call Image/Build/Profile/AP135NAND,$(1))
 	$(call Image/Build/Profile/AP152_16M,$(1))
-	$(call Image/Build/Profile/AP152SPINAND,$(1))
+	$(call Image/Build/Profile/AP152DUAL,$(1))
 	$(call Image/Build/Profile/AP151_16M,$(1))
 	$(call Image/Build/Profile/AP147_16M,$(1))
 	$(call Image/Build/Profile/DB120_16M,$(1))
