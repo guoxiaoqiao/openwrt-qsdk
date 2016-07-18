@@ -166,6 +166,7 @@ hostapd_common_add_bss_config() {
 	config_add_int mcast_rate
 	config_add_array basic_rate
 	config_add_array supported_rates
+	config_add_int obss_interval
 }
 
 hostapd_set_bss_options() {
@@ -186,7 +187,7 @@ hostapd_set_bss_options() {
 		wps_device_type wps_config wps_device_name wps_manufacturer wps_pin \
 		wps_model_name wps_model_number wps_serial_number \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
-		iapp_interface
+		iapp_interface obss_interval
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -196,6 +197,7 @@ hostapd_set_bss_options() {
 	set_default hidden 0
 	set_default wmm 1
 	set_default uapsd 1
+	set_default obss_interval 1
 
 	append bss_conf "ctrl_interface=/var/run/hostapd"
 	if [ "$isolate" -gt 0 ]; then
@@ -206,6 +208,9 @@ hostapd_set_bss_options() {
 	fi
 	if [ "$max_inactivity" -gt 0 ]; then
 		append bss_conf "ap_max_inactivity=$max_inactivity" "$N"
+	fi
+	if [ "$obss_interval" -gt 0 ]; then
+		append bss_conf "obss_interval=$obss_interval" "$N"
 	fi
 
 	append bss_conf "disassoc_low_ack=$disassoc_low_ack" "$N"
