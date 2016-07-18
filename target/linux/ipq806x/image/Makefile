@@ -130,28 +130,27 @@ define Image/BuildKernel/Initramfs
 	$(call Image/BuildKernel/template,FITInitramfs)
 endef
 
+UBI_IMAGES=qcom-ipq8064-db149 \
+	qcom-ipq8064-ap148 \
+	qcom-ipq8064-ak01 \
+	qcom-ipq8064-ap145_1xx \
+	qcom-ipq8064-ap145 \
+	qcom-ipq8064-ap160 \
+	qcom-ipq8064-ap161 \
+	qcom-ipq8064-ap160_2xx
+
+define Image/UbiPrepare
+	$(if $(wildcard $(DTS_DIR)/$(1).dtb), \
+	$(call Image/Build/UbinizeImage,$(1),$(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb,$(2),$(3),$(4));)
+endef
+
 define Image/UbiImage
 
 ifeq ($(1),-ipq806x)
 	$(eval UBI_OPTS:="-m 2048 -p 128KiB")
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-db149.dtb), \
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-db149,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-db149-fit-uImage.itb,squashfs,$(UBI_OPTS)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148.dtb), \
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-fit-uImage.itb,squashfs,$(UBI_OPTS)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148-nand.dtb), \
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148-nand,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-nand-fit-uImage.itb,squashfs,$(UBI_OPTS)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ak01.dtb), \
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ak01,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ak01-fit-uImage.itb,squashfs,$(UBI_OPTS)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap145_1xx.dtb), \
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145_1xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145_1xx-fit-uImage.itb,squashfs,$(UBI_OPTS)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap145.dtb), \
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145-fit-uImage.itb,squashfs,$(UBI_OPTS)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap160.dtb), \
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160-fit-uImage.itb,squashfs,$(UBI_OPTS)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap161.dtb), \
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap161,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap161-fit-uImage.itb,squashfs,$(UBI_OPTS)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap160_2xx.dtb), \
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160_2xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160_2xx-fit-uImage.itb,squashfs,$(UBI_OPTS)))
+	$(foreach image,$(UBI_IMAGES), \
+	$(call Image/UbiPrepare,$(image),squashfs,"ubi_rootfs","rootfs_data"))
+	$(call Image/UbiPrepare,qcom-ipq8064-ap148-nand,squashfs,"rootfs","rootfs_data")
 endif
 endef
 
