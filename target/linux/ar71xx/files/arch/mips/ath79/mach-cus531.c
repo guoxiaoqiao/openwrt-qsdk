@@ -52,6 +52,8 @@
 #define CUS531MP3_GPIO_WL_ACTIVE	2
 #define CUS531MP3_GPIO_LED_WLAN		12
 #define CUS531MP3_GPIO_LED_WAN		14
+#define CUS531MP3_GPIO_BTN_WPS		4
+#define CUS531MP3_GPIO_BTN_RESET	15
 
 #define CUS531_GPIO_FUNC_MUX_WL_ACTIVE	53
 
@@ -86,7 +88,7 @@ static struct gpio_keys_button cus531_gpio_keys[] __initdata = {
 	},
 };
 
-static void __init cus531_gpio_led_setup(void)
+static void __init cus531_gpio_setup(void)
 {
 	ath79_register_leds_gpio(-1,
 				 ARRAY_SIZE(cus531_leds_gpio),
@@ -179,7 +181,7 @@ static void __init __cus531_common_setup(void)
 
 static void __init cus531_common_setup(void)
 {
-	cus531_gpio_led_setup();
+	cus531_gpio_setup();
 	__cus531_common_setup();
 }
 
@@ -201,7 +203,26 @@ static void __init cus531_nand_setup(void)
 	cus531_common_setup();
 }
 
-static void __init cus531mp3_gpio_led_setup(void)
+static struct gpio_keys_button cus531mp3_gpio_keys[] __initdata = {
+	{
+		.desc		= "WPS button",
+		.type		= EV_KEY,
+		.code		= KEY_WPS_BUTTON,
+		.debounce_interval = CUS531_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= CUS531MP3_GPIO_BTN_WPS,
+		.active_low	= 0,
+	},
+	{
+		.desc		= "RESET button",
+		.type		= EV_KEY,
+		.code		= KEY_RESTART,
+		.debounce_interval = CUS531_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= CUS531MP3_GPIO_BTN_RESET,
+		.active_low	= 1,
+	},
+};
+
+static void __init cus531mp3_gpio_setup(void)
 {
 	/* enable LAN LED */
 	ath79_gpio_direction_select(CUS531MP3_GPIO_LED_WAN, true);
@@ -228,11 +249,15 @@ static void __init cus531mp3_gpio_led_setup(void)
 	ath79_wmac_set_btcoex_pin(CUS531MP3_GPIO_BT_ACTIVE,
 				  CUS531MP3_GPIO_BT_PRIORITY,
 				  CUS531MP3_GPIO_WL_ACTIVE);
+
+	ath79_register_gpio_keys_polled(-1, CUS531_KEYS_POLL_INTERVAL,
+					ARRAY_SIZE(cus531mp3_gpio_keys),
+					cus531mp3_gpio_keys);
 }
 
 static void __init cus531mp3_common_setup(void)
 {
-	cus531mp3_gpio_led_setup();
+	cus531mp3_gpio_setup();
 	ath79_register_pci();
 
 	__cus531_common_setup();
