@@ -2240,6 +2240,14 @@ define Image/Build/Profile/QSDK_IOE_DBPAN
 	$(call Image/Build/Profile/CUS531MP3,$(1))
 endef
 
+define Image/Build/Profile/QSDK_Open_Router
+	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP147_010,$(1))
+	$(call Image/Build/Profile/AP151,$(1))
+	$(call Image/Build/Profile/AP152,$(1))
+	$(call Image/Build/Profile/DB120,$(1))
+endef
+
 # $(1): filesystem type.
 define Image/Build
 	$(call Image/Build/$(call rootfs_type,$(1)),$(1))
