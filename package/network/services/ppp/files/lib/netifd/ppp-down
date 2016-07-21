@@ -18,7 +18,12 @@ skip_idle_on_demand_mode()
 	[ -z "$demand" ] && return 1
 
 	#now ppp is in demand mode, and ppp interface is still up
-	#so it is not a real down event, just skip it
+	#so it is not a real down event, just call the on-demand-down
+	#script, if it exists and skip the real down event operations.
+	[ -x /lib/netifd/offload/on-demand-down ] && {
+		/lib/netifd/offload/on-demand-down
+	}
+
 	return 0
 }
 
