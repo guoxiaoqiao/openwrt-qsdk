@@ -94,7 +94,7 @@ define Image/BuildKernel
 		$(IPQ806X_KERNEL_LOADADDR)))
 	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148, \
-		$(call FindDeviceTrees, qcom-ipq8064-*ap148,-not -name *ap148_1xx*), \
+		$(call FindDeviceTrees, qcom-ipq8064-*ap148,-not -name *ap148_1xx* -not -name *ap148-nand*), \
 		$(IPQ806X_KERNEL_LOADADDR)))
 	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-db149.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-db149, \
