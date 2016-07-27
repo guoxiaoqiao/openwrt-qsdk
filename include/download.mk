@@ -42,7 +42,7 @@ endef
 define git_mirror_download
 	GIT_NAME=$$$$(echo $(URL) | sed -e s:.*/::g -e s/.git$$$$//g); \
 	[ -n "${CONFIG_GIT_MIRROR}" ] && \
-	git clone $(CONFIG_GIT_MIRROR)$$$$GIT_NAME $(SUBDIR) --recursive && \
+	git clone $(if $(BRANCH),-b $(BRANCH)) $(CONFIG_GIT_MIRROR)$$$$GIT_NAME $(SUBDIR) --recursive && \
 	(cd $(SUBDIR) && git remote -v && git checkout $(VERSION))
 endef
 
@@ -168,6 +168,7 @@ define Download/Defaults
   FILE:=
   URL_FILE:=
   PROTO:=
+  BRANCH:=
   MD5SUM:=
   SUBDIR:=
   MIRROR:=1

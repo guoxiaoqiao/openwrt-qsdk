@@ -82,13 +82,7 @@ define Build/Configure
 		> $(PKG_BUILD_DIR)/include/SNAPSHOT.h
 endef
 
-ifdef CONFIG_USE_GLIBC
-  TARGET_CFLAGS += -DHAVE_SETNS
-endif
-ifdef CONFIG_USE_MUSL
-  TARGET_CFLAGS += -DHAVE_SETNS
-endif
-
+TARGET_CFLAGS += -DHAVE_SETNS
 TARGET_CFLAGS += -ffunction-sections -fdata-sections
 
 MAKE_FLAGS += \

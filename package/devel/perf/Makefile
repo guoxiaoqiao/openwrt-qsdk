@@ -59,6 +59,7 @@ MAKE_FLAGS = \
 	LDFLAGS="$(TARGET_LDFLAGS)" \
 	WERROR=0 \
 	V=1 \
+	JOBS=1 \
 	prefix=/usr
 
 define Package/perf/install

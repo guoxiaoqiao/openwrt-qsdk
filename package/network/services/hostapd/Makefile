@@ -100,14 +100,14 @@ ifdef CONFIG_USE_GLIBC
   TARGET_LDFLAGS_C += -lrt
 endif
 
-DRV_DEPENDS:=+PACKAGE_kmod-cfg80211:libnl-tiny
+DRV_DEPENDS:=+PACKAGE_kmod-cfg80211:libnl
 
 define Package/hostapd/Default
   SECTION:=net
   CATEGORY:=Network
   TITLE:=IEEE 802.1x Authenticator
   URL:=http://hostap.epitest.fi/
-  DEPENDS:=$(DRV_DEPENDS) +hostapd-common +libubus
+  DEPENDS:=$(DRV_DEPENDS) +hostapd-common +libubus +libnl
 endef
 
 define Package/hostapd
@@ -155,7 +155,7 @@ endef
 define Package/wpad
 $(call Package/wpad/Default)
   TITLE+= (full)
-  DEPENDS+=+WPA_SUPPLICANT_OPENSSL:libopenssl
+  DEPENDS+=+WPA_SUPPLICANT_OPENSSL:libopenssl +libnl
   VARIANT:=wpad-full
 endef
 
@@ -167,6 +167,7 @@ endef
 define Package/wpad-mini
 $(call Package/wpad/Default)
   TITLE+= (WPA-PSK only)
+  DEPENDS:=$(DRV_DEPENDS) +libnl
   VARIANT:=wpad-mini
 endef
 
@@ -291,10 +292,9 @@ define Build/Configure
 endef
 
 TARGET_CPPFLAGS := \
-	-I$(STAGING_DIR)/usr/include/libnl-tiny \
+	-I$(STAGING_DIR)/usr/include/libnl3 \
 	-I$(PKG_BUILD_DIR)/src/crypto \
 	$(TARGET_CPPFLAGS) \
-	-DCONFIG_LIBNL20 \
 	-D_GNU_SOURCE \
 	$(if $(CONFIG_WPA_MSG_MIN_PRIORITY),-DCONFIG_MSG_MIN_PRIORITY=$(CONFIG_WPA_MSG_MIN_PRIORITY))
 
@@ -305,7 +305,7 @@ ifeq ($(findstring supplicant,$(BUILD_VARIANT)),)
 endif
 
 ifdef CONFIG_PACKAGE_kmod-cfg80211
-  TARGET_LDFLAGS += -lm -lnl-tiny
+  TARGET_LDFLAGS += -lm -lnl-3 -lnl-genl-3 -lnl-route-3
 endif
 
 define Build/RunMake

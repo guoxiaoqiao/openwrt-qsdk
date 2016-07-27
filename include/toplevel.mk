@@ -120,6 +120,9 @@ menuconfig: scripts/config/mconf prepare-tmpinfo FORCE
 
 prepare_kernel_conf: .config FORCE
 
+clean_kernel: FORCE
+	$(_SINGLE)$(NO_TRACE_MAKE) target/linux/clean
+
 ifeq ($(wildcard staging_dir/host/bin/quilt),)
   prepare_kernel_conf:
 	@+$(SUBMAKE) -r tools/quilt/install
@@ -216,7 +219,7 @@ docs docs/compile: FORCE
 docs/clean: FORCE
 	@$(_SINGLE)$(SUBMAKE) -C docs clean
 
-distclean:
+distclean: clean_kernel
 	rm -rf tmp build_dir staging_dir dl .config* feeds package/feeds package/openwrt-packages bin
 	@$(_SINGLE)$(SUBMAKE) -C scripts/config clean
 

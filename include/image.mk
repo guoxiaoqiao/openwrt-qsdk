@@ -179,15 +179,19 @@ ifneq ($(CONFIG_NAND_SUPPORT),)
 # $(1) board name
 # $(2) ubinize-image options (e.g. --uboot-env and/or --kernel kernelimage)
 # $(3) rootfstype (e.g. squashfs or ubifs)
-# $(4) options to pass-through to ubinize (i.e. $($(PROFILE)_UBI_OPTS)))
+# $(4) rootfs volume name (e.g rootfs or ubi_rootfs)
+# $(5) rootfs_data volume name (e.g. rootfs_data)
    define Image/Build/UbinizeImage
 	sh $(TOPDIR)/scripts/ubinize-image.sh --kernel $(2) \
 		"$(KDIR)/root.$(3)" \
 		"$(BIN_DIR)/$(IMG_PREFIX)-$(1)-ubi-root.img" \
 		"$(STAGING_DIR_HOST)/bin" \
-		"ubi_rootfs" \
-		"rootfs_data" \
-		$(4)
+		$(4) \
+		$(5) \
+		$(if $($(PROFILE)_UBI_OPTS), \
+			$(shell echo $($(PROFILE)_UBI_OPTS)), \
+			$(shell echo $(UBI_OPTS)) \
+		)
    endef
 
 endif
