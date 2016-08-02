@@ -2288,6 +2288,10 @@ define Image/Build/Profile/QSDK_Wireless_Router
 	$(call Image/Build/Profile/DB120,$(1))
 endef
 
+define Image/Build/Profile/QSDK_Target_Router
+	$(call Image/Build/Profile/AP135,$(1))
+endef
+
 # $(1): filesystem type.
 define Image/Build
 	$(call Image/Build/$(call rootfs_type,$(1)),$(1))

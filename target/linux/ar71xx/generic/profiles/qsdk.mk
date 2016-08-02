@@ -158,3 +158,15 @@ define Profile/QSDK_Open_Router/Description
   - Integrated 11abgn support using the ath9k/ath10k driver
 endef
 $(eval $(call Profile,QSDK_Open_Router))
+
+define Profile/QSDK_Target_Router
+	NAME:=Qualcomm-Atheros SDK Target Router Profile
+	PACKAGES+= qca-legacy-uboot-ap135 kmod-qca-wifi-10.4-unified-perf \
+	  qca-wifi-fw-hw6-10.4-asic
+
+endef
+
+define Profile/QSDK_Target_Router/Description
+  QSDK Target Router package set configuration with minimal packages.
+endef
+$(eval $(call Profile,QSDK_Target_Router))
