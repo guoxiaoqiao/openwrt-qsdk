@@ -1,5 +1,6 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/version.mk
+include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=lk-af
 PKG_SOURCE_PROTO:=git
@@ -23,7 +24,7 @@ define Build/Compile
 	VERSION_CODE='$(VERSION_NICK) $(VERSION_NUMBER)' \
 	REVISION='$(REVISION)' \
 	$(MAKE) -C $(PKG_BUILD_DIR) HOSTCC=$(TARGET_CC) \
-		QSDK_CFLAGS="$(TARGET_CFLAGS)" \
+		ARCH="$(LINUX_KARCH)" QSDK_CFLAGS="$(TARGET_CFLAGS)" \
 		QSDK_LDFLAGS="$(TARGET_LDFLAGS)" PROJECT=ipq806x \
 		TOOLCHAIN_PREFIX="$(TARGET_CROSS)"
 endef
