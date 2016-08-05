@@ -653,12 +653,23 @@ do_flash_ubi() {
 	ubiformat /dev/${mtdpart} -y -f /tmp/${bin}.bin
 }
 
+do_flash_hlos() {
+	local sec=$1
+	local mtdpart=$(find_mmc_part "0:HLOS")
+
+	if [ -n "$mtdpart" ]; then
+		do_flash_failsafe_partition ${sec} "0:HLOS"
+	else
+		do_flash_failsafe_partition ${sec} "HLOS"
+	fi
+}
+
 flash_section() {
 	local sec=$1
 
 	local board=$(ipq806x_board_name)
 	case "${sec}" in
-		hlos*) switch_layout linux; do_flash_failsafe_partition ${sec} "HLOS";;
+		hlos*) switch_layout linux; do_flash_hlos ${sec};;
 		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "SBL1";;
