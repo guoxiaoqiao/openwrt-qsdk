@@ -66,7 +66,7 @@ USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
 
 TEST_TOOLS:=sysstat ethtool i2c-tools
 
-UTILS:=file luci-app-samba iperf rng-tools
+UTILS:=file luci-app-samba iperf rng-tools profilerd
 
 COREBSP_UTILS:=pm-utils qca-thermald-10.4
 
