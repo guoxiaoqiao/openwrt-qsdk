@@ -37,6 +37,7 @@
 #include "dev-wmac.h"
 #include "dev-i2c.h"
 #include "machtypes.h"
+#include "pci.h"
 
 #define CUS531_GPIO_SPI_CS0		5
 #define CUS531_GPIO_SPI_CS1		11
@@ -49,6 +50,10 @@
 #define CUS531MP3_GPIO_BT_ACTIVE	0
 #define CUS531MP3_GPIO_BT_PRIORITY	1
 #define CUS531MP3_GPIO_WL_ACTIVE	2
+#define CUS531MP3_GPIO_LED_WLAN		12
+#define CUS531MP3_GPIO_LED_WAN		14
+#define CUS531MP3_GPIO_BTN_WPS		4
+#define CUS531MP3_GPIO_BTN_RESET	15
 
 #define CUS531_GPIO_FUNC_MUX_WL_ACTIVE	53
 
@@ -83,7 +88,7 @@ static struct gpio_keys_button cus531_gpio_keys[] __initdata = {
 	},
 };
 
-static void __init cus531_gpio_led_setup(void)
+static void __init cus531_gpio_setup(void)
 {
 	ath79_register_leds_gpio(-1,
 				 ARRAY_SIZE(cus531_leds_gpio),
@@ -91,24 +96,6 @@ static void __init cus531_gpio_led_setup(void)
 	ath79_register_gpio_keys_polled(-1, CUS531_KEYS_POLL_INTERVAL,
 					ARRAY_SIZE(cus531_gpio_keys),
 					cus531_gpio_keys);
-}
-
-static void __init cus531mp3_btcoex_gpio_setup(void)
-{
-	/* Disable JTAG */
-	ath79_gpio_function_enable(AR934X_GPIO_FUNC_JTAG_DISABLE);
-
-	/* Initial direction */
-	ath79_gpio_direction_select(CUS531MP3_GPIO_WL_ACTIVE, true);
-	ath79_gpio_direction_select(CUS531MP3_GPIO_BT_ACTIVE, false);
-	ath79_gpio_direction_select(CUS531MP3_GPIO_BT_PRIORITY, false);
-
-	ath79_gpio_output_select(CUS531MP3_GPIO_WL_ACTIVE,
-				 CUS531_GPIO_FUNC_MUX_WL_ACTIVE);
-	ath79_gpio_input_select(CUS531MP3_GPIO_BT_ACTIVE,
-				AR934X_GPIO_IN_MUX_BT_ACTIVE);
-	ath79_gpio_input_select(CUS531MP3_GPIO_BT_PRIORITY,
-				AR934X_GPIO_IN_MUX_BT_PRIORITY);
 }
 
 static struct ath79_spi_controller_data cus531_spi0_cdata =
@@ -159,11 +146,9 @@ static void __init cus531_register_i2c_devices(
 	ath79_register_i2c(&ath79_i2c_gpio_data, info, info ? 1 : 0);
 }
 
-static void __init cus531_common_setup(void)
+static void __init __cus531_common_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
-
-	cus531_gpio_led_setup();
 
 	ath79_register_usb();
 
@@ -194,6 +179,12 @@ static void __init cus531_common_setup(void)
 	cus531_register_i2c_devices(NULL);
 }
 
+static void __init cus531_common_setup(void)
+{
+	cus531_gpio_setup();
+	__cus531_common_setup();
+}
+
 static void __init cus531_setup(void)
 {
 	ath79_register_m25p80(NULL);
@@ -212,10 +203,64 @@ static void __init cus531_nand_setup(void)
 	cus531_common_setup();
 }
 
+static struct gpio_keys_button cus531mp3_gpio_keys[] __initdata = {
+	{
+		.desc		= "WPS button",
+		.type		= EV_KEY,
+		.code		= KEY_WPS_BUTTON,
+		.debounce_interval = CUS531_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= CUS531MP3_GPIO_BTN_WPS,
+		.active_low	= 0,
+	},
+	{
+		.desc		= "RESET button",
+		.type		= EV_KEY,
+		.code		= KEY_RESTART,
+		.debounce_interval = CUS531_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= CUS531MP3_GPIO_BTN_RESET,
+		.active_low	= 1,
+	},
+};
+
+static void __init cus531mp3_gpio_setup(void)
+{
+	/* enable LAN LED */
+	ath79_gpio_direction_select(CUS531MP3_GPIO_LED_WAN, true);
+	ath79_gpio_output_select(CUS531MP3_GPIO_LED_WAN,
+				 QCA953X_GPIO_OUT_MUX_LED_LINK5);
+
+	/* set WLAN LED pin */
+	ath79_wmac_set_led_pin(CUS531MP3_GPIO_LED_WLAN);
+
+	/* Disable JTAG for BT Coex pin */
+	ath79_gpio_function_enable(AR934X_GPIO_FUNC_JTAG_DISABLE);
+
+	ath79_gpio_direction_select(CUS531MP3_GPIO_WL_ACTIVE, true);
+	ath79_gpio_direction_select(CUS531MP3_GPIO_BT_ACTIVE, false);
+	ath79_gpio_direction_select(CUS531MP3_GPIO_BT_PRIORITY, false);
+
+	ath79_gpio_output_select(CUS531MP3_GPIO_WL_ACTIVE,
+				 CUS531_GPIO_FUNC_MUX_WL_ACTIVE);
+	ath79_gpio_input_select(CUS531MP3_GPIO_BT_ACTIVE,
+				AR934X_GPIO_IN_MUX_BT_ACTIVE);
+	ath79_gpio_input_select(CUS531MP3_GPIO_BT_PRIORITY,
+				AR934X_GPIO_IN_MUX_BT_PRIORITY);
+
+	ath79_wmac_set_btcoex_pin(CUS531MP3_GPIO_BT_ACTIVE,
+				  CUS531MP3_GPIO_BT_PRIORITY,
+				  CUS531MP3_GPIO_WL_ACTIVE);
+
+	ath79_register_gpio_keys_polled(-1, CUS531_KEYS_POLL_INTERVAL,
+					ARRAY_SIZE(cus531mp3_gpio_keys),
+					cus531mp3_gpio_keys);
+}
+
 static void __init cus531mp3_common_setup(void)
 {
-	cus531_common_setup();
-	cus531mp3_btcoex_gpio_setup();
+	cus531mp3_gpio_setup();
+	ath79_register_pci();
+
+	__cus531_common_setup();
 }
 
 static void __init cus531mp3_setup(void)

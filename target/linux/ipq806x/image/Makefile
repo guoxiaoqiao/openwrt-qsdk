@@ -15,6 +15,7 @@ else
 IPQ806X_KERNEL_LOADADDR = 0x42208000
 IPQ40XX_KERNEL_LOADADDR = 0x80208000
 endif
+IPQ807X_KERNEL_LOADADDR = 0x41208000
 
 ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
@@ -32,7 +33,8 @@ define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb $(BIN_DIR)/$(IMG_PREFIX)-$(1).dtb
 	mkdir -p $(BIN_DIR)/dtbs/
-	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064*.dtb $(BIN_DIR)/dtbs/
+	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq80*.dtb $(BIN_DIR)/dtbs/
+	$(CP) $(LINUX_DIR)/arch/arm/boot/Image $(BIN_DIR)/dtbs/
 endef
 
 define Image/BuildKernel/FITInitramfs
@@ -72,8 +74,11 @@ define Image/BuildKernel/template
 	$(foreach device, $(call FindDeviceTrees, qcom-ipq8064-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ806X_KERNEL_LOADADDR));)
 
-	$(foreach device, $(call FindDeviceTrees, qcom-ipq40xx-), \
+	$(foreach device, $(call FindDeviceTrees, qcom-ipq40??-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ40XX_KERNEL_LOADADDR));)
+
+	$(foreach device, $(call FindDeviceTrees, qcom-ipq807x-), \
+		$(call Image/BuildKernel/$(1),$(device),$(IPQ807X_KERNEL_LOADADDR));)
 endef
 
 define Image/BuildKernel
@@ -81,53 +86,71 @@ define Image/BuildKernel
 
 	$(call Image/BuildKernel/GenericFIT,qcom-ipq40xx,$(IPQ40XX_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq40xx-ap.dkxx, \
-		$(call FindDeviceTrees, qcom-ipq40xx-ap) $(call FindDeviceTrees, qcom-ipq40xx-db), \
+		$(call FindDeviceTrees, qcom-ipq40??-ap) $(call FindDeviceTrees, qcom-ipq40??-db), \
 		$(IPQ40XX_KERNEL_LOADADDR))
-	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
+	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148_1xx.dtb), \
+		$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap148_1xx), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148, \
-		$(call FindDeviceTrees, qcom-ipq8064-*ap148,-not -name *ap148_1xx*), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(call FindDeviceTrees, qcom-ipq8064-*ap148,-not -name *ap148_1xx* -not -name *ap148-nand*), \
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-db149.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-db149, \
 		$(call FindDeviceTrees, qcom-ipq8064-*db149), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ak01.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ak01, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ak01), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap145_1xx.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145_1xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap145_1xx), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap145.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap145,-not -name *ap145_1xx*), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap160_2xx.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap160_2xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap160_2xx), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap160.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap160, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap160,-not -name *ap160_2xx*), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
+	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap161.dtb), \
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap161, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap161), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR)))
 endef
 
 define Image/BuildKernel/Initramfs
 	$(call Image/BuildKernel/template,FITInitramfs)
 endef
 
+UBI_IMAGES=qcom-ipq8064-db149 \
+	qcom-ipq8064-ap148 \
+	qcom-ipq8064-ak01 \
+	qcom-ipq8064-ap145_1xx \
+	qcom-ipq8064-ap145 \
+	qcom-ipq8064-ap160 \
+	qcom-ipq8064-ap161 \
+	qcom-ipq8064-ap160_2xx
+
+define Image/UbiPrepare
+	$(if $(wildcard $(DTS_DIR)/$(1).dtb), \
+	$(call Image/Build/UbinizeImage,$(1),$(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb,$(2),$(3),$(4));)
+endef
+
 define Image/UbiImage
 
 ifeq ($(1),-ipq806x)
 	$(eval UBI_OPTS:="-m 2048 -p 128KiB")
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-db149,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-db149-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap148,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap148-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ak01,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ak01-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145_1xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145_1xx-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap145,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap145-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap161,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap161-fit-uImage.itb,squashfs,$(UBI_OPTS))
-	$(call Image/Build/UbinizeImage,qcom-ipq8064-ap160_2xx,$(BIN_DIR)/$(IMG_PREFIX)-qcom-ipq8064-ap160_2xx-fit-uImage.itb,squashfs,$(UBI_OPTS))
+	$(foreach image,$(UBI_IMAGES), \
+	$(call Image/UbiPrepare,$(image),squashfs,"ubi_rootfs","rootfs_data"))
+	$(call Image/UbiPrepare,qcom-ipq8064-ap148-nand,squashfs,"rootfs","rootfs_data")
 endif
 endef
 

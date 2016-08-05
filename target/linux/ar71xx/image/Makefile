@@ -1270,7 +1270,6 @@ Image/Build/dLANLzma/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(4))
 # $(7): kernel mtd partition size
 define Image/Build/IoENAND
 	$(CP) $(KDIR)/root.squashfs-raw $(KDIR_TMP)/root.squashfs
-	echo -ne '\xde\xad\xc0\xde' > $(KDIR_TMP)/jffs2.eof
 	$(call ubinize,ubinize-IoE.ini,$(KDIR_TMP),$(KDIR_TMP)/$(2)-root.ubi,128KiB,2048,)
 	( \
 		dd if=$(KDIR_TMP)/vmlinux-$(2).uImage \
@@ -2154,7 +2153,8 @@ $(eval $(call MultiProfile,AP121,AP121_2M AP121_4M))
 $(eval $(call MultiProfile,DIR615IX,DIR615I1 DIR615I3))
 $(eval $(call MultiProfile,AP136,AP136_010 AP136_020))
 $(eval $(call MultiProfile,AP143,AP143_8M AP143_16M AP143_32M AP143_32M_DUAL))
-$(eval $(call MultiProfile,CUS531,CUS531_16M CUS531_32M CUS531DUAL CUS531NAND CUS531_32M_DUAL CUS531DUAL_DUAL CUS531NAND_DUAL CUS531MP3_16M CUS531MP3_32M CUS531MP3DUAL CUS531MP3NAND CUS531MP3_32M_DUAL CUS531MP3DUAL_DUAL CUS531MP3NAND_DUAL))
+$(eval $(call MultiProfile,CUS531,CUS531_16M CUS531_32M CUS531DUAL CUS531NAND CUS531_32M_DUAL CUS531DUAL_DUAL CUS531NAND_DUAL))
+$(eval $(call MultiProfile,CUS531MP3,CUS531MP3_16M CUS531MP3_32M CUS531MP3DUAL CUS531MP3NAND CUS531MP3_32M_DUAL CUS531MP3DUAL_DUAL CUS531MP3NAND_DUAL))
 $(eval $(call MultiProfile,EWDORIN, EWDORINAP EWDORINRT EWDORIN16M))
 $(eval $(call MultiProfile,OPENMESH,OM2P OM5P MR600 MR900))
 $(eval $(call MultiProfile,TEW652BRP,TEW652BRP_FW TEW652BRP_RECOVERY))
@@ -2230,10 +2230,14 @@ endif
 	$(call Image/Build/Profile/$(if $(CONFIG_IB),Default,$(IMAGE_PROFILE)),loader)
 endef
 
-define Image/Build/Profile/QSDK_IoE_Device
+define Image/Build/Profile/QSDK_IOE_SB
 	$(call Image/Build/Profile/CUS531,$(1))
 	$(call Image/Build/Profile/AP143,$(1))
 	$(call Image/Build/Profile/CUS532K,$(1))
+endef
+
+define Image/Build/Profile/QSDK_IOE_DBPAN
+	$(call Image/Build/Profile/CUS531MP3,$(1))
 endef
 
 # $(1): filesystem type.
