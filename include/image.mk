@@ -15,7 +15,7 @@ override MAKE:=$(_SINGLE)$(SUBMAKE)
 override NO_TRACE_MAKE:=$(_SINGLE)$(NO_TRACE_MAKE)
 
 KDIR=$(KERNEL_BUILD_DIR)
-DTS_DIR:=$(LINUX_DIR)/arch/$(ARCH)/boot/dts/
+DTS_DIR:=$(LINUX_DIR)/arch/$(LINUX_KARCH)/boot/dts/$(if $(CONFIG_TARGET_ipq807x),qcom)
 
 IMG_PREFIX:=openwrt-$(if $(CONFIG_VERSION_FILENAMES),$(VERSION_NUMBER)-)$(BOARD)$(if $(SUBTARGET),-$(SUBTARGET))
 
@@ -122,7 +122,7 @@ endef
 define Image/BuildKernel/MkFIT
 	$(TOPDIR)/scripts/mkits.sh \
 		-D $(1) -o $(KDIR)/fit-$(1).its -k $(2) $(if $(3),-d $(3)) -C $(4) -a $(5) -e $(6) \
-		-A $(ARCH) -v $(LINUX_VERSION)
+		-A $(LINUX_KARCH) -v $(LINUX_VERSION)
 	PATH=$(LINUX_DIR)/scripts/dtc:$(PATH) mkimage -f $(KDIR)/fit-$(1).its $(KDIR)/fit-$(1)$(7).itb
 endef
 
