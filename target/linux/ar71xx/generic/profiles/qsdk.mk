@@ -73,12 +73,12 @@ endef
 $(eval $(call Profile,Upstream))
 
 define Profile/QSDK_Wireless_Router
-	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Wireless Router Profile
-	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-qos \
-	  qca-legacy-uboot-ap136 kmod-qca-ssdk-nohnat qca-ssdk-shell kmod-shortcut-fe-cm \
-	  kmod-qca-wifi-perf qca-hostap qca-spectral qca-hostapd-cli qca-wpa-supplicant \
-	  qca-wpa-cli qca-wrapd qca-wapid qca-acfg qca-legacy-uboot-ap152-8M \
+	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini uhttpd kmod-ipv6 \
+	  kmod-ipt-nathelper-rtsp -dnsmasq dnsmasq-dhcpv6 wide-dhcpv6-client bridge \
+	  kmod-qca-wifi-10.4-unified-perf qca-wapid qca-wpa-cli-10.4 \
+	  qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 kmod-qca-ssdk-nohnat \
+	  qca-ssdk-shell qca-legacy-uboot-ap136 qca-legacy-uboot-ap152-8M \
 	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x
 endef
 
