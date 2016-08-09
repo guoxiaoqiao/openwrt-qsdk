@@ -4,6 +4,7 @@
 
 QCA_EDMA:=kmod-qca-edma
 NSS_COMMON:= \
+	kmod-qca-nss-dp \
 	kmod-qca-nss-drv \
 	kmod-qca-nss-gmac \
 	$(QCA_EDMA)
@@ -183,9 +184,10 @@ $(eval $(call Profile,QSDK_Enterprise))
 
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_OPEN_PKGS) \
-	$(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
-	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI) $(WIFI_10_4_FW_PKGS) $(WIFI_10_4_PKGS)
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
+	$(SWITCH_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
+	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI) $(WIFI_10_4_FW_PKGS) \
+	$(WIFI_10_4_PKGS) $(QCA_ECM)
 endef
 
 define Profile/QSDK_Deluxe/Description
