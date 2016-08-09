@@ -193,7 +193,7 @@ define Profile/QSDK_Deluxe
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(WIL6210_PKGS) $(UTILS) $(TEST_TOOLS) $(KPI) \
 		$(QCA_LITHIUM) kmod-sierra-driver kmod-qca-nss-drv-bridge-mgr \
-		kmod-art2
+		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic
 endef
 
 define Profile/QSDK_Deluxe/Description
