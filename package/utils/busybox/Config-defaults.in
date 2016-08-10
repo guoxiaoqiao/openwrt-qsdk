@@ -1677,7 +1677,7 @@ config BUSYBOX_DEFAULT_FEATURE_LESS_LINENUMS
 	default n
 config BUSYBOX_DEFAULT_NANDWRITE
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_NANDDUMP
 	bool
 	default n
@@ -1695,10 +1695,10 @@ config BUSYBOX_DEFAULT_FEATURE_TASKSET_FANCY
 	default n
 config BUSYBOX_DEFAULT_UBIATTACH
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_UBIDETACH
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_UBIMKVOL
 	bool
 	default n
