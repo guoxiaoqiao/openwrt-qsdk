@@ -1,0 +1,32 @@
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 1ae3d3d..70d4a8a 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -994,6 +994,10 @@ config IMAGE_CMDLINE_HACK
+ 	bool "OpenWrt specific image command line hack"
+ 	default n
+ 
++config ATHMEM_USE_FROM_UBOOT
++	bool "Use DDR memsize passed from u-boot"
++	default n
++
+ config NO_IOPORT
+ 	def_bool n
+ 
+diff --git a/arch/mips/ath79/prom.c b/arch/mips/ath79/prom.c
+index d3d75f8..08e911b 100644
+--- a/arch/mips/ath79/prom.c
++++ b/arch/mips/ath79/prom.c
+@@ -181,6 +181,12 @@ void __init prom_init(void)
+ 		}
+ 	}
+ 
++#ifdef CONFIG_ATHMEM_USE_FROM_UBOOT
++	env = ath79_prom_find_env(envp, "mem");
++	if (env) {
++		ath79_prom_append_cmdline("mem", env);
++	}
++#endif
+ 	if (strstr(arcs_cmdline, "board=750Gr3") ||
+ 	    strstr(arcs_cmdline, "board=2011L"))
+ 		ath79_prom_append_cmdline("console", "ttyS0,115200");
