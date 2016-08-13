@@ -235,23 +235,10 @@
 +#endif /* _NETFILTER_MIME_H */
 --- /dev/null
 +++ b/extensions/rtsp/nf_conntrack_rtsp.c
-@@ -0,0 +1,525 @@
+@@ -0,0 +1,519 @@
 +/*
 + * RTSP extension for IP connection tracking
 + * (C) 2003 by Tom Marshall <tmarshall at real.com>
-+ *
-+ * 2005-02-13: Harald Welte <laforge at netfilter.org>
-+ * 	- port to 2.6
-+ * 	- update to recent post-2.6.11 api changes
-+ * 2006-09-14: Steven Van Acker <deepstar at singularity.be>
-+ *	- removed calls to NAT code from conntrack helper: NAT no longer needed to use rtsp-conntrack
-+ * 2007-04-18: Michael Guntsche <mike at it-loops.com>
-+ * 			- Port to new NF API
-+ * 2013-03-04: Il'inykh Sergey <sergeyi at inango-sw.com>. Inango Systems Ltd
-+ *	- fixed rtcp nat mapping and other port mapping fixes
-+ *	- simple TEARDOWN request handling
-+ *	- codestyle fixes and other less significant bug fixes
-+ *
 + * based on ip_conntrack_irc.c
 + *
 + *      This program is free software; you can redistribute it and/or
@@ -270,6 +257,13 @@
 + * With setup_timeout you can specify how long the system waits for
 + * an expected data channel (default 300 seconds).
 + *
++ * 2005-02-13: Harald Welte <laforge at netfilter.org>
++ * 	- port to 2.6
++ * 	- update to recent post-2.6.11 api changes
++ * 2006-09-14: Steven Van Acker <deepstar at singularity.be>
++ *      - removed calls to NAT code from conntrack helper: NAT no longer needed to use rtsp-conntrack
++ * 2007-04-18: Michael Guntsche <mike at it-loops.com>
++ * 			- Port to new NF API
 + */
 +
 +#include <linux/module.h>
