@@ -2478,6 +2478,7 @@ ar8xxx_sw_mac_polling_task(struct ar8216_priv *priv)
 			if ((ar8216_port_old_link[i] == AR8216_PORT_LINK_UP) &&
 				(link == AR8216_PORT_LINK_DOWN)) {
 				/* LINK_EN disable(MAC force mode)*/
+				u16 phy_val = 0;
 				reg = AR8327_REG_PORT_STATUS(i);
 				value = priv->read(priv, reg);
 				value &= (~(AR8216_PORT_STATUS_LINK_AUTO));
@@ -2492,16 +2493,14 @@ ar8xxx_sw_mac_polling_task(struct ar8216_priv *priv)
 					ar8216_port_qm_buf[i] = AR8216_QM_NOT_EMPTY;
 				}
 				else {
-					u16 phy_val = 0;
 					ar8216_port_qm_buf[i] = AR8216_QM_EMPTY;
 
 					/* Force MAC 1000M Full before auto negotiation*/
 					ar8216_force_mac_1000M_full(priv, i);
-
-					ar8216_phy_dbg_read(priv, i-1, AR8337_PHY_DEBUG_0, &phy_val);
-					phy_val &= (~(AR8337_PHY_MANU_CTRL_EN));
-					ar8216_phy_dbg_write(priv, i-1, AR8337_PHY_DEBUG_0, phy_val);
 				}
+				ar8216_phy_dbg_read(priv, i-1, AR8337_PHY_DEBUG_0, &phy_val);
+				phy_val &= (~(AR8337_PHY_MANU_CTRL_EN));
+				ar8216_phy_dbg_write(priv, i-1, AR8337_PHY_DEBUG_0, phy_val);
 			}else if ((ar8216_port_old_link[i] == AR8216_PORT_LINK_DOWN) &&
 					(link == AR8216_PORT_LINK_UP)) {
 				/* Down --> Up */
