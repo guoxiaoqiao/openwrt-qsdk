@@ -16,8 +16,11 @@ export NEED_IMAGE=
 export HELP=0
 export FORCE=0
 
+FILTER_FILES=\
+"inittab"
+
 # parse options
-while [ -n "$1" ]; do 
+while [ -n "$1" ]; do
 	case "$1" in
 		-i) export INTERACTIVE=1;;
 		-d) export DELAY="$2"; shift;;
@@ -93,6 +96,10 @@ add_uci_conffiles() {
 		/etc/sysupgrade.conf /lib/upgrade/keep.d/* 2>/dev/null) \
 		-type f 2>/dev/null;
 	  opkg list-changed-conffiles ) | sort -u > "$file"
+	  for name in $FILTER_FILES
+	  do
+		sed -i "\,/$name$,d" $file
+	  done
 	return 0
 }
 
