@@ -1,0 +1,30 @@
+diff --git a/arch/mips/ath79/Kconfig b/arch/mips/ath79/Kconfig
+index d092806..91e4adc 100644
+--- a/arch/mips/ath79/Kconfig
++++ b/arch/mips/ath79/Kconfig
+@@ -76,9 +76,11 @@ config ATH79_MACH_AP135
+ 	select SOC_QCA955X
+ 	select ATH79_DEV_GPIO_BUTTONS
+ 	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_M25P80
+ 	select ATH79_DEV_SPI
+ 	select ATH79_DEV_USB
+ 	select ATH79_DEV_WMAC
++	select ATH79_DEV_ETH
+ 	help
+ 	  Say 'Y' here if you want your kernel to support the
+ 	  Atheros AP135 reference board.
+diff --git a/arch/mips/ath79/mach-ap135.c b/arch/mips/ath79/mach-ap135.c
+index ed7b286..6241ed9 100644
+--- a/arch/mips/ath79/mach-ap135.c
++++ b/arch/mips/ath79/mach-ap135.c
+@@ -201,7 +201,9 @@ static void __init ap135_setup(void)
+ static void __init ap135_dual_setup(void)
+ {
+ 	ap135_setup();
++#ifdef CONFIG_ATH79_DEV_NAND
+ 	ath79_register_nand();
++#endif
+ }
+ 
+ MIPS_MACHINE(ATH79_MACH_AP135, "AP135", "Atheros AP135 reference board",
