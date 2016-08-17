@@ -25,10 +25,11 @@ define Image/BuildKernel/FIT
 	$(CP) $(DTS_DIR)/$(1).dtb $(BIN_DIR)/$(IMG_PREFIX)-$(1).dtb
 	mkdir -p $(BIN_DIR)/dtbs/
 	$(CP) $(DTS_DIR)/qcom-ipq80*.dtb $(BIN_DIR)/dtbs/
-	$(CP) $(LINUX_DIR)/arch/arm64/boot/Image $(BIN_DIR)/dtbs/
+	$(CP) $(KDIR)/Image $(BIN_DIR)/dtbs/
 endef
 
 define Image/BuildKernel/FITInitramfs
+	$(CP) $(KDIR)/Image-initramfs $(BIN_DIR)/dtbs/
 	$(CP) $(KDIR)/Image-initramfs $(BIN_DIR)/$(IMG_PREFIX)-vmlinux-initramfs.bin
 	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image-initramfs, $(DTS_DIR)/$(1).dtb, none,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage-initramfs.itb
