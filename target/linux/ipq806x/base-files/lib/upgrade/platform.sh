@@ -130,10 +130,18 @@ do_flash_failsafe_partition() {
 	local bin=$1
 	local mtdname=$2
 	local emmcblock
+	local primaryboot
 
 	# Fail safe upgrade
 	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+		default_mtd=$mtdname
 		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+		primaryboot=$(cat /proc/boot_info/$default_mtd/primaryboot)
+		if [ $primaryboot -eq 0 ]; then
+			echo 1 > /proc/boot_info/$default_mtd/primaryboot
+		else
+			echo 0 > /proc/boot_info/$default_mtd/primaryboot
+		fi
 	}
 
 	emmcblock="$(find_mmc_part "$mtdname")"
@@ -150,12 +158,20 @@ do_flash_ubi() {
 	local bin=$1
 	local mtdname=$2
 	local mtdpart
+	local primaryboot
 
 	mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	ubidetach -f -p /dev/${mtdpart}
 
 	# Fail safe upgrade
 	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+		primaryboot=$(cat /proc/boot_info/$mtdname/primaryboot)
+		if [ $primaryboot -eq 0 ]; then
+			echo 1 > /proc/boot_info/$mtdname/primaryboot
+		else
+			echo 0 > /proc/boot_info/$mtdname/primaryboot
+		fi
+
 		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
 	}
 
