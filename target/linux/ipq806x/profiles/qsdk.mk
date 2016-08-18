@@ -2,6 +2,7 @@
 # Copyright (c) 2015-2016 The Linux Foundation. All rights reserved.
 #
 
+QCA_LITHIUM:=kmod-qvit-lithium
 QCA_EDMA:=kmod-qca-edma
 NSS_COMMON:= \
 	kmod-qca-nss-dp \
@@ -187,7 +188,7 @@ define Profile/QSDK_Deluxe
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
 	$(SWITCH_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
 	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI) $(WIFI_10_4_FW_PKGS) \
-	$(WIFI_10_4_PKGS) $(QCA_ECM)
+	$(WIFI_10_4_PKGS) $(QCA_ECM) $(QCA_LITHIUM)
 endef
 
 define Profile/QSDK_Deluxe/Description
