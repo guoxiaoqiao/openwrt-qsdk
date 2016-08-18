@@ -186,9 +186,12 @@ $(eval $(call Profile,QSDK_Enterprise))
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
-	$(SWITCH_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
-	$(COREBSP_UTILS) $(BLUETOOTH) $(KPI) $(WIFI_10_4_FW_PKGS) \
-	$(WIFI_10_4_PKGS) $(QCA_ECM) $(QCA_LITHIUM)
+		$(SWITCH_OPEN_PKGS) $(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) \
+		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
+		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
+		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
+		$(WIL6210_PKGS) $(UTILS) $(TEST_TOOLS) $(KPI) \
+		$(QCA_LITHIUM) kmod-sierra-driver kmod-art2
 endef
 
 define Profile/QSDK_Deluxe/Description
