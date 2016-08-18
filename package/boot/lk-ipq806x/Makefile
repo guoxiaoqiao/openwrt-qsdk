@@ -30,8 +30,8 @@ endef
 
 define Package/lk-ipq806x/install
 	$(INSTALL_DIR) $(1)
-	$(CP) $(PKG_BUILD_DIR)/build-ipq806x/appsboot.mbn $(BIN_DIR)/openwrt-$(BOARD)-appsboot.mbn
-	$(CP) $(PKG_BUILD_DIR)/build-ipq806x/appsboot.raw $(BIN_DIR)/openwrt-$(BOARD)-appsboot.raw
+	$(CP) $(PKG_BUILD_DIR)/build-ipq806x/appsboot.mbn $(BIN_DIR)/openwrt-$(BOARD)-lkboot.mbn
+	$(CP) $(PKG_BUILD_DIR)/build-ipq806x/appsboot.raw $(BIN_DIR)/openwrt-$(BOARD)-lkboot.raw
 endef
 
 $(eval $(call BuildPackage,lk-ipq806x))
