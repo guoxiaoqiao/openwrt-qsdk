@@ -16,7 +16,7 @@ fs_failsafe_ip=192.168.1.1
 fs_failsafe_broadcast=192.168.1.255
 fs_failsafe_netmask=255.255.255.0
 
-fs_failsafe_wait_timeout=2
+fs_failsafe_wait_timeout=0
 
 pi_suppress_stderr="y"
 pi_init_suppress_stderr="y"
