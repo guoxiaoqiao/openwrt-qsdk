@@ -1,15 +1,14 @@
-# Copyright (c) 2013 The Linux Foundation. All rights reserved.
-#
+
 include $(TOPDIR)/rules.mk
 
-ARCH:=arm
-BOARD:=ipq806x
-BOARDNAME:=Qualcomm Atheros IPQ806X
-FEATURES:=ubifs squashfs
-CPU_TYPE:=cortex-a7
-MAINTAINER:=John Crispin <blogic@openwrt.org>
+ARCH:=aarch64
+BOARD:=ipq807x
+BOARDNAME:=Qualcomm Atheros IPQ807X
+FEATURES:=squashfs nand ubifs
+CPU_TYPE:=cortex-a53
+CFLAGS:=-Os -pipe -fno-caller-saves
 
-KERNELNAME:=zImage Image dtbs
+KERNELNAME:=Image dtbs
 
 LINUX_SRC_VERSION:=$(shell basename $(TOPDIR)/qca/src/linux-*.* | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
 # check .config for an overridden Linux dir, otherwise use qca/src/linux
@@ -28,15 +27,13 @@ ifneq ($(CONFIG_EXTERNAL_KERNEL_TREE),"")
   _LINUX_EXTRAVERSION:=$(shell sed -n 's,EXTRAVERSION = \([-rc0-9]*\)$$,\1,p' $(_LINUX_DIR)/Makefile)
   LINUX_VERSION:=$(_LINUX_MAJOR).$(_LINUX_MINOR)$(if $(_LINUX_SUBLEVEL),.$(_LINUX_SUBLEVEL))$(if $(_LINUX_EXTRAVERSION),$(_LINUX_EXTRAVERSION))
 else
-  LINUX_VERSION:=3.18.21
+  LINUX_VERSION:=4.4-rc6
 endif
 
 include $(INCLUDE_DIR)/target.mk
 DEFAULT_PACKAGES += \
-	uboot-ipq40xx uboot-ipq806x uboot-ipq806x-fwupgrade-tools uboot-envtools \
-	kmod-leds-gpio kmod-gpio-button-hotplug kmod-button-hotplug swconfig \
-	kmod-ata-core kmod-ata-ahci kmod-ata-ahci-platform kmod-usb2 kmod-usb3 \
-	kmod-usb-dwc3-qcom kmod-usb-phy-qcom-dwc3 kmod-usb-dwc3-of-simple kmod-usb-dwc3-ipq40xx
+	kmod-leds-gpio kmod-gpio-button-hotplug swconfig \
+	kmod-ata-core kmod-ata-ahci kmod-ata-ahci-platform
 
 
 $(eval $(call BuildTarget))

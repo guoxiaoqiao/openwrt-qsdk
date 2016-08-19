@@ -74,7 +74,7 @@ define Image/BuildKernel/template
 	$(foreach device, $(call FindDeviceTrees, qcom-ipq8064-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ806X_KERNEL_LOADADDR));)
 
-	$(foreach device, $(call FindDeviceTrees, qcom-ipq40xx-), \
+	$(foreach device, $(call FindDeviceTrees, qcom-ipq40??-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ40XX_KERNEL_LOADADDR));)
 
 	$(foreach device, $(call FindDeviceTrees, qcom-ipq807x-), \
@@ -86,7 +86,7 @@ define Image/BuildKernel
 
 	$(call Image/BuildKernel/GenericFIT,qcom-ipq40xx,$(IPQ40XX_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq40xx-ap.dkxx, \
-		$(call FindDeviceTrees, qcom-ipq40xx-ap) $(call FindDeviceTrees, qcom-ipq40xx-db), \
+		$(call FindDeviceTrees, qcom-ipq40??-ap) $(call FindDeviceTrees, qcom-ipq40??-db), \
 		$(IPQ40XX_KERNEL_LOADADDR))
 	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148_1xx.dtb), \
 		$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
