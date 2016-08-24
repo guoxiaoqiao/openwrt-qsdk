@@ -181,6 +181,7 @@ platform_do_upgrade_ioe() {
 	local rootfs="rootfs"
 	local rootfs_data="rootfs_data"
 	local valid_env=$(fw_printenv | grep "bootcmd=bootp")
+	local ubi_ctrl_dev="/dev/ubi_ctrl"
 
 	[ -n "$valid_env" ] && {
 		v "ERROR, invalid u-boot-env, sysupgrade failed"
@@ -197,16 +198,17 @@ platform_do_upgrade_ioe() {
 		mtd_fw=$(cat /proc/mtd |grep $fw |cut -f1 -d ":")
 		mtd_dev="/dev/$mtd_fw"
 
-		ubidetach -d $ubi_vol
+		ubidetach -d $ubi_vol $ubi_ctrl_dev
 		mtd erase $mtd_dev
-		mtd_ubi_rootfs="/dev/$(cat /proc/mtd |grep $rootfs |cut -f1 -d ":")"
+		mtd_ubi_rootfs="$(cat /proc/mtd |grep $rootfs |cut -f1 -d ":"|grep -Eo '[0-9]+')"
 		dd if=$file bs=2048 | nandwrite -p $mtd_dev -
-		ubiattach -p $mtd_ubi_rootfs
+		ubiattach -m $mtd_ubi_rootfs -d $ubi_vol $ubi_ctrl_dev
 		sleep 2
 		mtd_ubi_rootfs_data="$(cat /proc/mtd |grep $rootfs_data |cut -f1 -d ":" | awk ' // {sub(/mtd/, "", $0);print("/dev/mtdblock"$0)}')"
 		echo $mtd_ubi_rootfs_data
 		mount -t jffs2 $mtd_ubi_rootfs_data /mnt
 		echo $CONF_TAR
+		[ -d /mnt/upper ] || mkdir /mnt/upper
 		tar xzf $CONF_TAR -C /mnt/upper
 		sync
 		umount /mnt
