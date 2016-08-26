@@ -66,6 +66,7 @@ start_instance()
 	procd_set_param respawn
 	procd_set_param stderr 1
 	procd_set_param command "$UHTTPD_BIN" -f
+	#procd_set_param limits core="unlimited"
 
 	append_arg "$cfg" home "-h"
 	append_arg "$cfg" realm "-r" "${realm:-OpenWrt}"
