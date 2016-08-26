@@ -204,6 +204,10 @@ menu "Global build settings"
 		bool "Compile the kernel with modversions enabled"
 		default n
 
+	config KERNEL_ATHMEM_USE_FROM_UBOOT
+                bool "Use RAM size which is passed from u-boot"
+                default n
+
 	config KERNEL_DEBUG_FS
 		bool "Compile the kernel with Debug FileSystem enabled"
 		default y
