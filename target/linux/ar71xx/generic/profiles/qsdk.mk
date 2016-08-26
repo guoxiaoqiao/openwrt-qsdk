@@ -146,6 +146,18 @@ define Profile/QSDK_Premium_Beeliner_Router/Description
 endef
 $(eval $(call Profile,QSDK_Premium_Beeliner_Router))
 
+define Profile/QSDK_Target_Router
+	NAME:=Qualcomm-Atheros SDK Target Router Profile
+	PACKAGES+= qca-legacy-uboot-ap135 kmod-qca-wifi-10.4-unified-perf \
+	  qca-wifi-fw-hw6-10.4-asic
+
+endef
+
+define Profile/QSDK_Target_Router/Description
+  QSDK Target Router package set configuration with minimal packages.
+endef
+$(eval $(call Profile,QSDK_Target_Router))
+
 define Profile/QSDK_IoE_Device
 	NAME:=Qualcomm-Atheros SDK IoE Device Profile
 	PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp \
