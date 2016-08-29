@@ -120,7 +120,7 @@ menuconfig: scripts/config/mconf prepare-tmpinfo FORCE
 
 prepare_kernel_conf: .config FORCE
 
-ifeq ($(wildcard staging_dir/host/bin),)
+ifneq ($(wildcard $(LINUX_DIR)),)
   clean_kernel: FORCE
 	$(_SINGLE)$(NO_TRACE_MAKE) target/linux/clean;
 endif
