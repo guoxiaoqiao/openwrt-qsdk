@@ -130,10 +130,18 @@ do_flash_failsafe_partition() {
 	local bin=$1
 	local mtdname=$2
 	local emmcblock
+	local primaryboot
 
 	# Fail safe upgrade
 	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+		default_mtd=$mtdname
 		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+		primaryboot=$(cat /proc/boot_info/$default_mtd/primaryboot)
+		if [ $primaryboot -eq 0 ]; then
+			echo 1 > /proc/boot_info/$default_mtd/primaryboot
+		else
+			echo 0 > /proc/boot_info/$default_mtd/primaryboot
+		fi
 	}
 
 	emmcblock="$(find_mmc_part "$mtdname")"
@@ -150,12 +158,20 @@ do_flash_ubi() {
 	local bin=$1
 	local mtdname=$2
 	local mtdpart
+	local primaryboot
 
 	mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
 	ubidetach -f -p /dev/${mtdpart}
 
 	# Fail safe upgrade
 	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+		primaryboot=$(cat /proc/boot_info/$mtdname/primaryboot)
+		if [ $primaryboot -eq 0 ]; then
+			echo 1 > /proc/boot_info/$mtdname/primaryboot
+		else
+			echo 0 > /proc/boot_info/$mtdname/primaryboot
+		fi
+
 		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
 	}
 
@@ -308,7 +324,7 @@ platform_do_upgrade() {
 	done
 
 	case "$board" in
-	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1)
+	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1)
 		for sec in $(print_sections $1); do
 			flash_section ${sec}
 		done
