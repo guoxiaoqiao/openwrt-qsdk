@@ -50,7 +50,8 @@ endef
 define Profile/QSDK_IOE_DBPAN
 	NAME:=Qualcomm-Atheros SDK IoE Dual Band and Personal Area Network Profile
 	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(ALLJOYN) $(WIFI_OPEN) $(BLUETOOTH) \
-		  qca-legacy-uboot-cus531mp3-nand \
+		  qca-legacy-uboot-cus531mp3-16M qca-legacy-uboot-cus531mp3-32M \
+		  qca-legacy-uboot-cus531mp3-dual qca-legacy-uboot-cus531mp3-nand \
 		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-ath10k
 endef
 

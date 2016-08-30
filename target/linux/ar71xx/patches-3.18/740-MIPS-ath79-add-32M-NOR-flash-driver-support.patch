@@ -165,7 +165,7 @@ Index: linux-3.18.23/drivers/mtd/spi-nor/spi-nor.c
  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
  	return 0;
  }
-@@ -917,6 +962,32 @@
+@@ -917,6 +962,35 @@
  	return 0;
  }
  
@@ -181,6 +181,9 @@ Index: linux-3.18.23/drivers/mtd/spi-nor/spi-nor.c
 +static const u32 spi_nor_ext_addr_ids[] = {
 +	0xef4019,
 +	0xc84019,
++	0xc22019,
++	0xc22619,
++	0x20ba19,
 +	/* add id here */
 +};
 +
@@ -198,7 +201,7 @@ Index: linux-3.18.23/drivers/mtd/spi-nor/spi-nor.c
  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
  {
  	const struct spi_device_id	*id = NULL;
-@@ -1069,7 +1140,8 @@
+@@ -1069,7 +1143,8 @@
  
  	if (info->addr_width)
  		nor->addr_width = info->addr_width;
