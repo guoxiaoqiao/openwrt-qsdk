@@ -192,7 +192,8 @@ define Profile/QSDK_Deluxe
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(WIL6210_PKGS) $(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(QCA_LITHIUM) kmod-sierra-driver kmod-art2
+		$(QCA_LITHIUM) kmod-sierra-driver kmod-qca-nss-drv-bridge-mgr \
+		kmod-art2
 endef
 
 define Profile/QSDK_Deluxe/Description
