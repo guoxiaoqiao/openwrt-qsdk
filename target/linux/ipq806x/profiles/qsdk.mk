@@ -139,7 +139,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-sierra-driver kmod-art2 btdiag
+		$(MAP_PKGS) $(HYFI) $(PLC) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-sierra-driver kmod-art2 btdiag
 endef
 
 define Profile/QSDK_Premium/Description
