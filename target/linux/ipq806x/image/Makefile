@@ -151,7 +151,6 @@ ifeq ($(1),-ipq806x)
 	$(eval UBI_OPTS:="-m 2048 -p 128KiB")
 	$(foreach image,$(UBI_IMAGES), \
 	$(call Image/UbiPrepare,$(image),squashfs,"ubi_rootfs","rootfs_data"))
-	$(call Image/UbiPrepare,qcom-ipq8064-ap148-nand,squashfs,"rootfs","rootfs_data")
 endif
 endef
 
