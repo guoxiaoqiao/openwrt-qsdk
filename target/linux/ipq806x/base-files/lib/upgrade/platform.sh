@@ -364,7 +364,9 @@ platform_copy_config() {
 		umount /tmp/overlay
 	elif [ -e "$emmcblock" ]; then
 		mount -t ext4 "$emmcblock" /tmp/overlay
-		tar zxvf /tmp/sysupgrade.tgz -C /tmp/overlay/
+		cp /tmp/sysupgrade.tgz /tmp/overlay/
+		sync
+		umount /tmp/overlay
 	fi
 }
 
