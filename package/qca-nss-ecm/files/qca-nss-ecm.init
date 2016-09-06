@@ -18,9 +18,9 @@ EOF
 
 support_bridge() {
 	#NSS support bridge acceleration
-	[ -d /sys/kernel/debug/ecm/ecm_nss_conntrack_notifier ] && return 0
-	#SFE don't support bridge acceleration
-	[ -d /sys/kernel/debug/ecm/ecm_sfe_conntrack_notifier ] && return 1
+	[ -d /sys/kernel/debug/ecm/ecm_nss_ipv4 ] && return 0
+	#SFE doesn't support bridge acceleration
+	[ -d /sys/kernel/debug/ecm/ecm_sfe_ipv4 ] && return 1
 }
 
 defunct_ecm() {
@@ -30,41 +30,24 @@ defunct_ecm() {
 
 stop_ecm() {
 	#
-	# Based on the underlying acceleration engine, gracefully
-	# stop the ECM and defunct the connections.
+	# Stop ECM frontends
 	#
-	if [ -d /sys/kernel/debug/ecm/ecm_nss_ipv4 ]; then
-		echo 1 > /sys/kernel/debug/ecm/ecm_nss_ipv4/stop
-		echo 1 > /sys/kernel/debug/ecm/ecm_nss_ipv6/stop
-
-	elif [ -d /sys/kernel/debug/ecm/ecm_sfe_ipv4 ]; then
-		echo 1 > /sys/kernel/debug/ecm/ecm_sfe_ipv4/stop
-		echo 1 > /sys/kernel/debug/ecm/ecm_sfe_ipv6/stop
-	else
-		echo "WARNING: There is not any ECM frontend"
-		return 1
-	fi
+	echo 1 > /sys/kernel/debug/ecm/front_end_ipv4_stop
+	echo 1 > /sys/kernel/debug/ecm/front_end_ipv6_stop
 }
 
 enable_ecm() {
 	#
-	# Based on the underlying acceleration engine, gracefully
-	# stop the ECM and defunct the connections.
+	# Start ECM frontends
 	#
-	if [ -d /sys/kernel/debug/ecm/ecm_nss_ipv4 ]; then
-		echo 0 > /sys/kernel/debug/ecm/ecm_nss_ipv4/stop
-		echo 0 > /sys/kernel/debug/ecm/ecm_nss_ipv6/stop
-
-	elif [ -d /sys/kernel/debug/ecm/ecm_sfe_ipv4 ]; then
-		echo 0 > /sys/kernel/debug/ecm/ecm_sfe_ipv4/stop
-		echo 0 > /sys/kernel/debug/ecm/ecm_sfe_ipv6/stop
-	else
-		echo "WARNING: There is not any ECM frontend"
-		return 1
-	fi
+	echo 0 > /sys/kernel/debug/ecm/front_end_ipv4_stop
+	echo 0 > /sys/kernel/debug/ecm/front_end_ipv6_stop
 }
 
 disable_ecm() {
+	#
+	# Gracefully stop the ECM and defunct the connections.
+	#
 	stop_ecm
 	defunct_ecm
 }
