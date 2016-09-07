@@ -111,13 +111,13 @@ ifeq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),y)
 		echo -e "$(if $(CONFIG_TARGET_INITRAMFS_COMPRESSION_XZ),CONFIG_INITRAMFS_COMPRESSION_XZ=y\nCONFIG_RD_XZ=y,# CONFIG_INITRAMFS_COMPRESSION_XZ is not set\n# CONFIG_RD_XZ is not set)" >> $(LINUX_DIR)/.config
     endef
   endif
-else
-    define Kernel/SetInitramfs
-		mv $(LINUX_DIR)/.config $(LINUX_DIR)/.config.old
-		grep -v INITRAMFS $(LINUX_DIR)/.config.old > $(LINUX_DIR)/.config
-		echo 'CONFIG_INITRAMFS_SOURCE=""' >> $(LINUX_DIR)/.config
-    endef
 endif
+
+define Kernel/SetNoInitramfs
+	mv $(LINUX_DIR)/.config $(LINUX_DIR)/.config.old
+	grep -v INITRAMFS $(LINUX_DIR)/.config.old > $(LINUX_DIR)/.config
+	echo 'CONFIG_INITRAMFS_SOURCE=""' >> $(LINUX_DIR)/.config
+endef
 
 define Kernel/Configure/Default
 	$(LINUX_CONF_CMD) > $(LINUX_DIR)/.config.target
@@ -127,7 +127,7 @@ define Kernel/Configure/Default
 	echo "# CONFIG_KALLSYMS_ALL is not set" >> $(LINUX_DIR)/.config.target
 	$(SCRIPT_DIR)/metadata.pl kconfig $(TMP_DIR)/.packageinfo $(TOPDIR)/.config > $(LINUX_DIR)/.config.override
 	$(SCRIPT_DIR)/kconfig.pl 'm+' '+' $(LINUX_DIR)/.config.target /dev/null $(LINUX_DIR)/.config.override > $(LINUX_DIR)/.config
-	$(call Kernel/SetInitramfs)
+	$(call Kernel/SetNoInitramfs)
 	rm -rf $(KERNEL_BUILD_DIR)/modules
 	[ -d $(LINUX_DIR)/user_headers ] || $(MAKE) $(KERNEL_MAKEOPTS) INSTALL_HDR_PATH=$(LINUX_DIR)/user_headers headers_install
 	$(SH_FUNC) grep '=[ym]' $(LINUX_DIR)/.config | LC_ALL=C sort | md5s > $(LINUX_DIR)/.vermagic
@@ -140,12 +140,46 @@ endef
 
 OBJCOPY_STRIP = -R .reginfo -R .notes -R .note -R .comment -R .mdebug -R .note.gnu.build-id
 
+# AVR32 uses a non-standard location
+ifeq ($(LINUX_KARCH),avr32)
+	IMAGES_DIR:=images
+endif
+
+ifneq ($(subst ",,$(KERNELNAME)),)
+  define Kernel/CopyFiles
+	#")
+	$(foreach i,$(subst ",,$(KERNELNAME)),$(CP) $(LINUX_DIR)/arch/$(LINUX_KARCH)/boot/$(IMAGES_DIR)/$(i) $(KERNEL_BUILD_DIR)/$(i)$(1);)
+	#")
+  endef
+else
+  define Kernel/CopyFiles
+  endef
+endif
+
 define Kernel/CompileImage/Default
 	$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),,rm -f $(TARGET_DIR)/init)
 	+$(MAKE) $(KERNEL_MAKEOPTS) $(KERNEL_JFLAG) $(subst ",,$(KERNELNAME))
+	#")
 	$(KERNEL_CROSS)objcopy -O binary $(OBJCOPY_STRIP) -S $(LINUX_DIR)/vmlinux $(LINUX_KERNEL)
 	$(KERNEL_CROSS)objcopy $(OBJCOPY_STRIP) -S $(LINUX_DIR)/vmlinux $(KERNEL_BUILD_DIR)/vmlinux.elf
+	$(call Kernel/CopyFiles)
 endef
+
+ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
+  define Kernel/CompileImage/Initramfs
+	$(call Kernel/SetInitramfs)
+	$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),,rm -f $(TARGET_DIR)/init)
+	+$(MAKE) $(KERNEL_MAKEOPTS) $(subst ",,$(KERNELNAME))
+	#")
+	#")
+	$(KERNEL_CROSS)objcopy -O binary $(OBJCOPY_STRIP) -S $(LINUX_DIR)/vmlinux $(LINUX_KERNEL)-initramfs
+	$(KERNEL_CROSS)objcopy $(OBJCOPY_STRIP) -S $(LINUX_DIR)/vmlinux $(KERNEL_BUILD_DIR)/vmlinux-initramfs.elf
+	$(call Kernel/CopyFiles,-initramfs)
+  endef
+else
+  define Kernel/CompileImage/Initramfs
+  endef
+endif
 
 define Kernel/Clean/Default
 	rm -f $(KERNEL_BUILD_DIR)/linux-$(LINUX_VERSION)/.configured

@@ -66,30 +66,21 @@ fs_64k:=64k
 fs_64kraw:=64kraw
 fs_128k:=128k
 fs_256k:=256k
-ifeq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),y)
-	fs_squash:=initramfs
-	fs_64k:=initramfs
-	fs_64kraw:=initramfs
-	fs_128k:=initramfs
-	fs_256k:=initramfs
-	VMLINUX:=$(BIN_DIR)/$(IMG_PREFIX)-vmlinux-initramfs
-	UIMAGE:=$(BIN_DIR)/$(IMG_PREFIX)-uImage-initramfs
-endif
 
 define CompressLzma
   $(STAGING_DIR_HOST)/bin/lzma e $(1) -lc1 -lp2 -pb2 $(3) $(2)
 endef
 
 define PatchKernelLzma
-	cp $(KDIR)/vmlinux $(KDIR_TMP)/vmlinux-$(1)
-	$(STAGING_DIR_HOST)/bin/patch-cmdline $(KDIR_TMP)/vmlinux-$(1) "$(strip $(2))"
-	$(call CompressLzma,$(KDIR_TMP)/vmlinux-$(1),$(KDIR_TMP)/vmlinux-$(1).bin.lzma,$(3))
+	cp $(KDIR)/vmlinux$(4) $(KDIR_TMP)/vmlinux$(4)-$(1)
+	$(STAGING_DIR_HOST)/bin/patch-cmdline $(KDIR_TMP)/vmlinux$(4)-$(1) "$(strip $(2))"
+	$(call CompressLzma,$(KDIR_TMP)/vmlinux$(4)-$(1),$(KDIR_TMP)/vmlinux$(4)-$(1).bin.lzma,$(3))
 endef
 
 define PatchKernelGzip
-	cp $(KDIR)/vmlinux $(KDIR_TMP)/vmlinux-$(1)
-	$(STAGING_DIR_HOST)/bin/patch-cmdline $(KDIR_TMP)/vmlinux-$(1) "$(strip $(2))"
-	gzip -9 -c $(KDIR_TMP)/vmlinux-$(1) > $(KDIR_TMP)/vmlinux-$(1).bin.gz
+	cp $(KDIR)/vmlinux$(3) $(KDIR_TMP)/vmlinux$(3)-$(1)
+	$(STAGING_DIR_HOST)/bin/patch-cmdline $(KDIR_TMP)/vmlinux$(3)-$(1) "$(strip $(2))"
+	gzip -9 -c $(KDIR_TMP)/vmlinux$(3)-$(1) > $(KDIR_TMP)/vmlinux$(3)-$(1).bin.gz
 endef
 
 define MkuImage
@@ -104,8 +95,9 @@ define MkuImageLzma
 endef
 
 define MkuImageLzma/initramfs
-	$(call PatchKernelLzma,$(1),$(2))
-	$(call MkuImage,lzma,,$(KDIR_TMP)/vmlinux-$(1).bin.lzma,$(call imgname,initramfs,$(1))-uImage.bin)
+	$(call PatchKernelLzma,$(1),$(2),,-initramfs)
+	cp $(KDIR_TMP)/vmlinux-initramfs-$(1) $(BIN_DIR)/$(IMG_PREFIX)-$(1)-vmlinux-initramfs.bin
+	$(call MkuImage,lzma,,$(KDIR_TMP)/vmlinux-initramfs-$(1).bin.lzma,$(call imgname,initramfs,$(1))-uImage.bin)
 endef
 
 define MkuImageGzip
@@ -114,8 +106,8 @@ define MkuImageGzip
 endef
 
 define MkuImageGzip/initramfs
-	$(call PatchKernelGzip,$(1),$(2))
-	$(call MkuImage,gzip,,$(KDIR_TMP)/vmlinux-$(1).bin.gz,$(call imgname,initramfs,$(1))-uImage.bin)
+	$(call PatchKernelGzip,$(1),$(2),-initramfs)
+	$(call MkuImage,gzip,,$(KDIR_TMP)/vmlinux-initramfs-$(1).bin.gz,$(call imgname,initramfs,$(1))-uImage.bin)
 endef
 
 define MkuImageOKLI
@@ -228,7 +220,16 @@ define Image/BuildKernel
 	$(call MkuImage,lzma,,$(KDIR)/vmlinux.bin.lzma,$(UIMAGE)-lzma.bin)
 	cp $(KDIR)/loader-generic.elf $(VMLINUX)-lzma.elf
 	-mkdir -p $(KDIR_TMP)
+  ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
+	cp $(KDIR)/vmlinux-initramfs.elf $(VMLINUX)-initramfs.elf
+	cp $(KDIR)/vmlinux-initramfs $(VMLINUX)-initramfs.bin
+	dd if=$(KDIR)/vmlinux-initramfs.bin.lzma of=$(VMLINUX)-initramfs.lzma bs=65536 conv=sync
+	dd if=$(KDIR)/vmlinux-initramfs.bin.gz of=$(VMLINUX)-initramfs.gz bs=65536 conv=sync
+	$(call MkuImage,gzip,,$(KDIR)/vmlinux-initramfs.bin.gz,$(UIMAGE)-initramfs-gzip.bin)
+	$(call MkuImage,lzma,,$(KDIR)/vmlinux-initramfs.bin.lzma,$(UIMAGE)-initramfs-lzma.bin)
+	cp $(KDIR)/loader-generic.elf $(VMLINUX)-initramfs-lzma.elf
 	$(call Image/Build/Initramfs)
+  endif
 endef
 
 define Image/Build/WRT400N
@@ -747,10 +748,6 @@ define Image/Build/Zcomax/initramfs
 	$(call MkuImageLzma/initramfs,$(2),$(3) $(4))
 endef
 
-define Image/Build/Template/initramfs/initramfs
-	$(call Image/Build/$(1)/initramfs,initramfs,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
-endef
-
 define Image/Build/Template/all/squashfs
 	$(call Image/Build/$(1),squashfs,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
 endef
@@ -817,6 +814,22 @@ endef
 
 define Image/Build/Template/256k/jffs2-256k
 	$(call Image/Build/$(1),jffs2-256k,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
+endef
+
+define Image/Build/Template/64k/initramfs
+	$(call Image/Build/$(1)/initramfs,initramfs,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
+endef
+
+define Image/Build/Template/64kraw/initramfs
+	$(call Image/Build/$(1)/initramfs,initramfs,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
+endef
+
+define Image/Build/Template/128k/initramfs
+	$(call Image/Build/$(1)/initramfs,initramfs,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
+endef
+
+define Image/Build/Template/256k/initramfs
+	$(call Image/Build/$(1)/initramfs,initramfs,$(2),$(3),$(4),$(5),$(6),$(7),$(8))
 endef
 
 $(eval $(call SingleProfile,ALFA,$(fs_64k),ALFANX,alfa-nx,ALFA-NX,ttyS0,115200,$$(alfa_mtdlayout_8M),1638400,6291456,vmlinux.gz.uImage,pb9x-2.6.31-jffs2))
@@ -1021,6 +1034,10 @@ endef
 define Image/Prepare
 	gzip -9 -c $(KDIR)/vmlinux > $(KDIR)/vmlinux.bin.gz
 	$(call CompressLzma,$(KDIR)/vmlinux,$(KDIR)/vmlinux.bin.lzma)
+  ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
+	gzip -9 -c $(KDIR)/vmlinux-initramfs > $(KDIR)/vmlinux-initramfs.bin.gz
+	$(call CompressLzma,$(KDIR)/vmlinux-initramfs,$(KDIR)/vmlinux-initramfs.bin.lzma)
+  endif
 	$(call Image/BuildLoader,generic,elf)
 	$(call Image/Build/Profile/$(if $(CONFIG_IB),Default,$(PROFILE)),loader)
 endef
