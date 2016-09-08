@@ -43,6 +43,7 @@ setmac options:
 	-n	number of MAC@ to set.
 		(default: number of ethX devices in the system)
 	-d	erase the ART sector before setting the MAC@
+		(supported for NOR/NAND flash only)
 	-b	Set BT MAC address as well as Trim value @ offset BT_OFFSET
 	-h	print this help
 
@@ -94,11 +95,13 @@ fi
 echo -n -e ${str} > /tmp/macaddr
 hexdump -C /tmp/macaddr
 
-# If we set the delete flag, let's start by erasing the ART sector
-[ -n "${DELETE}" ] && mtd erase $(find_mtd_part ART | sed 's,block,,')
-
 art_partition=$(find_mtd_part 0:ART)
-[ -z "$art_partition" ] && art_partition=$(find_mmc_part 0:ART)
+if [ -z "$art_partition" ]; then
+	art_partition=$(find_mmc_part 0:ART)
+else
+	# If we set the delete flag, let's start by erasing the ART sector
+	[ -n "${DELETE}" ] && mtd erase  $(echo $art_partition | sed 's,block,,')
+fi
 
 # Find the partition and set the MAC addresses in the flash
 dd if=/tmp/macaddr of=$art_partition bs=64 conv=sync 2>/dev/null
