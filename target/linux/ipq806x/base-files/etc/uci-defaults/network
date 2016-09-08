@@ -102,7 +102,7 @@ ap-dk05.1-c1)
 	ucidef_add_switch_ext "switch0" "QosPtMode" "4" "dscp" "enable"
 	ucidef_add_switch_ext "switch0" "QosPtMode" "5" "dscp" "enable"
 	;;
-hwk01)
+hk01)
 	ucidef_set_interfaces_lan_wan "eth1 eth2" "eth0"
 	;;
 *)

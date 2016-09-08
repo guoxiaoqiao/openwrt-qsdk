@@ -25,7 +25,7 @@ ucidef_set_interface_loopback
 board=$(ipq807x_board_name)
 
 case "$board" in
-hwk01)
+hk01)
 	ucidef_set_interfaces_lan_wan "eth1 eth2" "eth0"
 	;;
 *)
