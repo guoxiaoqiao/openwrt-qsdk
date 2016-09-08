@@ -16,6 +16,25 @@ EXTRA_HELP=<<EOF
         disable_ecm Disables the ECM's frontend functionality
 EOF
 
+get_front_end_mode() {
+	config_load "ecm"
+	config_get front_end global acceleration_engine "auto"
+
+	case $front_end in
+	auto)
+		echo '0'
+		;;
+	nss)
+		echo '1'
+		;;
+	sfe)
+		echo '2'
+		;;
+	*)
+		echo 'uci_option_acceleration_engine is invalid'
+	esac
+}
+
 support_bridge() {
 	#NSS support bridge acceleration
 	[ -d /sys/kernel/debug/ecm/ecm_nss_ipv4 ] && return 0
@@ -67,7 +86,7 @@ load_ecm() {
 		enable_ecm
 	else
 		load_sfe
-		insmod ecm
+		insmod ecm front_end_selection=$(get_front_end_mode)
 	fi
 
 	support_bridge && {

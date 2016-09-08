@@ -33,10 +33,11 @@ This package contains the Qualcomm Atheros NSS Enhanced Connection Manager
 endef
 
 define KernelPackage/qca-nss-ecm/Default/install
-	$(INSTALL_DIR) $(1)/etc/firewall.d $(1)/etc/init.d $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/etc/firewall.d $(1)/etc/init.d $(1)/usr/bin $(1)/etc/config
 	$(INSTALL_DATA) ./files/qca-nss-ecm.firewall $(1)/etc/firewall.d/qca-nss-ecm
 	$(INSTALL_BIN) ./files/qca-nss-ecm.init $(1)/etc/init.d/qca-nss-ecm
 	$(INSTALL_BIN) ./files/ecm_dump.sh $(1)/usr/bin/
+	$(INSTALL_DATA) ./files/qca-nss-ecm.uci $(1)/etc/config/ecm
 endef
 
 define KernelPackage/qca-nss-ecm
