@@ -369,6 +369,10 @@ menu "Global build settings"
 		bool "Enable sparse check during kernel build"
 		default n
 
+	config KERNEL_SKB_RECYCLER
+		bool "Enable SKB_RECYCLER in kernel"
+		default y
+
 	config KERNEL_SKB_RECYCLER_PREALLOC
 		select KERNEL_SKB_RECYCLE_MAX_PREALLOC_SKBS
 		bool "Enable preallocation of skbs for recycler lists"
