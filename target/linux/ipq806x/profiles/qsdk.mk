@@ -34,6 +34,9 @@ NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-t
 	kmod-qca-nss-drv-map-t
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
+# Once all NSS clients get ported to 4.4 we can use NSS_CLIENTS instead.
+NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-bridge-mgr
+
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
 HW_CRYPTO:= kmod-crypto-qcrypto
@@ -194,7 +197,7 @@ define Profile/QSDK_Deluxe
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(WIL6210_PKGS) $(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(QCA_LITHIUM) kmod-sierra-driver kmod-qca-nss-drv-bridge-mgr \
+		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) kmod-sierra-driver \
 		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e
 endef
 
