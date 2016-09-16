@@ -1,0 +1,32 @@
+Index: linux-3.3.8/net/core/skbuff.c
+===================================================================
+--- linux-3.3.8.orig/net/core/skbuff.c	2016-09-06 19:51:04.570313071 +0530
++++ linux-3.3.8/net/core/skbuff.c	2016-09-06 19:59:20.682312023 +0530
+@@ -320,9 +320,13 @@
+ 		return skb;
+ 	}
+ 
++#ifdef CONFIG_SKB_RECYCLER
+ 	len = SKB_RECYCLE_SIZE;
+ 	if (unlikely(length > SKB_RECYCLE_SIZE))
+ 		len = length;
++#else
++	len = length;
++#endif
+ 
+ 	skb = __alloc_skb(len + NET_SKB_PAD, gfp_mask, 0, NUMA_NO_NODE);
+ 	if (likely(skb)) {
+@@ -381,9 +385,13 @@
+ 		return skb;
+ 	}
+ 
++#ifdef CONFIG_SKB_RECYCLER
+ 	len = SKB_RECYCLE_SIZE;
+ 	if (unlikely(length > SKB_RECYCLE_SIZE))
+ 		len = length;
++#else
++	len = length;
++#endif
+ 	/*
+ 	 * There is more code here than it seems:
+ 	 * __dev_alloc_skb is an inline
