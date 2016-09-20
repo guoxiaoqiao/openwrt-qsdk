@@ -80,12 +80,15 @@ ipq806x_board_detect() {
 	*"AP-DK06.1-C1")
 		name="ap-dk06.1-c1"
 		;;
-        *"AP-DK07.1-C1")
-                name="ap-dk07.1-c1"
-                ;;
-        *"HK01")
-                name="hk01"
-                ;;
+	*"AP-DK07.1-C1")
+		name="ap-dk07.1-c1"
+		;;
+	*"AP-DK07.1-C2")
+		name="ap-dk07.1-c2"
+		;;
+	*"HK01")
+		name="hk01"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"
