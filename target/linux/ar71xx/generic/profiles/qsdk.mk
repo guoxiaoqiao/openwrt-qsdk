@@ -52,5 +52,16 @@ define Profile/QSDK_IoE_DBPAN/Description
 	Enables WiFi 2.4G, 5G, Bluetooth open source packages
 endef
 
+define Profile/QSDK_IOE_TEST
+	NAME:=Qualcomm-Atheros SDK test Profile
+	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(WIFI_OPEN) $(BLUETOOTH) \
+		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-art2
+endef
+
+define Profile/QSDK_IOE_TEST/Description
+	QSDK IoE test package set configuration.
+endef
+
 $(eval $(call Profile,QSDK_IOE_SB))
 $(eval $(call Profile,QSDK_IOE_DBPAN))
+$(eval $(call Profile,QSDK_IOE_TEST))
