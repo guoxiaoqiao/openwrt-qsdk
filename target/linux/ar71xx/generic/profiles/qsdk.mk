@@ -13,7 +13,7 @@ STORAGE:=kmod-scsi-core kmod-usb-storage \
 	 kmod-nls-cp437 kmod-nls-iso8859-1 \
 	 mdadm ntfs-3g e2fsprogs fdisk mkdosfs
 
-TEST_TOOLS:=sysstat devmem2 ethtool i2c-tools ip ip6tables
+TEST_TOOLS:=sysstat devmem2 ethtool i2c-tools ip ip6tables iperf
 
 ALLJOYN:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	 alljoyn-controlpanel alljoyn-notification \
