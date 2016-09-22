@@ -12,12 +12,14 @@ NSS_COMMON:= \
 
 NSS_STANDARD:= \
 	qca-nss-fw2-retail \
+	qca-nss-fw-hk32-retail \
 
 NSS_ENTERPRISE:= \
 	qca-nss-fw2-enterprise \
 	qca-nss-fw2-enterprise_custA \
 	qca-nss-fw2-enterprise_custC \
 	qca-nss-fw2-enterprise_custR \
+	qca-nss-fw-hk32-enterprise \
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
