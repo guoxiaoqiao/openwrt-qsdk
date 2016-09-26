@@ -57,6 +57,9 @@ endif
 ifeq ($(BUILD_VARIANT),qca955x)
   ROMBOOT_SUBDIR:=sco
 endif
+ifeq ($(BUILD_VARIANT),qca955x_target_drv)
+  ROMBOOT_SUBDIR:=sco
+endif
 
 define Build/Compile
 	($(foreach var,$(strip $(shell cat configs/$(BUILD_VARIANT).config)), export ${var};) \
@@ -88,4 +91,5 @@ endef
 
 $(eval $(call DefineRomboot,ar934x))
 $(eval $(call DefineRomboot,qca955x))
+$(eval $(call DefineRomboot,qca955x_target_drv))
 $(eval $(call HostBuild))
