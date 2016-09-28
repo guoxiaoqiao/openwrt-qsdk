@@ -197,6 +197,9 @@
 #define AR7240_PHY_ID1		0x004d
 #define AR7240_PHY_ID2		0xd041
 
+#define AR7240_PHY_SYS_CTRL_MODE	0x5
+#define AR7240_PHY_CLASS_MODE		BIT(1)
+
 #define AR934X_PHY_ID1		0x004d
 #define AR934X_PHY_ID2		0xd042
 
@@ -666,6 +669,17 @@ static int ar7240sw_reset(struct ar7240sw *as)
 				   BMCR_RESET | BMCR_ANENABLE);
 	}
 	msleep(1000);
+
+	/* set up class mode */
+        if (as->swdata->phy_classab_en) {
+                u16 val;
+                for (i = 0; i < AR7240_NUM_PHYS; i++) {
+                        ar7240sw_phy_write(mii, i, 0x1d, AR7240_PHY_SYS_CTRL_MODE);
+                        val = ar7240sw_phy_read(mii, i, 0x1e);
+                        val &= ~(AR7240_PHY_CLASS_MODE);
+                        ar7240sw_phy_write(mii, i, 0x1e, val);
+                }
+        }
 
 	ar7240sw_setup(as);
 	return ret;

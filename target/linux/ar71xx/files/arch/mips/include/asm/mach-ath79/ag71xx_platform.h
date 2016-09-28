@@ -20,6 +20,7 @@
 struct ag71xx_switch_platform_data {
 	u8		phy4_mii_en:1;
 	u8		phy_poll_mask;
+	u8              phy_classab_en;
 };
 
 struct ag71xx_platform_data {

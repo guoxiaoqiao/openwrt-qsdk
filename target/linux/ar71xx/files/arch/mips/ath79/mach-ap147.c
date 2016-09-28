@@ -185,6 +185,7 @@ static void __init ap147_setup(void)
 	ath79_eth1_data.duplex = DUPLEX_FULL;
 	ath79_switch_data.phy_poll_mask |= BIT(4);
 	ath79_switch_data.phy4_mii_en = 1;
+	ath79_switch_data.phy_classab_en = 1;
 	ath79_register_eth(1);
 }
 

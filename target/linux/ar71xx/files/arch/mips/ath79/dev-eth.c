@@ -474,7 +474,7 @@ struct platform_device ath79_eth1_device = {
 	},
 };
 
-struct ag71xx_switch_platform_data ath79_switch_data;
+struct ag71xx_switch_platform_data ath79_switch_data = {0, 0, 0};
 
 #define AR71XX_PLL_VAL_1000	0x00110000
 #define AR71XX_PLL_VAL_100	0x00001099
