@@ -11,7 +11,7 @@ define Profile/Default
 	PACKAGES:= \
 		kmod-usb-core kmod-usb-ohci kmod-usb2 kmod-ledtrig-usbdev \
 		kmod-usb3 kmod-usb-dwc3-qcom kmod-usb-phy-qcom-dwc3 \
-		kmod-usb-phy-ipq807x
+		kmod-usb-phy-ipq807x kmod-usb-phy-dwc3-ipq4019
 endef
 
 define Profile/Default/Description
