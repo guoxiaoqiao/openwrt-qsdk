@@ -13,6 +13,8 @@
 
 #include "ag71xx.h"
 
+//#define QCA_FULLOFFLOAD
+
 static void ag71xx_phy_link_adjust(struct net_device *dev)
 {
 	struct ag71xx *ag = netdev_priv(dev);
@@ -210,6 +212,12 @@ static struct mii_bus *dev_to_mii_bus(struct device *dev)
 int __devinit ag71xx_phy_connect(struct ag71xx *ag)
 {
 	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
+
+#if defined(QCA_FULLOFFLOAD) || defined(CONFIG_AG71XX_FULLOFFLOAD_TARGET)
+	pdata->phy_mask = 0;
+	pdata->speed = SPEED_1000;
+	pdata->duplex = AG71XX_SGMII_FULL_DUPLEX;
+#endif
 
 	if (pdata->mii_bus_dev == NULL ||
 	    pdata->mii_bus_dev->bus == NULL )
