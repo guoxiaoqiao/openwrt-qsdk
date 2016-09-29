@@ -1105,6 +1105,7 @@ endef
 
 define Image/Build/Profile/QSDK_Target_Router
 	$(call Image/Build/Profile/AP135,$(1))
+	make -C $(TOPDIR) package/qca-romboot/compile
 endef
 
 define Image/Build/Profile/QSDK_Open_Router

@@ -39,11 +39,25 @@ define DefineRomboot
     This package generates code for the $(1) SoC.
   endef
 
-  define Package/qca-romboot-$(1)/install
-	true
+  define Package/qca-romboot-qca955x_target_drv/install
+	$(INSTALL_DIR) $(1)/lib/firmware
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR)/ath_tgt_fw1.fw $(1)/lib/firmware
   endef
 
   $$(eval $$(call BuildPackage,qca-romboot-$(1)))
+endef
+
+define Package/qca-romboot-fw2
+  TITLE:=Second stage firmware for target
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ar71xx
+  URL:=http://www.qca.qualcomm.com
+endef
+
+define Package/qca-romboot-fw2/description
+  This package contains the 2nd stage firmware corresponding to the target
+device.
 endef
 
 MAKEOPTS_QCA_ROMBOOT:= \
@@ -73,6 +87,17 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR)/rombootdrv.bin $(STAGING_DIR)/boot/openwrt-$(BOARD)-$(BUILD_VARIANT)-rombootdrv.bin
 endef
 
+ifneq ("$(wildcard $(LINUX_DIR)/../tmp/vmlinux-initramfs-ap135)","")
+  define Package/qca-romboot-fw2/install
+	$(INSTALL_DIR) $(1)/lib/firmware
+	$(CP) $(LINUX_DIR)/../tmp/vmlinux-initramfs-ap135 $(PKG_BUILD_DIR)/vmlinux-initramfs-ap135.bin
+	$(STAGING_DIR_HOST)/bin/bin2hex $(PKG_BUILD_DIR)/vmlinux-initramfs-ap135.bin $(PKG_BUILD_DIR)/fwu_vmlinux-initramfs-ap135.c 0 usb waspRomInitFw
+	$(STAGING_DIR_HOST)/bin/array2bin $(PKG_BUILD_DIR)/fwu_vmlinux-initramfs-ap135.c $(PKG_BUILD_DIR)/ath_tgt_fw2.fw
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ath_tgt_fw2.fw $(1)/lib/firmware/
+  endef
+endif
+
+
 define Host/Compile
 	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/bin2hex src/bin2hex.c
 	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/checksum src/checksum.c
@@ -91,4 +116,5 @@ endef
 $(eval $(call DefineRomboot,ar934x))
 $(eval $(call DefineRomboot,qca955x))
 $(eval $(call DefineRomboot,qca955x_target_drv))
+$(eval $(call BuildPackage,qca-romboot-fw2))
 $(eval $(call HostBuild))
