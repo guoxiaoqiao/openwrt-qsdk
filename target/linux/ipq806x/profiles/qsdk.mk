@@ -12,11 +12,14 @@ NSS_COMMON:= \
 
 NSS_STANDARD:= \
 	qca-nss-fw2-retail \
+	qca-nss-fw-hk32-retail \
 
 NSS_ENTERPRISE:= \
 	qca-nss-fw2-enterprise \
 	qca-nss-fw2-enterprise_custA \
 	qca-nss-fw2-enterprise_custC \
+	qca-nss-fw2-enterprise_custR \
+	qca-nss-fw-hk32-enterprise \
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
@@ -30,6 +33,9 @@ NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-t
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
 	kmod-qca-nss-drv-map-t
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
+
+# Once all NSS clients get ported to 4.4 we can use NSS_CLIENTS instead.
+NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-bridge-mgr
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
@@ -50,7 +56,7 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 	qca-wpa-cli-10.4 qca-spectral-10.4 qca-wpc-10.4 sigma-dut-10.4 \
 	qcmbr-10.4 qca-wrapd-10.4 qca-wapid qca-acfg-10.4 whc whc-ui \
-	qca-lowi
+	qca-lowi qca-iface-mgr-10.4
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
@@ -191,7 +197,8 @@ define Profile/QSDK_Deluxe
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(WIL6210_PKGS) $(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(QCA_LITHIUM) kmod-sierra-driver kmod-art2
+		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) kmod-sierra-driver \
+		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e
 endef
 
 define Profile/QSDK_Deluxe/Description

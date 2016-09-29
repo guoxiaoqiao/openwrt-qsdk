@@ -236,6 +236,16 @@ config KERNEL_RELAY
 config KERNEL_KEXEC
 	bool "Enable kexec support"
 
+config  KERNEL_ARM_KERNMEM_PERMS
+	bool "Enable Restricted kernel memory permissions"
+
+config  KERNEL_DEBUG_RODATA
+	bool "Enable kernel text and rodata read-only"
+	depends on KERNEL_ARM_KERNMEM_PERMS
+
+config  KERNEL_DEBUG_SET_MODULE_RONX
+	bool "Enable loadable kernel module data as NX and text as RO"
+
 config USE_RFKILL
 	bool "Enable rfkill support"
 	default RFKILL_SUPPORT

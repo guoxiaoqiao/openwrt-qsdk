@@ -23,8 +23,8 @@ ipq807x_board_detect() {
 	machine=$(cat /proc/device-tree/model)
 
 	case "$machine" in
-	*"HWK01")
-		name="hwk01"
+	*"HK01")
+		name="hk01"
 		;;
 	esac
 

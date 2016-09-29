@@ -2,6 +2,14 @@
 # Copyright (c) 2015 The Linux Foundation. All rights reserved.
 #
 
+define Profile/QSDK_Base
+        PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp mcproxy \
+          kmod-ipt-nathelper-rtsp kmod-ipv6 \
+          quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
+          -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
+          luci-app-ddns ddns-scripts
+endef
+
 IOE_BASE:=luci uhttpd luci-app-upnp mcproxy rp-pppoe-relay \
 	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
 	  -swconfig luci-app-ddns ddns-scripts luci-app-qos \
@@ -42,7 +50,8 @@ endef
 define Profile/QSDK_IOE_DBPAN
 	NAME:=Qualcomm-Atheros SDK IoE Dual Band and Personal Area Network Profile
 	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(ALLJOYN) $(WIFI_OPEN) $(BLUETOOTH) \
-		  qca-legacy-uboot-cus531mp3-nand \
+		  qca-legacy-uboot-cus531mp3-16M qca-legacy-uboot-cus531mp3-32M \
+		  qca-legacy-uboot-cus531mp3-dual qca-legacy-uboot-cus531mp3-nand \
 		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-ath10k
 endef
 
@@ -53,3 +62,25 @@ endef
 
 $(eval $(call Profile,QSDK_IOE_SB))
 $(eval $(call Profile,QSDK_IOE_DBPAN))
+
+define Profile/QSDK_Open_Router
+        $(Profile/QSDK_Base)
+        $(Profile/QSDK_Test)
+        NAME:=Qualcomm-Atheros SDK Open Router Profile
+        PACKAGES+= kmod-ath9k -kmod-ath5k kmod-ath -wpad-mini $(STORAGE) \
+          hostapd hostapd-utils iwinfo kmod-ath10k kmod-usb2 luci-app-qos \
+          wireless-tools wpa-supplicant-p2p wpa-cli qca-legacy-uboot-ap121 \
+          qca-legacy-uboot-ap143-16M qca-legacy-uboot-ap152-16M
+endef
+
+define Profile/QSDK_Open_Router/Description
+  QSDK Open Router package set configuration.
+  This profile includes only open source packages and is designed to fit in a 16M flash. It supports:
+  - Bridging and routing networking
+  - LuCI web configuration interface
+  - USB hard drive support
+  - IPv4/IPv6
+  - DynDns
+  - Integrated 11abgn support using the ath9k/ath10k driver
+endef
+$(eval $(call Profile,QSDK_Open_Router))
