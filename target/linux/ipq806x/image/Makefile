@@ -128,6 +128,7 @@ define Image/BuildKernel
 endef
 
 define Image/BuildKernel/Initramfs
+	$(CP) $(KDIR)/vmlinux-initramfs$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux-initramfs.elf
 	$(call Image/BuildKernel/template,FITInitramfs)
 endef
 
