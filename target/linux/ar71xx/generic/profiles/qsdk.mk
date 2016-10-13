@@ -21,7 +21,7 @@ STORAGE:=kmod-scsi-core kmod-usb-storage \
 	 kmod-nls-cp437 kmod-nls-iso8859-1 \
 	 mdadm ntfs-3g e2fsprogs fdisk mkdosfs
 
-TEST_TOOLS:=sysstat devmem2 ethtool i2c-tools ip ip6tables
+TEST_TOOLS:=sysstat devmem2 ethtool i2c-tools ip ip6tables iperf
 
 ALLJOYN:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	 alljoyn-controlpanel alljoyn-notification \
@@ -60,8 +60,19 @@ define Profile/QSDK_IoE_DBPAN/Description
 	Enables WiFi 2.4G, 5G, Bluetooth open source packages
 endef
 
+define Profile/QSDK_IOE_TEST
+	NAME:=Qualcomm-Atheros SDK test Profile
+	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(WIFI_OPEN) $(BLUETOOTH) \
+		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-art2
+endef
+
+define Profile/QSDK_IOE_TEST/Description
+	QSDK IoE test package set configuration.
+endef
+
 $(eval $(call Profile,QSDK_IOE_SB))
 $(eval $(call Profile,QSDK_IOE_DBPAN))
+$(eval $(call Profile,QSDK_IOE_TEST))
 
 define Profile/QSDK_Open_Router
         $(Profile/QSDK_Base)
