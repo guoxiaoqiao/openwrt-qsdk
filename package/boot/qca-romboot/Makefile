@@ -76,12 +76,21 @@ ifeq ($(BUILD_VARIANT),qca955x_target_drv)
   ROMBOOT_SUBDIR:=sco
 endif
 
+ifneq ("$(wildcard $(KERNEL_BUILD_DIR)/tmp/vmlinux-initramfs-ap135-020)","")
+  define Build/Compile/qca-romboot-fw2
+	$(CP) $(KERNEL_BUILD_DIR)/tmp/vmlinux-initramfs-ap135-020 $(PKG_BUILD_DIR)/utils/simple-lzma/vmlrd.bin
+	make -C $(PKG_BUILD_DIR)/utils/simple-lzma all STAGING_UTIL_PATH=$(STAGING_DIR_HOST)/bin \
+		$(MAKEOPTS_QCA_ROMBOOT) TOPDIR=$(PKG_BUILD_DIR)/utils/simple-lzma
+  endef
+endif
+
 define Build/Compile
 	($(foreach var,$(strip $(shell cat configs/$(BUILD_VARIANT).config)), export ${var};) \
 	 env; \
 	 make -C $(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR) clean all $(MAKEOPTS_QCA_ROMBOOT) \
 		TOPDIR=$(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR)/ \
 	)
+	$(call Build/Compile/qca-romboot-fw2)
 endef
 
 define Build/InstallDev
@@ -89,19 +98,20 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR)/rombootdrv.bin $(STAGING_DIR)/boot/openwrt-$(BOARD)-$(BUILD_VARIANT)-rombootdrv.bin
 endef
 
-ifneq ("$(wildcard $(LINUX_DIR)/../tmp/vmlinux-initramfs-ap135)","")
+ifneq ("$(wildcard $(KERNEL_BUILD_DIR)/tmp/vmlinux-initramfs-ap135-020)","")
   define Package/qca-romboot-fw2/install
 	$(INSTALL_DIR) $(1)/lib/firmware
-	$(CP) $(LINUX_DIR)/../tmp/vmlinux-initramfs-ap135 $(PKG_BUILD_DIR)/vmlinux-initramfs-ap135.bin
-	$(STAGING_DIR_HOST)/bin/bin2hex $(PKG_BUILD_DIR)/vmlinux-initramfs-ap135.bin $(PKG_BUILD_DIR)/fwu_vmlinux-initramfs-ap135.c 0 usb waspRomInitFw
-	$(STAGING_DIR_HOST)/bin/array2bin $(PKG_BUILD_DIR)/fwu_vmlinux-initramfs-ap135.c $(PKG_BUILD_DIR)/ath_tgt_fw2.fw
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ath_tgt_fw2.fw $(1)/lib/firmware/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/simple-lzma/ath_tgt_fw2.fw $(1)/lib/firmware/
   endef
 endif
 
+define Host/Prepare
+	$(CP) $(TOPDIR)/qca/src/qca-romboot/utils $(HOST_BUILD_DIR)/
+endef
 
 define Host/Compile
 	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/bin2hex src/bin2hex.c
+	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/bin2barray $(HOST_BUILD_DIR)/utils/bin2barray/bin2barray.c
 	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/checksum src/checksum.c
 	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/array2bin src/array2bin.c
 endef
@@ -109,6 +119,7 @@ endef
 define Host/Install
 	$(INSTALL_DIR) $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/bin2hex $(STAGING_DIR_HOST)/bin
+	$(INSTALL_BIN) $(HOST_BUILD_DIR)/bin2barray $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/checksum $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/array2bin $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(LOCAL_SRC)/wasp/mk2stage $(STAGING_DIR_HOST)/bin/mk2stage-ar934x
