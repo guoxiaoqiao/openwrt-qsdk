@@ -42,7 +42,7 @@ define Profile/QSDK_IOE_SB
 		  qca-legacy-uboot-cus532k
 endef
 
-define Profile/QSDK_IoE_SB/Description
+define Profile/QSDK_IOE_SB/Description
 	QSDK IoE SB package set configuration.
 	Enables WiFi 2.4G open source packages
 endef
@@ -55,13 +55,13 @@ define Profile/QSDK_IOE_DBPAN
 		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-ath10k
 endef
 
-define Profile/QSDK_IoE_DBPAN/Description
+define Profile/QSDK_IOE_DBPAN/Description
 	QSDK IoE DBPAN package set configuration.
 	Enables WiFi 2.4G, 5G, Bluetooth open source packages
 endef
 
 define Profile/QSDK_IOE_TEST
-	NAME:=Qualcomm-Atheros SDK test Profile
+	NAME:=Qualcomm-Atheros SDK IoE test Profile
 	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(WIFI_OPEN) $(BLUETOOTH) \
 		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-art2
 endef
