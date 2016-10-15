@@ -203,7 +203,7 @@ define Profile/QSDK_Deluxe
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(UTILS) $(TEST_TOOLS) $(KPI) \
 		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
-		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e ${NSS_CRYPTO}
+		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e ${NSS_CRYPTO} $(IPSEC)
 endef
 
 define Profile/QSDK_Deluxe/Description
