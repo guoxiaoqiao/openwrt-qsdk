@@ -1,0 +1,40 @@
+--- a/iwlib.c
++++ b/iwlib.c
+@@ -1232,7 +1232,8 @@ iw_print_txpower(char *			buffer,
+ 		 int			buflen,
+ 		 struct iw_param *	txpower)
+ {
+-  int		dbm;
++  double	dbm;
++  int		value, exponent;
+ 
+   /* Check if disabled */
+   if(txpower->disabled)
+@@ -1241,10 +1242,13 @@ iw_print_txpower(char *			buffer,
+     }
+   else
+     {
++      value = txpower->value & 0x0000FFFF;
++      exponent = (txpower->value >> 16) & 0x0000FFFF;
+       /* Check for relative values */
+       if(txpower->flags & IW_TXPOW_RELATIVE)
+ 	{
+-	  snprintf(buffer, buflen, "%d", txpower->value);
++	  dbm = value * pow(10,-(exponent));
++	  snprintf(buffer, buflen, "%f", txpower->value);
+ 	}
+       else
+ 	{
+@@ -1252,10 +1256,10 @@ iw_print_txpower(char *			buffer,
+ 	  if(txpower->flags & IW_TXPOW_MWATT)
+ 	    dbm = iw_mwatt2dbm(txpower->value);
+ 	  else
+-	    dbm = txpower->value;
++	    dbm = value * pow(10,-(exponent));
+ 
+ 	  /* Display */
+-	  snprintf(buffer, buflen, "%d dBm", dbm);
++	  snprintf(buffer, buflen, "%f dBm", dbm);
+ 	}
+     }
+ }
