@@ -41,8 +41,8 @@ define DefineRomboot
   endef
 
   define Package/qca-romboot-qca955x_target_drv/install
-	$(INSTALL_DIR) $(1)/lib/firmware
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR)/ath_tgt_fw1.fw $(1)/lib/firmware
+	$(INSTALL_DIR) $$(1)/lib/firmware
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR)/ath_tgt_fw1.fw $$(1)/lib/firmware
   endef
 
   $$(eval $$(call BuildPackage,qca-romboot-$(1)))
