@@ -231,6 +231,7 @@ wifi_trap() {
 			eval "trap_$driver" >&2
 		fi
 	); done
+	lock -u /var/run/wifi.lock
 }
 
 DEVICES=
