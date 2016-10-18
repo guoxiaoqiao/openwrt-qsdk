@@ -99,6 +99,8 @@ BLUETOOTH:=kmod-bluetooth bluez-libs bluez-utils kmod-ath3k
 
 BLUETOPIA:=bluetopia
 
+ZIGBEE:=zigbee_efr32
+
 QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
