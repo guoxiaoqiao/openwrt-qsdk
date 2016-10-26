@@ -82,7 +82,6 @@ define KernelPackage/qpic_panel_ili_qvga
   TITLE:=ILI QVGA Panel support
   KCONFIG:=CONFIG_FB_MSM_QPIC_ILI_QVGA_PANEL
   FILES:=$(LINUX_DIR)/drivers/video/msm/mdss/qpic_panel_ili_qvga.ko
-  AUTOLOAD:=$(call AutoLoad,07,qpic_panel_ili_qvga)
 endef
 
 define KernelPackage/qpic_panel_ili_qvga/description
@@ -96,7 +95,6 @@ define KernelPackage/qpic_panel_ertft
   TITLE:=ERT TFT  Panel support
   KCONFIG:=CONFIG_FB_MSM_QPIC_ER_SSD1963_PANEL
   FILES:=$(LINUX_DIR)/drivers/video/msm/mdss/qpic_panel_er_ssd1963.ko
-  AUTOLOAD:=$(call AutoLoad,07,qpic_panel_er_ssd1963)
 endef
 
 define KernelPackage/qpic_panel_ertft/description
