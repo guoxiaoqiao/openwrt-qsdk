@@ -957,10 +957,10 @@ void ag71xx_link_adjust(struct ag71xx *ag)
 	} else if (ag->gmac_num == 0 && ag->duplex) {
 		ag71xx_wr(ag, AG71XX_REG_FIFO_THRESH, AG71XX_FIFO_TH_HD_FULL_VAL);
 	}
-
+#ifndef CONFIG_AG71XX_FULLOFFLOAD_TARGET
 	if (pdata->set_speed)
 		pdata->set_speed(ag->speed);
-
+#endif
 	ag71xx_wr(ag, AG71XX_REG_MAC_CFG2, cfg2);
 	ag71xx_wr(ag, AG71XX_REG_FIFO_CFG5, fifo5);
 	ag71xx_wr(ag, AG71XX_REG_MAC_IFCTL, ifctl);

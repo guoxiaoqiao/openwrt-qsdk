@@ -183,7 +183,7 @@ static void __init ap135_setup(void)
 
 	/* GMAC0 is connected to an AR8327 switch */
 	ath79_eth0_data.phy_if_mode = PHY_INTERFACE_MODE_RGMII;
-	ath79_eth0_data.phy_mask = BIT(4);
+	ath79_eth0_data.phy_mask = BIT(0);
 	ath79_eth0_data.mii_bus_dev = &ath79_mdio0_device.dev;
 	/* set default 1000/100/10 pll value */
 	ath79_eth0_pll_data.pll_1000 = 0x06000000;

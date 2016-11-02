@@ -8,6 +8,13 @@ config AG71XX
 
 if AG71XX
 
+config AG71XX_FULLOFFLOAD_TARGET
+	bool "Atheros AR71xx built-in ethernet driver full-offload target"
+	default n
+	help
+	  Atheros AR71xx built-in ethernet driver full-offload target
+	  If set to 'y', this option will enable target RGMII/MII configuration
+
 config AG71XX_SRAM_DESCRIPTORS
 	bool "Atheros AR71xx built-in ethernet driver SRAM descriptor rings"
 	default n
