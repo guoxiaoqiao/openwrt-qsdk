@@ -32,15 +32,26 @@ enable_smp_affinity_wifi() {
 
 
 		[ -n "$device" ] && {
-			if [ $device == "wifi2" ]; then
-				irq_affinity_num=`grep -E -m3 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-			elif [ $device == "wifi1" ];then
-				irq_affinity_num=`grep -E -m2 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-			else
-				irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-			fi
+			case "$board" in
+				ap-dk0*)
+					if [ $device == "wifi2" ]; then
+						irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+					elif [ $device == "wifi1" ];then
+						irq_affinity_num=`grep -E -m3 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+					else
+						irq_affinity_num=`grep -E -m2 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+					fi
+				;;
+				*)
+					if [ $device == "wifi2" ]; then
+						irq_affinity_num=`grep -E -m3 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+					elif [ $device == "wifi1" ];then
+						irq_affinity_num=`grep -E -m2 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+					else
+						irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+					fi
+				esac
 		}
-
 
 		case "${hwcaps}" in
 			*11an/ac)
