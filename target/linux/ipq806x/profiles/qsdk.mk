@@ -150,8 +150,8 @@ define Profile/QSDK_Premium
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
-		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-sierra-driver kmod-art2
+		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-art2
 endef
 
 define Profile/QSDK_Premium/Description
@@ -200,8 +200,8 @@ define Profile/QSDK_Deluxe
 		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
-		$(WIL6210_PKGS) $(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) kmod-sierra-driver \
+		$(UTILS) $(TEST_TOOLS) $(KPI) \
+		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
 		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e
 endef
 
