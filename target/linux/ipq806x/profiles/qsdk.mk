@@ -1,7 +1,3 @@
-#
-# Copyright (c) 2015-2017 The Linux Foundation. All rights reserved.
-#
-
 QCA_LITHIUM:=kmod-qvit-lithium
 QCA_EDMA:=kmod-qca-edma
 NSS_COMMON:= \
@@ -38,14 +34,17 @@ QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
 NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd \
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
-	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr kmod-qca-nss-drv-gre
+	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr kmod-qca-nss-drv-gre \
+	kmod-qca-nss-drv-pppoe
+
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
 # Once all NSS clients get ported to 4.4 we can use NSS_CLIENTS instead.
 NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-ppe-qdisc kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-bridge-mgr \
                     kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 \
                     kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
-                    kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr kmod-qca-nss-drv-gre
+                    kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr kmod-qca-nss-drv-gre \
+                    kmod-qca-nss-drv-pppoe
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi-cryptoapi kmod-qca-nss-cfi-ocf kmod-qca-nss-drv-ipsecmgr
 
