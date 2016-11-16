@@ -1,7 +1,7 @@
 /*
  * ar8216.c: AR8216 switch driver
  *
- * Copyright (c) 2013 The Linux Foundation. All rights reserved.
+ * Copyright (c) 2013, 2016 The Linux Foundation. All rights reserved.
  * Copyright (C) 2009 Felix Fietkau <nbd@openwrt.org>
  * Copyright (C) 2011-2012 Gabor Juhos <juhosg@openwrt.org>
  *
@@ -1386,6 +1386,10 @@ ar8327_init_globals(struct ar8216_priv *priv)
 		ar8216_sw_reg_set(priv, 0x9a4, 0x000001c6);
 
 	}
+
+	if (chip_is_ar8327(priv))
+		ar8216_sw_reg_set(priv, AR8327_REG_GLOBAL_FC_THRESH,
+				AR8327_GLOBAL_FC_THRESH_DFLT_VAL);
 }
 
 static void
