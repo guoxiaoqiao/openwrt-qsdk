@@ -1,7 +1,7 @@
 /*
  * ar8216.h: AR8216 switch driver
  *
- * Copyright (c) 2013 The Linux Foundation. All rights reserved.
+ * Copyright (c) 2013, 2016 The Linux Foundation. All rights reserved.
  * Copyright (C) 2009 Felix Fietkau <nbd@openwrt.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -452,6 +452,9 @@
 #define   AR8327_PORT_LOOKUP_LEARN		BIT(20)
 
 #define AR8327_REG_PORT_PRIO(_i)		(0x664 + (_i) * 0xc)
+
+#define AR8327_REG_GLOBAL_FC_THRESH		0x800
+#define AR8327_GLOBAL_FC_THRESH_DFLT_VAL	0x12001f0
 
 #define AR8327_REG_QM_DEBUG_ADDR		0x820
 #define AR8327_REG_QM_DEBUG_VALUE		0x824
