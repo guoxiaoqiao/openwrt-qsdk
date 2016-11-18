@@ -196,13 +196,13 @@ $(eval $(call Profile,QSDK_Enterprise))
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
-		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) \
+		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_10_4_PKGS) -qca-spectral-10.4 $(WIFI_10_4_FW_PKGS) \
 		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(UTILS) $(TEST_TOOLS) $(KPI) \
 		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
-		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e
+		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e ${NSS_CRYPTO}
 endef
 
 define Profile/QSDK_Deluxe/Description
