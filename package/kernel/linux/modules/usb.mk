@@ -441,6 +441,21 @@ endef
 
 $(eval $(call KernelPackage,usb2))
 
+define KernelPackage/usb-ath79
+  TITLE:=ATH79 USB driver
+  DEPENDS:=@TARGET_ar71xx +kmod-usb2
+  KCONFIG:=CONFIG_USB_EHCI_HCD_ATH79
+  FILES:=$(LINUX_DIR)/drivers/usb/host/ehci-ath79.ko
+  AUTOLOAD:=$(call AutoLoad,40,ehci-ath79,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-ath79/description
+ This driver provides USB Device Controller support for the
+ ATH79 EHCI USB
+endef
+
+$(eval $(call KernelPackage,usb-ath79))
 
 define KernelPackage/usb2-pci
   TITLE:=Support for PCI USB2 controllers
