@@ -79,6 +79,7 @@ inline struct sk_buff *skb_recycler_alloc(struct net_device *dev, unsigned int l
 		prefetchw(shinfo);
 
 		zero_struct(skb, offsetof(struct sk_buff, tail));
+		atomic_set(&skb->users, 1);
 #ifdef NET_SKBUFF_DATA_USES_OFFSET
 		skb->mac_header = ~0U;
 #endif
