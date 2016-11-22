@@ -55,7 +55,8 @@ endef
 define Profile/QSDK_IOE_TEST
 	NAME:=Qualcomm-Atheros SDK IoE test Profile
 	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(WIFI_OPEN) $(BLUETOOTH) \
-		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-art2
+		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-art2  \
+                  btdiag qcmbr-10.4
 endef
 
 define Profile/QSDK_IOE_TEST/Description
