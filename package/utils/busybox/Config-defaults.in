@@ -115,6 +115,9 @@ config BUSYBOX_DEFAULT_SELINUX
 config BUSYBOX_DEFAULT_FEATURE_PREFER_APPLETS
 	bool
 	default y
+config BUSYBOX_DEFAULT_BUSYBOX
+	bool
+	default y
 config BUSYBOX_DEFAULT_BUSYBOX_EXEC_PATH
 	string
 	default "/proc/self/exe"
@@ -757,6 +760,9 @@ config BUSYBOX_DEFAULT_TTY
 config BUSYBOX_DEFAULT_UNAME
 	bool
 	default y
+config BUSYBOX_DEFAULT_UNAME_OSNAME
+	string
+	default "GNU/Linux"
 config BUSYBOX_DEFAULT_UNEXPAND
 	bool
 	default n
