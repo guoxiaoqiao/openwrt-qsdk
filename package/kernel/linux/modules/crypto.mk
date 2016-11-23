@@ -117,8 +117,8 @@ define KernelPackage/crypto-rng
   KCONFIG:=CONFIG_CRYPTO_RNG2
   FILES:= \
 	$(LINUX_DIR)/crypto/rng.ko \
-	$(LINUX_DIR)/crypto/krng.ko
-  AUTOLOAD:=$(call AutoLoad,09,rng krng)
+	$(LINUX_DIR)/crypto/krng.ko@lt4.2
+  AUTOLOAD:=$(call AutoLoad,09,rng krng@lt4.2)
   $(call AddDepends/crypto)
 endef
 
