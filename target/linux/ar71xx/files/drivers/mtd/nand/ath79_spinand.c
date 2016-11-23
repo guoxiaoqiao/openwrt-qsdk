@@ -999,7 +999,7 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
 		0x07,					/* ecc error code */
 		SZ_512,					/* ecc size */
 		16,					/* ecc bytes */
-		1,					/* ecc strength */
+		8,					/* ecc strength */
 		&ath79_spinand_oob_128_gd,		/* ecc layout */
 		&ath79_badblock_pattern_default, 	/* bad block pattern */
 		ath79_spinand_eccsr_gd,			/* get ecc status */
@@ -1014,7 +1014,7 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
 		0x02,					/* ecc error code */
 		SZ_512,					/* ecc size */
 		7,					/* ecc bytes */
-		1,					/* ecc strength */
+		4,					/* ecc strength */
 		&ath79_spinand_oob_64_mx,		/* ecc layout */
 		&ath79_badblock_pattern_default,	/* bad block pattern */
 		ath79_spinand_eccsr_common,		/* get ecc status */
@@ -1029,7 +1029,7 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
 		0x02,					/* ecc error code */
 		SZ_512,					/* ecc size */
 		10,					/* ecc bytes */
-		1,					/* ecc strength */
+		4,					/* ecc strength */
 		&ath79_spinand_oob_64_win,		/* ecc layout */
 		&ath79_badblock_pattern_default,	/* bad block pattern */
 		ath79_spinand_eccsr_common,		/* get ecc status */
