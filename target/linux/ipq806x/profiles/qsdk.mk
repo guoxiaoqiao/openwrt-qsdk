@@ -35,7 +35,9 @@ NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-t
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
 # Once all NSS clients get ported to 4.4 we can use NSS_CLIENTS instead.
-NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-bridge-mgr
+NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-bridge-mgr \
+                    kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 \
+                    kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
@@ -97,6 +99,8 @@ BLUETOOTH:=kmod-bluetooth bluez-libs bluez-utils kmod-ath3k
 
 BLUETOPIA:=bluetopia
 
+ZIGBEE:=zigbee_efr32
+
 QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
@@ -146,8 +150,8 @@ define Profile/QSDK_Premium
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
-		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(WIL6210_PKGS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-sierra-driver kmod-art2
+		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-art2
 endef
 
 define Profile/QSDK_Premium/Description
@@ -192,13 +196,13 @@ $(eval $(call Profile,QSDK_Enterprise))
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
-		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) \
+		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_10_4_PKGS) -qca-spectral-10.4 $(WIFI_10_4_FW_PKGS) \
 		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
-		$(WIL6210_PKGS) $(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) kmod-sierra-driver \
-		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e
+		$(UTILS) $(TEST_TOOLS) $(KPI) \
+		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
+		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e ${NSS_CRYPTO}
 endef
 
 define Profile/QSDK_Deluxe/Description

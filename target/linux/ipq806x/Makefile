@@ -33,10 +33,10 @@ endif
 
 include $(INCLUDE_DIR)/target.mk
 DEFAULT_PACKAGES += \
-	uboot-ipq40xx uboot-ipq806x lk-ipq806x uboot-ipq806x-fwupgrade-tools uboot-envtools \
+	uboot-ipq40xx uboot-ipq806x lk-ipq40xx lk-ipq806x uboot-ipq806x-fwupgrade-tools uboot-envtools \
 	kmod-leds-gpio kmod-gpio-button-hotplug kmod-button-hotplug swconfig \
 	kmod-ata-core kmod-ata-ahci kmod-ata-ahci-platform kmod-usb2 kmod-usb3 \
 	kmod-usb-dwc3-qcom kmod-usb-phy-qcom-dwc3 kmod-usb-dwc3-of-simple \
-	kmod-usb-dwc3-ipq40xx kmod-usb-phy-ipq807x
+	kmod-usb-dwc3-ipq40xx kmod-usb-phy-ipq807x kmod-usb-phy-dwc3-ipq4019
 
 $(eval $(call BuildTarget))

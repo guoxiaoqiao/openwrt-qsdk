@@ -2249,6 +2249,10 @@ define Image/Build/Profile/QSDK_IOE_DBPAN
 	$(call Image/Build/Profile/CUS531MP3,$(1))
 endef
 
+define Image/Build/Profile/QSDK_IOE_TEST
+	$(call Image/Build/Profile/CUS531MP3,$(1))
+endef
+
 define Image/Build/Profile/QSDK_Open_Router
 	$(call Image/Build/Profile/AP135,$(1))
 	$(call Image/Build/Profile/AP147_010,$(1))

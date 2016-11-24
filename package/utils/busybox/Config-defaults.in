@@ -1467,7 +1467,7 @@ config BUSYBOX_DEFAULT_IPCRM
 	default n
 config BUSYBOX_DEFAULT_IPCS
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_LOSETUP
 	bool
 	default n

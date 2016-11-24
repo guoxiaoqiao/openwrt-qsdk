@@ -167,6 +167,8 @@ hostapd_common_add_bss_config() {
 	config_add_array basic_rate
 	config_add_array supported_rates
 	config_add_int obss_interval
+
+	config_add_string vendor_elements
 }
 
 hostapd_set_bss_options() {
@@ -187,7 +189,7 @@ hostapd_set_bss_options() {
 		wps_device_type wps_config wps_device_name wps_manufacturer wps_pin \
 		wps_model_name wps_model_number wps_serial_number \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
-		iapp_interface obss_interval
+		iapp_interface obss_interval vendor_elements
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -452,6 +454,8 @@ hostapd_set_bss_options() {
 			[ -n "$macfile" -a -f "$macfile" ] && cat "$macfile"
 		) > "$_macfile"
 	}
+
+	[ -n "$vendor_elements" ] && append bss_conf "vendor_elements=$vendor_elements" "$N"
 
 	append "$var" "$bss_conf" "$N"
 	return 0

@@ -217,10 +217,10 @@ config KERNEL_PRINTK_TIME
 	default y
 
 config KERNEL_SLUB_DEBUG
-	bool
+	bool "Compile kernel with slub debug option"
 
 config KERNEL_SLUB_DEBUG_ON
-	bool
+	bool "Enable slub debug on"
 
 config KERNEL_SLABINFO
 	select KERNEL_SLUB_DEBUG
