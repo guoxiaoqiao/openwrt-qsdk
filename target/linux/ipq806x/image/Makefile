@@ -89,6 +89,9 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq40xx-ap.dkxx, \
 		$(call FindDeviceTrees, qcom-ipq40??-ap) $(call FindDeviceTrees, qcom-ipq40??-db), \
 		$(IPQ40XX_KERNEL_LOADADDR))
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq806x-akxx, \
+		$(call FindDeviceTrees, qcom-ipq806?-), \
+		$(IPQ806X_KERNEL_LOADADDR))
 	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148_1xx.dtb), \
 		$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap148_1xx), \
