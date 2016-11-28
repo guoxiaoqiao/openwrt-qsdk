@@ -55,7 +55,7 @@ define Package/pm-utils/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/service $(1)/usr/lib/pm-utils/bin
 
 	$(INSTALL_DIR) $(1)/etc/pm/power.d
-	$(INSTALL_BIN) ./files/akronite-power-save.sh $(1)/etc/pm/power.d
+	$(INSTALL_BIN) ./files/ipq-power-save.sh $(1)/etc/pm/power.d
 endef
 
 $(eval $(call BuildPackage,pm-utils))
