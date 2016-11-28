@@ -1,1 +1,1 @@
-CONFIG_CMDLINE="rootfstype=squashfs,jffs2 noinitrd"
+CONFIG_CMDLINE="rootfstype=squashfs,jffs2 noinitrd crashkernel=10M@20M"
