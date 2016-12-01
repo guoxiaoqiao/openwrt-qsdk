@@ -1009,6 +1009,7 @@ ap121_mtdlayout_4M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,2752k(rootfs
 ap132_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,1408k(kernel),6400k(rootfs),64k(art),7808k@0x50000(firmware)
 ap135_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 ap136_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(mib0),64k(art)ro,7744k@0x50000(firmware)
+ap137_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 ap143_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1472k(kernel),64k(art),7744k@0x50000(firmware)
 ap143_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 ap143_mtdlayout_32M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),256k(reserve)ro,16128k(user),16000k@0x50000(firmware)
@@ -1959,6 +1960,7 @@ $(eval $(call SingleProfile,AthLzma,64k,AP132,ap132,AP132,ttyS0,115200,$$(ap132_
 $(eval $(call SingleProfile,AthLzma,64k,AP135,ap135-020,AP135-020,ttyS0,115200,$$(ap135_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP136_010,ap136-010,AP136-010,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP136_020,ap136-020,AP136-020,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,AP137_16M,ap137-16M,AP137,ttyS0,115200,$$(ap137_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(ap143_mtdlayout_8M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),RKuImage))
@@ -2158,6 +2160,7 @@ $(eval $(call SingleProfile,ZyXEL,64k,NBG_460N_550N_550NH,nbg460n_550n_550nh,NBG
 $(eval $(call MultiProfile,AP121,AP121_2M AP121_4M))
 $(eval $(call MultiProfile,DIR615IX,DIR615I1 DIR615I3))
 $(eval $(call MultiProfile,AP136,AP136_010 AP136_020))
+$(eval $(call MultiProfile,AP137,AP137_16M))
 $(eval $(call MultiProfile,AP143,AP143_8M AP143_16M AP143_32M AP143_32M_DUAL))
 $(eval $(call MultiProfile,CUS531,CUS531_16M CUS531_32M CUS531DUAL CUS531NAND CUS531_32M_DUAL CUS531DUAL_DUAL CUS531NAND_DUAL))
 $(eval $(call MultiProfile,CUS531MP3,CUS531MP3_16M CUS531MP3_32M CUS531MP3DUAL CUS531MP3NAND CUS531MP3_32M_DUAL CUS531MP3DUAL_DUAL CUS531MP3NAND_DUAL))
@@ -2255,6 +2258,7 @@ endef
 
 define Image/Build/Profile/QSDK_Open_Router
 	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP137,$(1))
 	$(call Image/Build/Profile/AP147_010,$(1))
 	$(call Image/Build/Profile/AP151,$(1))
 	$(call Image/Build/Profile/AP152,$(1))

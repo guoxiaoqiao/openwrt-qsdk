@@ -178,6 +178,7 @@ platform_check_image() {
 	ap121-mini | \
 	ap136-010 | \
 	ap136-020 | \
+	ap137 |\
 	ap135-020 | \
 	ap96 | \
 	bxu2000n-2-a1 | \
