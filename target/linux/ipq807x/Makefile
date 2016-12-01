@@ -6,7 +6,6 @@ BOARD:=ipq807x
 BOARDNAME:=Qualcomm Atheros IPQ807X
 FEATURES:=squashfs nand ubifs
 CPU_TYPE:=cortex-a53
-CFLAGS:=-Os -pipe -fno-caller-saves
 
 KERNELNAME:=Image dtbs
 
