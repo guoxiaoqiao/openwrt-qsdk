@@ -66,7 +66,18 @@ endif
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include/qca-ssdk
 	$(INSTALL_DIR) $(1)/usr/include/qca-ssdk/api
+	$(INSTALL_DIR) $(1)/usr/include/qca-ssdk/ref
+	$(INSTALL_DIR) $(1)/usr/include/qca-ssdk/fal
+	$(INSTALL_DIR) $(1)/usr/include/qca-ssdk/sal
 	$(CP) -rf $(PKG_BUILD_DIR)/include/api/sw_ioctl.h $(1)/usr/include/qca-ssdk/api
+	$(CP) -rf $(PKG_BUILD_DIR)/include/ref/ref_fdb.h $(1)/usr/include/qca-ssdk/ref
+	$(CP) -rf $(PKG_BUILD_DIR)/include/fal/fal_fdb.h $(1)/usr/include/qca-ssdk/fal
+	$(CP) -rf $(PKG_BUILD_DIR)/include/fal/fal_qos.h $(1)/usr/include/qca-ssdk/fal
+	$(CP) -rf $(PKG_BUILD_DIR)/include/fal/fal_type.h $(1)/usr/include/qca-ssdk/fal
+	$(CP) -rf $(PKG_BUILD_DIR)/include/fal/fal_portvlan.h $(1)/usr/include/qca-ssdk/fal
+	$(CP) -rf $(PKG_BUILD_DIR)/include/ref/ref_port_ctrl.h $(1)/usr/include/qca-ssdk/ref
+	$(CP) -rf $(PKG_BUILD_DIR)/include/common $(1)/usr/include/qca-ssdk
+	$(CP) -rf $(PKG_BUILD_DIR)/include/sal/os $(1)/usr/include/qca-ssdk/sal
 endef
 
 define Build/Compile
