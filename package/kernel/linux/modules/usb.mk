@@ -235,6 +235,54 @@ endef
 
 $(eval $(call KernelPackage,usb-lib-composite))
 
+define KernelPackage/usb-configfs
+ TITLE:= USB functions
+  KCONFIG:=CONFIG_USB_CONFIGFS \
+	CONFIG_USB_CONFIGFS_SERIAL=n \
+	CONFIG_USB_CONFIGFS_ACM=n \
+	CONFIG_USB_CONFIGFS_OBEX=n \
+	CONFIG_USB_CONFIGFS_NCM=n \
+	CONFIG_USB_CONFIGFS_ECM=n \
+	CONFIG_USB_CONFIGFS_ECM_SUBSET=n \
+	CONFIG_USB_CONFIGFS_RNDIS=n \
+	CONFIG_USB_CONFIGFS_EEM=n \
+	CONFIG_USB_CONFIGFS_MASS_STORAGE=n \
+	CONFIG_USB_CONFIGFS_F_LB_SS=n \
+	CONFIG_USB_CONFIGFS_F_FS=n \
+	CONFIG_USB_CONFIGFS_F_UAC1=n \
+	CONFIG_USB_CONFIGFS_F_UAC2=n \
+	CONFIG_USB_CONFIGFS_F_MIDI=n \
+	CONFIG_USB_CONFIGFS_F_HID=n \
+	CONFIG_USB_CONFIGFS_F_PRINTER=n \
+	CONFIG_USB_CONFIGFS_F_QDSS=n
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-configfs/description
+ USB functions
+endef
+
+$(eval $(call KernelPackage,usb-configfs))
+
+define KernelPackage/usb-f-diag
+  TITLE:=USB DIAG
+  KCONFIG:=CONFIG_USB_F_DIAG \
+	CONFIG_USB_CONFIGFS_F_DIAG=y \
+	CONFIG_DIAG_CHAR \
+	CONFIG_DIAG_OVER_USB=y
+  DEPENDS:=+kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt
+  FILES:=$(LINUX_DIR)/drivers/usb/gadget/function/usb_f_diag.ko \
+	$(LINUX_DIR)/drivers/char/diag/diagchar.ko
+  AUTOLOAD:=$(call AutoLoad,52,usb_f_diag diagchar)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-f-diag/description
+ USB DIAG
+endef
+
+$(eval $(call KernelPackage,usb-f-diag))
+
 
 define KernelPackage/usb-eth-gadget
   TITLE:=USB Ethernet Gadget support
@@ -517,6 +565,7 @@ $(eval $(call KernelPackage,usb2-oxnas))
 
 define KernelPackage/usb-dwc3
   TITLE:=DWC3 USB controller driver
+  DEPENDS:=USB_GADGET_SUPPORT:kmod-usb-gadget
   KCONFIG:= \
 	CONFIG_USB_DWC3 \
 	CONFIG_USB_DWC3_HOST=n \
