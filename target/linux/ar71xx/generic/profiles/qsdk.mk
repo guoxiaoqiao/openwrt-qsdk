@@ -33,6 +33,23 @@ WIFI_OPEN:=-kmod-ath5k -kmod-qca-ath -kmod-qca-ath9k -kmod-qca-ath10k \
 
 BLUETOOTH:=bluez-daemon kmod-bluetooth usbutils
 
+WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-perf kmod-art2 \
+		qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
+		qca-wpa-cli-10.4 qca-wapid sigma-dut-10.4 qca-wpc-10.4 \
+		qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc whc-ui
+
+WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw7-10.4-asic \
+		   qca-wifi-fw-hw6-10.4-asic qca-wifi-fw-hw10-10.4-asic \
+		   qca-wifi-fw-hw9-10.4-asic
+
+SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
+
+UBOOT_PKGS:= qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M \
+	     qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
+	     qca-legacy-uboot-db12x-16M
+
+STREAMBOOST_PKGS:= streamboost kmod-fast-classifier
+
 define Profile/QSDK_IOE_SB
 	NAME:=Qualcomm-Atheros SDK IoE Single Band Profile
 	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(ALLJOYN) $(WIFI_OPEN) \
@@ -73,6 +90,29 @@ endef
 $(eval $(call Profile,QSDK_IOE_SB))
 $(eval $(call Profile,QSDK_IOE_DBPAN))
 $(eval $(call Profile,QSDK_IOE_TEST))
+
+define Profile/QSDK_Premium_Beeliner_Router
+	$(Profile/QSDK_Base)
+	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
+	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
+	  $(STREAMBOOST_PKGS) $(STORAGE) $(WIFI_10_4_PKGS) \
+	  $(WIFI_10_4_FW_PKGS) $(SWITCH_SSDK_NOHNAT_PKGS) $(UBOOT_PKGS) \
+	  mtd-utils mtd-utils-nandwrite
+endef
+
+define Profile/QSDK_Premium_Beeliner_Router/Description
+  QSDK Premium Beeliner Router package set configuration.
+  This profile is designed to fit in a 16M flash and supports the following features:
+  - Bridging and routing networking
+  - QCA-WiFi driver 10.4 configuration
+  - LuCI web configuration interface
+  - Streamboost
+  - USB hard drive support
+  - Samba
+  - IPv4/IPv6
+  - DynDns
+endef
+$(eval $(call Profile,QSDK_Premium_Beeliner_Router))
 
 define Profile/QSDK_Open_Router
         $(Profile/QSDK_Base)
