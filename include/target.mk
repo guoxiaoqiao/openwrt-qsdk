@@ -257,6 +257,7 @@ ifeq ($(DUMP),1)
   ifeq ($(ARCH),aarch64)
     CPU_TYPE ?= armv8-a
     CPU_CFLAGS_armv8-a = -mcpu=armv8-a
+    CPU_CFLAGS_cortex-a53 = -march=armv8-a -mcpu=cortex-a53+crypto
   endif
   DEFAULT_CFLAGS=$(strip $(CPU_CFLAGS) $(CPU_CFLAGS_$(CPU_TYPE)) $(CPU_CFLAGS_$(CPU_SUBTYPE)))
 endif
