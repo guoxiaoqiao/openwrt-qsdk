@@ -1960,7 +1960,7 @@ $(eval $(call SingleProfile,AthLzma,64k,AP132,ap132,AP132,ttyS0,115200,$$(ap132_
 $(eval $(call SingleProfile,AthLzma,64k,AP135,ap135-020,AP135-020,ttyS0,115200,$$(ap135_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP136_010,ap136-010,AP136-010,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP136_020,ap136-020,AP136-020,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
-$(eval $(call SingleProfile,AthLzma,64k,AP137_16M,ap137-16M,AP137,ttyS0,115200,$$(ap137_mtdlayout_16M),1507328,14876672,RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,AP137_16M,ap137-16M,AP137,ttyS0,115200,$$(ap137_mtdlayout_16M),RKuImage,1507328,14876672))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(ap143_mtdlayout_8M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),RKuImage))
