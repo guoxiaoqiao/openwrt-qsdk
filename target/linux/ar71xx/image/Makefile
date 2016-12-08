@@ -2266,10 +2266,11 @@ define Image/Build/Profile/QSDK_Open_Router
 endef
 
 define Image/Build/Profile/QSDK_Premium_Beeliner_Router
-        $(call Image/Build/Profile/AP135,$(1))
-        $(call Image/Build/Profile/AP152,$(1))
-        $(call Image/Build/Profile/AP151,$(1))
-        $(call Image/Build/Profile/AP147_010,$(1))
+	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP137,$(1))
+	$(call Image/Build/Profile/AP152,$(1))
+	$(call Image/Build/Profile/AP151,$(1))
+	$(call Image/Build/Profile/AP147_010,$(1))
 endef
 
 # $(1): filesystem type.
