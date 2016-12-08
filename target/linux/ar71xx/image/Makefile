@@ -9,6 +9,7 @@ include $(INCLUDE_DIR)/image.mk
 
 IMAGE_PROFILE:=$(if $(PROFILE),$(PROFILE),Default)
 
+AR71XX_8M_ROOTFS_SIZE=5963776  #6488064 - 524288(512KB)
 JFFS2_BLOCKSIZE = 64k 128k 256k
 
 KERNEL_LOADADDR = 0x80060000
@@ -1013,8 +1014,11 @@ ap137_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs
 ap143_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1472k(kernel),64k(art),7744k@0x50000(firmware)
 ap143_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 ap143_mtdlayout_32M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),256k(reserve)ro,16128k(user),16000k@0x50000(firmware)
+ap147_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1472k(kernel),64k(art),7808k@0x50000(firmware)
 ap147_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
+ap151_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1472k(kernel),64k(art),7808k@0x50000(firmware)
 ap151_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
+ap152_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1472k(kernel),64k(art),7808k@0x50000(firmware)
 ap152_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 bxu2000n2_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,1408k(kernel),8448k(rootfs),6016k(user),64k(cfg),64k(oem),64k(art)ro
 cameo_ap81_mtdlayout=mtdparts=spi0.0:128k(u-boot)ro,64k(config)ro,3840k(firmware),64k(art)ro
@@ -1942,12 +1946,10 @@ ifeq ($(SUBTARGET),generic)
 $(eval $(call SingleProfile,ALFA,64k,ALFANX,alfa-nx,ALFA-NX,ttyS0,115200,$$(alfa_mtdlayout_8M),1638400,6291456,vmlinux.gz.uImage,pb9x-2.6.31-jffs2))
 $(eval $(call SingleProfile,ALFA,64k,HORNETUB,hornet-ub,HORNET-UB,ttyATH0,115200,$$(alfa_mtdlayout_8M),1638400,6291456,kernel_image,rootfs_image))
 $(eval $(call SingleProfile,ALFA,64k,TUBE2H8M,tube2h-8M,TUBE2H,ttyATH0,115200,$$(alfa_mtdlayout_8M),1638400,6291456,kernel.image,rootfs.image))
-
 $(eval $(call SingleProfile,AthGzip,64k,AP81,ap81,AP81,ttyS0,115200,$$(ap81_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthGzip,64k,AP83,ap83,AP83,ttyS0,115200,$$(ap83_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthGzip,64k,AP96,ap96,AP96,ttyS0,115200,$$(ap96_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthGzip,64k,WNDAP360,wndap360,WNDAP360,ttyS0,9600,$$(wndap360_mtdlayout),KRuImage))
-
 $(eval $(call SingleProfile,AthLzma,64k,ALFAAP96,alfa-ap96,ALFA-AP96,ttyS0,115200,$$(alfa_ap96_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,ALFAAP120C,alfa-ap120c,ALFA-AP120C,ttyS0,115200,$$(alfa_ap120c_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,ALL0258N,all0258n,ALL0258N,ttyS0,115200,$$(all0258n_mtdlayout),KRuImage,65536))
@@ -1965,8 +1967,11 @@ $(eval $(call SingleProfile,AthLzma,64k,AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(
 $(eval $(call SingleProfile,AthLzma,64k,AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M_DUAL,ap143-32M-dual,AP143,ttyS0,115200,,RKuImage,1507328,14876672))
+$(eval $(call SingleProfile,AthLzma,64k,AP147_8M,ap147-8M,AP147,ttyS0,115200,$$(ap147_mtdlayout_8M),RKuImage,1441792,$(AR71XX_8M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP147_010,ap147-010,AP147-010,ttyS0,115200,$$(ap147_mtdlayout),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,AP151_8M,ap151-8M,AP151,ttyS0,115200,$$(ap151_mtdlayout_8M),RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP151_16M,ap151-16M,AP151,ttyS0,115200,$$(ap151_mtdlayout_16M),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,AP152_8M,ap152-8M,AP152,ttyS0,115200,$$(ap152_mtdlayout_8M),RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP152_16M,ap152-16M,AP152,ttyS0,115200,$$(ap152_mtdlayout_16M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,BXU2000N2,bxu2000n-2-a1,BXU2000n-2-A1,ttyS0,115200,$$(bxu2000n2_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CAP4200AG,cap4200ag,CAP4200AG,ttyS0,115200,$$(cap4200ag_mtdlayout),KRuImage))
@@ -2271,6 +2276,16 @@ define Image/Build/Profile/QSDK_Premium_Beeliner_Router
 	$(call Image/Build/Profile/AP152,$(1))
 	$(call Image/Build/Profile/AP151,$(1))
 	$(call Image/Build/Profile/AP147_010,$(1))
+endef
+
+define Image/Build/Profile/QSDK_Wireless_Router
+	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP136,$(1))
+	$(call Image/Build/Profile/RUBBERDUCK,$(1))
+	$(call Image/Build/Profile/AP147_8M,$(1))
+	$(call Image/Build/Profile/AP151_8M,$(1))
+	$(call Image/Build/Profile/AP152_8M,$(1))
+	$(call Image/Build/Profile/DB120,$(1))
 endef
 
 # $(1): filesystem type.
