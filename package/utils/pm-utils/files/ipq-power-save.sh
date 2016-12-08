@@ -16,7 +16,7 @@
 . /lib/ipq806x.sh
 . /lib/functions.sh
 
-akronite_ac_power()
+ipq8064_ac_power()
 {
 	echo "Entering AC-Power Mode"
 # Krait Power-UP Sequence
@@ -77,7 +77,7 @@ akronite_ac_power()
 	exit 0
 }
 
-akronite_battery_power()
+ipq8064_battery_power()
 {
 	echo "Entering Battery Mode..."
 
@@ -181,7 +181,7 @@ akronite_battery_power()
 	echo "powersave" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
 }
 
-ap_dk01_1_ac_power()
+ipq4019_ap_dk01_1_ac_power()
 {
 	echo "Entering AC-Power Mode"
 # Cortex Power-UP Sequence
@@ -210,7 +210,7 @@ ap_dk01_1_ac_power()
 	exit 0
 }
 
-ap_dk01_1_battery_power()
+ipq4019_ap_dk01_1_battery_power()
 {
 	echo "Entering Battery Mode..."
 
@@ -255,7 +255,7 @@ ap_dk01_1_battery_power()
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 }
 
-ap_dk04_1_ac_power()
+ipq4019_ap_dk04_1_ac_power()
 {
 	echo "Entering AC-Power Mode"
 # Cortex Power-UP Sequence
@@ -306,7 +306,7 @@ ap_dk04_1_ac_power()
 	exit 0
 }
 
-ap_dk04_1_battery_power()
+ipq4019_ap_dk04_1_battery_power()
 {
 	echo "Entering Battery Mode..."
 
@@ -396,19 +396,19 @@ case "$1" in
 	false)
 		case "$board" in
 		db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx)
-			akronite_ac_power ;;
+			ipq8064_ac_power ;;
 		ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk05.1-c1)
-			ap_dk01_1_ac_power ;;
+			ipq4019_ap_dk01_1_ac_power ;;
 		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2)
-			ap_dk04_1_ac_power ;;
+			ipq4019_ap_dk04_1_ac_power ;;
 		esac ;;
 	true)
 		case "$board" in
 		db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx)
-			akronite_battery_power ;;
+			ipq8064_battery_power ;;
 		ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk05.1-c1)
-			ap_dk01_1_battery_power ;;
+			ipq4019_ap_dk01_1_battery_power ;;
 		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2)
-			ap_dk04_1_battery_power ;;
+			ipq4019_ap_dk04_1_battery_power ;;
 		esac ;;
 esac
