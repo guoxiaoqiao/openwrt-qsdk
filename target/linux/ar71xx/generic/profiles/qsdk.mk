@@ -114,6 +114,29 @@ define Profile/QSDK_Premium_Beeliner_Router/Description
 endef
 $(eval $(call Profile,QSDK_Premium_Beeliner_Router))
 
+define Profile/QSDK_Wireless_Router
+	NAME:=Qualcomm-Atheros SDK Wireless Router Profile
+	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini uhttpd kmod-ipv6 \
+	  kmod-ipt-nathelper-rtsp -dnsmasq dnsmasq-dhcpv6 wide-dhcpv6-client bridge \
+	  kmod-qca-wifi-10.4-lowmem-profile qca-wpa-cli-10.4 kmod-usb-storage \
+	  kmod-fs-ntfs kmod-fuse qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
+	  kmod-qca-ssdk-nohnat qca-legacy-uboot-ap136 qca-legacy-uboot-ap152-8M \
+	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x
+endef
+
+define Profile/QSDK_Wireless_Router/Description
+  QSDK Wireless Router package set configuration.
+  This profile is designed to fit in a 8M flash and supports the following features:
+  - Bridging and routing networking
+  - LuCI web configuration interface
+  - USB hard drive support
+  - Samba
+  - IPv4/IPv6
+  - DynDns
+  - qca-wifi driver
+endef
+$(eval $(call Profile,QSDK_Wireless_Router))
+
 define Profile/QSDK_Open_Router
         $(Profile/QSDK_Base)
         $(Profile/QSDK_Test)
@@ -135,3 +158,15 @@ define Profile/QSDK_Open_Router/Description
   - Integrated 11abgn support using the ath9k/ath10k driver
 endef
 $(eval $(call Profile,QSDK_Open_Router))
+
+define Profile/QSDK_Target_Router
+	NAME:=Qualcomm-Atheros SDK Target Router Profile
+	PACKAGES+= qca-legacy-uboot-ap135 kmod-qca-wifi-10.4-unified-perf \
+	  qca-wifi-fw-hw6-10.4-asic
+
+endef
+
+define Profile/QSDK_Target_Router/Description
+  QSDK Target Router package set configuration with minimal packages.
+endef
+$(eval $(call Profile,QSDK_Target_Router))
