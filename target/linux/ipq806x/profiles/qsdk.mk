@@ -74,7 +74,7 @@ WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
 	qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic
 
-WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo
+WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo qca-fst-manager
 
 OPENWRT_STANDARD:= \
 	luci openssl-util
@@ -131,8 +131,6 @@ VIDEO:=kmod-qpic_panel_ertft
 
 KPI:=iperf sysstat
 
-FST:=qca-fst-manager
-
 ifneq ($(LINUX_VERSION),3.18.21)
 	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
@@ -161,7 +159,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-art2
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2
 endef
 
 define Profile/QSDK_Premium/Description
