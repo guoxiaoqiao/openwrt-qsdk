@@ -27,9 +27,11 @@ PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-unified-perf kmod-art2 \
 	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 	qca-wpa-cli-10.4 qca-wapid qca-wpc-10.4 \
 	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc whc-ui \
-	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw7-10.4-asic \
-	qca-wifi-fw-hw6-10.4-asic qca-wifi-fw-hw10-10.4-asic \
-	qca-wifi-fw-hw9-10.4-asic qca-iface-mgr-10.4
+	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
+	qca-wifi-fw-hw9-10.4-asic qca-wifi-fw-hw10-10.4-asic \
+	qca-iface-mgr-10.4
+
+HYFI:=hyfi hyfi-ui
 
 define Profile/QSDK_Open_Router
 	$(Profile/QSDK_Base)
@@ -129,7 +131,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-nohnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand \
-	  qca-legacy-uboot-db12x-16M qca-legacy-uboot-ap152-dual
+	  qca-legacy-uboot-db12x-16M qca-legacy-uboot-ap152-dual $(HYFI)
 endef
 
 define Profile/QSDK_Premium_Beeliner_Router/Description
