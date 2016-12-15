@@ -1,0 +1,151 @@
+Index: linux-3.3.8/include/linux/if_bridge.h
+===================================================================
+--- linux-3.3.8.orig/include/linux/if_bridge.h	2016-12-15 08:40:17.795883632 +0530
++++ linux-3.3.8/include/linux/if_bridge.h	2016-12-15 08:40:19.023883629 +0530
+@@ -102,7 +102,8 @@
+ #include <linux/netdevice.h>
+
+ extern void brioctl_set(int (*ioctl_hook)(struct net *, unsigned int, void __user *));
+-extern struct net_device *br_port_dev_get(struct net_device *dev, unsigned char *addr);
++extern struct net_device *br_port_dev_get(struct net_device *dev, unsigned char *addr,
++		struct sk_buff *skb, unsigned int cookie);
+ extern void br_refresh_fdb_entry(struct net_device *dev, const char *addr);
+ extern void br_dev_update_stats(struct net_device *dev, struct rtnl_link_stats64 *nlstats);
+
+@@ -117,6 +118,10 @@
+		struct sk_buff *skb);
+ extern br_multicast_handle_hook_t __rcu *br_multicast_handle_hook;
+
++typedef struct net_bridge_port *br_port_dev_get_hook_t(struct net_device *dev,
++		struct sk_buff *skb, unsigned char *addr, unsigned int cookie);
++extern br_port_dev_get_hook_t __rcu *br_port_dev_get_hook;
++
+ typedef void (br_notify_hook_t)(int group, int event, const void *ptr);
+ extern br_notify_hook_t __rcu *br_notify_hook;
+
+Index: linux-3.3.8/net/bridge/br_device.c
+===================================================================
+--- linux-3.3.8.orig/net/bridge/br_device.c	2016-12-15 08:40:17.439883633 +0530
++++ linux-3.3.8/net/bridge/br_device.c	2016-12-15 08:42:43.439883324 +0530
+@@ -33,9 +33,11 @@
+	struct net_bridge_port *pdst;
+	br_get_dst_hook_t *get_dst_hook;
+
++	rcu_read_lock();
+ #ifdef CONFIG_BRIDGE_NETFILTER
+	if (skb->nf_bridge && (skb->nf_bridge->mask & BRNF_BRIDGED_DNAT)) {
+		br_nf_pre_routing_finish_bridge_slow(skb);
++		rcu_read_unlock();
+		return NETDEV_TX_OK;
+	}
+ #endif
+@@ -50,7 +52,6 @@
+	skb_reset_mac_header(skb);
+	skb_pull(skb, ETH_HLEN);
+
+-	rcu_read_lock();
+	get_dst_hook = rcu_dereference(br_get_dst_hook);
+	if (is_broadcast_ether_addr(dest))
+		br_flood_deliver(br, skb);
+@@ -73,14 +74,22 @@
+			br_multicast_deliver(mdst, skb);
+		else
+			br_flood_deliver(br, skb);
+-	} else if ((pdst = __br_get(get_dst_hook, NULL, NULL, &skb))) {
+-		if (!skb)
+-			goto out;
+-		br_deliver(pdst, skb);
+-	} else if ((dst = __br_fdb_get(br, dest)) != NULL)
+-		br_deliver(dst->dst, skb);
+-	else
+-		br_flood_deliver(br, skb);
++	} else {
++		pdst = __br_get(get_dst_hook, NULL, NULL, &skb);
++	    if (pdst) {
++			if (!skb)
++			   goto out;
++			br_deliver(pdst, skb);
++		}
++        else {
++           dst = __br_fdb_get(br, dest);
++			if (dst)
++				br_deliver(dst->dst, skb);
++			else
++                br_flood_deliver(br, skb);
++           }
++        }
++
+
+ out:
+	rcu_read_unlock();
+Index: linux-3.3.8/net/bridge/br_if.c
+===================================================================
+--- linux-3.3.8.orig/net/bridge/br_if.c	2016-12-15 08:40:17.795883632 +0530
++++ linux-3.3.8/net/bridge/br_if.c	2016-12-15 08:40:19.023883629 +0530
+@@ -26,6 +26,10 @@
+
+ #include "br_private.h"
+
++/* Hook for external forwarding logic */
++br_port_dev_get_hook_t __rcu *br_port_dev_get_hook __read_mostly;
++EXPORT_SYMBOL_GPL(br_port_dev_get_hook);
++
+ /*
+  * Determine initial path cost based on speed.
+  * using recommendations from 802.1d standard
+@@ -463,7 +467,8 @@
+  *
+  * NOTE: Return NULL if given dev is not a bridge or the mac has no associated port
+  */
+-struct net_device *br_port_dev_get(struct net_device *dev, unsigned char *addr)
++struct net_device *br_port_dev_get(struct net_device *dev, unsigned char *addr,
++	struct sk_buff *skb, unsigned int cookie)
+ {
+	struct net_bridge_fdb_entry *fdbe;
+	struct net_bridge *br;
+@@ -476,11 +481,36 @@
+		return NULL;
+	}
+
++	rcu_read_lock();
++
++	/*
++	 * If the hook exists and the skb isn't NULL, try and get the port
++	 */
++	if (skb) {
++		br_port_dev_get_hook_t *port_dev_get_hook;
++		port_dev_get_hook = rcu_dereference(br_port_dev_get_hook);
++		if (port_dev_get_hook) {
++			struct net_bridge_port *pdst =
++				__br_get(port_dev_get_hook, NULL, dev, skb,
++					 addr, cookie);
++			if (pdst) {
++				dev_hold(pdst->dev);
++				pdev = pdst->dev;
++				goto out;
++			}
++		}
++	}
++
++	/*
++	 * Either there is no hook, or can't
++	 * determine the port to use - fall back to using FDB
++	 */
++
+	/*
+	 * Lookup the fdb entry
+	 */
+	br = netdev_priv(dev);
+-	rcu_read_lock();
++
+	fdbe = __br_fdb_get(br, addr);
+	if (!fdbe) {
+		rcu_read_unlock();
+@@ -492,6 +522,7 @@
+	 */
+	pdev = fdbe->dst->dev;
+	dev_hold(pdev);
++out:
+	rcu_read_unlock();
+
+	return pdev;
