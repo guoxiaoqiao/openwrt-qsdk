@@ -38,9 +38,8 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-perf kmod-art2 \
 		qca-wpa-cli-10.4 qca-wapid sigma-dut-10.4 qca-wpc-10.4 \
 		qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc whc-ui
 
-WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw7-10.4-asic \
-		   qca-wifi-fw-hw6-10.4-asic qca-wifi-fw-hw10-10.4-asic \
-		   qca-wifi-fw-hw9-10.4-asic
+WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
+		   qca-wifi-fw-hw9-10.4-asic qca-wifi-fw-hw10-10.4-asic
 
 SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
 
