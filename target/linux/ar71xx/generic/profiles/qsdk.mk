@@ -43,6 +43,7 @@ WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw7-10.4-asic \
 		   qca-wifi-fw-hw9-10.4-asic
 
 SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
+SWITCH_SSDK_HNAT_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell swconfig
 
 UBOOT_PKGS:= qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M \
 	     qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
@@ -96,7 +97,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
 	  $(STREAMBOOST_PKGS) $(STORAGE) $(WIFI_10_4_PKGS) \
-	  $(WIFI_10_4_FW_PKGS) $(SWITCH_SSDK_NOHNAT_PKGS) $(UBOOT_PKGS) \
+	  $(WIFI_10_4_FW_PKGS) $(SWITCH_SSDK_HNAT_PKGS) $(UBOOT_PKGS) \
 	  mtd-utils mtd-utils-nandwrite
 endef
 
