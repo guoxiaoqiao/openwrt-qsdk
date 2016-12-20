@@ -51,6 +51,8 @@ UBOOT_PKGS:= qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M \
 
 STREAMBOOST_PKGS:= streamboost kmod-fast-classifier
 
+HYFI:=hyfi hyfi-ui
+
 define Profile/QSDK_IOE_SB
 	NAME:=Qualcomm-Atheros SDK IoE Single Band Profile
 	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(ALLJOYN) $(WIFI_OPEN) \
@@ -96,8 +98,8 @@ define Profile/QSDK_Premium_Beeliner_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
-	  $(STREAMBOOST_PKGS) $(STORAGE) $(WIFI_10_4_PKGS) \
-	  $(WIFI_10_4_FW_PKGS) $(SWITCH_SSDK_HNAT_PKGS) $(UBOOT_PKGS) \
+	  $(STREAMBOOST_PKGS) $(STORAGE) $(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) \
+	  $(SWITCH_SSDK_HNAT_PKGS) $(UBOOT_PKGS) $(HYFI) \
 	  mtd-utils mtd-utils-nandwrite
 endef
 
