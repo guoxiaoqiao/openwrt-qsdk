@@ -25,20 +25,17 @@ get_board_type()
 {
 	echo -n "KEXEC: Getting board type... "
 
-	for brd in `cat /proc/cmdline`
-	do
-		val=`echo $brd | grep 'board=' 2>/dev/null`
-		[ $? -eq 0 ] && {
-			board_string="$val";
-			echo done
+	val=$(cat /tmp/sysinfo/board_name)
+	[ $? -eq 0 ] && {
+		board_string="board=$val";
+		echo done
 
-			[ $debug_flag -eq 1 ] && {
-				echo "KEXEC (DEBUG): board_string = $board_string";
-			};
-
-			return;
+		[ $debug_flag -eq 1 ] && {
+			echo "KEXEC (DEBUG): board_string = $board_string";
 		};
-	done
+
+		return;
+	};
 
 	echo "error board string not found in /proc/cmdline"
 	exit
