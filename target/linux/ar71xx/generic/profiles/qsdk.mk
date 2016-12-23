@@ -48,7 +48,7 @@ UBOOT_PKGS:= qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M \
 	     qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	     qca-legacy-uboot-db12x-16M
 
-STREAMBOOST_PKGS:= streamboost kmod-fast-classifier
+STREAMBOOST3_PKGS:= streamboost3
 
 HYFI:=hyfi hyfi-ui
 
@@ -97,7 +97,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
-	  $(STREAMBOOST_PKGS) $(STORAGE) $(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) \
+	  $(STREAMBOOST3_PKGS) $(STORAGE) $(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) \
 	  $(SWITCH_SSDK_HNAT_PKGS) $(UBOOT_PKGS) $(HYFI) \
 	  mtd-utils mtd-utils-nandwrite
 endef
@@ -108,7 +108,7 @@ define Profile/QSDK_Premium_Beeliner_Router/Description
   - Bridging and routing networking
   - QCA-WiFi driver 10.4 configuration
   - LuCI web configuration interface
-  - Streamboost
+  - Streamboost3
   - USB hard drive support
   - Samba
   - IPv4/IPv6
