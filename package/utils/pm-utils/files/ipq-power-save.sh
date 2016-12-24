@@ -391,6 +391,94 @@ ipq4019_ap_dk04_1_battery_power()
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 }
 
+ipq8074_ac_power()
+{
+	echo "Entering AC-Power Mode"
+# Cortex Power-UP Sequence
+	/etc/init.d/powerctl restart
+
+# Power on Malibu PHY of LAN ports
+	# ssdk_sh port poweron sequence goes here
+
+# PCIe Power-UP Sequence
+	sleep 1
+	echo 1 > /sys/bus/pci/rcrescan
+	sleep 2
+	echo 1 > /sys/bus/pci/rescan
+
+	sleep 1
+
+# Wifi Power-up Sequence
+	# wifi powerup sequence goes here
+
+# USB Power-UP Sequence
+	# USB powerup sequence goes here
+
+# LAN interface up
+	ifup lan
+
+# SD/MMC Power-UP sequence
+	# SD/MMC powerup sequence goes here
+	sleep 1
+
+	exit 0
+}
+
+ipq8074_battery_power()
+{
+	echo "Entering Battery Mode..."
+
+
+# PCIe Power-Down Sequence
+
+# Remove devices
+	sleep 2
+	for i in `ls /sys/bus/pci/devices/`; do
+		d=/sys/bus/pci/devices/${i}
+		v=`cat ${d}/vendor`
+		[ "xx${v}" != "xx0x17cb" ] && echo 1 > ${d}/remove
+	done
+
+# Remove Buses
+	sleep 2
+	for i in `ls /sys/bus/pci/devices/`; do
+		d=/sys/bus/pci/devices/${i}
+		echo 1 > ${d}/remove
+	done
+
+# Remove RC
+	sleep 2
+
+	[ -f /sys/bus/pci/rcremove ] && {
+		echo 1 > /sys/bus/pci/rcremove
+	}
+	[ -f /sys/devices/pci0000:00/pci_bus/0000:00/rcremove ] && {
+		echo 1 > /sys/devices/pci0000:00/pci_bus/0000:00/rcremove
+	}
+	sleep 1
+
+# Wifi Power-down Sequence
+	# wifi unload sequence goes here
+
+# Find scsi devices and remove it
+
+# Power off Malibu PHY of LAN ports
+	# ssdk_sh port poweroff sequence goes here
+
+# USB Power-down Sequence
+	# USB power down sequence goes here
+
+	sleep 2
+#SD/MMC Power-down Sequence
+	# SD/MMC powerdown sequence goes here
+
+# LAN interface down
+	ifdown lan
+
+# Cortex Power-down Sequence
+
+}
+
 local board=$(ipq806x_board_name)
 case "$1" in
 	false)
@@ -401,6 +489,8 @@ case "$1" in
 			ipq4019_ap_dk01_1_ac_power ;;
 		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2)
 			ipq4019_ap_dk04_1_ac_power ;;
+		hk01)
+			ipq8074_ac_power ;;
 		esac ;;
 	true)
 		case "$board" in
@@ -410,5 +500,7 @@ case "$1" in
 			ipq4019_ap_dk01_1_battery_power ;;
 		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2)
 			ipq4019_ap_dk04_1_battery_power ;;
+		hk01)
+			ipq8074_battery_power ;;
 		esac ;;
 esac
