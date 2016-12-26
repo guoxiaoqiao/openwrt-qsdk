@@ -21,6 +21,7 @@ ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
 	$(call Image/ubifs_128MB,$(1))
 	$(call Image/ubifs_512MB,$(1))
+	$(call Image/ubifs_1GB,$(1))
 	$(call Image/UbiImage,$(1))
 endef
 endif
@@ -156,6 +157,15 @@ ifeq ($(1),-ipq806x)
 	$(foreach image,$(UBI_IMAGES), \
 	$(call Image/UbiPrepare,$(image),squashfs,"ubi_rootfs","rootfs_data"))
 endif
+endef
+
+define Image/ubifs_1GB
+
+  ifeq ($(1),-ipq40xx)
+	$(eval UBI_OPTS:="-m 4096 -p 512KiB")
+	$(call Image/mkfs/ubifs/generate,$(1))
+	$(call Image/Build,ubi,$(1),-1GB)
+  endif
 endef
 
 define Image/ubifs_512MB
