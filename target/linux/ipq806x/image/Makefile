@@ -68,7 +68,7 @@ endef
 # some tree's don't have all the device tree's so we filter out
 # the ones that are not present
 # $(1) is the filter to apply
-FindDeviceTrees ?= $(notdir $(basename $(shell find $(LINUX_DIR)/arch/arm/boot/dts/ -name $(1)*.dts $(2) 2>/dev/null)))
+FindDeviceTrees ?= $(notdir $(basename $(shell find $(LINUX_DIR)/arch/arm/boot/dts/ -name $(1)*.dtb $(2) 2>/dev/null)))
 
 define Image/BuildKernel/template
 	$(CP) $(KDIR)/vmlinux$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
@@ -93,42 +93,33 @@ define Image/BuildKernel
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq806x-akxx, \
 		$(call FindDeviceTrees, qcom-ipq806?-), \
 		$(IPQ806X_KERNEL_LOADADDR))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148_1xx.dtb), \
-		$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap148_1xx), \
-		$(IPQ806X_KERNEL_LOADADDR)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap148.dtb), \
+		$(IPQ806X_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap148,-not -name *ap148_1xx* -not -name *ap148-nand*), \
-		$(IPQ806X_KERNEL_LOADADDR)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-db149.dtb), \
+		$(IPQ806X_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-db149, \
 		$(call FindDeviceTrees, qcom-ipq8064-*db149), \
-		$(IPQ806X_KERNEL_LOADADDR)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ak01.dtb), \
+		$(IPQ806X_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ak01, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ak01), \
-		$(IPQ806X_KERNEL_LOADADDR)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap145_1xx.dtb), \
+		$(IPQ806X_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145_1xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap145_1xx), \
-		$(IPQ806X_KERNEL_LOADADDR)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap145.dtb), \
+		$(IPQ806X_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap145, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap145,-not -name *ap145_1xx*), \
-		$(IPQ806X_KERNEL_LOADADDR)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap160_2xx.dtb), \
+		$(IPQ806X_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap160_2xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap160_2xx), \
-		$(IPQ806X_KERNEL_LOADADDR)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap160.dtb), \
+		$(IPQ806X_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap160, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap160,-not -name *ap160_2xx*), \
-		$(IPQ806X_KERNEL_LOADADDR)))
-	$(if $(wildcard $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq8064-ap161.dtb), \
+		$(IPQ806X_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap161, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap161), \
-		$(IPQ806X_KERNEL_LOADADDR)))
+		$(IPQ806X_KERNEL_LOADADDR))
 endef
 
 define Image/BuildKernel/Initramfs
@@ -146,8 +137,7 @@ UBI_IMAGES=qcom-ipq8064-db149 \
 	qcom-ipq8064-ap160_2xx
 
 define Image/UbiPrepare
-	$(if $(wildcard $(DTS_DIR)/$(1).dtb), \
-	$(call Image/Build/UbinizeImage,$(1),$(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb,$(2),$(3),$(4));)
+	$(call Image/Build/UbinizeImage,$(1),$(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb,$(2),$(3),$(4));
 endef
 
 define Image/UbiImage
