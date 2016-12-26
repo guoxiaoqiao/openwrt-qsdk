@@ -151,7 +151,7 @@ $(eval $(call Profile,QSDK_Premium_Beeliner_Router))
 define Profile/QSDK_Target_Router
 	NAME:=Qualcomm-Atheros SDK Target Router Profile
 	PACKAGES+= kmod-qca-wifi-fulloffload-target qca-legacy-uboot-ap135 kmod-qca-wifi-10.4-fulloffload \
-	  qca-wifi-fw-hw6-10.4-asic
+	  qca-wifi-fw-hw6-10.4-asic kmod-qca-ssdk-nohnat
 
 endef
 
