@@ -378,16 +378,31 @@ ar71xx_board_detect() {
 	*"AP135-020 reference board")
 		name="ap135-020"
 		;;
+	*"QCA AP135 Board")
+		name="ap135"
+		;;
+	*"QCA AP137 Board")
+		name="ap137"
+		;;
 	*"AP143 reference board")
 		name="ap143"
 		;;
 	*"AP147-010 reference board")
 		name="ap147-010"
 		;;
+	*"QCA AP147 Board")
+		name="ap147"
+		;;
 	*"AP151 reference board")
 		name="ap151"
 		;;
+	*"QCA AP151 Board")
+		name="ap151"
+		;;
 	*"AP152 reference board")
+		name="ap152"
+		;;
+	*"QCA AP152 Board")
 		name="ap152"
 		;;
 	*AP81)

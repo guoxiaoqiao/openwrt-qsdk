@@ -179,7 +179,11 @@ platform_check_image() {
 	ap136-010 | \
 	ap136-020 | \
 	ap137 |\
+	ap135 |\
 	ap135-020 | \
+	ap147 |\
+	ap151 |\
+	ap152 |\
 	ap96 | \
 	bxu2000n-2-a1 | \
 	db120 | \
