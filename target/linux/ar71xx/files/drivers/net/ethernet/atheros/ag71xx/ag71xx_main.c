@@ -907,8 +907,11 @@ void ag71xx_link_adjust(struct ag71xx *ag)
 	u32 fifo5;
 
 	if (!ag->link) {
-		ag71xx_hw_stop(ag);
 		netif_carrier_off(ag->dev);
+                ag->tx_stopped = true;
+                netif_stop_queue(ag->dev);
+		msleep(100);
+		ag71xx_hw_stop(ag);
 		if (netif_msg_link(ag))
 			pr_info("%s: link down\n", ag->dev->name);
 		return;
@@ -970,6 +973,8 @@ void ag71xx_link_adjust(struct ag71xx *ag)
 	}
 
 	ag71xx_hw_start(ag);
+	netif_start_queue(ag->dev);
+        ag->tx_stopped = false;
 	netif_carrier_on(ag->dev);
 	if (netif_msg_link(ag))
 		pr_info("%s: link up (%sMbps/%s duplex)\n",
