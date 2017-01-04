@@ -3,7 +3,6 @@ include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/version.mk
 
 PKG_NAME:=u-boot
-PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_PROTO:=git
 PKG_BRANCH:=master
 PKG_RELEASE:=1
@@ -14,7 +13,15 @@ ifeq ($(DUMP)$(PKG_VERSION),)
   PKG_VERSION:=g$(PKG_REV)
 endif
 
+PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
+CONFIG_NAME=$(shell echo $(BUILD_VARIANT) | sed 's/.*-//')
+
 include $(INCLUDE_DIR)/package.mk
+
+ifneq ($(CONFIG_TARGET_ar71xx),)
+KCPPFLAGS+=$(foreach var,$(strip $(shell cat ./configs/$(shell echo $(BUILD_VARIANT) | sed 's/-qca95[0-9]x//')-$(BOARD)$(if $(SUBTARGET),_$(SUBTARGET)).mk)), -D${var})
+endif
+
 
 define Package/uboot-2016-ipq806x
   SECTION:=boot
@@ -43,17 +50,38 @@ define Package/uboot-2016-ipq40xx
   VARIANT:=ipq40xx
 endef
 
+define Package/uboot-2016-ar71xx/common
+ define Package/uboot-2016-ar71xx-$(1)
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  TITLE:=U-boot for $(1) platform
+  DEPENDS:=@TARGET_ar71xx
+  URL:=http://www.denx.de/wiki/U-Boot
+  VARIANT:=$(1)-$(2)
+ endef
+endef
+
+define Package/uboot-2016-ar71xx/nor
+ $(call Package/uboot-2016-ar71xx/common,$(1),$(2))
+
+ define Package/uboot-2016-ar71xx-$(1)/install
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ar71xx-u-boot-$(1).elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ar71xx-u-boot-$(1).bin
+ endef
+ $$(eval $$(call BuildPackage,uboot-2016-ar71xx-$(1)))
+endef
+
+
 define Build/Configure
-	$(MAKE) -C $(PKG_BUILD_DIR) $(BUILD_VARIANT)_defconfig
+	$(MAKE) -C $(PKG_BUILD_DIR) $(CONFIG_NAME)_defconfig
 endef
 
 define Build/Compile
 	VERSION_CODE='$(VERSION_NICK) $(VERSION_NUMBER)' \
 	REVISION='$(REVISION)' \
 	$(MAKE) -C $(PKG_BUILD_DIR) HOSTSTRIP=true CROSS_COMPILE=$(TARGET_CROSS) \
-		QSDK_CFLAGS="$(TARGET_CFLAGS)" \
-		QSDK_LDFLAGS="$(TARGET_LDFLAGS)" \
-		DTC=${KERNEL_BUILD_DIR}/../../../qca/src/linux-4.4/scripts/dtc/dtc \
+		KCPPFLAGS="$(KCPPFLAGS)" \
+		DTC=${LINUX_DIR}/scripts/dtc/dtc \
 		all
 endef
 
@@ -84,4 +112,11 @@ endef
 $(eval $(call BuildPackage,uboot-2016-ipq807x))
 $(eval $(call BuildPackage,uboot-2016-ipq40xx))
 $(eval $(call BuildPackage,uboot-2016-ipq806x))
+$(eval $(call Package/uboot-2016-ar71xx/nor,ap147-8M,qca953x))
+$(eval $(call Package/uboot-2016-ar71xx/nor,ap147-16M,qca953x))
+$(eval $(call Package/uboot-2016-ar71xx/nor,ap135,qca955x))
+$(eval $(call Package/uboot-2016-ar71xx/nor,ap152-8M,qca956x))
+$(eval $(call Package/uboot-2016-ar71xx/nor,ap152-16M,qca956x))
+$(eval $(call Package/uboot-2016-ar71xx/nor,ap151-8M,qca956x))
+$(eval $(call Package/uboot-2016-ar71xx/nor,ap151-16M,qca956x))
 
