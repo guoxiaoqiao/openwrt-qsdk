@@ -81,7 +81,8 @@ define Profile/QSDK_Wireless_Router
 	  kmod-qca-wifi-10.4-lowmem-profile qca-wpa-cli-10.4 kmod-usb-storage \
 	  kmod-fs-ntfs kmod-fuse qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 	  kmod-qca-ssdk-nohnat qca-legacy-uboot-ap136 qca-legacy-uboot-ap152-8M \
-	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x
+	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x \
+	  kmod-fast-classifier
 endef
 
 define Profile/QSDK_Wireless_Router/Description
