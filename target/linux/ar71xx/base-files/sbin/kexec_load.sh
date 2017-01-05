@@ -11,10 +11,16 @@ debug_flag=0
 
 get_build_info()
 {
+	echo -n "KEXEC: Getting the board serial number.. "
+	local serialnumber=`fw_printenv serialnumber 2>/dev/null`
+	[ $? -ne 0 ] && { echo "failed.."; exit; };
+	echo done
+
 	echo -n "KEXEC: Getting build info... "
 	hstnm=`uname -n|tr -s ' ' '_'`
 	vers=`uname -v|tr -s '[ #:]' '_'`
 	bldinfo=`echo bldinfo=${hstnm}_${vers}`
+	bldinfo=$bldinfo-${serialnumber#serialnumber=}-`date +%Y-%m-%d_%H:%M:%S`;
 	echo done
 	[ $debug_flag -eq 1 ] && {
 		echo "KEXEC (DEBUG): bldinfo = $bldinfo";
@@ -27,7 +33,7 @@ get_board_type()
 
 	val=$(cat /tmp/sysinfo/board_name)
 	[ $? -eq 0 ] && {
-		board_string="board=$val";
+		board_string="board=$(echo $val | tr 'a-z' 'A-Z')";
 		echo done
 
 		[ $debug_flag -eq 1 ] && {
