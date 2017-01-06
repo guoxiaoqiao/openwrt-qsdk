@@ -4,6 +4,9 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+
+NAND_BLOCKSIZE := 2048-128k
+
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
@@ -1953,6 +1956,7 @@ $(eval $(call BuildTemplate,64k,-64k,64k))
 $(eval $(call BuildTemplate,64kraw,-raw,64k))
 $(eval $(call BuildTemplate,64kraw-nojffs,-raw))
 $(eval $(call BuildTemplate,128k,,128k))
+$(eval $(call BuildTemplate,128k,,nand-2048-128k))
 $(eval $(call BuildTemplate,128kraw,-raw,128k))
 $(eval $(call BuildTemplate,256k,,256k))
 $(eval $(call BuildTemplate,all,,64k 128k 256k))
