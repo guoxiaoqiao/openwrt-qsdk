@@ -1,0 +1,82 @@
+--- a/src/ap/ieee802_11.c
++++ b/src/ap/ieee802_11.c
+@@ -898,6 +898,7 @@ static void handle_auth(struct hostapd_data *hapd,
+ 		.type = HOSTAPD_UBUS_AUTH_REQ,
+ 		.mgmt_frame = mgmt,
+ 		.frame_info = fi,
++		.online = 1,
+ 	};
+ 
+ 	if (len < IEEE80211_HDRLEN + sizeof(mgmt->u.auth)) {
+@@ -1798,6 +1799,7 @@ static void handle_assoc(struct hostapd_data *hapd,
+ 		.type = HOSTAPD_UBUS_ASSOC_REQ,
+ 		.mgmt_frame = mgmt,
+ 		.frame_info = fi,
++		.online = 1,
+ 	};
+ 
+ 	if (len < IEEE80211_HDRLEN + (reassoc ? sizeof(mgmt->u.reassoc_req) :
+@@ -2004,6 +2006,11 @@ static void handle_disassoc(struct hostapd_data *hapd,
+ 			    const struct ieee80211_mgmt *mgmt, size_t len)
+ {
+ 	struct sta_info *sta;
++	struct hostapd_ubus_request req = {
++		.type = HOSTAPD_UBUS_ASSOC_REQ,
++		.mgmt_frame = mgmt,
++		.online = 0,
++	};
+ 
+ 	if (len < IEEE80211_HDRLEN + sizeof(mgmt->u.disassoc)) {
+ 		wpa_printf(MSG_INFO, "handle_disassoc - too short payload (len=%lu)",
+@@ -2049,6 +2056,8 @@ static void handle_disassoc(struct hostapd_data *hapd,
+ 
+ 	mlme_disassociate_indication(
+ 		hapd, sta, le_to_host16(mgmt->u.disassoc.reason_code));
++
++	hostapd_ubus_handle_event(hapd, &req);
+ }
+ 
+ 
+@@ -2056,6 +2065,11 @@ static void handle_deauth(struct hostapd_data *hapd,
+ 			  const struct ieee80211_mgmt *mgmt, size_t len)
+ {
+ 	struct sta_info *sta;
++	struct hostapd_ubus_request req = {
++		.type = HOSTAPD_UBUS_AUTH_REQ,
++		.mgmt_frame = mgmt,
++		.online = 0,
++	};
+ 
+ 	if (len < IEEE80211_HDRLEN + sizeof(mgmt->u.deauth)) {
+ 		wpa_msg(hapd->msg_ctx, MSG_DEBUG, "handle_deauth - too short "
+@@ -2087,6 +2101,8 @@ static void handle_deauth(struct hostapd_data *hapd,
+ 	sta->acct_terminate_cause = RADIUS_ACCT_TERMINATE_CAUSE_USER_REQUEST;
+ 	ieee802_1x_notify_port_enabled(sta->eapol_sm, 0);
+ 	ap_free_sta(hapd, sta);
++
++	hostapd_ubus_handle_event(hapd, &req);
+ }
+ 
+ 
+--- a/src/ap/ubus.c
++++ b/src/ap/ubus.c
+@@ -497,6 +497,9 @@ int hostapd_ubus_handle_event(struct hostapd_data *hapd, struct hostapd_ubus_req
+ 	if (req->frame_info)
+ 		blobmsg_add_u32(&b, "signal", req->frame_info->ssi_signal);
+ 	blobmsg_add_u32(&b, "freq", hapd->iface->freq);
++	if (req->type == HOSTAPD_UBUS_ASSOC_REQ ||
++	    (req->type == HOSTAPD_UBUS_AUTH_REQ && !req->online))
++		blobmsg_add_u32(&b, "online", req->online);
+ 
+ 	if (ubus_notify_async(ctx, &hapd->ubus.obj, type, b.head, &ureq.nreq))
+ 		return 0;
+--- a/src/ap/ubus.h
++++ b/src/ap/ubus.h
+@@ -20,6 +20,7 @@ struct hostapd_ubus_request {
+ 	const struct ieee80211_mgmt *mgmt_frame;
+ 	const struct hostapd_frame_info *frame_info;
+ 	const u8 *addr;
++	int online;
+ };
+ 
+ struct hostapd_iface;
