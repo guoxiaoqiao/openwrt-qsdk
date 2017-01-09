@@ -113,7 +113,8 @@ define KernelPackage/aq_phy
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Aquantia PHY Driver
   KCONFIG:=CONFIG_AQ_PHY
-  FILES:=$(LINUX_DIR)/drivers/net/phy/aq_phy.ko
+  FILES:=$(LINUX_DIR)/drivers/net/phy/aq_phy.ko@lt4.4 \
+         $(LINUX_DIR)/drivers/net/phy/qca_85xx/aq_phy.ko@ge4.4
   AUTOLOAD:=$(call AutoLoad,10,aq_phy)
 endef
 
@@ -127,7 +128,8 @@ define KernelPackage/qca_85xx_sw
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=QCA 85xx Switch Driver
   KCONFIG:=CONFIG_QCA_85XX_SWITCH
-  FILES:=$(LINUX_DIR)/drivers/net/phy/qca_85xx_sw.ko
+  FILES:=$(LINUX_DIR)/drivers/net/phy/qca_85xx_sw.ko@lt4.4 \
+         $(LINUX_DIR)/drivers/net/phy/qca_85xx/qca_85xx_sw.ko@ge4.4
   AUTOLOAD:=$(call AutoLoad,40,qca_85xx_sw)
 endef
 
@@ -871,7 +873,7 @@ $(eval $(call KernelPackage,gianfar))
 
 define KernelPackage/vmxnet3
   SUBMENU:=$(NETWORK_DEVICES_MENU)
-  TITLE:=VMware VMXNET3 ethernet driver 
+  TITLE:=VMware VMXNET3 ethernet driver
   DEPENDS:=@PCI_SUPPORT
   KCONFIG:=CONFIG_VMXNET3
   FILES:=$(LINUX_DIR)/drivers/net/vmxnet3/vmxnet3.ko
