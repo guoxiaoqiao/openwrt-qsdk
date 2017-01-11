@@ -68,7 +68,7 @@ WIFI_11_0_PKGS:=kmod-qca-wifi-11.0-unified-profile \
 	qca-hostap-11.0 qca-hostapd-cli-11.0 qca-wpa-supplicant-11.0 \
 	qca-wpa-cli-11.0 qca-spectral-11.0 qca-wpc-10.4 sigma-dut-10.4 \
 	qcmbr-10.4 qca-wrapd-11.0 qca-wapid qca-acfg-11.0 whc whc-ui \
-	qca-lowi qca-iface-mgr-10.4
+	qca-lowi qca-iface-mgr-10.4 qca-icm
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
