@@ -1,0 +1,65 @@
+--- a/src/ap/ap_config.c
++++ b/src/ap/ap_config.c
+@@ -6,6 +6,10 @@
+  * See README for more details.
+  */
+ 
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++
+ #include "utils/includes.h"
+ 
+ #include "utils/common.h"
+@@ -673,6 +677,30 @@ const char * hostapd_get_vlan_id_ifname(struct hostapd_vlan *vlan, int vlan_id)
+ 	return NULL;
+ }
+ 
++static void hostapd_check_psk_file(struct hostapd_bss_config *conf)
++{
++	struct hostapd_ssid *ssid = &conf->ssid;
++	const char *fname = ssid->wpa_psk_file;
++	struct stat buf;
++
++	if (stat(fname, &buf))
++		return;
++
++	if (buf.st_size == ssid->wpa_psk_file_size &&
++	    buf.st_mtime == ssid->wpa_psk_file_mtime)
++		return;
++
++	if (ssid->wpa_psk_file_size) {
++		hostapd_config_clear_wpa_psk(&ssid->wpa_psk);
++
++		if (hostapd_setup_wpa_psk(conf))
++			wpa_printf(MSG_ERROR, "Failed to re-configure WPA PSK "
++				   "after psk file change detected.");
++	}
++
++	ssid->wpa_psk_file_size = buf.st_size;
++	ssid->wpa_psk_file_mtime = buf.st_mtime;
++}
+ 
+ const u8 * hostapd_get_psk(const struct hostapd_bss_config *conf,
+ 			   const u8 *addr, const u8 *p2p_dev_addr,
+@@ -692,6 +720,9 @@ const u8 * hostapd_get_psk(const struct hostapd_bss_config *conf,
+ 			   MAC2STR(addr), prev_psk);
+ 	}
+ 
++	if (conf->ssid.wpa_psk_file && next_ok)
++		hostapd_check_psk_file(conf);
++
+ 	for (psk = conf->ssid.wpa_psk; psk != NULL; psk = psk->next) {
+ 		if (next_ok &&
+ 		    (psk->group ||
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -91,6 +91,8 @@ struct hostapd_ssid {
+ 	struct hostapd_wpa_psk *wpa_psk;
+ 	char *wpa_passphrase;
+ 	char *wpa_psk_file;
++	off_t wpa_psk_file_size;
++	time_t wpa_psk_file_mtime;
+ 
+ 	struct hostapd_wep_keys wep;
+ 
