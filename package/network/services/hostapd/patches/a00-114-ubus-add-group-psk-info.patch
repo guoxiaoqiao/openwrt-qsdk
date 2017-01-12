@@ -1,0 +1,66 @@
+--- a/src/ap/ap_config.c
++++ b/src/ap/ap_config.c
+@@ -739,6 +739,20 @@ const u8 * hostapd_get_psk(const struct hostapd_bss_config *conf,
+ 	return NULL;
+ }
+ 
++int hostapd_psk_is_group(struct hostapd_bss_config *conf, u8 *addr)
++{
++	struct hostapd_wpa_psk *psk;
++
++	if (!conf || !addr)
++		return 0;
++
++	for (psk = conf->ssid.wpa_psk; psk != NULL; psk = psk->next) {
++		if (os_memcmp(psk->addr, addr, ETH_ALEN) == 0)
++			return 0;
++	}
++
++	return 1;
++}
+ 
+ static int hostapd_config_check_bss(struct hostapd_bss_config *bss,
+ 				    struct hostapd_config *conf,
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -690,6 +690,7 @@ int hostapd_rate_found(int *list, int rate);
+ const u8 * hostapd_get_psk(const struct hostapd_bss_config *conf,
+ 			   const u8 *addr, const u8 *p2p_dev_addr,
+ 			   const u8 *prev_psk);
++int hostapd_psk_is_group(struct hostapd_bss_config *conf, u8 *addr);
+ int hostapd_setup_wpa_psk(struct hostapd_bss_config *conf);
+ int hostapd_vlan_id_valid(struct hostapd_vlan *vlan, int vlan_id);
+ const char * hostapd_get_vlan_id_ifname(struct hostapd_vlan *vlan,
+--- a/src/ap/ieee802_11.c
++++ b/src/ap/ieee802_11.c
+@@ -1920,6 +1920,9 @@ static void handle_assoc(struct hostapd_data *hapd,
+ 		goto fail;
+ 	}
+ 
++	if (hostapd_psk_is_group(hapd->conf, mgmt->sa))
++		req.gpsk = 1;
++
+ 	if (hostapd_ubus_handle_event(hapd, &req)) {
+ 		wpa_printf(MSG_DEBUG, "Station " MACSTR " assoc rejected by ubus handler.\n",
+ 		       MAC2STR(mgmt->sa));
+--- a/src/ap/ubus.c
++++ b/src/ap/ubus.c
+@@ -551,6 +551,8 @@ int hostapd_ubus_handle_event(struct hostapd_data *hapd, struct hostapd_ubus_req
+ 	if (req->type == HOSTAPD_UBUS_ASSOC_REQ ||
+ 	    (req->type == HOSTAPD_UBUS_AUTH_REQ && !req->online))
+ 		blobmsg_add_u32(&b, "online", req->online);
++	if (req->type == HOSTAPD_UBUS_ASSOC_REQ)
++		blobmsg_add_u32(&b, "gpsk", req->gpsk);
+ 
+ 	if (ubus_notify_async(ctx, &hapd->ubus.obj, type, b.head, &ureq.nreq))
+ 		return 0;
+--- a/src/ap/ubus.h
++++ b/src/ap/ubus.h
+@@ -22,6 +22,7 @@ struct hostapd_ubus_request {
+ 	const u8 *addr;
+ 	const u8 *ie;
+ 	int online;
++	int gpsk;
+ };
+ 
+ struct hostapd_iface;
