@@ -479,7 +479,7 @@ ipq8074_battery_power()
 
 }
 
-local board=$(ipq806x_board_name)
+board=$(ipq806x_board_name)
 case "$1" in
 	false)
 		case "$board" in
