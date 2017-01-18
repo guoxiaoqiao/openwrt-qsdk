@@ -40,13 +40,15 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 
 KPI:=iperf sysstat
 
+SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell
+
 
 define Profile/QSDK_Standard_64
 	NAME:=Qualcomm-Atheros SDK Standard_64 Profile
 	PACKAGES:=$(OPENWRT_STANDARD) \
 		$(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) $(NETWORKING) \
 		$(STORAGE) $(COREBSP_UTILS) $(UTILS) $(TEST_TOOLS) $(KPI) \
-		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic
+		$(SWITCH_SSDK_NOHNAT_PKGS) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic
 endef
 
 define Profile/QSDK_Standard_64/Description
