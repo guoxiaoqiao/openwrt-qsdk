@@ -1967,7 +1967,7 @@ $(eval $(call SingleProfile,AthLzma,64k,AP143_8M,ap143-8M,AP143,ttyS0,115200,$$(
 $(eval $(call SingleProfile,AthLzma,64k,AP143_16M,ap143-16M,AP143,ttyS0,115200,$$(ap143_mtdlayout_16M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M_DUAL,ap143-32M-dual,AP143,ttyS0,115200,,RKuImage,1507328,14876672))
-$(eval $(call SingleProfile,AthLzma,64k,AP147_8M,ap147-8M,AP147,ttyS0,115200,$$(ap147_mtdlayout_8M),RKuImage,1441792,$(AR71XX_8M_ROOTFS_SIZE)))
+$(eval $(call SingleProfile,AthLzma,64k,AP147_8M,ap147-8M,AP147-010,ttyS0,115200,$$(ap147_mtdlayout_8M),RKuImage,1441792,$(AR71XX_8M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP147_010,ap147-010,AP147-010,ttyS0,115200,$$(ap147_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP151_8M,ap151-8M,AP151,ttyS0,115200,$$(ap151_mtdlayout_8M),RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP151_16M,ap151-16M,AP151,ttyS0,115200,$$(ap151_mtdlayout_16M),RKuImage))
