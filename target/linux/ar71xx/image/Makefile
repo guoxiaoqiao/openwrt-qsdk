@@ -10,6 +10,7 @@ include $(INCLUDE_DIR)/image.mk
 IMAGE_PROFILE:=$(if $(PROFILE),$(PROFILE),Default)
 
 AR71XX_8M_ROOTFS_SIZE=5963776  #6488064 - 524288(512KB)
+AR71XX_16M_ROOTFS_SIZE=14090240 #14876672 - 786432(768KB)
 JFFS2_BLOCKSIZE = 64k 128k 256k
 
 KERNEL_LOADADDR = 0x80060000
@@ -1960,6 +1961,7 @@ $(eval $(call SingleProfile,AthLzma,64k,AP121_4M,ap121-4M,AP121,ttyATH0,115200,$
 $(eval $(call SingleProfile,AthLzma,64k,AP121MINI,ap121-mini,AP121-MINI,ttyATH0,115200,$$(ap121_mtdlayout_4M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP132,ap132,AP132,ttyS0,115200,$$(ap132_mtdlayout),KRuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP135,ap135-020,AP135-020,ttyS0,115200,$$(ap135_mtdlayout),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,AP135_16M,ap135,AP135-020,ttyS0,115200,$$(ap135_mtdlayout),RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP136_010,ap136-010,AP136-010,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP136_020,ap136-020,AP136-020,ttyS0,115200,$$(ap136_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP137_16M,ap137-16M,AP137,ttyS0,115200,$$(ap137_mtdlayout_16M),RKuImage,1507328,14876672))
@@ -1968,11 +1970,12 @@ $(eval $(call SingleProfile,AthLzma,64k,AP143_16M,ap143-16M,AP143,ttyS0,115200,$
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M_DUAL,ap143-32M-dual,AP143,ttyS0,115200,,RKuImage,1507328,14876672))
 $(eval $(call SingleProfile,AthLzma,64k,AP147_8M,ap147-8M,AP147-010,ttyS0,115200,$$(ap147_mtdlayout_8M),RKuImage,1441792,$(AR71XX_8M_ROOTFS_SIZE)))
+$(eval $(call SingleProfile,AthLzma,64k,AP147_16M,ap147-16M,AP147-010,ttyS0,115200,$$(ap147_mtdlayout),RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP147_010,ap147-010,AP147-010,ttyS0,115200,$$(ap147_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP151_8M,ap151-8M,AP151,ttyS0,115200,$$(ap151_mtdlayout_8M),RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE)))
-$(eval $(call SingleProfile,AthLzma,64k,AP151_16M,ap151-16M,AP151,ttyS0,115200,$$(ap151_mtdlayout_16M),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,AP151_16M,ap151-16M,AP151,ttyS0,115200,$$(ap151_mtdlayout_16M),RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP152_8M,ap152-8M,AP152,ttyS0,115200,$$(ap152_mtdlayout_8M),RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE)))
-$(eval $(call SingleProfile,AthLzma,64k,AP152_16M,ap152-16M,AP152,ttyS0,115200,$$(ap152_mtdlayout_16M),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,AP152_16M,ap152-16M,AP152,ttyS0,115200,$$(ap152_mtdlayout_16M),RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,BXU2000N2,bxu2000n-2-a1,BXU2000n-2-A1,ttyS0,115200,$$(bxu2000n2_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CAP4200AG,cap4200ag,CAP4200AG,ttyS0,115200,$$(cap4200ag_mtdlayout),KRuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CUS531_16M,cus531-16M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_16M),RKuImage))
@@ -2262,24 +2265,24 @@ define Image/Build/Profile/QSDK_IOE_TEST
 endef
 
 define Image/Build/Profile/QSDK_Open_Router
-	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135_16M,$(1))
 	$(call Image/Build/Profile/AP137,$(1))
-	$(call Image/Build/Profile/AP147_010,$(1))
+	$(call Image/Build/Profile/AP147_16M,$(1))
 	$(call Image/Build/Profile/AP151,$(1))
 	$(call Image/Build/Profile/AP152,$(1))
 	$(call Image/Build/Profile/DB120,$(1))
 endef
 
 define Image/Build/Profile/QSDK_Premium_Beeliner_Router
-	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135_16M,$(1))
 	$(call Image/Build/Profile/AP137,$(1))
 	$(call Image/Build/Profile/AP152,$(1))
 	$(call Image/Build/Profile/AP151,$(1))
-	$(call Image/Build/Profile/AP147_010,$(1))
+	$(call Image/Build/Profile/AP147_16M,$(1))
 endef
 
 define Image/Build/Profile/QSDK_Wireless_Router
-	$(call Image/Build/Profile/AP135,$(1))
+	$(call Image/Build/Profile/AP135_16M,$(1))
 	$(call Image/Build/Profile/AP136,$(1))
 	$(call Image/Build/Profile/RUBBERDUCK,$(1))
 	$(call Image/Build/Profile/AP147_8M,$(1))
