@@ -124,7 +124,7 @@ IGMPSNOOING_RSTP:=rstp qca-mcs-apps
 
 IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6
 
-AUDIO:=kmod-sound-soc-ipq40xx alsa
+AUDIO:=kmod-sound-soc-ipq alsa
 
 VIDEO:=kmod-qpic_panel_ertft
 
