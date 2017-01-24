@@ -32,7 +32,7 @@ endif
 include $(INCLUDE_DIR)/target.mk
 DEFAULT_PACKAGES += \
 	kmod-leds-gpio kmod-gpio-button-hotplug swconfig \
-	kmod-ata-core kmod-ata-ahci kmod-ata-ahci-platform
-
+	kmod-ata-core kmod-ata-ahci kmod-ata-ahci-platform \
+	kmod-usb3
 
 $(eval $(call BuildTarget))
