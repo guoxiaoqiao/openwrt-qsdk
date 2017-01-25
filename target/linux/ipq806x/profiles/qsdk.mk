@@ -1,14 +1,17 @@
 #
-# Copyright (c) 2015-2016 The Linux Foundation. All rights reserved.
+# Copyright (c) 2015-2017 The Linux Foundation. All rights reserved.
 #
 
 QCA_LITHIUM:=kmod-qvit-lithium
 QCA_EDMA:=kmod-qca-edma
 NSS_COMMON:= \
-	kmod-qca-nss-dp \
 	kmod-qca-nss-drv \
 	kmod-qca-nss-gmac \
 	$(QCA_EDMA)
+
+NSS_DELUXE:= \
+	kmod-qca-nss-dp \
+	kmod-qca-nss-drv
 
 NSS_STANDARD:= \
 	qca-nss-fw2-retail \
@@ -203,7 +206,7 @@ $(eval $(call Profile,QSDK_Enterprise))
 
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_DELUXE) $(NSS_STANDARD) \
 		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) \
 		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
