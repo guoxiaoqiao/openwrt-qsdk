@@ -19,7 +19,8 @@ IOE_BASE:=luci uhttpd luci-app-upnp mcproxy rp-pppoe-relay \
 STORAGE:=kmod-scsi-core kmod-usb-storage \
 	 kmod-fs-msdos kmod-fs-ntfs kmod-fs-vfat \
 	 kmod-nls-cp437 kmod-nls-iso8859-1 \
-	 mdadm ntfs-3g e2fsprogs fdisk mkdosfs
+	 mdadm ntfs-3g e2fsprogs fdisk mkdosfs \
+	 kmod-fs-ext4
 
 TEST_TOOLS:=sysstat devmem2 ethtool i2c-tools ip ip6tables iperf
 
@@ -36,7 +37,8 @@ BLUETOOTH:=bluez-daemon kmod-bluetooth usbutils
 WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-perf kmod-art2 \
 		qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 		qca-wpa-cli-10.4 qca-wapid sigma-dut-10.4 qca-wpc-10.4 \
-		qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc whc-ui
+		qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc whc-ui \
+		qca-iface-mgr-10.4
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
 		   qca-wifi-fw-hw9-10.4-asic qca-wifi-fw-hw10-10.4-asic
