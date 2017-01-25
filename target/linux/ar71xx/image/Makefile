@@ -11,6 +11,9 @@ IMAGE_PROFILE:=$(if $(PROFILE),$(PROFILE),Default)
 
 AR71XX_8M_ROOTFS_SIZE=5963776  #6488064 - 524288(512KB)
 AR71XX_16M_ROOTFS_SIZE=14090240 #14876672 - 786432(768KB)
+#Do not modify AR71XX_*M_SYS_ROOTFS_SIZE. If size needs to be changed, modify AR71XX_*M_ROOTFS_SIZE
+AR71XX_16M_SYS_ROOTFS_SIZE=14876672 #AR71XX_16M_ROOTFS_SIZE + 786432(768KB)
+AR71XX_8M_SYS_ROOTFS_SIZE=6488064 #AR71XX_8M_ROOTFS_SIZE + 524288(768KB)
 JFFS2_BLOCKSIZE = 64k 128k 256k
 
 KERNEL_LOADADDR = 0x80060000
@@ -905,9 +908,11 @@ define CatFiles
 			echo "Warning: $(1) is too big (> $(2) bytes)" >&2; \
 		else if [ `stat -c%s $(3)` -gt $(4) ]; then \
 			echo "Warning: $(3) is too big (> $(4) bytes)" >&2; \
+		else if [ $(2) -eq $(AR71XX_16M_ROOTFS_SIZE) ]; then \
+			( dd if=$(1) bs=$(AR71XX_16M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
 		else \
-			( dd if=$(1) bs=$(2) conv=sync; dd if=$(3) ) > $(5); \
-		fi; fi; \
+			( dd if=$(1) bs=$(AR71XX_8M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
+		fi; fi; fi \
 	else \
 		( dd if=$(1) bs=$(2) conv=sync; dd if=$(3) ) > $(5); \
 		if [ `stat -c%s $(5)` -gt $(4) ]; then \
