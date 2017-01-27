@@ -11,10 +11,16 @@ debug_flag=0
 
 get_build_info()
 {
+	echo -n "KEXEC: Getting the board serial number.. "
+	local serialnumber=`fw_printenv SerialNumber 2>/dev/null`
+	[ $? -ne 0 ] && { echo "failed.."; exit; };
+	echo done
+
 	echo -n "KEXEC: Getting build info... "
 	hstnm=`uname -n|tr -s ' ' '_'`
 	vers=`uname -v|tr -s '[ #:]' '_'`
 	bldinfo=`echo bldinfo=${hstnm}_${vers}`
+	bldinfo=$bldinfo-${serialnumber#SerialNumber=}-`date +%Y-%m-%d_%H-%M-%S`;
 	echo done
 	[ $debug_flag -eq 1 ] && {
 		echo "KEXEC (DEBUG): bldinfo = $bldinfo";
