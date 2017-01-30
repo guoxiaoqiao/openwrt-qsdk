@@ -11,7 +11,8 @@ NSS_COMMON:= \
 
 NSS_DELUXE:= \
 	kmod-qca-nss-dp \
-	kmod-qca-nss-drv
+	kmod-qca-nss-drv \
+	$(QCA_EDMA)
 
 NSS_STANDARD:= \
 	qca-nss-fw2-retail \
