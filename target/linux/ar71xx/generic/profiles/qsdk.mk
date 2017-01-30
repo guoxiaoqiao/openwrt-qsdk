@@ -6,12 +6,12 @@ define Profile/QSDK_Base
         PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp mcproxy \
           kmod-ipt-nathelper-rtsp kmod-ipv6 \
           quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
-          -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
+          -dnsmasq dnsmasq-dhcpv6 bridge \
           luci-app-ddns ddns-scripts
 endef
 
 IOE_BASE:=luci uhttpd luci-app-upnp mcproxy rp-pppoe-relay \
-	  -dnsmasq dnsmasq-dhcpv6 radvd wide-dhcpv6-client bridge \
+	  -dnsmasq dnsmasq-dhcpv6 bridge \
 	  -swconfig luci-app-ddns ddns-scripts luci-app-qos \
 	  kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp kmod-ipv6 \
 	  kmod-usb2 kmod-i2c-gpio-custom kmod-button-hotplug
@@ -22,7 +22,7 @@ STORAGE:=kmod-scsi-core kmod-usb-storage \
 	 mdadm ntfs-3g e2fsprogs fdisk mkdosfs \
 	 kmod-fs-ext4
 
-TEST_TOOLS:=sysstat devmem2 ethtool i2c-tools ip ip6tables iperf
+TEST_TOOLS:=sysstat ethtool i2c-tools ip ip6tables iperf
 
 ALLJOYN:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	 alljoyn-controlpanel alljoyn-notification \
@@ -121,7 +121,7 @@ $(eval $(call Profile,QSDK_Premium_Beeliner_Router))
 define Profile/QSDK_Wireless_Router
 	NAME:=Qualcomm-Atheros SDK Wireless Router Profile
 	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini uhttpd kmod-ipv6 \
-	  kmod-ipt-nathelper-rtsp -dnsmasq dnsmasq-dhcpv6 wide-dhcpv6-client bridge \
+	  kmod-ipt-nathelper-rtsp -dnsmasq dnsmasq-dhcpv6 bridge \
 	  kmod-qca-wifi-10.4-lowmem-profile qca-wpa-cli-10.4 kmod-usb-storage \
 	  kmod-fs-ntfs kmod-fuse qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 	  kmod-qca-ssdk-nohnat qca-legacy-uboot-ap136 qca-legacy-uboot-ap152-8M \
