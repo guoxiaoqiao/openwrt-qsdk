@@ -182,6 +182,7 @@ platform_check_image() {
 	ap135 |\
 	ap135-020 | \
 	ap147 |\
+	ap147-010 | \
 	ap151 |\
 	ap152 |\
 	ap96 | \
