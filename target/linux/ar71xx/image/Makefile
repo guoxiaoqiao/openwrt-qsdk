@@ -4,11 +4,15 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+
+NAND_BLOCKSIZE := 2048-128k
+
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
 IMAGE_PROFILE:=$(if $(PROFILE),$(PROFILE),Default)
 
+AR71XX_DUAL_64M_ROOTFS_SIZE=62914560 #67108864 - 4194304(4M)
 AR71XX_8M_ROOTFS_SIZE=5963776  #6488064 - 524288(512KB)
 AR71XX_16M_ROOTFS_SIZE=14090240 #14876672 - 786432(768KB)
 #Do not modify AR71XX_*M_SYS_ROOTFS_SIZE. If size needs to be changed, modify AR71XX_*M_ROOTFS_SIZE
@@ -119,7 +123,7 @@ define Device/Default
   FILESYSTEMS = $(filter-out jffs2-%,$(TARGET_FILESYSTEMS)) jffs2-$$(BLOCKSIZE)
   CONSOLE = ttyS0,115200
   CMDLINE = $$(if $$(BOARDNAME),board=$$(BOARDNAME)) $$(if $$(MTDPARTS),mtdparts=$$(MTDPARTS)) $$(if $$(CONSOLE),console=$$(CONSOLE))
-  KERNEL := kernel-bin | patch-cmdline | lzma | uImage lzma
+  KERNEL := kernel-bin | patch-cmdline | patch-dtb | lzma | uImage lzma
   COMPILE :=
   IMAGES := sysupgrade.bin
   IMAGE/sysupgrade.bin = append-kernel $$$$(BLOCKSIZE) | append-rootfs | pad-rootfs | check-size $$$$(IMAGE_SIZE)
@@ -826,6 +830,12 @@ define PatchKernelLzma
 	$(call CompressLzma,$(KDIR_TMP)/vmlinux$(4)-$(1),$(KDIR_TMP)/vmlinux$(4)-$(1).bin.lzma,$(3))
 endef
 
+define PatchKernelDTBLzma
+	cp $(KDIR)/vmlinux$(4) $(KDIR_TMP)/vmlinux$(4)-$(1)
+	$(STAGING_DIR_HOST)/bin/patch-dtb $(KDIR_TMP)/vmlinux$(4)-$(1) $(LINUX_DIR)/arch/mips/boot/dts/qca/$(5).dtb
+	$(call CompressLzma,$(KDIR_TMP)/vmlinux$(4)-$(1),$(KDIR_TMP)/vmlinux$(4)-$(1).bin.lzma,$(3))
+endef
+
 define PatchKernelGzip
 	cp $(KDIR)/vmlinux$(3) $(KDIR_TMP)/vmlinux$(3)-$(1)
 	$(STAGING_DIR_HOST)/bin/patch-cmdline $(KDIR_TMP)/vmlinux$(3)-$(1) "$(strip $(2))"
@@ -850,6 +860,11 @@ endef
 # $(5): extra arguments for mkimage.
 define MkuImageLzma
 	$(call PatchKernelLzma,$(1),$(2),$(3),$(4))
+	$(call MkuImage,lzma,$(5),$(KDIR_TMP)/vmlinux$(4)-$(1).bin.lzma,$(KDIR_TMP)/vmlinux$(4)-$(1).uImage)
+endef
+
+define MkuImageDTBLzma
+	$(call PatchKernelDTBLzma,$(1),$(2),$(3),$(4),$(6))
 	$(call MkuImage,lzma,$(5),$(KDIR_TMP)/vmlinux$(4)-$(1).bin.lzma,$(KDIR_TMP)/vmlinux$(4)-$(1).uImage)
 endef
 
@@ -1321,6 +1336,8 @@ Image/Build/AthLzma/buildkernel=$(call MkuImageLzma,$(2),$(3) $(4))
 Image/Build/AthLzma=$(call Image/Build/Ath,$(1),$(2),$(3),$(4),$(5),$(6),$(7))
 Image/Build/AthLzma/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(4))
 
+Image/Build/AthDTBLzma/buildkernel=$(call MkuImageDTBLzma,$(2),$(3) $(4),,,,$(8))
+Image/Build/AthDTBLzma=$(call Image/Build/Ath,$(1),$(2),$(3),$(4),$(5),$(6),$(7))
 
 Image/Build/Belkin/buildkernel=$(call MkuImageLzma,$(2),$(3) $(4))
 Image/Build/Belkin/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(4))
@@ -1944,6 +1961,7 @@ $(eval $(call BuildTemplate,64k,-64k,64k))
 $(eval $(call BuildTemplate,64kraw,-raw,64k))
 $(eval $(call BuildTemplate,64kraw-nojffs,-raw))
 $(eval $(call BuildTemplate,128k,,128k))
+$(eval $(call BuildTemplate,128k,,nand-2048-128k))
 $(eval $(call BuildTemplate,128kraw,-raw,128k))
 $(eval $(call BuildTemplate,256k,,256k))
 $(eval $(call BuildTemplate,all,,64k 128k 256k))
@@ -2012,6 +2030,18 @@ $(eval $(call SingleProfile,AthLzma,64k,WLR8100,wlr8100,WLR8100,ttyS0,115200,$$(
 $(eval $(call SingleProfile,AthLzma,64k,WPJ344_16M,wpj344-16M,WPJ344,ttyS0,115200,$$(wpj344_mtdlayout_16M),KRuImage,65536))
 $(eval $(call SingleProfile,AthLzma,64k,WPJ531_16M,wpj531-16M,WPJ531,ttyS0,115200,$$(wpj531_mtdlayout_16M),KRuImage,65536))
 $(eval $(call SingleProfile,AthLzma,64k,WPJ558_16M,wpj558-16M,WPJ558,ttyS0,115200,$$(wpj558_mtdlayout_16M),KRuImage,65536))
+
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP135_DTB,ap135,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_ap135))
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP136_DTB,ap136,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_ap136))
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP137_DTB,ap137,,,,,RKuImage,1507328,14876672,ath79_ap137))
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP143_16M_DTB,ap143-16M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_ap143))
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP147_8M_DTB,ap147-8M,,,,,RKuImage,1441792,$(AR71XX_8M_ROOTFS_SIZE),ath79_ap147_8M))
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP147_16M_DTB,ap147-16M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_ap147))
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP151_8M_DTB,ap151-8M,,,,,RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE),ath79_ap151_8M))
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP151_16M_DTB,ap151-16M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_ap151))
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP152_8M_DTB,ap152-8M,,,,,RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE),ath79_ap152_8M))
+$(eval $(call SingleProfile,AthDTBLzma,64k,AP152_16M_DTB,ap152-16M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_ap152))
+$(eval $(call SingleProfile,AthDTBLzma,128k,AP152DUAL_DTB,ap152-dual,,,,,RKuImage,2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),ath79_ap152_dual))
 
 $(eval $(call SingleProfile,Belkin,64k,F9K1115V2,f9k1115v2,F9K1115V2,ttyS0,115200,$$(f9k1115v2_mtdlayout),BR-6679BAC))
 
@@ -2270,30 +2300,26 @@ define Image/Build/Profile/QSDK_IOE_TEST
 endef
 
 define Image/Build/Profile/QSDK_Open_Router
-	$(call Image/Build/Profile/AP135_16M,$(1))
-	$(call Image/Build/Profile/AP137,$(1))
-	$(call Image/Build/Profile/AP147_16M,$(1))
-	$(call Image/Build/Profile/AP151,$(1))
-	$(call Image/Build/Profile/AP152,$(1))
-	$(call Image/Build/Profile/DB120,$(1))
+	$(call Image/Build/Profile/AP135_DTB,$(1))
+	$(call Image/Build/Profile/AP143_16M_DTB,$(1))
+	$(call Image/Build/Profile/AP152_16M_DTB,$(1))
 endef
 
 define Image/Build/Profile/QSDK_Premium_Beeliner_Router
-	$(call Image/Build/Profile/AP135_16M,$(1))
-	$(call Image/Build/Profile/AP137,$(1))
-	$(call Image/Build/Profile/AP152,$(1))
-	$(call Image/Build/Profile/AP151,$(1))
-	$(call Image/Build/Profile/AP147_16M,$(1))
+	$(call Image/Build/Profile/AP135_DTB,$(1))
+	$(call Image/Build/Profile/AP136_DTB,$(1))
+	$(call Image/Build/Profile/AP137_DTB,$(1))
+	$(call Image/Build/Profile/AP152_16M_DTB,$(1))
+	$(call Image/Build/Profile/AP152DUAL_DTB,$(1))
+	$(call Image/Build/Profile/AP151_16M_DTB,$(1))
+	$(call Image/Build/Profile/AP147_16M_DTB,$(1))
 endef
 
 define Image/Build/Profile/QSDK_Wireless_Router
-	$(call Image/Build/Profile/AP135_16M,$(1))
-	$(call Image/Build/Profile/AP136,$(1))
-	$(call Image/Build/Profile/RUBBERDUCK,$(1))
-	$(call Image/Build/Profile/AP147_8M,$(1))
-	$(call Image/Build/Profile/AP151_8M,$(1))
-	$(call Image/Build/Profile/AP152_8M,$(1))
-	$(call Image/Build/Profile/DB120,$(1))
+	$(call Image/Build/Profile/AP135_DTB,$(1))
+	$(call Image/Build/Profile/AP147_8M_DTB,$(1))
+	$(call Image/Build/Profile/AP151_8M_DTB,$(1))
+	$(call Image/Build/Profile/AP152_8M_DTB,$(1))
 endef
 
 define Image/Build/Profile/QSDK_Target_Router

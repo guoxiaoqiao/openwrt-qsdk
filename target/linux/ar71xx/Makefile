@@ -11,6 +11,7 @@ BOARD:=ar71xx
 BOARDNAME:=Atheros AR7xxx/AR9xxx
 FEATURES:=mips16
 CPU_TYPE=74kc
+KERNELNAME:=dtbs
 SUBTARGETS:=generic nand mikrotik
 
 LINUX_SRC_VERSION:=$(shell basename $(TOPDIR)/qca/src/linux-*.* | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
