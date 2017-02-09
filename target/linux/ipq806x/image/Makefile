@@ -18,11 +18,12 @@ endif
 IPQ807X_KERNEL_LOADADDR = 0x41208000
 
 ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
-define Image/mkfs/ubifs_fit
-	$(call Image/ubifs_128MB,$(1))
-	$(call Image/ubifs_512MB,$(1))
-	$(call Image/ubifs_1GB,$(1))
-	$(call Image/UbiImage,$(1))
+define Image/Build/ubifs
+	$(call Image/ubifs_128MB,-ipq40xx)
+	$(call Image/ubifs_128MB,-ipq806x)
+	$(call Image/ubifs_512MB,-ipq40xx)
+	$(call Image/ubifs_1GB,-ipq40xx)
+	$(call Image/UbiImage,-ipq806x)
 endef
 endif
 
@@ -33,7 +34,7 @@ define Image/BuildKernel/FIT
 	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb,gzip,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 	mkdir -p $(BIN_DIR)/dtbs/
-	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq80*.dtb $(BIN_DIR)/dtbs/
+	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq*.dtb $(BIN_DIR)/dtbs/
 	$(CP) $(KDIR)/Image $(BIN_DIR)/dtbs/
 endef
 
@@ -140,30 +141,21 @@ define Image/UbiPrepare
 endef
 
 define Image/UbiImage
-
-ifeq ($(1),-ipq806x)
 	$(eval UBI_OPTS:="-m 2048 -p 128KiB")
 	$(foreach image,$(UBI_IMAGES), \
 	$(call Image/UbiPrepare,$(image),squashfs,"ubi_rootfs","rootfs_data"))
-endif
 endef
 
 define Image/ubifs_1GB
-
-  ifeq ($(1),-ipq40xx)
 	$(eval UBI_OPTS:="-m 4096 -p 512KiB")
 	$(call Image/mkfs/ubifs/generate,$(1))
 	$(call Image/Build,ubi,$(1),-1GB)
-  endif
 endef
 
 define Image/ubifs_512MB
-
-  ifeq ($(1),-ipq40xx)
 	$(eval UBI_OPTS:="-m 4096 -p 256KiB")
 	$(call Image/mkfs/ubifs/generate,$(1))
 	$(call Image/Build,ubi,$(1),-512MB)
-  endif
 endef
 
 define Image/ubifs_128MB
