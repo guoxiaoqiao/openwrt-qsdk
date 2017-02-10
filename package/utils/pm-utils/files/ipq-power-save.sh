@@ -196,11 +196,16 @@ ipq4019_ap_dk01_1_ac_power()
 	wifi up
 
 # USB Power-UP Sequence
-	if ! [ -d /sys/module/dwc3_ipq40xx ]
+	if ! [ -d /sys/module/dwc3_ipq40xx -o -d /sys/module/dwc3_of_simple ]
 	then
 		insmod phy-qca-baldur.ko
 		insmod phy-qca-uniphy.ko
-		insmod dwc3-ipq40xx.ko
+		if [ -e /lib/modules/$(uname -r)/dwc3-of-simple.ko ]
+		then
+			insmod dwc3-of-simple.ko
+		else
+			insmod dwc3-ipq40xx.ko
+		fi
 		insmod dwc3.ko
 	fi
 
@@ -238,10 +243,15 @@ ipq4019_ap_dk01_1_battery_power()
 	ssdk_sh port poweroff set 4
 
 # USB Power-down Sequence
-	if [ -d /sys/module/dwc3_ipq40xx ]
+	if [ -d /sys/module/dwc3_ipq40xx -o -d /sys/module/dwc3_of_simple ]
 	then
 		rmmod dwc3
-		rmmod dwc3-ipq40xx
+		if [ -d /sys/module/dwc3_ipq40xx ]
+		then
+			rmmod dwc3-ipq40xx
+		else
+			rmmod dwc3-of-simple
+		fi
 		rmmod phy-qca-uniphy
 		rmmod phy-qca-baldur
 	fi
@@ -279,11 +289,16 @@ ipq4019_ap_dk04_1_ac_power()
 	wifi up
 
 # USB Power-UP Sequence
-	if ! [ -d /sys/module/dwc3_ipq40xx ]
+	if ! [ -d /sys/module/dwc3_ipq40xx -o -d /sys/module/dwc3_of_simple ]
 	then
 		insmod phy-qca-baldur.ko
 		insmod phy-qca-uniphy.ko
-		insmod dwc3-ipq40xx.ko
+		if [ -e /lib/modules/$(uname -r)/dwc3-of-simple.ko ]
+		then
+			insmod dwc3-of-simple.ko
+		else
+			insmod dwc3-ipq40xx.ko
+		fi
 		insmod dwc3.ko
 	fi
 
@@ -363,10 +378,15 @@ ipq4019_ap_dk04_1_battery_power()
 	ssdk_sh port poweroff set 4
 
 # USB Power-down Sequence
-	if [ -d /sys/module/dwc3_ipq40xx ]
+	if [ -d /sys/module/dwc3_ipq40xx -o -d /sys/module/dwc3_of_simple ]
 	then
 		rmmod dwc3
-		rmmod dwc3-ipq40xx
+		if [ -d /sys/module/dwc3_ipq40xx ]
+		then
+			rmmod dwc3-ipq40xx
+		else
+			rmmod dwc3-of-simple
+		fi
 		rmmod phy-qca-uniphy
 		rmmod phy-qca-baldur
 	fi
