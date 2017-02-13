@@ -134,6 +134,8 @@ VIDEO:=kmod-qpic_panel_ertft
 
 KPI:=iperf sysstat
 
+USB_DIAG:=kmod-usb-f-diag
+
 ifneq ($(LINUX_VERSION),3.18.21)
 	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
@@ -216,7 +218,7 @@ define Profile/QSDK_Deluxe
 		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
 		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e \
 		${NSS_CRYPTO} -uboot-ipq40xx -uboot-ipq806x -uboot-ipq806x-fwupgrade-tools \
-		uboot-2016-ipq806x uboot-2016-ipq807x uboot-2016-ipq40xx
+		uboot-2016-ipq806x uboot-2016-ipq807x uboot-2016-ipq40xx $(USB_DIAG)
 endef
 
 define Profile/QSDK_Deluxe/Description
