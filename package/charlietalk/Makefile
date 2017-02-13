@@ -26,7 +26,7 @@ include $(INCLUDE_DIR)/kernel.mk
 
 define KernelPackage/$(PKG_NAME)
   SUBMENU:=USB Support
-  DEPENDS:=@TARGET_ipq806x +kmod-usb-net
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq +kmod-usb-net
   TITLE:=Kernel USB driver for GobiNet3000
   VARIANT:=gobinet
   FILES:= $(PKG_BUILD_DIR)/GobiNet/GobiNet.ko
