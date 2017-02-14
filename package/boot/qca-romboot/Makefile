@@ -40,12 +40,27 @@ define DefineRomboot
     This package generates code for the $(1) SoC.
   endef
 
-  define Package/qca-romboot-$(1)/install
-	true
+  define Package/qca-romboot-qca955x_target_drv/install
+	$(INSTALL_DIR) $$(1)/lib/firmware
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR)/ath_tgt_fw1.fw $$(1)/lib/firmware
   endef
 
   $$(eval $$(call BuildPackage,qca-romboot-$(1)))
 endef
+
+define Package/qca-romboot-fw2
+  TITLE:=Second stage firmware for target
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ar71xx
+  URL:=http://www.qca.qualcomm.com
+endef
+
+define Package/qca-romboot-fw2/description
+  This package contains the 2nd stage firmware corresponding to the target
+device.
+endef
+
 
 MAKEOPTS_QCA_ROMBOOT:= \
 	CROSS_COMPILE=$(TARGET_CROSS) \
@@ -57,6 +72,17 @@ endif
 ifeq ($(BUILD_VARIANT),qca955x)
   ROMBOOT_SUBDIR:=sco
 endif
+ifeq ($(BUILD_VARIANT),qca955x_target_drv)
+  ROMBOOT_SUBDIR:=sco
+endif
+
+ifneq ("$(wildcard $(KERNEL_BUILD_DIR)/tmp/vmlinux-initramfs-ap135-020)","")
+  define Build/Compile/qca-romboot-fw2
+	$(CP) $(KERNEL_BUILD_DIR)/tmp/vmlinux-initramfs-ap135-020 $(PKG_BUILD_DIR)/utils/simple-lzma/vmlrd.bin
+	make -C $(PKG_BUILD_DIR)/utils/simple-lzma all STAGING_UTIL_PATH=$(STAGING_DIR_HOST)/bin \
+		$(MAKEOPTS_QCA_ROMBOOT) TOPDIR=$(PKG_BUILD_DIR)/utils/simple-lzma
+  endef
+endif
 
 define Build/Compile
 	($(foreach var,$(strip $(shell cat configs/$(BUILD_VARIANT).config)), export ${var};) \
@@ -64,6 +90,7 @@ define Build/Compile
 	 make -C $(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR) clean all $(MAKEOPTS_QCA_ROMBOOT) \
 		TOPDIR=$(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR)/ \
 	)
+	$(call Build/Compile/qca-romboot-fw2)
 endef
 
 define Build/InstallDev
@@ -71,8 +98,20 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/$(ROMBOOT_SUBDIR)/rombootdrv.bin $(STAGING_DIR)/boot/openwrt-$(BOARD)-$(BUILD_VARIANT)-rombootdrv.bin
 endef
 
+ifneq ("$(wildcard $(KERNEL_BUILD_DIR)/tmp/vmlinux-initramfs-ap135-020)","")
+  define Package/qca-romboot-fw2/install
+	$(INSTALL_DIR) $(1)/lib/firmware
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/simple-lzma/ath_tgt_fw2.fw $(1)/lib/firmware/
+  endef
+endif
+
+define Host/Prepare
+	$(CP) $(TOPDIR)/qca/src/qca-romboot/utils $(HOST_BUILD_DIR)/
+endef
+
 define Host/Compile
 	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/bin2hex src/bin2hex.c
+	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/bin2barray $(HOST_BUILD_DIR)/utils/bin2barray/bin2barray.c
 	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/checksum src/checksum.c
 	$(HOSTCC) $(HOST_CFLAGS) -o $(HOST_BUILD_DIR)/array2bin src/array2bin.c
 endef
@@ -80,6 +119,7 @@ endef
 define Host/Install
 	$(INSTALL_DIR) $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/bin2hex $(STAGING_DIR_HOST)/bin
+	$(INSTALL_BIN) $(HOST_BUILD_DIR)/bin2barray $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/checksum $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/array2bin $(STAGING_DIR_HOST)/bin
 	$(INSTALL_BIN) $(LOCAL_SRC)/wasp/mk2stage $(STAGING_DIR_HOST)/bin/mk2stage-ar934x
@@ -88,4 +128,6 @@ endef
 
 $(eval $(call DefineRomboot,ar934x))
 $(eval $(call DefineRomboot,qca955x))
+$(eval $(call DefineRomboot,qca955x_target_drv))
+$(eval $(call BuildPackage,qca-romboot-fw2))
 $(eval $(call HostBuild))
