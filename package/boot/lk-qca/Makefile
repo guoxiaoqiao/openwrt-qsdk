@@ -16,7 +16,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/lk-ipq806x
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq806x
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
   TITLE:=lk bootloader for IPQ806x based platforms
   URL:=
   VARIANT:=ipq806x
@@ -25,7 +25,7 @@ endef
 define Package/lk-ipq40xx
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq806x
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
   TITLE:=lk bootloader for IPQ40xx based platforms
   URL:=
   VARIANT:=ipq40xx
