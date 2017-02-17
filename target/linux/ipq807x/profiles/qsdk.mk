@@ -20,7 +20,7 @@ USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
 
 TEST_TOOLS:=sysstat ethtool i2c-tools
 
-UTILS:=file luci-app-samba iperf rng-tools profilerd
+UTILS:=file luci-app-samba iperf rng-tools
 
 COREBSP_UTILS:=pm-utils qca-thermald-10.4
 
@@ -42,13 +42,18 @@ KPI:=iperf sysstat
 
 SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell
 
+NSS_COMMON:= \
+	kmod-qca-nss-dp \
+	kmod-qca-nss-drv \
+	qca-nss-fw-hk-retail
 
 define Profile/QSDK_Standard_64
 	NAME:=Qualcomm-Atheros SDK Standard_64 Profile
 	PACKAGES:=$(OPENWRT_STANDARD) \
 		$(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) $(NETWORKING) \
 		$(STORAGE) $(COREBSP_UTILS) $(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(SWITCH_SSDK_NOHNAT_PKGS) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic
+		$(SWITCH_SSDK_NOHNAT_PKGS) $(NSS_COMMON) kmod-art2 \
+		qca-wifi-hk-fw-hw1-10.4-asic
 endef
 
 define Profile/QSDK_Standard_64/Description
