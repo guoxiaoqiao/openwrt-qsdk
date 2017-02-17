@@ -124,7 +124,7 @@ static struct nand_bbt_descr ath79_badblock_pattern_default = {
 	.pattern = badblock_pattern,
 };
 
-static struct nand_ecclayout ath79_spinand_oob_128_gd = {
+static struct nand_ecclayout ath79_spinand_oob_128_gd_c = {
 	.eccbytes = 64,
 	.eccpos = {
 		64, 65, 66, 67, 68, 69, 70, 71,
@@ -137,6 +137,25 @@ static struct nand_ecclayout ath79_spinand_oob_128_gd = {
 		120, 121, 122, 123, 124, 125, 126, 127},
 	.oobfree = {
 		{.offset = 16, .length = 48},
+	}
+};
+
+static struct nand_ecclayout ath79_spinand_oob_128_gd_b = {
+	.eccbytes = 64,
+	.eccpos = {
+		64, 65, 66, 67, 68, 69, 70, 71,
+		72, 73, 74, 75, 76, 77, 78, 79,
+		80, 81, 82, 83, 84, 85, 86, 87,
+		88, 89, 90, 91, 92, 93, 94, 95,
+		96, 97, 98, 99, 100, 101, 102, 103,
+		104, 105, 106, 107, 108, 109, 110, 111,
+		112, 113, 114, 115, 116, 117, 118, 119,
+		120, 121, 122, 123, 124, 125, 126, 127},
+	.oobfree = {
+		{.offset = 4, .length = 12},
+		{.offset = 20, .length = 12},
+		{.offset = 36, .length = 12},
+		{.offset = 52, .length = 12},
 	}
 };
 
@@ -842,7 +861,7 @@ static int ath79_spinand_lock_block(struct spi_device *spi_nand, u8 lock)
 }
 
 /*
- * 	ECCSR[2:0]	ECC Status
+ * 	ECCSR[2:0]	ECC Status of GD5FxGQ4xC
  *	-------------------------------------------
  *	000		no bit errors were detected
  *	001		bit errors(<3) corrected
@@ -853,9 +872,25 @@ static int ath79_spinand_lock_block(struct spi_device *spi_nand, u8 lock)
  *	110		bit errors(=8) corrected
  *	111		uncorrectable
  */
-static inline u8 ath79_spinand_eccsr_gd(u8 status)
+static inline u8 ath79_spinand_eccsr_gd_c(u8 status)
 {
 	return status >> 4 & 0x7;
+}
+
+/*
+ * 	ECCSR[3:0]	ECC Status of GD5FxGQ4xB
+ *	-------------------------------------------
+ *	0000		no bit errors were detected
+ *	0100		bit errors(<=4) corrected
+ *	0101		bit errors(=5) corrected
+ *	0110		bit errors(=6) corrected
+ *	0111		bit errors(=7) corrected
+ *	1000		bit errors greater than ECC capability and not corrected
+ *	1100		bit errors reach ECC capability(8 bytes) and corrected
+ */
+static inline u8 ath79_spinand_eccsr_gd_b(u8 status)
+{
+	return status >> 4 & 0xf;
 }
 
 /*
@@ -1000,9 +1035,9 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
 		SZ_512,					/* ecc size */
 		16,					/* ecc bytes */
 		8,					/* ecc strength */
-		&ath79_spinand_oob_128_gd,		/* ecc layout */
+		&ath79_spinand_oob_128_gd_c,		/* ecc layout (GD5FxGQ4xC) */
 		&ath79_badblock_pattern_default, 	/* bad block pattern */
-		ath79_spinand_eccsr_gd,			/* get ecc status */
+		ath79_spinand_eccsr_gd_c,		/* get ecc status (GD5FxGQ4xC) */
 		ath79_spinand_read_rdm_addr_gd,		/* wrap address for 03h command */
 		ath79_spinand_program_load_gd,		/* program load data to cache */
 		ath79_spinand_erase_block_erase_common,	/* erase block */
@@ -1041,6 +1076,29 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
 	},
 };
 
+static void ath79_spinand_priv_data_fixup(u8 mid, u8 vid, u8 index)
+{
+	switch (mid) {
+	case NAND_MFR_GIGADEVICE:
+		switch (vid) {
+		case 0xc1:
+		case 0xc2:
+		case 0xd1:
+		case 0xd2:
+			/* GD5FxGQ4xB */
+			ath79_spinand_ids[index].ecc_layout = &ath79_spinand_oob_128_gd_b;
+			ath79_spinand_ids[index].ecc_status = ath79_spinand_eccsr_gd_b;
+			ath79_spinand_ids[index].read_rdm_addr = ath79_spinand_read_rdm_addr_common;
+			break;
+		}
+		break;
+	case NAND_MFR_MACRONIX:
+		break;
+	case NAND_MFR_WINBOND:
+		break;
+	}
+}
+
 static void *ath79_spinand_priv_data_get(struct spi_device *spi_nand)
 {
 	u8 id[3];
@@ -1048,10 +1106,12 @@ static void *ath79_spinand_priv_data_get(struct spi_device *spi_nand)
 
 	ath79_spinand_read_id(spi_nand, id);
 
-	for (i = 0; i < ARRAY_SIZE(ath79_spinand_ids); i++)
-		if (ath79_spinand_ids[i].mfr == id[0])
+	for (i = 0; i < ARRAY_SIZE(ath79_spinand_ids); i++) {
+		if (ath79_spinand_ids[i].mfr == id[0]) {
+			ath79_spinand_priv_data_fixup(id[0], id[1], i);
 			return &ath79_spinand_ids[i];
-
+		}
+	}
 	return NULL;
 }
 
