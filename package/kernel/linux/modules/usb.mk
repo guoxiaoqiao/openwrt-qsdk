@@ -208,7 +208,8 @@ define KernelPackage/usb-gadget
   TITLE:=USB Gadget support
   KCONFIG:=CONFIG_USB_GADGET
   FILES:=\
-	$(LINUX_DIR)/drivers/usb/gadget/udc/udc-core.ko
+	$(LINUX_DIR)/drivers/usb/gadget/udc-core.ko@lt3.18 \
+	$(LINUX_DIR)/drivers/usb/gadget/udc/udc-core.ko@ge3.18
   AUTOLOAD:=$(call AutoLoad,45,udc-core)
   DEPENDS:=@USB_GADGET_SUPPORT
   $(call AddDepends/usb)
@@ -565,7 +566,7 @@ $(eval $(call KernelPackage,usb2-oxnas))
 
 define KernelPackage/usb-dwc3
   TITLE:=DWC3 USB controller driver
-  DEPENDS:=USB_GADGET_SUPPORT:kmod-usb-gadget
+  DEPENDS:=+USB_GADGET_SUPPORT:kmod-usb-gadget
   KCONFIG:= \
 	CONFIG_USB_DWC3 \
 	CONFIG_USB_DWC3_HOST=n \
