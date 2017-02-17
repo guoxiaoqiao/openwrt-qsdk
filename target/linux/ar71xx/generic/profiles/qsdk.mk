@@ -50,8 +50,6 @@ UBOOT_PKGS:= qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M \
 	     qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	     qca-legacy-uboot-db12x-16M
 
-STREAMBOOST3_PKGS:= streamboost3
-
 HYFI:=hyfi hyfi-ui
 
 define Profile/QSDK_IOE_SB
@@ -99,7 +97,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
-	  $(STREAMBOOST3_PKGS) $(STORAGE) $(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) \
+	  $(STORAGE) $(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) \
 	  $(SWITCH_SSDK_HNAT_PKGS) $(UBOOT_PKGS) $(HYFI) \
 	  mtd-utils mtd-utils-nandwrite
 endef
