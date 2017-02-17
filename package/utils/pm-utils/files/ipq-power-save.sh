@@ -42,6 +42,9 @@ ipq8064_ac_power()
 
 	sleep 1
 
+# Wifi Power-up Sequence
+	wifi up
+
 # Bringing Up LAN Interface
 	ifup lan
 
