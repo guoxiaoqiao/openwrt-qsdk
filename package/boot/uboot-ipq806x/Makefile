@@ -31,7 +31,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/uboot-ipq806x
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq806x
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
   TITLE:=U-boot for IPQ806x based platforms
   URL:=http://www.denx.de/wiki/U-Boot
 endef
@@ -39,7 +39,7 @@ endef
 define Package/uboot-ipq806x-fwupgrade-tools
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq806x
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
   TITLE:=U-boot images tools (dumpimage, mkimage)
   URL:=http://www.denx.de/wiki/U-Boot
 endef

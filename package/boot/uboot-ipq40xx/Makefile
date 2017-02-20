@@ -31,7 +31,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/uboot-ipq40xx
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq806x
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
   TITLE:=U-boot for ipq40xx  based platforms
   URL:=http://www.denx.de/wiki/U-Boot
 endef
