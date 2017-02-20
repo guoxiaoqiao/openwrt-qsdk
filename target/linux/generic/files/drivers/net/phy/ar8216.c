@@ -2432,6 +2432,22 @@ static int qca_qm_err_recovery(struct ar8216_priv *priv)
 	return 0;
 }
 
+static port_link_notify_func port_link_callback;
+void ar8327_port_link_notify_register(port_link_notify_func func)
+{
+	u32 port_id = 0;
+
+	port_link_callback = func;
+
+	for (port_id = 1; port_id < AR8327_NUM_PORTS - 1; port_id++) {
+		if (ar8216_port_old_link[port_id] == AR8216_PORT_LINK_UP)
+			(*func)(port_id, ar8216_port_old_link[port_id],
+				ar8216_port_old_speed[port_id],
+				ar8216_port_old_duplex[port_id]);
+	}
+}
+EXPORT_SYMBOL(ar8327_port_link_notify_register);
+
 static void
 ar8xxx_sw_mac_polling_task(struct ar8216_priv *priv)
 {
@@ -2549,6 +2565,9 @@ ar8xxx_sw_mac_polling_task(struct ar8216_priv *priv)
 				ar8216_port_old_link[i] = link;
 				ar8216_port_old_duplex[i] = duplex;
 				ar8216_port_old_phy_status[i] = port_phy_status[i];
+				if (port_link_callback)
+					(*port_link_callback)(i, link,
+							      speed, duplex);
 			}
 
 		}

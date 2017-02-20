@@ -517,4 +517,8 @@ enum {
 	AR8216_PORT_STATE_FORWARD = 4
 };
 
+typedef int (*port_link_notify_func)(unsigned char port_id,
+				     unsigned char link,
+				     unsigned char speed, unsigned char duplex);
+void ar8327_port_link_notify_register(port_link_notify_func func);
 #endif

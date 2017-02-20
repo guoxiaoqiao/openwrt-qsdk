@@ -394,6 +394,9 @@ static inline struct ag71xx_platform_data *ag71xx_get_pdata(struct ag71xx *ag)
 #define MII_IND_BUSY		BIT(0)
 #define MII_IND_INVALID		BIT(2)
 
+#define MII_PHY_SPEC_STATUS	0x11
+#define MII_PHY_LINK_STATUS	BIT(10)
+
 #define TX_CTRL_TXE		BIT(0)	/* Tx Enable */
 
 #define TX_STATUS_PS		BIT(0)	/* Packet Sent */
@@ -628,5 +631,9 @@ void ag71xx_sgmii_set_link(
 void ag71xx_sgmii_get_link(
 	struct ag71xx *ag, ag71xx_sgmii_speed_t *speed,
 	ag71xx_sgmii_duplex_t *duplex);
+
+typedef int (*port_link_notify_func)(unsigned char port_id,
+		unsigned char link, unsigned char speed, unsigned char duplex);
+void ar7240_port_link_notify_register(port_link_notify_func func);
 
 #endif /* _AG71XX_H */

@@ -1240,7 +1240,27 @@ err_free:
 	return NULL;
 }
 
-static void link_function(struct work_struct *work) {
+static u16 ar7240_phy_link[AR7240_NUM_PHYS] = {0};
+static u16 ar7240_phy_speed[AR7240_NUM_PHYS] = {0};
+static u16 ar7240_phy_duplex[AR7240_NUM_PHYS] = {0};
+static port_link_notify_func ar7240_port_link_callback;
+void ar7240_port_link_notify_register(port_link_notify_func func)
+{
+	u32 phy_id = 0;
+
+	ar7240_port_link_callback = func;
+	for (phy_id = 0; phy_id < AR7240_NUM_PHYS; phy_id++) {
+		if (ar7240_phy_link[phy_id])
+			(*func)(phy_id + 1,
+				ar7240_phy_link[phy_id],
+				ar7240_phy_speed[phy_id],
+				ar7240_phy_duplex[phy_id]);
+	}
+}
+EXPORT_SYMBOL(ar7240_port_link_notify_register);
+
+static void link_function(struct work_struct *work)
+{
 	struct ag71xx *ag = container_of(work, struct ag71xx, link_work.work);
 	struct ar7240sw *as = ag->phy_priv;
 	unsigned long flags;
@@ -1251,14 +1271,27 @@ static void link_function(struct work_struct *work) {
 	mask = ~as->swdata->phy_poll_mask;
 	for (i = 0; i < AR7240_NUM_PHYS; i++) {
 		int link;
-
+		u16 phy_status, speed, duplex;
 		if (!(mask & BIT(i)))
 			continue;
 
-		link = ar7240sw_phy_read(ag->mii_bus, i, MII_BMSR);
-		if (link & BMSR_LSTATUS) {
+		phy_status = ar7240sw_phy_read(ag->mii_bus,
+					       i, MII_PHY_SPEC_STATUS);
+		link = (phy_status & MII_PHY_LINK_STATUS) ? 1 : 0;
+		if (link) {
 			status = 1;
 			link_up_count++;
+		}
+		if (link != ar7240_phy_link[i]) {
+			speed = (phy_status >> 14) & 0x3;
+			duplex = (phy_status >> 13) & 0x1;
+			ar7240_phy_link[i] = link;
+			ar7240_phy_speed[i] = speed;
+			ar7240_phy_duplex[i] = duplex;
+			if (ar7240_port_link_callback)
+				(*ar7240_port_link_callback)(i + 1,
+							     link,
+							     speed, duplex);
 		}
 	}
 
