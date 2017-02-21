@@ -17,6 +17,7 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_PACKAGE_kmod-brcm-wl-mimo \
 	CONFIG_PACKAGE_kmod-madwifi \
 	CONFIG_PACKAGE_kmod-qca-wifi-perf \
+	CONFIG_PACKAGE_kmod-qca-wifi-unified-perf \
 	CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf \
 	CONFIG_PACKAGE_kmod-qca-wifi-10.4-akronite-perf \
 	CONFIG_PACKAGE_kmod-qca-wifi-10.4-unified-profile \
@@ -26,7 +27,8 @@ PKG_CONFIG_DEPENDS := \
 
 PKG_BUILD_DEPENDS := \
       PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf +PACKAGE_kmod-qca-wifi-perf:kmod-qca-wifi-perf \
-      +PACKAGE_kmod-qca-wifi-10.4-akronite-perf:kmod-qca-wifi-10.4-akronite-perf \
+	  +PACKAGE_kmod-qca-wifi-unified-perf:kmod-qca-wifi-unified-perf \
+	  +PACKAGE_kmod-qca-wifi-10.4-akronite-perf:kmod-qca-wifi-10.4-akronite-perf \
 	  +PACKAGE_kmod-qca-wifi-10.4-unified-profile:kmod-qca-wifi-10.4-unified-profile
 
 include $(INCLUDE_DIR)/package.mk
@@ -38,6 +40,7 @@ define Package/libiwinfo
   TITLE:=Generalized Wireless Information Library (iwinfo)
   DEPENDS:=+PACKAGE_kmod-mac80211:libnl-tiny  +PACKAGE_kmod-qca-mac80211:libnl-tiny +PACKAGE_kmod-qca-wil6210:libnl-tiny \
            +PACKAGE_kmod-qca-wifi-perf:kmod-qca-wifi-perf +CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf \
+	   +PACKAGE_kmod-qca-wifi-unified-perf:kmod-qca-wifi-unified-perf \
 	   +PACKAGE_kmod-qca-wifi-10.4-akronite-perf:kmod-qca-wifi-10.4-akronite-perf \
 	   +PACKAGE_kmod-qca-wifi-10.4-unified-profile:kmod-qca-wifi-10.4-unified-profile
 
@@ -92,6 +95,7 @@ IWINFO_BACKENDS := \
 	$(if $(CONFIG_PACKAGE_kmod-brcm-wl-mimo),wl) \
 	$(if $(CONFIG_PACKAGE_kmod-madwifi),madwifi) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-perf),qcawifi) \
+	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-unified-perf),qcawifi) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf),qcawifi) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-10.4-akronite-perf),qcawifi) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-10.4-unified-profile),qcawifi) \
