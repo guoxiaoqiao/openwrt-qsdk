@@ -147,6 +147,11 @@ wifi_updown() {
 	_wifi_updown "$@"
 }
 
+wifi_recover() {
+	_wifi_updown disable_recover
+	_wifi_updown enable_recover
+}
+
 wifi_reload_legacy() {
 	_wifi_updown "disable" "$1"
 	scan_wifi
@@ -279,6 +284,7 @@ case "$1" in
 	reload_legacy) wifi_reload_legacy "$2";;
 	load) wifi_load "$2";;
 	unload) wifi_unload "$2";;
+	recover) wifi_recover "$2";;
 	--help|help) usage;;
 	*) ubus call network reload; wifi_updown "enable" "$2";;
 esac
