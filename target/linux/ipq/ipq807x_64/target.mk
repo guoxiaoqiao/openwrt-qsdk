@@ -4,7 +4,6 @@ CPU_TYPE:=cortex-a53
 SUBTARGET:=ipq807x_64
 BOARDNAME:=QCA IPQ807x(64bit) based boards
 KERNELNAME:=Image dtbs
-FEATURES:=squashfs pcie
 
 DEFAULT_PACKAGES += \
 	uboot-ipq807x kmod-usb-phy-ipq807x
