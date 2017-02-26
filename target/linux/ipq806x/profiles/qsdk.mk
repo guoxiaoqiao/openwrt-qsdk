@@ -223,7 +223,30 @@ endef
 
 define Profile/QSDK_Deluxe/Description
 	QSDK Deluxe package set configuration.
-	Enables wifi open source packages
+	Enables wifi 11.0 source packages
+	Intended for IPQ807x
 endef
 
 $(eval $(call Profile,QSDK_Deluxe))
+
+define Profile/QSDK_Deluxe_Temp
+	NAME:=Qualcomm-Atheros SDK Deluxe Temporary Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
+		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) \
+		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
+		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
+		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
+		$(UTILS) $(TEST_TOOLS) $(KPI) \
+		$(QCA_LITHIUM) $(NSS_CLIENTS) \
+		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e \
+		${NSS_CRYPTO} -uboot-ipq40xx -uboot-ipq806x -uboot-ipq806x-fwupgrade-tools \
+		uboot-2016-ipq806x uboot-2016-ipq807x uboot-2016-ipq40xx $(USB_DIAG)
+endef
+
+define Profile/QSDK_Deluxe_Temp/Description
+	QSDK Deluxe Temporary package set configuration.
+	Enables wifi 11.0 source packages
+	Intended for IPQ806x/IPQ40xx
+endef
+
+$(eval $(call Profile,QSDK_Deluxe_Temp))
