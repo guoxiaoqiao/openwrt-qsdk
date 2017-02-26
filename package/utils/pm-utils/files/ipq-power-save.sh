@@ -400,7 +400,7 @@ ipq4019_ap_dk04_1_battery_power()
 	if [ -z "$emmcblock" ]; then
 		if [ -d /sys/block/mmcblk0 ]
 		then
-			sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $4}'`
+			sd_drvname=`readlink /sys/block/mmcblk0 | grep -o "[0-9]*.sdhci"`
 			echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
 			echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
 		fi
