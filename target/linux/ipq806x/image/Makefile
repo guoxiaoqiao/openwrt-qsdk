@@ -31,17 +31,17 @@ define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
 	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
 	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.gz)
-	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb,gzip,$(2),$(2))
+	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(DTS_DIR)/$(1).dtb,gzip,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 	mkdir -p $(BIN_DIR)/dtbs/
-	$(CP) $(LINUX_DIR)/arch/arm/boot/dts/qcom-ipq*.dtb $(BIN_DIR)/dtbs/
+	$(CP) $(DTS_DIR)/qcom-ipq*.dtb $(BIN_DIR)/dtbs/
 	$(CP) $(KDIR)/Image $(BIN_DIR)/dtbs/
 endef
 
 define Image/BuildKernel/FITInitramfs
 	$(CP) $(KDIR)/Image-initramfs $(BIN_DIR)/dtbs/
 	$(CP) $(KDIR)/Image-initramfs $(BIN_DIR)/$(IMG_PREFIX)-vmlinux-initramfs.bin
-	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image-initramfs, $(LINUX_DIR)/arch/arm/boot/dts/$(1).dtb, none,$(2),$(2))
+	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image-initramfs, $(DTS_DIR)/$(1).dtb, none,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage-initramfs.itb
 endef
 
@@ -68,7 +68,7 @@ endef
 # some tree's don't have all the device tree's so we filter out
 # the ones that are not present
 # $(1) is the filter to apply
-FindDeviceTrees ?= $(notdir $(basename $(shell find $(LINUX_DIR)/arch/arm/boot/dts/ -name $(1)*.dtb $(2) 2>/dev/null)))
+FindDeviceTrees ?= $(notdir $(basename $(shell find $(DTS_DIR)/ -name $(1)*.dtb $(2) 2>/dev/null)))
 
 define Image/BuildKernel/template
 	$(CP) $(KDIR)/vmlinux$(subst openwrt-ipq806x,,$(IMG_PREFIX)).debug $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.elf
@@ -144,6 +144,8 @@ define Image/UbiImage
 	$(eval UBI_OPTS:="-m 2048 -p 128KiB")
 	$(foreach image,$(UBI_IMAGES), \
 	$(call Image/UbiPrepare,$(image),squashfs,"ubi_rootfs","rootfs_data"))
+	$(if $(wildcard $(DTS_DIR)/qcom-ipq807x-hwk01.dtb), \
+		$(call Image/UbiPrepare,qcom-ipq807x-hwk01,squashfs,"ubi_rootfs","rootfs_data"))
 endef
 
 define Image/ubifs_1GB
