@@ -26,7 +26,7 @@ endif
 define Package/uboot-2016-ipq806x
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq806x
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
   TITLE:=U-boot for IPQ806x based platforms
   URL:=http://www.denx.de/wiki/U-Boot
   VARIANT:=ipq806x
@@ -35,7 +35,7 @@ endef
 define Package/uboot-2016-ipq807x
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq806x||@TARGET_ipq807x
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq807x||TARGET_ipq
   TITLE:=U-boot for IPQ807x based platforms
   URL:=http://www.denx.de/wiki/U-Boot
   VARIANT:=ipq807x
@@ -44,7 +44,7 @@ endef
 define Package/uboot-2016-ipq40xx
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq806x
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
   TITLE:=U-boot for IPQ40xx based platforms
   URL:=http://www.denx.de/wiki/U-Boot
   VARIANT:=ipq40xx

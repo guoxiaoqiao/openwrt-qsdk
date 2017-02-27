@@ -38,14 +38,14 @@ QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
 NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd \
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
-	kmod-qca-nss-drv-map-t
+	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
 # Once all NSS clients get ported to 4.4 we can use NSS_CLIENTS instead.
-NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-bridge-mgr \
+NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-ppe-qdisc kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-bridge-mgr \
                     kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 \
                     kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
-		    kmod-qca-nss-drv-map-t
+                    kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
@@ -71,7 +71,7 @@ WIFI_11_0_PKGS:=kmod-qca-wifi-11.0-unified-profile \
 	qca-hostap-11.0 qca-hostapd-cli-11.0 qca-wpa-supplicant-11.0 \
 	qca-wpa-cli-11.0 qca-spectral-11.0 qca-wpc-10.4 sigma-dut-10.4 \
 	qcmbr-10.4 qca-wrapd-11.0 qca-wapid qca-acfg-11.0 whc whc-ui \
-	qca-lowi qca-iface-mgr-10.4 qca-icm
+	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
@@ -165,7 +165,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 streamboost3
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2
 endef
 
 define Profile/QSDK_Premium/Description
