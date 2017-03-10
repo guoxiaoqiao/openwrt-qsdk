@@ -873,6 +873,11 @@ define MkuImageLzma/initramfs
 	$(call MkuImage,lzma,$(4),$(KDIR_TMP)/vmlinux-initramfs-$(1).bin.lzma,$(call imgname,initramfs,$(1))-uImage.bin)
 endef
 
+define MkuImageDTBLzma/initramfs
+	$(call PatchKernelDTBLzma,$(1),$(2),$(3),-initramfs,$(6))
+	$(call MkuImage,lzma,$(4),$(KDIR_TMP)/vmlinux-initramfs-$(1).bin.lzma,$(call imgname,initramfs,$(1))-uImage.bin)
+endef
+
 define MkuImageGzip
 	$(call PatchKernelGzip,$(1),$(2))
 	$(call MkuImage,gzip,,$(KDIR_TMP)/vmlinux-$(1).bin.gz,$(KDIR_TMP)/vmlinux-$(1).uImage)
@@ -1338,6 +1343,7 @@ Image/Build/AthLzma/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(4))
 
 Image/Build/AthDTBLzma/buildkernel=$(call MkuImageDTBLzma,$(2),$(3) $(4),,,,$(8))
 Image/Build/AthDTBLzma=$(call Image/Build/Ath,$(1),$(2),$(3),$(4),$(5),$(6),$(7))
+Image/Build/AthDTBLzma/initramfs=$(call MkuImageDTBLzma/initramfs,$(2),$(3) $(4),,,,$(8))
 
 Image/Build/Belkin/buildkernel=$(call MkuImageLzma,$(2),$(3) $(4))
 Image/Build/Belkin/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(4))
