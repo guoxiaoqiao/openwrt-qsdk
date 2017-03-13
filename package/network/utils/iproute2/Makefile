@@ -120,6 +120,8 @@ define Package/tc/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tc/tc $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
 	$(INSTALL_BIN) ./files/15-teql $(1)/etc/hotplug.d/iface/
+	$(INSTALL_DIR) $(1)/lib/debug	123
+	$(INSTALL_BIN) ./files/tc.debug $(1)/lib/debug/tc
 endef
 
 define Package/genl/install
