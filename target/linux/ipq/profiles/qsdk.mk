@@ -226,9 +226,9 @@ $(eval $(call Profile,QSDK_Deluxe))
 
 define Profile/QSDK_Standard_64
 	NAME:=Qualcomm-Atheros SDK Standard_64 Profile
-	PACKAGES:=$(OPENWRT_STANDARD) \
+	PACKAGES:=$(OPENWRT_STANDARD) kmod-qca-nss-dp kmod-qca-nss-drv qca-nss-fw-hk-retail \
 		$(WIFI_11_0_PKGS) qca-wifi-fw-hw2-10.4-asic $(NETWORKING) \
-		$(STORAGE) $(COREBSP_UTILS) $(UTILS) $(TEST_TOOLS) $(KPI) \
+		$(STORAGE) $(COREBSP_UTILS) $(UTILS) -profilerd $(TEST_TOOLS) $(KPI) \
 		$(SWITCH_SSDK_NOHNAT_PKGS) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic
 endef
 
