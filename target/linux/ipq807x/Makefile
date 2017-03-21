@@ -33,6 +33,7 @@ include $(INCLUDE_DIR)/target.mk
 DEFAULT_PACKAGES += \
 	kmod-leds-gpio kmod-gpio-button-hotplug swconfig \
 	kmod-ata-core kmod-ata-ahci kmod-ata-ahci-platform \
-	kmod-usb3
+	kmod-usb3 kmod-usb-dwc3-qcom kmod-usb-phy-qcom-dwc3 \
+	kmod-usb-dwc3-of-simple kmod-usb-phy-ipq807x
 
 $(eval $(call BuildTarget))
