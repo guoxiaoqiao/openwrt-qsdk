@@ -1,0 +1,30 @@
+From 13c047424f917912ba435f9c85353f21eed41a06 Mon Sep 17 00:00:00 2001
+From: Sanjeev N <nsanjeev@codeaurora.org>
+Date: Fri, 24 Mar 2017 15:03:27 +0530
+Subject: [PATCH] 999-ath79-sprintf-changed-to-scnprintf
+
+Signed-off-by: Sanjeev N <nsanjeev@codeaurora.org>
+---
+ arch/mips/ath79/setup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/ath79/setup.c b/arch/mips/ath79/setup.c
+index 3c40b13..9754a0d 100644
+--- a/arch/mips/ath79/setup.c
++++ b/arch/mips/ath79/setup.c
+@@ -190,10 +190,10 @@ static void __init ath79_detect_sys_type(void)
+ 	ath79_soc_rev = rev;
+ 
+ 	if (soc_is_qca955x() || soc_is_qca953x() || soc_is_qca956x())
+-		sprintf(ath79_sys_type, "Qualcomm Atheros QCA%s rev %u",
++		scnprintf(ath79_sys_type, sizeof(ath79_sys_type), "Qualcomm Atheros QCA%s rev %u",
+ 			chip, rev);
+ 	else
+-		sprintf(ath79_sys_type, "Atheros AR%s rev %u", chip, rev);
++		scnprintf(ath79_sys_type, sizeof(ath79_sys_type), "Atheros AR%s rev %u", chip, rev);
+ 	pr_info("SoC: %s\n", ath79_sys_type);
+ }
+ 
+-- 
+1.9.1
+
