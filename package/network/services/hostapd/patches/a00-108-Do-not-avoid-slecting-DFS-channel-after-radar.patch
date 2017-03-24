@@ -1,0 +1,236 @@
+--- a/src/ap/ap_drv_ops.c
++++ b/src/ap/ap_drv_ops.c
+@@ -578,13 +578,13 @@ int hostapd_set_tx_queue_params(struct h
+ 
+ struct hostapd_hw_modes *
+ hostapd_get_hw_feature_data(struct hostapd_data *hapd, u16 *num_modes,
+-			    u16 *flags)
++			    u16 *flags, u8 *dfs_domain)
+ {
+ 	if (hapd->driver == NULL ||
+ 	    hapd->driver->get_hw_feature_data == NULL)
+ 		return NULL;
+ 	return hapd->driver->get_hw_feature_data(hapd->drv_priv, num_modes,
+-						 flags);
++						 flags, dfs_domain);
+ }
+ 
+ 
+--- a/src/ap/ap_drv_ops.h
++++ b/src/ap/ap_drv_ops.h
+@@ -71,7 +71,7 @@ int hostapd_set_tx_queue_params(struct h
+ 				int cw_min, int cw_max, int burst_time);
+ struct hostapd_hw_modes *
+ hostapd_get_hw_feature_data(struct hostapd_data *hapd, u16 *num_modes,
+-			    u16 *flags);
++			    u16 *flags, u8 *dfs_domain);
+ int hostapd_driver_commit(struct hostapd_data *hapd);
+ int hostapd_drv_none(struct hostapd_data *hapd);
+ int hostapd_driver_scan(struct hostapd_data *hapd,
+--- a/src/ap/dfs.c
++++ b/src/ap/dfs.c
+@@ -929,6 +929,13 @@ static int hostapd_dfs_start_channel_swi
+ 	if (iface->conf->dfs_test_mode)
+ 		return hostapd_dfs_testmode_set_beacon_csa(iface);
+ 
++	/*
++	 * Allow selection of DFS channel in ETSI to comply with
++	 * uniform spreading.
++	 */
++	if (iface->dfs_domain == DFS_REGION_ETSI)
++		skip_radar = 0;
++
+ 	/* Perform channel switch/CSA */
+ 	channel = dfs_get_valid_channel(iface, &secondary_channel,
+ 					&vht_oper_centr_freq_seg0_idx,
+--- a/src/ap/hostapd.h
++++ b/src/ap/hostapd.h
+@@ -289,6 +289,10 @@ struct hostapd_sta_info {
+ 	struct os_reltime last_seen;
+ };
+ 
++#define DFS_REGION_FCC	1
++#define DFS_REGION_ETSI	2
++#define DFS_REGION_JP	3
++
+ /**
+  * struct hostapd_iface - hostapd per-interface data structure
+  */
+@@ -422,6 +426,8 @@ struct hostapd_iface {
+ 
+ 	struct dl_list sta_seen; /* struct hostapd_sta_info */
+ 	unsigned int num_sta_seen;
++
++	u8 dfs_domain;
+ };
+ 
+ /* hostapd.c */
+--- a/src/ap/hw_features.c
++++ b/src/ap/hw_features.c
+@@ -78,10 +78,12 @@ int hostapd_get_hw_features(struct hosta
+ 	int i, j;
+ 	u16 num_modes, flags;
+ 	struct hostapd_hw_modes *modes;
++	u8 dfs_domain;
+ 
+ 	if (hostapd_drv_none(hapd))
+ 		return -1;
+-	modes = hostapd_get_hw_feature_data(hapd, &num_modes, &flags);
++	modes = hostapd_get_hw_feature_data(hapd, &num_modes, &flags,
++					    &dfs_domain);
+ 	if (modes == NULL) {
+ 		hostapd_logger(hapd, NULL, HOSTAPD_MODULE_IEEE80211,
+ 			       HOSTAPD_LEVEL_DEBUG,
+@@ -91,6 +93,7 @@ int hostapd_get_hw_features(struct hosta
+ 	}
+ 
+ 	iface->hw_flags = flags;
++	iface->dfs_domain = dfs_domain;
+ 
+ 	hostapd_free_hw_features(iface->hw_features, iface->num_hw_features);
+ 	iface->hw_features = modes;
+--- a/src/drivers/driver.h
++++ b/src/drivers/driver.h
+@@ -1953,12 +1953,13 @@ struct wpa_driver_ops {
+ 	 * @priv: Private driver interface data
+ 	 * @num_modes: Variable for returning the number of returned modes
+ 	 * flags: Variable for returning hardware feature flags
++	 * @dfs: Variable for returning dfs region
+ 	 * Returns: Pointer to allocated hardware data on success or %NULL on
+ 	 * failure. Caller is responsible for freeing this.
+ 	 */
+ 	struct hostapd_hw_modes * (*get_hw_feature_data)(void *priv,
+ 							 u16 *num_modes,
+-							 u16 *flags);
++							 u16 *flags, u8 *dfs);
+ 
+ 	/**
+ 	 * send_mlme - Send management frame from MLME
+--- a/src/drivers/driver_hostap.c
++++ b/src/drivers/driver_hostap.c
+@@ -1089,7 +1089,7 @@ static int hostap_sta_disassoc(void *pri
+ 
+ static struct hostapd_hw_modes * hostap_get_hw_feature_data(void *priv,
+ 							    u16 *num_modes,
+-							    u16 *flags)
++							    u16 *flags, *dfs)
+ {
+ 	struct hostapd_hw_modes *mode;
+ 	int i, clen, rlen;
+--- a/src/drivers/driver_nl80211.h
++++ b/src/drivers/driver_nl80211.h
+@@ -228,7 +228,8 @@ int nl80211_send_monitor(struct wpa_driv
+ 
+ int wpa_driver_nl80211_capa(struct wpa_driver_nl80211_data *drv);
+ struct hostapd_hw_modes *
+-nl80211_get_hw_feature_data(void *priv, u16 *num_modes, u16 *flags);
++nl80211_get_hw_feature_data(void *priv, u16 *num_modes, u16 *flags,
++			    u8 *dfs_domain);
+ 
+ int process_global_event(struct nl_msg *msg, void *arg);
+ int process_bss_event(struct nl_msg *msg, void *arg);
+--- a/src/drivers/driver_nl80211_capa.c
++++ b/src/drivers/driver_nl80211_capa.c
+@@ -933,6 +933,7 @@ struct phy_info_arg {
+ 	u16 *num_modes;
+ 	struct hostapd_hw_modes *modes;
+ 	int last_mode, last_chan_idx;
++	u8 dfs_domain;
+ };
+ 
+ static void phy_info_ht_capa(struct hostapd_hw_modes *mode, struct nlattr *capa,
+@@ -1479,6 +1480,7 @@ static int nl80211_get_reg(struct nl_msg
+ 	if (tb_msg[NL80211_ATTR_DFS_REGION]) {
+ 		enum nl80211_dfs_regions dfs_domain;
+ 		dfs_domain = nla_get_u8(tb_msg[NL80211_ATTR_DFS_REGION]);
++		results->dfs_domain = dfs_domain;
+ 		wpa_printf(MSG_DEBUG, "nl80211: Regulatory information - country=%s (%s)",
+ 			   (char *) nla_data(tb_msg[NL80211_ATTR_REG_ALPHA2]),
+ 			   dfs_domain_name(dfs_domain));
+@@ -1555,7 +1557,8 @@ static int nl80211_set_regulatory_flags(
+ 
+ 
+ struct hostapd_hw_modes *
+-nl80211_get_hw_feature_data(void *priv, u16 *num_modes, u16 *flags)
++nl80211_get_hw_feature_data(void *priv, u16 *num_modes, u16 *flags,
++			    u8 *dfs_domain)
+ {
+ 	u32 feat;
+ 	struct i802_bss *bss = priv;
+@@ -1566,10 +1569,12 @@ nl80211_get_hw_feature_data(void *priv,
+ 		.num_modes = num_modes,
+ 		.modes = NULL,
+ 		.last_mode = -1,
++		.dfs_domain = 0,
+ 	};
+ 
+ 	*num_modes = 0;
+ 	*flags = 0;
++	*dfs_domain = 0;
+ 
+ 	feat = get_nl80211_protocol_features(drv);
+ 	if (feat & NL80211_PROTOCOL_FEATURE_SPLIT_WIPHY_DUMP)
+@@ -1582,6 +1587,7 @@ nl80211_get_hw_feature_data(void *priv,
+ 
+ 	if (send_and_recv_msgs(drv, msg, phy_info_handler, &result) == 0) {
+ 		nl80211_set_regulatory_flags(drv, &result);
++		*dfs_domain = result.dfs_domain;
+ 		return wpa_driver_nl80211_postprocess_modes(result.modes,
+ 							    num_modes);
+ 	}
+--- a/wpa_supplicant/driver_i.h
++++ b/wpa_supplicant/driver_i.h
+@@ -269,11 +269,12 @@ static inline int wpa_drv_mlme_setprotec
+ 
+ static inline struct hostapd_hw_modes *
+ wpa_drv_get_hw_feature_data(struct wpa_supplicant *wpa_s, u16 *num_modes,
+-			    u16 *flags)
++			    u16 *flags, u8 *dfs_domain)
+ {
+ 	if (wpa_s->driver->get_hw_feature_data)
+ 		return wpa_s->driver->get_hw_feature_data(wpa_s->drv_priv,
+-							  num_modes, flags);
++							  num_modes, flags,
++							  dfs_domain);
+ 	return NULL;
+ }
+ 
+--- a/wpa_supplicant/wpa_supplicant.c
++++ b/wpa_supplicant/wpa_supplicant.c
+@@ -4276,6 +4276,7 @@ static int wpa_supplicant_init_iface(str
+ {
+ 	struct wpa_driver_capa capa;
+ 	int capa_res;
++	u8 dfs_domain;
+ 
+ 	wpa_printf(MSG_DEBUG, "Initializing interface '%s' conf '%s' driver "
+ 		   "'%s' ctrl_interface '%s' bridge '%s'", iface->ifname,
+@@ -4417,7 +4418,8 @@ static int wpa_supplicant_init_iface(str
+ 
+ 	wpa_s->hw.modes = wpa_drv_get_hw_feature_data(wpa_s,
+ 						      &wpa_s->hw.num_modes,
+-						      &wpa_s->hw.flags);
++						      &wpa_s->hw.flags,
++						      &dfs_domain);
+ 	if (wpa_s->hw.modes) {
+ 		u16 i;
+ 
+--- a/wpa_supplicant/events.c
++++ b/wpa_supplicant/events.c
+@@ -3006,6 +3006,7 @@ static void wpa_supplicant_update_channe
+ 	struct wpa_supplicant *wpa_s, struct channel_list_changed *info)
+ {
+ 	struct wpa_supplicant *ifs;
++	u8 dfs_domain;
+ 
+ 	wpa_msg(wpa_s, MSG_INFO, WPA_EVENT_REGDOM_CHANGE "init=%s type=%s%s%s",
+ 		reg_init_str(info->initiator), reg_type_str(info->type),
+@@ -3021,7 +3022,7 @@ static void wpa_supplicant_update_channe
+ 			   ifs->ifname);
+ 		free_hw_features(ifs);
+ 		ifs->hw.modes = wpa_drv_get_hw_feature_data(
+-			ifs, &ifs->hw.num_modes, &ifs->hw.flags);
++			ifs, &ifs->hw.num_modes, &ifs->hw.flags, &dfs_domain);
+ 	}
+ 
+ 	/* Restart sched_scan with updated channel list */
