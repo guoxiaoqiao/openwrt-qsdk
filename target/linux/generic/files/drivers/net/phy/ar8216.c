@@ -1666,6 +1666,11 @@ ar8327_setup_port(struct ar8216_priv *priv, int port, u32 egress, u32 ingress,
 	t |= ingress << AR8327_PORT_LOOKUP_IN_MODE_S;
 	t |= AR8216_PORT_STATE_FORWARD << AR8327_PORT_LOOKUP_STATE_S;
 	priv->write(priv, AR8327_REG_PORT_LOOKUP(port), t);
+
+	t = priv->read(priv, AR8327_REG_ROUTE_EG_MODE);
+	t &= (~(0x3 << AR8327_ROUTE_EG_MODE_S(port)));
+	t |= mode << AR8327_ROUTE_EG_MODE_S(port);
+	priv->write(priv, AR8327_REG_ROUTE_EG_MODE, t);
 }
 
 static const struct ar8xxx_chip ar8327_chip = {
