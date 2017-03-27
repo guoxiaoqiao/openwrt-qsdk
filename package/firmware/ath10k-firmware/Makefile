@@ -8,9 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ath10k-firmware
-PKG_SOURCE_VERSION:=77f72b5f7dd940386d9e619a17904987759b7186
-PKG_VERSION:=2014-11-13-$(PKG_SOURCE_VERSION)
+PKG_SOURCE_VERSION:=d227f3f2c2c600752b89d54ddc1b556239937230
+PKG_VERSION:=2017-03-27-$(PKG_SOURCE_VERSION)
 PKG_RELEASE:=1
+
+QCA988X_FIRMWARE_FILE:=firmware-5.bin_10.2.4-1.0-00016
+QCA9887_FIRMWARE_FILE:=firmware-5.bin_10.2.4-1.0-00016
+QCA9888_FIRMWARE_FILE:=firmware-5.bin_10.4-3.4-00074
+QCA99X0_FIRMWARE_FILE:=firmware-5.bin_10.4.3.00063-1
+QCA9984_FIRMWARE_FILE:=firmware-5.bin_10.4-3.4-00074
+QCA4019_FIRMWARE_FILE:=firmware-5.bin_10.4-3.4-00074
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -35,14 +42,51 @@ $(Package/ath10k-firmware-default)
   TITLE:=ath10k firmware for QCA988x devices
 endef
 
-QCA988X_FIRMWARE_FILE:=firmware-5.bin_10.2.4.97-1
-
 define Download/ath10k-firmware-qca988x
-  URL:=https://www.codeaurora.org/cgit/quic/qsdk/oss/firmware/ath10k-firmware/plain/10.2.4/
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA988X/hw2.0/10.2.4-1.0
   FILE:=$(QCA988X_FIRMWARE_FILE)
-  MD5SUM:=fcb2fbd42d73a63fbf603505c718cbde
 endef
 $(eval $(call Download,ath10k-firmware-qca988x))
+
+define Download/qca988x-board
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA988X/hw2.0
+  FILE:=board.bin
+endef
+$(eval $(call Download,qca988x-board))
+
+define Package/ath10k-firmware-qca9887
+$(Package/ath10k-firmware-default)
+  TITLE:=ath10k firmware for QCA9887 devices
+endef
+
+define Download/ath10k-firmware-qca9887
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA9887/hw1.0/10.2.4-1.0
+  FILE:=$(QCA9887_FIRMWARE_FILE)
+endef
+$(eval $(call Download,ath10k-firmware-qca9887))
+
+define Download/qca9887-board
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA9887/hw1.0
+  FILE:=board.bin
+endef
+$(eval $(call Download,qca9887-board))
+
+define Package/ath10k-firmware-qca9888
+$(Package/ath10k-firmware-default)
+  TITLE:=ath10k firmware for QCA9888 devices
+endef
+
+define Download/ath10k-firmware-qca9888
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA9888/hw2.0/3.4
+  FILE:=$(QCA9888_FIRMWARE_FILE)
+endef
+$(eval $(call Download,ath10k-firmware-qca9888))
+
+define Download/qca9888-board
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA9888/hw2.0
+  FILE:=board-2.bin
+endef
+$(eval $(call Download,qca9888-board))
 
 define Package/ath10k-firmware-qca99x0
 $(Package/ath10k-firmware-default)
@@ -65,6 +109,40 @@ define Download/qca99x0-board
 endef
 $(eval $(call Download,qca99x0-board))
 
+define Package/ath10k-firmware-qca9984
+$(Package/ath10k-firmware-default)
+  TITLE:=ath10k firmware for QCA9984 devices
+endef
+
+define Download/ath10k-firmware-qca9984
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA9984/hw1.0/3.4
+  FILE:=$(QCA9984_FIRMWARE_FILE)
+endef
+$(eval $(call Download,ath10k-firmware-qca9984))
+
+define Download/qca9984-board
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA9984/hw1.0
+  FILE:=board-2.bin
+endef
+$(eval $(call Download,qca9984-board))
+
+define Package/ath10k-firmware-qca4019
+$(Package/ath10k-firmware-default)
+  TITLE:=ath10k firmware for QCA4019 devices
+endef
+
+define Download/ath10k-firmware-qca4019
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA4019/hw1.0/3.4
+  FILE:=$(QCA4019_FIRMWARE_FILE)
+endef
+$(eval $(call Download,ath10k-firmware-qca4019))
+
+define Download/qca4019-board
+  URL:=https://github.com/kvalo/ath10k-firmware/tree/master/QCA4019/hw1.0
+  FILE:=board-2.bin
+endef
+$(eval $(call Download,qca4019-board))
+
 define Build/Compile
 
 endef
@@ -72,11 +150,51 @@ endef
 define Package/ath10k-firmware-qca988x/install
 	$(INSTALL_DIR) $(1)/lib/firmware/ath10k/QCA988X/hw2.0
 	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/QCA988X/board.bin \
+		$(PKG_BUILD_DIR)/QCA988X/hw2.0/board.bin \
 		$(1)/lib/firmware/ath10k/QCA988X/hw2.0/
 	$(INSTALL_DATA) \
-		$(DL_DIR)/$(QCA988X_FIRMWARE_FILE) \
+		$(PKG_BUILD_DIR)/QCA988X/hw2.0/10.2.4-1.0/$(QCA988X_FIRMWARE_FILE) \
 		$(1)/lib/firmware/ath10k/QCA988X/hw2.0/firmware-5.bin
+endef
+
+define Package/ath10k-firmware-qca9887/install
+	$(INSTALL_DIR) $(1)/lib/firmware/ath10k/QCA9887/hw1.0
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/QCA9887/hw1.0/board.bin \
+		$(1)/lib/firmware/ath10k/QCA9887/hw1.0/
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/QCA9887/hw1.0/10.2.4-1.0/$(QCA9887_FIRMWARE_FILE) \
+		$(1)/lib/firmware/ath10k/QCA9887/hw1.0/firmware-5.bin
+endef
+
+define Package/ath10k-firmware-qca9888/install
+	$(INSTALL_DIR) $(1)/lib/firmware/ath10k/QCA9888/hw2.0
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/QCA9888/hw2.0/board-2.bin \
+		$(1)/lib/firmware/ath10k/QCA9888/hw2.0/
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/QCA9888/hw2.0/3.4/$(QCA9888_FIRMWARE_FILE) \
+		$(1)/lib/firmware/ath10k/QCA9888/hw2.0/firmware-5.bin
+endef
+
+define Package/ath10k-firmware-qca9984/install
+	$(INSTALL_DIR) $(1)/lib/firmware/ath10k/QCA9984/hw1.0
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/QCA9984/hw1.0/board-2.bin \
+		$(1)/lib/firmware/ath10k/QCA9984/hw1.0/
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/QCA9984/hw1.0/3.4/$(QCA9984_FIRMWARE_FILE) \
+		$(1)/lib/firmware/ath10k/QCA9984/hw1.0/firmware-5.bin
+endef
+
+define Package/ath10k-firmware-qca4019/install
+	$(INSTALL_DIR) $(1)/lib/firmware/ath10k/QCA4019/hw1.0
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/QCA4019/hw1.0/board-2.bin \
+		$(1)/lib/firmware/ath10k/QCA4019/hw1.0/
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/QCA4019/hw1.0/3.4/$(QCA4019_FIRMWARE_FILE) \
+		$(1)/lib/firmware/ath10k/QCA4019/hw1.0/firmware-5.bin
 endef
 
 define Package/ath10k-firmware-qca6174/install
@@ -87,16 +205,20 @@ endef
 define Package/ath10k-firmware-qca99x0/install
 	$(INSTALL_DIR) $(1)/lib/firmware/ath10k/QCA99X0/hw2.0
 	$(INSTALL_DATA) \
-		$(DL_DIR)/$(QCA99X0_BOARD_FILE) \
+		$(PKG_BUILD_DIR)/$(QCA99X0_BOARD_FILE) \
 		$(1)/lib/firmware/ath10k/QCA99X0/hw2.0/board-2.bin
 	$(INSTALL_DATA) \
 		$(PKG_BUILD_DIR)/QCA99X0/hw2.0/boardData_AR900B_CUS239_5G_v2_001.bin \
 		$(1)/lib/firmware/ath10k/QCA99X0/hw2.0/board.bin
 	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/QCA99X0/hw2.0/firmware-5.bin_10.4.1.00030-1 \
+		$(PKG_BUILD_DIR)/$(QCA99X0_FIRMWARE_FILE) \
 		$(1)/lib/firmware/ath10k/QCA99X0/hw2.0/firmware-5.bin
 endef
 
 $(eval $(call BuildPackage,ath10k-firmware-qca988x))
+$(eval $(call BuildPackage,ath10k-firmware-qca9887))
+$(eval $(call BuildPackage,ath10k-firmware-qca9888))
 $(eval $(call BuildPackage,ath10k-firmware-qca99x0))
+$(eval $(call BuildPackage,ath10k-firmware-qca9984))
 $(eval $(call BuildPackage,ath10k-firmware-qca6174))
+$(eval $(call BuildPackage,ath10k-firmware-qca4019))
