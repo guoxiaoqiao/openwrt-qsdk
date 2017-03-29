@@ -50,7 +50,7 @@ HW_CRYPTO:= kmod-crypto-qcrypto
 SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm kmod-shortcut-fe-drv
 QCA_RFS:= kmod-qca-rfs
 
-SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell swconfig
+SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
 SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
 SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
@@ -141,7 +141,7 @@ endif
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) $(QCA_EDMA) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA) \
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
 	$(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING)
 endef
@@ -188,7 +188,7 @@ $(eval $(call Profile,QSDK_Standard))
 
 define Profile/QSDK_Enterprise
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_ENTERPRISE) $(SWITCH_SSDK_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_ENTERPRISE) $(SWITCH_SSDK_NOHNAT_PKGS) \
 		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
@@ -205,7 +205,7 @@ $(eval $(call Profile,QSDK_Enterprise))
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
-		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) \
+		$(SWITCH_SSDK_PKGS) $(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) \
 		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
