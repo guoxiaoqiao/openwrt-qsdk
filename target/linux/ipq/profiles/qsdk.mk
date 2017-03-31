@@ -125,7 +125,7 @@ IGMPSNOOING_RSTP:=rstp qca-mcs-apps
 
 IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6
 
-AUDIO:=kmod-sound-soc-ipq40xx alsa
+AUDIO:=kmod-sound-soc-ipq alsa
 
 VIDEO:=kmod-qpic_panel_ertft
 
@@ -229,7 +229,8 @@ define Profile/QSDK_Standard_64
 	PACKAGES:=$(OPENWRT_STANDARD) kmod-qca-nss-dp kmod-qca-nss-drv qca-nss-fw-hk-retail \
 		$(WIFI_11_0_PKGS) qca-wifi-fw-hw2-10.4-asic $(NETWORKING) \
 		$(STORAGE) $(COREBSP_UTILS) $(UTILS) -profilerd $(TEST_TOOLS) $(KPI) \
-		$(SWITCH_SSDK_NOHNAT_PKGS) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic
+		$(SWITCH_SSDK_NOHNAT_PKGS) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic \
+		$(AUDIO)
 endef
 
 define Profile/QSDK_Standard_64/Description
