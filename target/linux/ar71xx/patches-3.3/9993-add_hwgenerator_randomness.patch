@@ -1,0 +1,72 @@
+--- a/drivers/char/random.c	2017-03-30 09:19:58.477219318 +0530
++++ b/drivers/char/random.c	2017-03-29 19:46:25.825322431 +0530
+@@ -264,6 +264,7 @@
+ #include <linux/cryptohash.h>
+ #include <linux/fips.h>
+ #include <linux/ptrace.h>
++#include <linux/kthread.h>
+ 
+ #ifdef CONFIG_GENERIC_HARDIRQS
+ # include <linux/irq.h>
+@@ -287,6 +288,23 @@
+ #define EXTRACT_SIZE 10
+ 
+ /*
++ * To allow fractional bits to be tracked, the entropy_count field is
++ * denominated in units of 1/8th bits.
++ *
++ * 2*(ENTROPY_SHIFT + log2(poolbits)) must <= 31, or the multiply in
++ * credit_entropy_bits() needs to be 64 bits wide.
++ */
++#define ENTROPY_SHIFT 3
++#define ENTROPY_BITS(r) ((r)->entropy_count >> ENTROPY_SHIFT)
++
++/*
++ * If the entropy count falls under this number of bits, then we
++ * should wake up processes which are selecting or polling on write
++ * access to /dev/random.
++ */
++static int random_write_wakeup_bits = 64;
++
++/*
+  * The minimum number of bits of entropy before we wake up a read on
+  * /dev/random.  Should be enough to do a significant reseed.
+  */
+@@ -860,6 +878,27 @@
+ }
+ EXPORT_SYMBOL(random_input_wait);
+ 
++void add_hwgenerator_randomness(const char *buffer, size_t count,
++                                 size_t entropy)
++{
++        struct entropy_store *poolp = &input_pool;
++
++        if (unlikely(nonblocking_pool.initialized == 0))
++                poolp = &nonblocking_pool;
++        else {
++                /* Suspend writing if we're above the trickle
++                 * threshold.  We'll be woken up again once below
++                 * random_write_wakeup_thresh, or when the calling
++                 * thread is about to terminate.
++                 */
++                wait_event_interruptible(random_write_wait,
++                                         kthread_should_stop() ||
++                        ENTROPY_BITS(&input_pool) <= random_write_wakeup_bits);
++        }
++        mix_pool_bytes(poolp, buffer, count, NULL);
++        credit_entropy_bits(poolp, entropy);
++}
++EXPORT_SYMBOL(add_hwgenerator_randomness);
+ 
+ #define EXTRACT_SIZE 10
+
+--- a/include/linux/random.h    2017-03-30 09:19:58.477219318 +0530
++++ b/include/linux/random.h    2017-03-29 18:25:41.657332664 +0530
+@@ -79,6 +79,7 @@
+
+ extern void random_input_words(__u32 *buf, size_t wordcount, int ent_count);
+ extern int random_input_wait(void);
++extern void add_hwgenerator_randomness(const char *buffer, size_t count, size_t entropy);
+ #define HAS_RANDOM_INPUT_WAIT 1
+
+ extern void get_random_bytes(void *buf, int nbytes); 
