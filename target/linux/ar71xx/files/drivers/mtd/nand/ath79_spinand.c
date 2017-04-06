@@ -315,7 +315,7 @@ static int ath79_spinand_read_id(struct spi_device *spi_nand, u8 *id)
 	if (nand_id[0] == NAND_MFR_GIGADEVICE) {
 		id[0] = nand_id[0];
 		id[1] = nand_id[1];
-	} else { /* Macronix, Micron */
+	} else { /* Macronix, Micron, Fudan */
 		id[0] = nand_id[1];
 		id[1] = nand_id[2];
 	}
@@ -1074,6 +1074,21 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
 		ath79_spinand_page_read_to_cache_win,	/* page read to cache */
 		ath79_spinand_program_execute_win,	/* program execute */
 	},
+	{ /* Fudan */
+		NAND_MFR_FM,				/* manufacturer */
+		0x07,					/* ecc error code */
+		SZ_512,					/* ecc size */
+		16,					/* ecc bytes */
+		8,					/* ecc strength */
+		&ath79_spinand_oob_128_gd_c,		/* ecc layout */
+		&ath79_badblock_pattern_default, 	/* bad block pattern */
+		ath79_spinand_eccsr_gd_c,		/* get ecc status */
+		ath79_spinand_read_rdm_addr_common,	/* wrap address for 03h command */
+		ath79_spinand_program_load_gd,		/* program load data to cache */
+		ath79_spinand_erase_block_erase_common,	/* erase block */
+		ath79_spinand_page_read_to_cache_common,/* page read to cache */
+		ath79_spinand_program_execute_common,	/* program execute */
+	},
 };
 
 static void ath79_spinand_priv_data_fixup(u8 mid, u8 vid, u8 index)
@@ -1095,6 +1110,8 @@ static void ath79_spinand_priv_data_fixup(u8 mid, u8 vid, u8 index)
 	case NAND_MFR_MACRONIX:
 		break;
 	case NAND_MFR_WINBOND:
+		break;
+	case NAND_MFR_FM:
 		break;
 	}
 }
