@@ -23,6 +23,7 @@ ubnt-unifi-outdoor)
 	;;
 
 ap132 |\
+ap152 |\
 wlr8100)
 	ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
 	ucidef_add_switch "switch0" "1" "1"
@@ -47,6 +48,7 @@ ap136-010)
 
 ap136-020 |\
 ap135-020 |\
+ap151 |\
 tl-wr1043nd-v2 |\
 wzr-450hp2)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
@@ -55,6 +57,7 @@ wzr-450hp2)
 	ucidef_add_switch_vlan "switch0" "2" "5 6"
 	;;
 
+ap147-010 |\
 ap143)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	ucidef_add_switch "eth1" "1" "1"
