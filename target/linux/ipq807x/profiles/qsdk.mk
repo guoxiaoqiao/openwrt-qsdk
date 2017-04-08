@@ -55,7 +55,8 @@ define Profile/QSDK_Standard_64
 		$(WIFI_11_0_PKGS) qca-wifi-fw-hw2-10.4-asic $(NETWORKING) \
 		$(STORAGE) $(COREBSP_UTILS) $(UTILS) $(TEST_TOOLS) $(KPI) \
 		$(SWITCH_SSDK_NOHNAT_PKGS) $(NSS_COMMON) kmod-art2 \
-		qca-wifi-hk-fw-hw1-10.4-asic $(AUDIO)
+		qca-wifi-hk-fw-hw1-10.4-asic $(AUDIO) $(CD_ROUTER) -lacpd \
+		-isc-dhcp-relay-ipv4 -isc-dhcp-relay-ipv6
 endef
 
 define Profile/QSDK_Standard_64/Description
