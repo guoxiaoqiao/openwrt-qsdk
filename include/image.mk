@@ -128,7 +128,7 @@ endef
 
 define Image/BuildKernel/MkFITMulti
 	$(TOPDIR)/scripts/mkits.sh \
-		-D $(1) -o $(KDIR)/fit-$(1).its -k $(2) $(foreach dtb,$(subst ",,$(3)), -d $(LINUX_DIR)/arch/arm/boot/dts/$(dtb).dtb) -C $(4) -a $(5) -e $(6) \
+		-D $(1) -o $(KDIR)/fit-$(1).its -k $(2) $(foreach dtb,$(subst \",,$(3)), -d $(LINUX_DIR)/arch/arm/boot/dts/$(dtb).dtb$(if $(7),.gz)) -C $(4) -a $(5) -e $(6) $(if $(7),-c $(7) -l $(8))\
 		-A $(ARCH) -v $(LINUX_VERSION)
 	PATH=$(LINUX_DIR)/scripts/dtc:$(PATH) mkimage -f $(KDIR)/fit-$(1).its $(KDIR)/fit-$(1).itb
 endef

@@ -3,7 +3,7 @@
 #
 
 define Profile/QSDK_Base
-        PACKAGES:=luci uhttpd kmod-ipt-nathelper-extra luci-app-upnp mcproxy \
+        PACKAGES:=luci uhttpd kmod-nf-nathelper-extra luci-app-upnp mcproxy \
           kmod-ipt-nathelper-rtsp kmod-ipv6 \
           quagga quagga-ripd quagga-zebra quagga-watchquagga rp-pppoe-relay \
           -dnsmasq dnsmasq-dhcpv6 bridge \
