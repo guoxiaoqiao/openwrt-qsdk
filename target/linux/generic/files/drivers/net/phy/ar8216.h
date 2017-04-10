@@ -461,6 +461,9 @@
 #define   AR8327_REG_QM_PORT0_3_QNUM		0x1d
 #define   AR8327_REG_QM_PORT4_6_QNUM		0x1e
 
+#define AR8327_REG_ROUTE_EG_MODE		0xc80
+#define   AR8327_ROUTE_EG_MODE_S(_i)		((_i) * 4)
+
 #define AR8327_REG_PORT_STATS_BASE(_i)		(0x1000 + (_i) * 0x100)
 
 #define AR8xxx_ARL_NO_MORE_ENTRY		1
