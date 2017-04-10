@@ -55,6 +55,9 @@ ipq8064_ac_power()
 	[ -f sys/devices/soc.2/29000000.sata/ipq_ahci_suspend ] && {
 		echo 0 > sys/devices/soc.2/29000000.sata/ipq_ahci_suspend
 	}
+	[ -f /sys/devices/platform/soc/29000000.sata/ipq_ahci_suspend ] && {
+		echo 0 > /sys/devices/platform/soc/29000000.sata/ipq_ahci_suspend
+	}
 
 	sleep 1
 	echo "- - -" > /sys/class/scsi_host/host0/scan
@@ -138,6 +141,9 @@ ipq8064_battery_power()
 	}
 	[ -f /sys/devices/soc.2/29000000.sata/ipq_ahci_suspend ] && {
 		echo 1 > /sys/devices/soc.2/29000000.sata/ipq_ahci_suspend
+	}
+	[ -f /sys/devices/platform/soc/29000000.sata/ipq_ahci_suspend ] && {
+		echo 1 > /sys/devices/platform/soc/29000000.sata/ipq_ahci_suspend
 	}
 
 # USB Power-down Sequence

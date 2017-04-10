@@ -5,21 +5,24 @@
 QCA_LITHIUM:=kmod-qvit-lithium
 QCA_EDMA:=kmod-qca-edma
 NSS_COMMON:= \
-	kmod-qca-nss-dp \
 	kmod-qca-nss-drv \
 	kmod-qca-nss-gmac \
 	$(QCA_EDMA)
 
+NSS_DELUXE:= \
+	kmod-qca-nss-dp \
+	kmod-qca-nss-drv \
+	qca-nss-fw-hk-retail \
+	$(QCA_EDMA)
+
 NSS_STANDARD:= \
-	qca-nss-fw2-retail \
-	qca-nss-fw-hk32-retail \
+	qca-nss-fw2-retail
 
 NSS_ENTERPRISE:= \
 	qca-nss-fw2-enterprise \
 	qca-nss-fw2-enterprise_custA \
 	qca-nss-fw2-enterprise_custC \
-	qca-nss-fw2-enterprise_custR \
-	qca-nss-fw-hk32-enterprise \
+	qca-nss-fw2-enterprise_custR
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
@@ -35,14 +38,14 @@ QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
 NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd \
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
-	kmod-qca-nss-drv-map-t
+	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
 
 # Once all NSS clients get ported to 4.4 we can use NSS_CLIENTS instead.
 NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-bridge-mgr \
                     kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 \
                     kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
-		    kmod-qca-nss-drv-map-t
+                    kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
@@ -62,13 +65,13 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
     qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
     qca-wpa-cli-10.4 qca-spectral-10.4 qca-wpc-10.4 sigma-dut-10.4 \
     qcmbr-10.4 qca-wrapd-10.4 qca-wapid qca-acfg-10.4 whc whc-ui \
-    qca-lowi qca-iface-mgr-10.4
+    qca-lowi qca-iface-mgr-10.4 athdiag
 
 WIFI_11_0_PKGS:=kmod-qca-wifi-11.0-unified-profile \
 	qca-hostap-11.0 qca-hostapd-cli-11.0 qca-wpa-supplicant-11.0 \
 	qca-wpa-cli-11.0 qca-spectral-11.0 qca-wpc-10.4 sigma-dut-10.4 \
 	qcmbr-10.4 qca-wrapd-11.0 qca-wapid qca-acfg-11.0 whc whc-ui \
-	qca-lowi qca-iface-mgr-10.4
+	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
@@ -95,11 +98,11 @@ FAILSAFE:= kmod-bootconfig
 NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 	rp-pppoe-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
 	kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp \
-	luci-app-upnp luci-app-radvd luci-app-ddns luci-proto-ipv6 \
+	luci-app-upnp luci-app-ddns luci-proto-ipv6 \
 	luci-app-multiwan
 
 CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
-	arptables ds-lite 6rd wide-dhcpv6-client ddns-scripts xl2tpd \
+	arptables ds-lite 6rd ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
 	isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 \
@@ -125,12 +128,13 @@ IGMPSNOOING_RSTP:=rstp qca-mcs-apps
 
 IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6
 
-AUDIO:=kmod-sound-soc-ipq40xx alsa
+AUDIO:=kmod-sound-soc-ipq alsa
 
 VIDEO:=kmod-qpic_panel_ertft
 
 KPI:=iperf sysstat
 
+USB_DIAG:=kmod-usb-f-diag
 ifneq ($(LINUX_VERSION),3.18.21)
 	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
@@ -204,7 +208,7 @@ $(eval $(call Profile,QSDK_Enterprise))
 
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_DELUXE) \
 		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) \
 		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
@@ -212,13 +216,14 @@ define Profile/QSDK_Deluxe
 		$(UTILS) $(TEST_TOOLS) $(KPI) \
 		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
 		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e \
-		${NSS_CRYPTO} -uboot-ipq40xx -uboot-ipq806x -uboot-ipq806x-fwupgrade-tools \
-		uboot-2016-ipq806x uboot-2016-ipq807x uboot-2016-ipq40xx
+		-uboot-ipq40xx -uboot-ipq806x -uboot-ipq806x-fwupgrade-tools \
+		uboot-2016-ipq806x uboot-2016-ipq807x uboot-2016-ipq40xx $(USB_DIAG)
 endef
 
 define Profile/QSDK_Deluxe/Description
 	QSDK Deluxe package set configuration.
-	Enables wifi open source packages
+	Enables wifi 11.0 source packages
+	Intended for IPQ807x
 endef
 
 $(eval $(call Profile,QSDK_Deluxe))
@@ -226,15 +231,16 @@ $(eval $(call Profile,QSDK_Deluxe))
 
 define Profile/QSDK_Standard_64
 	NAME:=Qualcomm-Atheros SDK Standard_64 Profile
-	PACKAGES:=$(OPENWRT_STANDARD) \
+	PACKAGES:=$(OPENWRT_STANDARD) kmod-qca-nss-dp kmod-qca-nss-drv qca-nss-fw-hk-retail \
 		$(WIFI_11_0_PKGS) qca-wifi-fw-hw2-10.4-asic $(NETWORKING) \
-		$(STORAGE) $(COREBSP_UTILS) $(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(SWITCH_SSDK_NOHNAT_PKGS) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic
+		$(STORAGE) $(COREBSP_UTILS) $(UTILS) -profilerd $(TEST_TOOLS) $(KPI) \
+		$(SWITCH_SSDK_NOHNAT_PKGS) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic \
+		$(AUDIO) -qca-icm
 endef
 
 define Profile/QSDK_Standard_64/Description
 	QSDK Standard_64 package set configuration.
-	Enables wifi open source packages
+	Enables wifi 11.0 source packages
 endef
 
 $(eval $(call Profile,QSDK_Standard_64))

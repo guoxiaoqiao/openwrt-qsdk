@@ -60,8 +60,9 @@ endef
 define Image/BuildKernel/MultiDTBFIT
 	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
 	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
+	$(foreach dtb, $(2), gzip -9 -c $(DTS_DIR)/$(dtb).dtb > $(DTS_DIR)/$(dtb).dtb.gz;)
 	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.gz)
-	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/Image.gz,$(2),gzip,$(3),$(3))
+	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/Image.gz,$(2),gzip,$(3),$(3),$(4),$(5))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 endef
 
@@ -92,7 +93,7 @@ define Image/BuildKernel
 		$(IPQ40XX_KERNEL_LOADADDR))
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq806x-akxx, \
 		$(call FindDeviceTrees, qcom-ipq806?-), \
-		$(IPQ806X_KERNEL_LOADADDR))
+		$(IPQ806X_KERNEL_LOADADDR),gzip,0x43F00000)
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq8064-ap148_1xx, \
 		$(call FindDeviceTrees, qcom-ipq8064-*ap148_1xx), \
 		$(IPQ806X_KERNEL_LOADADDR))

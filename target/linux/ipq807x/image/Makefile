@@ -9,12 +9,12 @@ E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
 IPQ807X_KERNEL_LOADADDR = 0x41080000
 
-#ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
-#define Image/mkfs/ubifs_fit
-#	$(call Image/ubifs_generate,$(1))
-#	$(call Image/Build,ubi,$(1))
-#endef
-#endif
+ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
+define Image/Build/ubifs
+	$(call Image/mkfs/ubifs/generate,-ipq807x)
+	$(call Image/Build,ubi,-ipq807x)
+endef
+endif
 
 define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin

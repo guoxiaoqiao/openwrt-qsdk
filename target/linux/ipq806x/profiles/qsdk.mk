@@ -60,7 +60,10 @@ SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
 WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad-mesh hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
-		 athtestcmd
+		 athtestcmd ath10k-firmware-qca988x ath10k-firmware-qca9887 \
+		 ath10k-firmware-qca9888 ath10k-firmware-qca9984 \
+		 ath10k-firmware-qca4019
+
 WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
     qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
     qca-wpa-cli-10.4 qca-spectral-10.4 qca-wpc-10.4 sigma-dut-10.4 \
@@ -217,7 +220,7 @@ define Profile/QSDK_Deluxe
 		$(UTILS) $(TEST_TOOLS) $(KPI) \
 		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
 		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e \
-		${NSS_CRYPTO} -uboot-ipq40xx -uboot-ipq806x -uboot-ipq806x-fwupgrade-tools \
+		-uboot-ipq40xx -uboot-ipq806x -uboot-ipq806x-fwupgrade-tools \
 		uboot-2016-ipq806x uboot-2016-ipq807x uboot-2016-ipq40xx $(USB_DIAG)
 endef
 

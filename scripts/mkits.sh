@@ -18,13 +18,16 @@
 DTB="";
 FDT="";
 CONFIG="";
-CONFIG_ID="";
+CONFIG_ID="1";
+DTB_COMPRESS="none";
 
 usage() {
 	echo "Usage: `basename $0` -A arch -C comp -a addr -e entry" \
 		"-v version -k kernel [-D name -d dtb] -o its_file"
 	echo -e "\t-A ==> set architecture to 'arch'"
 	echo -e "\t-C ==> set compression type 'comp'"
+	echo -e "\t-c ==> set dtb compression type 'comp'"
+	echo -e "\t-l ==> set dtb load address to 'addr'"
 	echo -e "\t-a ==> set load address to 'addr' (hex)"
 	echo -e "\t-e ==> set entry point to 'entry' (hex)"
 	echo -e "\t-v ==> set kernel version to 'version'"
@@ -35,7 +38,7 @@ usage() {
 	exit 1
 }
 
-# Generating FDT COnfiguration for all the dtb files
+# Generating FDT Configuration for all the dtb files
 Generate_FDT () {
 	FDT="$FDT
 		fdt@$CONFIG_ID {
@@ -44,6 +47,25 @@ Generate_FDT () {
 			type = \"flat_dt\";
 			arch = \"${ARCH}\";
 			compression = \"none\";
+			hash@1 {
+				algo = \"crc32\";
+			};
+			hash@2 {
+				algo = \"sha1\";
+			};
+		};
+"
+}
+
+Generate_Comp_FDT () {
+	FDT="$FDT
+		fdt@$CONFIG_ID {
+			description = \"${ARCH_UPPER} OpenWrt ${DEVICE} device tree blob\";
+			data = /incbin/(\"${1}\");
+			type = \"flat_dt\";
+			arch = \"${ARCH}\";
+			compression = \"${DTB_COMPRESS}\";
+			load = <${DTB_LOAD_ADDR}>;
 			hash@1 {
 				algo = \"crc32\";
 			};
@@ -64,16 +86,18 @@ Generate_Config () {
 "
 }
 
-while getopts ":A:a:C:D:d:e:k:o:v:" OPTION
+while getopts ":A:a:C:c:D:d:e:k:l:o:v:" OPTION
 do
 	case $OPTION in
 		A ) ARCH=$OPTARG;;
 		a ) LOAD_ADDR=$OPTARG;;
 		C ) COMPRESS=$OPTARG;;
+		c ) DTB_COMPRESS=$OPTARG;;
 		D ) DEVICE=$OPTARG;;
 		d ) DTB="$DTB $OPTARG";;
 		e ) ENTRY_ADDR=$OPTARG;;
 		k ) KERNEL=$OPTARG;;
+		l ) DTB_LOAD_ADDR=$OPTARG;;
 		o ) OUTPUT=$OPTARG;;
 		v ) VERSION=$OPTARG;;
 		* ) echo "Invalid option passed to '$0' (options:$@)"
@@ -95,8 +119,8 @@ if [ -n "${DTB}" ]; then
 	CONFIG_ID=($DTB)
 	for dtb in $DTB
 	do
-		CONFIG_ID=$([ ${#CONFIG_ID[@]} == 1 ] && echo ${#CONFIG_ID[@]} || basename $dtb .dtb | sed -e 's/^\([^\(.*?-?\)]*-\)//g');
-		Generate_FDT $dtb
+		CONFIG_ID=$([ ${#CONFIG_ID[@]} == 1 ] && echo ${#CONFIG_ID[@]} || basename ${dtb%%.gz} .dtb | sed -e 's/^\([^\(.*?-?\)]*-\)//g');
+		[ "${DTB_COMPRESS}" != "none" ] && Generate_Comp_FDT $dtb || Generate_FDT $dtb
 		Generate_Config
 
 	done
@@ -140,7 +164,7 @@ ${FDT}
 	};
 
 	configurations {
-		default = \"config@1\";
+		default = \"config@${CONFIG_ID}\";
 ${CONFIG}
 	};
 };"
