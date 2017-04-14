@@ -200,7 +200,7 @@ platform_do_upgrade_ioe() {
 
 		ubidetach -d $ubi_vol $ubi_ctrl_dev
 		mtd erase $mtd_dev
-		mtd_ubi_rootfs="$(cat /proc/mtd |grep $rootfs |cut -f1 -d ":"|grep -Eo '[0-9]+')"
+		mtd_ubi_rootfs="$(cat /proc/mtd |grep "r-2" |cut -f1 -d ":"|grep -Eo '[0-9]+')"
 		dd if=$file bs=2048 | nandwrite -p $mtd_dev -
 		ubiattach -m $mtd_ubi_rootfs -d $ubi_vol $ubi_ctrl_dev
 		sleep 2
