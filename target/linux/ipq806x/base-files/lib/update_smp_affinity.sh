@@ -30,28 +30,7 @@ enable_smp_affinity_wifi() {
 		device="$1"
 		hwcaps=$(cat /sys/class/net/$device/hwcaps)
 
-
-		[ -n "$device" ] && {
-			case "$board" in
-				ap-dk0*)
-					if [ $device == "wifi2" ]; then
-						irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-					elif [ $device == "wifi1" ];then
-						irq_affinity_num=`grep -E -m3 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-					else
-						irq_affinity_num=`grep -E -m2 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-					fi
-				;;
-				*)
-					if [ $device == "wifi2" ]; then
-						irq_affinity_num=`grep -E -m3 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-					elif [ $device == "wifi1" ];then
-						irq_affinity_num=`grep -E -m2 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-					else
-						irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-					fi
-				esac
-		}
+		irq_affinity_num=`grep $device /proc/interrupts | cut -d ':' -f 1 | tr -d ' '`
 
 		case "${hwcaps}" in
 			*11an/ac)
@@ -63,13 +42,16 @@ enable_smp_affinity_wifi() {
 
 		case "$board" in
 			ap-dk0*)
-			if [ $device == "wifi2" ]; then
-				# Assign core 1 for wifi2. For ap-dkXX,wifi2 is always the third radio
-				smp_affinity=2
-			else
-				# Assign Core 3 (or) 4 for Dakota based on hwcaps
-				smp_affinity=$(($smp_affinity << 2))
-			fi
+				if [ $device == "wifi0" ]; then
+					#Assign core 2 for wifi0
+					smp_affinity=4
+				elif [ $device == "wifi1" ]; then
+					#Assign core 3 for wifi1
+					smp_affinity=8
+				else
+					# Assign core 1 for wifi2. For ap-dkXX,wifi2 is always the third radio
+					smp_affinity=2
+				fi
 			;;
 		esac
 
