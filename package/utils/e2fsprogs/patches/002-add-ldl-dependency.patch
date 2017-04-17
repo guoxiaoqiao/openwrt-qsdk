@@ -1,0 +1,46 @@
+Index: e2fsprogs-1.42.12/lib/ss/ss.pc.in
+===================================================================
+--- e2fsprogs-1.42.12.orig/lib/ss/ss.pc.in	2017-04-17 17:19:36.791869636 +0530
++++ e2fsprogs-1.42.12/lib/ss/ss.pc.in	2017-04-17 17:19:36.787869610 +0530
+@@ -8,5 +8,5 @@
+ Version: @E2FSPROGS_VERSION@
+ Requires.private: com_err
+ Cflags: -I${includedir}/ss -I${includedir}
+-Libs: -L${libdir} -lss
++Libs: -L${libdir} -lss -ldl
+ Libs.private: @DLOPEN_LIB@
+Index: e2fsprogs-1.42.12/debugfs/Makefile.in
+===================================================================
+--- e2fsprogs-1.42.12.orig/debugfs/Makefile.in	2017-04-17 17:19:36.791869636 +0530
++++ e2fsprogs-1.42.12/debugfs/Makefile.in	2017-04-17 17:19:36.787869610 +0530
+@@ -52,7 +52,7 @@
+ 
+ debugfs: $(DEBUG_OBJS) $(DEPLIBS)
+ 	$(E) "	LD $@"
+-	$(Q) $(CC) $(ALL_LDFLAGS) -o debugfs $(DEBUG_OBJS) $(LIBS)
++	$(Q) $(CC) $(ALL_LDFLAGS) -ldl -o debugfs $(DEBUG_OBJS) $(LIBS)
+ 
+ debugfs.static: $(DEBUG_OBJS) $(STATIC_DEPLIBS)
+ 	$(E) "	LD $@"
+Index: e2fsprogs-1.42.12/tests/progs/Makefile.in
+===================================================================
+--- e2fsprogs-1.42.12.orig/tests/progs/Makefile.in	2017-04-17 17:19:36.791869636 +0530
++++ e2fsprogs-1.42.12/tests/progs/Makefile.in	2017-04-17 17:20:27.260206892 +0530
+@@ -37,7 +37,7 @@
+ 
+ crcsum: crcsum.o $(DEPLIBS)
+ 	$(E) "	LD $@"
+-	$(Q) $(LD) $(ALL_LDFLAGS) -o crcsum crcsum.o $(LIBS)
++	$(Q) $(LD) $(ALL_LDFLAGS) -ldl -o crcsum crcsum.o $(LIBS)
+ 
+ test_rel_cmds.c: test_rel_cmds.ct
+ 	$(E) "	MK_CMDS $@"
+@@ -45,7 +45,7 @@
+ 
+ test_icount: $(TEST_ICOUNT_OBJS) $(DEPLIBS)
+ 	$(E) "	LD $@"
+-	$(Q) $(LD) $(ALL_LDFLAGS) -o test_icount $(TEST_ICOUNT_OBJS) $(LIBS)
++	$(Q) $(LD) $(ALL_LDFLAGS) -ldl -o test_icount $(TEST_ICOUNT_OBJS) $(LIBS)
+ 
+ test_icount_cmds.c: test_icount_cmds.ct
+ 	$(E) "	MK_CMDS $@"
