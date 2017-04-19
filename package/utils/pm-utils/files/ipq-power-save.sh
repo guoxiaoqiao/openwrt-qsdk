@@ -67,6 +67,8 @@ ipq8064_ac_power()
 	[ -d /sys/module/dwc3_qcom ] || insmod dwc3-qcom
 	[ -d /sys/module/phy_qcom_hsusb ] || insmod phy-qcom-hsusb
 	[ -d /sys/module/phy_qcom_ssusb ] || insmod phy-qcom-ssusb
+	[ -d /sys/module/dwc3_of_simple ] || insmod dwc3-of-simple.ko
+	[ -d /sys/module/phy_qcom_dwc3 ] || insmod phy-qcom-dwc3.ko
 	[ -d /sys/module/dwc3 ] || insmod dwc3
 
 # SD/MMC Power-UP sequence
@@ -152,6 +154,8 @@ ipq8064_battery_power()
 	[ -d /sys/module/dwc3_qcom ] && rmmod dwc3-qcom
 	[ -d /sys/module/phy_qcom_hsusb ] && rmmod phy-qcom-hsusb
 	[ -d /sys/module/phy_qcom_ssusb ] && rmmod phy-qcom-ssusb
+	[ -d /sys/module/dwc3_of_simple ] && rmmod dwc3-of-simple.ko
+	[ -d /sys/module/phy_qcom_dwc3 ] && rmmod phy-qcom-dwc3.ko
 
 	sleep 1
 
