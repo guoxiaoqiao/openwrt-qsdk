@@ -187,6 +187,22 @@ static struct nand_ecclayout ath79_spinand_oob_64_win = {
 	}
 };
 
+static struct nand_ecclayout ath79_spinand_oob_64_esmt = {
+	.eccbytes = 28,
+	.eccpos = {
+		1, 2, 3, 4, 5, 6, 7,
+		17, 18, 19, 20, 21, 22, 23,
+		33, 34, 35, 36, 37, 38, 39,
+		49, 50, 51, 52, 53, 54, 55},
+	.oobfree = {
+		{.offset = 8,  .length = 8},
+		{.offset = 24, .length = 8},
+		{.offset = 40, .length = 8},
+		{.offset = 56, .length = 8},
+	}
+};
+
+
 static inline struct ath79_spinand_state *mtd_to_state(struct mtd_info *mtd)
 {
 	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
@@ -315,7 +331,7 @@ static int ath79_spinand_read_id(struct spi_device *spi_nand, u8 *id)
 	if (nand_id[0] == NAND_MFR_GIGADEVICE) {
 		id[0] = nand_id[0];
 		id[1] = nand_id[1];
-	} else { /* Macronix, Micron, Fudan */
+	} else { /* Macronix, Micron, Fudan, ESMT */
 		id[0] = nand_id[1];
 		id[1] = nand_id[2];
 	}
@@ -1085,6 +1101,19 @@ static void ath79_spinand_priv_data_fixup(u8 mid, u8 vid, u8 index)
 			ath79_spinand_ids[index].ecc_layout = &ath79_spinand_oob_128_gd_b;
 			ath79_spinand_ids[index].ecc_status = ath79_spinand_eccsr_gd_b;
 			ath79_spinand_ids[index].read_rdm_addr = ath79_spinand_read_rdm_addr_common;
+			break;
+		case 0x21:
+			/* F50L1G41A */
+			ath79_spinand_ids[index].ecc_error = 0x02;
+			ath79_spinand_ids[index].ecc_bytes = 3;
+			ath79_spinand_ids[index].ecc_strength = 1;
+			ath79_spinand_ids[index].ecc_layout = &ath79_spinand_oob_64_esmt;
+			ath79_spinand_ids[index].ecc_status = ath79_spinand_eccsr_common;
+			ath79_spinand_ids[index].read_rdm_addr = ath79_spinand_read_rdm_addr_common;
+			ath79_spinand_ids[index].program_load = ath79_spinand_program_load_common;
+			ath79_spinand_ids[index].erase_block = ath79_spinand_erase_block_erase_win;
+			ath79_spinand_ids[index].page_read_to_cache = ath79_spinand_page_read_to_cache_win;
+			ath79_spinand_ids[index].program_execute = ath79_spinand_program_execute_win;
 			break;
 		}
 		break;
