@@ -23,7 +23,11 @@ WIFI_OPEN:=-kmod-ath5k -kmod-qca-ath -kmod-qca-ath9k -kmod-qca-ath10k \
 	   kmod-ath kmod-ath9k hostapd hostapd-utils iwinfo wpa-supplicant-p2p \
 	   wpa-cli wireless-tools -wpad-mini
 
-BLUETOOTH:=bluez-daemon kmod-bluetooth usbutils
+BLUEZ:=bluez-daemon kmod-bluetooth usbutils
+
+BLUETOPIA:=kmod-bluetopia-usb-driver bluetopia
+
+BLUETOOTH:=$(BLUETOPIA)
 
 define Profile/QSDK_IOE_SB
 	NAME:=Qualcomm-Atheros SDK IoE Single Band Profile
@@ -54,7 +58,7 @@ endef
 
 define Profile/QSDK_IOE_TEST
 	NAME:=Qualcomm-Atheros SDK IoE test Profile
-	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(WIFI_OPEN) $(BLUETOOTH) \
+	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(WIFI_OPEN) kmod-bluetooth  \
 		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-art2  \
                   btdiag qcmbr-10.4
 endef
