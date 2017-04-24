@@ -1,15 +1,27 @@
---- a/hostapd/Makefile
-+++ b/hostapd/Makefile
-@@ -17,6 +17,7 @@ export BINDIR ?= /usr/local/bin/
- # CFLAGS += -DUSE_KERNEL_HEADERS -I/usr/src/linux/include
+Index: hostapd-2016-10-02/hostapd/Makefile
+===================================================================
+--- hostapd-2016-10-02.orig/hostapd/Makefile	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/hostapd/Makefile	2017-05-02 08:41:34.049837455 +0530
+@@ -28,6 +28,7 @@
+ export BINDIR ?= /usr/local/bin/
  
  -include .config
 +-include $(if $(MULTICALL), ../wpa_supplicant/.config)
  
- ifdef CONFIG_TESTING_OPTIONS
- CFLAGS += -DCONFIG_TESTING_OPTIONS
-@@ -252,10 +253,14 @@ ifdef CONFIG_IEEE80211AC
- CFLAGS += -DCONFIG_IEEE80211AC
+ ifndef CONFIG_NO_GITVER
+ # Add VERSION_STR postfix for builds from a git repository
+@@ -198,7 +199,8 @@
+ 
+ ifdef CONFIG_NO_VLAN
+ CFLAGS += -DCONFIG_NO_VLAN
+-else
++endif
++ifneq ($(findstring CONFIG_NO_VLAN,$(CFLAGS)), CONFIG_NO_VLAN)
+ OBJS += ../src/ap/vlan_init.o
+ OBJS += ../src/ap/vlan_ifconfig.o
+ OBJS += ../src/ap/vlan.o
+@@ -323,10 +325,14 @@
+ OBJS += ../src/ap/mbo_ap.o
  endif
  
 +ifndef MULTICALL
@@ -26,7 +38,7 @@
  LIBS += $(DRV_AP_LIBS)
  
  ifdef CONFIG_L2_PACKET
-@@ -981,6 +986,12 @@ install: $(addprefix $(DESTDIR)$(BINDIR)
+@@ -1059,6 +1065,12 @@
  
  BCHECK=../src/drivers/build.hostapd
  
@@ -39,7 +51,7 @@
  hostapd: $(BCHECK) $(OBJS)
  	$(Q)$(CC) $(LDFLAGS) -o hostapd $(OBJS) $(LIBS)
  	@$(E) "  LD " $@
-@@ -1022,6 +1033,12 @@ HOBJS += ../src/crypto/aes-internal.o
+@@ -1100,6 +1112,12 @@
  HOBJS += ../src/crypto/aes-internal-enc.o
  endif
  
@@ -52,28 +64,35 @@
  nt_password_hash: $(NOBJS)
  	$(Q)$(CC) $(LDFLAGS) -o nt_password_hash $(NOBJS) $(LIBS_n)
  	@$(E) "  LD " $@
---- a/hostapd/main.c
-+++ b/hostapd/main.c
-@@ -512,6 +512,8 @@ static int hostapd_get_ctrl_iface_group(
- 	return 0;
+Index: hostapd-2016-10-02/hostapd/main.c
+===================================================================
+--- hostapd-2016-10-02.orig/hostapd/main.c	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/hostapd/main.c	2017-05-02 08:41:34.049837455 +0530
+@@ -583,6 +583,10 @@
+ 	return -1;
  }
  
 +void hostapd_wpa_event(void *ctx, enum wpa_event_type event,
 +			union wpa_event_data *data);
++void hostapd_wpa_event_global(void *ctx, enum wpa_event_type event,
++			      union wpa_event_data *data);
  
  #ifdef CONFIG_WPS
  static int gen_uuid(const char *txt_addr)
-@@ -585,6 +587,7 @@ int main(int argc, char *argv[])
+@@ -659,6 +663,8 @@
  	interfaces.global_iface_name = NULL;
  	interfaces.global_ctrl_sock = -1;
- 	interfaces.global_ctrl_dst = NULL;
+ 	dl_list_init(&interfaces.global_ctrl_dst);
 +	wpa_supplicant_event = hostapd_wpa_event;
++	wpa_supplicant_event_global = hostapd_wpa_event_global;
  
  	for (;;) {
- 		c = getopt(argc, argv, "b:Bde:f:hKP:Ttu:vg:G:");
---- a/src/ap/drv_callbacks.c
-+++ b/src/ap/drv_callbacks.c
-@@ -1112,7 +1112,7 @@ static void hostapd_event_dfs_cac_starte
+ 		c = getopt(argc, argv, "b:Bde:f:hi:KP:STtu:vg:G:");
+Index: hostapd-2016-10-02/src/ap/drv_callbacks.c
+===================================================================
+--- hostapd-2016-10-02.orig/src/ap/drv_callbacks.c	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/src/ap/drv_callbacks.c	2017-05-02 08:41:34.049837455 +0530
+@@ -1164,7 +1164,7 @@
  #endif /* NEED_AP_MLME */
  
  
@@ -82,9 +101,22 @@
  			  union wpa_event_data *data)
  {
  	struct hostapd_data *hapd = ctx;
---- a/src/drivers/driver.h
-+++ b/src/drivers/driver.h
-@@ -4642,8 +4642,8 @@ union wpa_event_data {
+@@ -1374,8 +1374,8 @@
+ }
+ 
+ 
+-void wpa_supplicant_event_global(void *ctx, enum wpa_event_type event,
+-				 union wpa_event_data *data)
++void hostapd_wpa_event_global(void *ctx, enum wpa_event_type event,
++			      union wpa_event_data *data)
+ {
+ 	struct hapd_interfaces *interfaces = ctx;
+ 	struct hostapd_data *hapd;
+Index: hostapd-2016-10-02/src/drivers/driver.h
+===================================================================
+--- hostapd-2016-10-02.orig/src/drivers/driver.h	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/src/drivers/driver.h	2017-05-02 08:41:34.053837426 +0530
+@@ -4870,8 +4870,8 @@
   * Driver wrapper code should call this function whenever an event is received
   * from the driver.
   */
@@ -93,30 +125,45 @@
 +extern void (*wpa_supplicant_event)(void *ctx, enum wpa_event_type event,
 +				union wpa_event_data *data);
  
+ /**
+  * wpa_supplicant_event_global - Report a driver event for wpa_supplicant
+@@ -4883,7 +4883,7 @@
+  * Same as wpa_supplicant_event(), but we search for the interface in
+  * wpa_global.
+  */
+-void wpa_supplicant_event_global(void *ctx, enum wpa_event_type event,
++extern void (*wpa_supplicant_event_global)(void *ctx, enum wpa_event_type event,
+ 				 union wpa_event_data *data);
  
  /*
---- a/src/drivers/drivers.c
-+++ b/src/drivers/drivers.c
-@@ -10,6 +10,8 @@
+Index: hostapd-2016-10-02/src/drivers/drivers.c
+===================================================================
+--- hostapd-2016-10-02.orig/src/drivers/drivers.c	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/src/drivers/drivers.c	2017-05-02 08:47:44.355130027 +0530
+@@ -10,6 +10,10 @@
  #include "utils/common.h"
  #include "driver.h"
  
 +void (*wpa_supplicant_event)(void *ctx, enum wpa_event_type event,
-+				union wpa_event_data *data);
- #ifdef CONFIG_DRIVER_WEXT
- extern struct wpa_driver_ops wpa_driver_wext_ops; /* driver_wext.c */
- #endif /* CONFIG_DRIVER_WEXT */
---- a/wpa_supplicant/Makefile
-+++ b/wpa_supplicant/Makefile
-@@ -16,6 +16,7 @@ CFLAGS += -I$(abspath ../src)
++			     union wpa_event_data *data);
++void (*wpa_supplicant_event_global)(void *ctx, enum wpa_event_type event,
++				    union wpa_event_data *data);
+ 
+ const struct wpa_driver_ops *const wpa_drivers[] =
+ {
+Index: hostapd-2016-10-02/wpa_supplicant/Makefile
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/Makefile	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/wpa_supplicant/Makefile	2017-05-02 08:41:34.053837426 +0530
+@@ -27,6 +27,7 @@
  CFLAGS += -I$(abspath ../src/utils)
  
  -include .config
 +-include $(if $(MULTICALL),../hostapd/.config)
  
- ifdef CONFIG_TESTING_OPTIONS
- CFLAGS += -DCONFIG_TESTING_OPTIONS
-@@ -792,6 +793,10 @@ ifdef CONFIG_DYNAMIC_EAP_METHODS
+ ifndef CONFIG_NO_GITVER
+ # Add VERSION_STR postfix for builds from a git repository
+@@ -804,6 +805,10 @@
  CFLAGS += -DCONFIG_DYNAMIC_EAP_METHODS
  LIBS += -ldl -rdynamic
  endif
@@ -127,7 +174,7 @@
  endif
  
  ifdef CONFIG_MACSEC
-@@ -812,9 +817,11 @@ NEED_EAP_COMMON=y
+@@ -824,9 +829,11 @@
  NEED_RSN_AUTHENTICATOR=y
  CFLAGS += -DCONFIG_AP
  OBJS += ap.o
@@ -139,7 +186,7 @@
  OBJS += ../src/ap/hostapd.o
  OBJS += ../src/ap/wpa_auth_glue.o
  OBJS += ../src/ap/utils.o
-@@ -877,10 +884,18 @@ endif
+@@ -899,10 +906,18 @@
  ifdef CONFIG_HS20
  OBJS += ../src/ap/hs20.o
  endif
@@ -158,7 +205,7 @@
  NEED_AES_WRAP=y
  OBJS += ../src/ap/wpa_auth.o
  OBJS += ../src/ap/wpa_auth_ie.o
-@@ -1669,6 +1684,12 @@ wpa_priv: $(BCHECK) $(OBJS_priv)
+@@ -1685,6 +1700,12 @@
  
  $(OBJS_c) $(OBJS_t) $(OBJS_t2) $(OBJS) $(BCHECK) $(EXTRA_progs): .config
  
@@ -171,8 +218,8 @@
  wpa_supplicant: $(BCHECK) $(OBJS) $(EXTRA_progs)
  	$(Q)$(LDO) $(LDFLAGS) -o wpa_supplicant $(OBJS) $(LIBS) $(EXTRALIBS)
  	@$(E) "  LD " $@
-@@ -1767,6 +1788,12 @@ endif
- 	$(Q)sed -e 's|\@BINDIR\@|$(BINDIR)|g' $< >$@
+@@ -1787,6 +1808,12 @@
+ 		-e 's|\@DBUS_INTERFACE\@|$(DBUS_INTERFACE)|g' $< >$@
  	@$(E) "  sed" $<
  
 +dump_cflags:
@@ -184,9 +231,11 @@
  wpa_supplicant.exe: wpa_supplicant
  	mv -f $< $@
  wpa_cli.exe: wpa_cli
---- a/wpa_supplicant/eapol_test.c
-+++ b/wpa_supplicant/eapol_test.c
-@@ -28,7 +28,10 @@
+Index: hostapd-2016-10-02/wpa_supplicant/eapol_test.c
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/eapol_test.c	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/wpa_supplicant/eapol_test.c	2017-05-02 08:52:37.780983900 +0530
+@@ -29,7 +29,12 @@
  #include "ctrl_iface.h"
  #include "pcsc_funcs.h"
  #include "wpas_glue.h"
@@ -194,29 +243,36 @@
  
 +void (*wpa_supplicant_event)(void *ctx, enum wpa_event_type event,
 +				union wpa_event_data *data);
++void (*wpa_supplicant_event_global)(void *ctx, enum wpa_event_type event,
++				    union wpa_event_data *data);
  
  const struct wpa_driver_ops *const wpa_drivers[] = { NULL };
  
-@@ -1286,6 +1289,8 @@ static void usage(void)
+@@ -1295,6 +1300,10 @@
  	       "option several times.\n");
  }
  
 +extern void supplicant_event(void *ctx, enum wpa_event_type event,
 +				union wpa_event_data *data);
++extern void supplicant_event_global(void *ctx, enum wpa_event_type event,
++				    union wpa_event_data *data);
  
  int main(int argc, char *argv[])
  {
-@@ -1306,6 +1311,7 @@ int main(int argc, char *argv[])
+@@ -1315,6 +1324,8 @@
  	if (os_program_init())
  		return -1;
  
 +	wpa_supplicant_event = supplicant_event;
++	wpa_supplicant_event_global = supplicant_event_global;
  	hostapd_logger_register_cb(hostapd_logger_cb);
  
  	os_memset(&eapol_test, 0, sizeof(eapol_test));
---- a/wpa_supplicant/events.c
-+++ b/wpa_supplicant/events.c
-@@ -3200,7 +3200,7 @@ static void wpa_supplicant_event_assoc_a
+Index: hostapd-2016-10-02/wpa_supplicant/events.c
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/events.c	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/wpa_supplicant/events.c	2017-05-02 08:45:10.760253135 +0530
+@@ -3424,7 +3424,7 @@
  }
  
  
@@ -225,9 +281,20 @@
  			  union wpa_event_data *data)
  {
  	struct wpa_supplicant *wpa_s = ctx;
---- a/wpa_supplicant/wpa_priv.c
-+++ b/wpa_supplicant/wpa_priv.c
-@@ -932,7 +932,7 @@ static void wpa_priv_send_ft_response(st
+@@ -4151,7 +4151,7 @@
+ }
+ 
+ 
+-void wpa_supplicant_event_global(void *ctx, enum wpa_event_type event,
++void supplicant_event_global(void *ctx, enum wpa_event_type event,
+ 				 union wpa_event_data *data)
+ {
+ 	struct wpa_supplicant *wpa_s;
+Index: hostapd-2016-10-02/wpa_supplicant/wpa_priv.c
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/wpa_priv.c	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/wpa_supplicant/wpa_priv.c	2017-05-02 08:43:00.953202172 +0530
+@@ -940,7 +940,7 @@
  }
  
  
@@ -236,30 +303,47 @@
  			  union wpa_event_data *data)
  {
  	struct wpa_priv_interface *iface = ctx;
-@@ -1082,6 +1082,7 @@ int main(int argc, char *argv[])
+@@ -1010,8 +1010,8 @@
+ }
+ 
+ 
+-void wpa_supplicant_event_global(void *ctx, enum wpa_event_type event,
+-				 union wpa_event_data *data)
++void supplicant_event_global(void *ctx, enum wpa_event_type event,
++			     union wpa_event_data *data)
+ {
+ 	struct wpa_priv_global *global = ctx;
+ 	struct wpa_priv_interface *iface;
+@@ -1122,6 +1122,8 @@
  	if (os_program_init())
  		return -1;
  
 +	wpa_supplicant_event = supplicant_event;
++	wpa_supplicant_event_global = supplicant_event_global;
  	wpa_priv_fd_workaround();
  
- 	for (;;) {
---- a/wpa_supplicant/wpa_supplicant.c
-+++ b/wpa_supplicant/wpa_supplicant.c
-@@ -4563,6 +4563,8 @@ static void wpa_supplicant_deinit_iface(
- 	os_free(wpa_s);
+ 	os_memset(&global, 0, sizeof(global));
+Index: hostapd-2016-10-02/wpa_supplicant/wpa_supplicant.c
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/wpa_supplicant.c	2017-05-02 08:41:34.057837397 +0530
++++ hostapd-2016-10-02/wpa_supplicant/wpa_supplicant.c	2017-05-02 08:47:32.171219119 +0530
+@@ -4585,6 +4585,10 @@
+ 	return 0;
  }
  
 +extern void supplicant_event(void *ctx, enum wpa_event_type event,
 +				union wpa_event_data *data);
++extern void supplicant_event_global(void *ctx, enum wpa_event_type event,
++				    union wpa_event_data *data);
  
  /**
-  * wpa_supplicant_add_iface - Add a new network interface
-@@ -4819,6 +4821,8 @@ struct wpa_global * wpa_supplicant_init(
+  * radio_work_done - Indicate that a radio work item has been completed
+@@ -5400,6 +5404,9 @@
  	wpa_msg_register_ifname_cb(wpa_supplicant_msg_ifname_cb);
  #endif /* CONFIG_NO_WPA_MSG */
  
 +	wpa_supplicant_event = supplicant_event;
++	wpa_supplicant_event_global = supplicant_event_global;
 +
  	if (params->wpa_debug_file_path)
  		wpa_debug_open_file(params->wpa_debug_file_path);

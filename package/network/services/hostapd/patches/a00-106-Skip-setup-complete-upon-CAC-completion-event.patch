@@ -1,6 +1,8 @@
---- a/src/ap/dfs.c
-+++ b/src/ap/dfs.c
-@@ -769,7 +769,14 @@ int hostapd_dfs_complete_cac(struct host
+Index: hostapd-2016-10-02/src/ap/dfs.c
+===================================================================
+--- hostapd-2016-10-02.orig/src/ap/dfs.c	2017-05-02 10:01:21.145902266 +0530
++++ hostapd-2016-10-02/src/ap/dfs.c	2017-05-02 10:01:21.145902266 +0530
+@@ -770,7 +770,14 @@
  				      chan_width, cf1, cf2,
  				      HOSTAPD_CHAN_DFS_AVAILABLE);
  			iface->cac_started = 0;

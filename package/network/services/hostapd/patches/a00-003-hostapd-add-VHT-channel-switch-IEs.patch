@@ -1,8 +1,10 @@
---- a/src/ap/beacon.c
-+++ b/src/ap/beacon.c
-@@ -338,6 +338,75 @@
+Index: hostapd-2016-10-02/src/ap/beacon.c
+===================================================================
+--- hostapd-2016-10-02.orig/src/ap/beacon.c	2017-04-24 14:15:48.058515599 +0530
++++ hostapd-2016-10-02/src/ap/beacon.c	2017-04-24 14:17:29.749783107 +0530
+@@ -362,6 +362,74 @@
+ 	return eid;
  }
- 
  
 +static u8 * hostapd_eid_wide_bw_chansw(struct hostapd_data *hapd, u8 *eid)
 +{
@@ -72,13 +74,12 @@
 +	return eid;
 +}
 +
-+
- static u8 * hostapd_add_csa_elems(struct hostapd_data *hapd, u8 *pos,
- 				  u8 *start, unsigned int *csa_counter_off)
- {
-@@ -354,6 +423,11 @@
- 		*csa_counter_off = pos - start - 1;
- 		pos = hostapd_eid_secondary_channel(hapd, pos);
+ 
+ static u8 * hostapd_gen_probe_resp(struct hostapd_data *hapd,
+ 				   const struct ieee80211_mgmt *req,
+@@ -391,6 +459,11 @@
+ 		buflen += 5 + 2 + sizeof(struct ieee80211_vht_capabilities) +
+ 			2 + sizeof(struct ieee80211_vht_operation);
  	}
 +	if (hapd->cs_freq_params.bandwidth > 20 &&
 +		hapd->cs_freq_params.vht_enabled) {
@@ -86,5 +87,5 @@
 +		pos = hostapd_eid_vht_txpwr_env(hapd, pos);
 +	}
  
- 	return pos;
- }
+ 	buflen += hostapd_mbo_ie_len(hapd);
+ 
