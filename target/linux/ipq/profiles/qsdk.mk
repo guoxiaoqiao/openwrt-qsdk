@@ -212,9 +212,7 @@ define Profile/QSDK_Deluxe
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(UTILS) $(TEST_TOOLS) $(KPI) \
 		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
-		kmod-art2 kmod-e1000e \
-		-uboot-ipq40xx -uboot-ipq806x -uboot-ipq806x-fwupgrade-tools \
-		uboot-2016-ipq806x uboot-2016-ipq807x uboot-2016-ipq40xx $(USB_DIAG)
+		kmod-art2 kmod-e1000e $(USB_DIAG)
 endef
 
 define Profile/QSDK_Deluxe/Description
