@@ -126,6 +126,9 @@ endif
 
 # config file list used for compiling
 LINUX_KCONFIG_LIST = $(wildcard $(GENERIC_LINUX_CONFIG) $(LINUX_TARGET_CONFIG) $(LINUX_SUBTARGET_CONFIG) $(TOPDIR)/env/kernel-config)
+ifeq ($(LINUX_KCONFIG_LIST),)
+LINUX_KCONFIG_LIST=$(TOPDIR)/qca/src/linux-$(KERNEL_PATCHVER)/arch/arm/configs/qcom_defconfig
+endif
 
 # default config list for reconfiguring
 # defaults to subtarget if subtarget exists and target does not
