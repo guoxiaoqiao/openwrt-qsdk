@@ -71,7 +71,8 @@ WIFI_11_0_PKGS:=kmod-qca-wifi-11.0-unified-profile \
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
-	qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic
+	qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic \
+	qca-wifi-hk-fw-hw1-10.4-asic
 
 WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo qca-fst-manager
 
@@ -211,9 +212,7 @@ define Profile/QSDK_Deluxe
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(UTILS) $(TEST_TOOLS) $(KPI) \
 		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
-		kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic kmod-e1000e \
-		-uboot-ipq40xx -uboot-ipq806x -uboot-ipq806x-fwupgrade-tools \
-		uboot-2016-ipq806x uboot-2016-ipq807x uboot-2016-ipq40xx $(USB_DIAG)
+		kmod-art2 kmod-e1000e $(USB_DIAG)
 endef
 
 define Profile/QSDK_Deluxe/Description
