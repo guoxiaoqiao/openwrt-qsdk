@@ -29,17 +29,25 @@ enable_smp_affinity_wifi() {
 		board=$(ipq806x_board_name)
 		device="$1"
 		hwcaps=$(cat /sys/class/net/$device/hwcaps)
-
+		wifi_pci_present=`grep -E -m1 wlan /proc/interrupts  |  awk '{print $8;}'`
 
 		[ -n "$device" ] && {
 			case "$board" in
 				ap-dk0*)
-					if [ $device == "wifi2" ]; then
-						irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-					elif [ $device == "wifi1" ];then
-						irq_affinity_num=`grep -E -m3 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+					if [ $wifi_pci_present == "wlan_pci" ]; then
+						if [ $device == "wifi2" ]; then
+							irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+						elif [ $device == "wifi1" ];then
+							irq_affinity_num=`grep -E -m3 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+						else
+							irq_affinity_num=`grep -E -m2 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+						fi
 					else
-						irq_affinity_num=`grep -E -m2 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+						if [ $device == "wifi1" ]; then
+							irq_affinity_num=`grep -E -m2 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+						else
+							irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+						fi
 					fi
 				;;
 				*)
