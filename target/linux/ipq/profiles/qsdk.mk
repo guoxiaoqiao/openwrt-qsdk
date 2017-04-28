@@ -226,11 +226,11 @@ $(eval $(call Profile,QSDK_Deluxe))
 
 define Profile/QSDK_Standard_64
 	NAME:=Qualcomm-Atheros SDK Standard_64 Profile
-	PACKAGES:=$(OPENWRT_STANDARD) kmod-qca-nss-dp kmod-qca-nss-drv qca-nss-fw-hk-retail \
-		$(WIFI_11_0_PKGS) qca-wifi-fw-hw2-10.4-asic $(NETWORKING) \
+	PACKAGES:=$(OPENWRT_STANDARD) kmod-qca-nss-dp kmod-qca-nss-drv qca-nss-fw-hk-retail $(SWITCH_SSDK_PKGS)\
+		$(WIFI_11_0_PKGS) $(SHORTCUT_FE) $(MAP_PKGS) qca-wifi-fw-hw2-10.4-asic $(NETWORKING) \
 		$(STORAGE) $(COREBSP_UTILS) $(UTILS) -profilerd $(TEST_TOOLS) $(KPI) \
 		$(SWITCH_SSDK_NOHNAT_PKGS) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic \
-		$(AUDIO) -qca-icm $(CD_ROUTER) -lacpd -isc-dhcp-relay-ipv4 -isc-dhcp-relay-ipv6
+		$(AUDIO) -qca-icm $(CD_ROUTER) -lacpd -isc-dhcp-relay-ipv4 -isc-dhcp-relay-ipv6 $(VIDEO)
 endef
 
 define Profile/QSDK_Standard_64/Description
