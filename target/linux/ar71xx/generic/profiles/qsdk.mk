@@ -108,7 +108,6 @@ define Profile/QSDK_Premium_Beeliner_Router/Description
   - Bridging and routing networking
   - QCA-WiFi driver 10.4 configuration
   - LuCI web configuration interface
-  - Streamboost3
   - USB hard drive support
   - Samba
   - IPv4/IPv6
