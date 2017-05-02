@@ -26,7 +26,7 @@ NSS_MACSEC:= \
 
 NSS_MACSEC_11:= \
 	kmod-qca-nss-macsec \
-	qca-wpa-supplicant-11.0-macsec
+	qca-wpa-supplicant-macsec
 
 QCA_ECM:= kmod-qca-nss-ecm
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
@@ -63,10 +63,10 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
     qcmbr-10.4 qca-wrapd-10.4 qca-wapid qca-acfg-10.4 whc whc-ui \
     qca-lowi qca-iface-mgr-10.4 athdiag
 
-WIFI_11_0_PKGS:=kmod-qca-wifi-11.0-unified-profile \
-	qca-hostap-11.0 qca-hostapd-cli-11.0 qca-wpa-supplicant-11.0 \
-	qca-wpa-cli-11.0 qca-spectral-11.0 qca-wpc-10.4 sigma-dut-10.4 \
-	qcmbr-10.4 qca-wrapd-11.0 qca-wapid qca-acfg-11.0 whc whc-ui \
+WIFI_PKGS:=kmod-qca-wifi-unified-profile \
+	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
+	qca-wpa-cli qca-spectral qca-wpc sigma-dut-10.4 \
+	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
 	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
@@ -157,7 +157,7 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
+		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
@@ -174,7 +174,7 @@ $(eval $(call Profile,QSDK_Premium))
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_10_4_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(WIFI_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw6-10.4-asic \
 		$(FAIL_SAFE)
@@ -190,7 +190,7 @@ $(eval $(call Profile,QSDK_Standard))
 define Profile/QSDK_Enterprise
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_ENTERPRISE) $(SWITCH_SSDK_NOHNAT_PKGS) \
-		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
 		$(IPSEC) $(CD_ROUTER) $(AQ_PHY) -lacpd
@@ -206,7 +206,7 @@ $(eval $(call Profile,QSDK_Enterprise))
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
-		$(SWITCH_SSDK_PKGS) $(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) \
+		$(SWITCH_SSDK_PKGS) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) \
 		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
@@ -217,7 +217,7 @@ endef
 
 define Profile/QSDK_Deluxe/Description
 	QSDK Deluxe package set configuration.
-	Enables wifi 11.0 source packages
+	Enables wifi source packages
 	Intended for IPQ807x
 endef
 
@@ -227,7 +227,7 @@ $(eval $(call Profile,QSDK_Deluxe))
 define Profile/QSDK_Standard_64
 	NAME:=Qualcomm-Atheros SDK Standard_64 Profile
 	PACKAGES:=$(OPENWRT_STANDARD) kmod-qca-nss-dp kmod-qca-nss-drv qca-nss-fw-hk-retail $(SWITCH_SSDK_PKGS)\
-		$(WIFI_11_0_PKGS) $(SHORTCUT_FE) $(MAP_PKGS) qca-wifi-fw-hw2-10.4-asic $(NETWORKING) \
+		$(WIFI_PKGS) $(SHORTCUT_FE) $(MAP_PKGS) qca-wifi-fw-hw2-10.4-asic $(NETWORKING) \
 		$(STORAGE) $(COREBSP_UTILS) $(UTILS) -profilerd $(TEST_TOOLS) $(KPI) \
 		 kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic $(USB_DIAG) $(FAILSAFE) $(MAP_PKGS) \
 		$(AUDIO) -qca-icm $(CD_ROUTER) -lacpd -isc-dhcp-relay-ipv4 -isc-dhcp-relay-ipv6 $(VIDEO) \
@@ -236,7 +236,7 @@ endef
 
 define Profile/QSDK_Standard_64/Description
 	QSDK Standard_64 package set configuration.
-	Enables wifi 11.0 source packages
+	Enables wifi source packages
 endef
 
 $(eval $(call Profile,QSDK_Standard_64))

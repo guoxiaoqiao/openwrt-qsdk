@@ -30,7 +30,7 @@ NSS_MACSEC:= \
 
 NSS_MACSEC_11:= \
 	kmod-qca-nss-macsec \
-	qca-wpa-supplicant-11.0-macsec
+	qca-wpa-supplicant-macsec
 
 QCA_ECM:= kmod-qca-nss-ecm
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
@@ -70,10 +70,10 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
     qcmbr-10.4 qca-wrapd-10.4 qca-wapid qca-acfg-10.4 whc whc-ui \
     qca-lowi qca-iface-mgr-10.4 athdiag
 
-WIFI_11_0_PKGS:=kmod-qca-wifi-11.0-unified-profile \
-	qca-hostap-11.0 qca-hostapd-cli-11.0 qca-wpa-supplicant-11.0 \
-	qca-wpa-cli-11.0 qca-spectral-11.0 qca-wpc-10.4 sigma-dut-10.4 \
-	qcmbr-10.4 qca-wrapd-11.0 qca-wapid qca-acfg-11.0 whc whc-ui \
+WIFI_PKGS:=kmod-qca-wifi-unified-profile \
+	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
+	qca-wpa-cli qca-spectral qca-wpc sigma-dut-10.4 \
+	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
 	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
@@ -213,7 +213,7 @@ $(eval $(call Profile,QSDK_Enterprise))
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_DELUXE) \
-		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) \
+		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) \
 		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
@@ -226,7 +226,7 @@ endef
 
 define Profile/QSDK_Deluxe/Description
 	QSDK Deluxe package set configuration.
-	Enables wifi 11.0 source packages
+	Enables wifi source packages
 	Intended for IPQ807x
 endef
 
@@ -235,7 +235,7 @@ $(eval $(call Profile,QSDK_Deluxe))
 define Profile/QSDK_Deluxe_Temp
 	NAME:=Qualcomm-Atheros SDK Deluxe Temporary Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
-		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_11_0_PKGS) $(WIFI_10_4_FW_PKGS) \
+		$(SWITCH_SSDK_NOHNAT_PKGS) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) \
 		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
@@ -248,7 +248,7 @@ endef
 
 define Profile/QSDK_Deluxe_Temp/Description
 	QSDK Deluxe Temporary package set configuration.
-	Enables wifi 11.0 source packages
+	Enables wifi source packages
 	Intended for IPQ806x/IPQ40xx
 endef
 
