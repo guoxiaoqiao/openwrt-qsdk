@@ -91,8 +91,10 @@ HYFI:=hyfi hyfi-ui
 QCA_MAD:=qca-mad
 
 AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
+
 #These packages depend on SWITCH_SSDK_PKGS
-IGMPSNOOING_RSTP:=rstp qca-mcs-apps
+IGMPSNOOPING_RSTP:=rstp
+#qca-mcs-apps
 
 #IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6
 IPSEC:=kmod-ipsec kmod-ipsec4 kmod-ipsec6
@@ -122,11 +124,10 @@ define Profile/QSDK_Premium
 		$(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) $(SWITCH_SSDK_PKGS) \
 		$(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
-		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW)
+		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP)
 endef
 
 #		$(HYFI) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(CNSS_DIAG) kmod-art2 \
-#		$(IGMPSNOOING_RSTP) \
 #		$(NSS_USERSPACE) $(NSS_RMNET) \
 #		$(NSS_MACSEC) $(QCA_EDMA) \
 #		$(IPSEC) $(QCA_RFS) $(SHORTCUT_FE) \
