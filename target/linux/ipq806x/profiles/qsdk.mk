@@ -26,7 +26,7 @@ NSS_ENTERPRISE:= \
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
-	qca-wpa-supplicant-10.4-macsec
+	qca-wpa-supplicant-macsec
 
 NSS_MACSEC_11:= \
 	kmod-qca-nss-macsec \
@@ -63,12 +63,6 @@ WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad-mesh hostapd-utils \
 		 athtestcmd ath10k-firmware-qca988x ath10k-firmware-qca9887 \
 		 ath10k-firmware-qca9888 ath10k-firmware-qca9984 \
 		 ath10k-firmware-qca4019
-
-WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
-    qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
-    qca-wpa-cli-10.4 qca-spectral-10.4 qca-wpc-10.4 sigma-dut-10.4 \
-    qcmbr-10.4 qca-wrapd-10.4 qca-wapid qca-acfg-10.4 whc whc-ui \
-    qca-lowi qca-iface-mgr-10.4 athdiag
 
 WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
@@ -164,7 +158,7 @@ $(eval $(call Profile,QSDK_Open))
 define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
+		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
@@ -173,7 +167,7 @@ endef
 
 define Profile/QSDK_Premium/Description
 	QSDK Premium package set configuration.
-	Enables qca-wifi 10.4 packages
+	Enables qca-wifi packages
 endef
 
 $(eval $(call Profile,QSDK_Premium))
@@ -181,7 +175,7 @@ $(eval $(call Profile,QSDK_Premium))
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_10_4_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(WIFI_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		qca-wifi-fw-hw5-10.4-asic \
 		$(FAIL_SAFE)
@@ -189,7 +183,7 @@ endef
 
 define Profile/QSDK_Standard/Description
 	QSDK Standard package set configuration.
-	Enables qca-wifi 10.4 packages
+	Enables qca-wifi packages
 endef
 
 $(eval $(call Profile,QSDK_Standard))
@@ -197,7 +191,7 @@ $(eval $(call Profile,QSDK_Standard))
 define Profile/QSDK_Enterprise
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_ENTERPRISE) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
 		$(IPSEC) $(CD_ROUTER) $(AQ_PHY)
@@ -205,7 +199,7 @@ endef
 
 define Profile/QSDK_Enterprise/Description
 	QSDK Enterprise package set configuration.
-	Enables qca-wifi 10.4 packages
+	Enables qca-wifi packages
 endef
 
 $(eval $(call Profile,QSDK_Enterprise))
