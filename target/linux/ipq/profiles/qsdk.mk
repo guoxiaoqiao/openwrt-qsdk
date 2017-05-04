@@ -230,7 +230,8 @@ define Profile/QSDK_Standard_64
 		$(WIFI_11_0_PKGS) $(SHORTCUT_FE) $(MAP_PKGS) qca-wifi-fw-hw2-10.4-asic $(NETWORKING) \
 		$(STORAGE) $(COREBSP_UTILS) $(UTILS) -profilerd $(TEST_TOOLS) $(KPI) \
 		 kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic $(USB_DIAG) $(FAILSAFE) $(MAP_PKGS) \
-		$(AUDIO) -qca-icm $(CD_ROUTER) -lacpd -isc-dhcp-relay-ipv4 -isc-dhcp-relay-ipv6 $(VIDEO)
+		$(AUDIO) -qca-icm $(CD_ROUTER) -lacpd -isc-dhcp-relay-ipv4 -isc-dhcp-relay-ipv6 $(VIDEO) \
+		$(IGMPSNOOING_RSTP)
 endef
 
 define Profile/QSDK_Standard_64/Description
