@@ -425,6 +425,52 @@ config KERNEL_ENCRYPTED_KEYS
     depends on KERNEL_KEYS
     default n
 
+config KERNEL_MODULE_SIG
+	bool "Enable kernel module signing"
+	default n
+
+if KERNEL_MODULE_SIG
+	config KERNEL_MODULE_SIG_ALL
+		bool "Automatically sign all modules"
+		default y
+
+	config KERNEL_MODULE_SIG_FORCE
+		bool "Require modules to be validly signed"
+
+	config KERNEL_MODULE_SIG_KEY
+		string "File name or PKCS#11 URI of module signing key"
+		default "certs/signing_key.pem"
+
+choice
+	prompt "Which hash algorithm should kernel modules be signed with?"
+	depends on KERNEL_MODULE_SIG
+
+	config KERNEL_MODULE_SIG_SHA1
+		bool "Sign modules with SHA-1"
+		default y if SIGN_KERNEL_MODULES
+
+	config KERNEL_MODULE_SIG_SHA224
+		bool "Sign modules with SHA-224"
+
+	config KERNEL_MODULE_SIG_SHA256
+		bool "Sign modules with SHA-256"
+
+	config KERNEL_MODULE_SIG_SHA384
+		bool "Sign modules with SHA-384"
+
+	config KERNEL_MODULE_SIG_SHA512
+		bool "Sign modules with SHA-512"
+endchoice
+
+	config KERNEL_MODULE_SIG_HASH
+		string
+		default "sha1"   if KERNEL_MODULE_SIG_SHA1
+		default "sha224" if KERNEL_MODULE_SIG_SHA224
+		default "sha256" if KERNEL_MODULE_SIG_SHA256
+		default "sha384" if KERNEL_MODULE_SIG_SHA384
+		default "sha512" if KERNEL_MODULE_SIG_SHA512
+endif
+
 #
 # CGROUP support symbols
 #

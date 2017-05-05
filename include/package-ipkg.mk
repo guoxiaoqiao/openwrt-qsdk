@@ -11,7 +11,7 @@ endif
 
 # invoke ipkg-build with some default options
 IPKG_BUILD:= \
-  $(SCRIPT_DIR)/ipkg-build -c -o 0 -g 0
+  $(SCRIPT_DIR)/ipkg-build -c -o 0 -g 0 $(if $(CONFIG_KERNEL_MODULE_SIG),-p $(LINUX_DIR)/scripts/sign-file -s $(CONFIG_KERNEL_MODULE_SIG_HASH))
 
 IPKG_REMOVE:= \
   $(SCRIPT_DIR)/ipkg-remove

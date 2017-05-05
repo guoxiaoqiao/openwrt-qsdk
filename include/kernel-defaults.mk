@@ -114,6 +114,7 @@ endef
 
 define Kernel/CompileModules/Default
 	rm -f $(LINUX_DIR)/vmlinux $(LINUX_DIR)/System.map
+	+$(KERNEL_MAKE) certs
 	+$(KERNEL_MAKE) modules
 endef
 

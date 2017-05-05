@@ -80,7 +80,7 @@ pkg_appears_sane() {
 ogargs=""
 noclean=0
 usage="Usage: $0 [-c] [-C] [-o owner] [-g group] <pkg_directory> [<destination_directory>]"
-while getopts "cg:ho:v" opt; do
+while getopts "cg:ho:v:p:s:" opt; do
     case $opt in
 	o ) owner=$OPTARG
 	    ogargs="--owner=$owner"
@@ -90,6 +90,8 @@ while getopts "cg:ho:v" opt; do
 	    ;;
 	c ) ;;
 	C ) noclean=1;;
+	p ) sign_file=$OPTARG;;
+	s ) sha=$OPTARG;;
 	v ) echo $version
 	    exit 0
 	    ;;
@@ -157,6 +159,12 @@ rm $tmp_dir/tarX
 echo "2.0" > $tmp_dir/debian-binary
 
 pkg_file=$dest_dir/${pkg}_${version}_${arch}.ipk
+[ -z "$sign_file" ] || {
+	for file in `find $pkg_dir -type f | grep ".ko"`
+	do
+		eval "$sign_file $sha $(dirname $sign_file)/../certs/signing_key.pem $(dirname $sign_file)/../certs/signing_key.x509 $file"
+	done
+}
 rm -f $pkg_file
 ( cd $tmp_dir && $TAR $ogargs --format=gnu --sort=name -cf -  --mtime="$TIMESTAMP" ./debian-binary ./data.tar.gz ./control.tar.gz | $GZIP -n - > $pkg_file )
 
