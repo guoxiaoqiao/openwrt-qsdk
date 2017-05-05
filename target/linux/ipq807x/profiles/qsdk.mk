@@ -58,7 +58,7 @@ OPENWRT_STANDARD:= \
 	luci openssl-util
 
 STORAGE:=kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-iso8859-1  \
-	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs
+	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs losetup
 
 TEST_TOOLS:=ethtool i2c-tools tcpdump
 
