@@ -19,8 +19,8 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_PACKAGE_kmod-qca-wifi-perf \
 	CONFIG_PACKAGE_kmod-qca-wifi-unified-perf \
 	CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf \
-	CONFIG_PACKAGE_kmod-qca-wifi-10.4-akronite-perf \
-	CONFIG_PACKAGE_kmod-qca-wifi-10.4-unified-profile \
+	CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf \
+	CONFIG_PACKAGE_kmod-qca-wifi-unified-profile \
 	CONFIG_PACKAGE_kmod-mac80211 \
 	CONFIG_PACKAGE_kmod-qca-mac80211 \
 	CONFIG_PACKAGE_kmod-qca-wil6210
@@ -28,8 +28,8 @@ PKG_CONFIG_DEPENDS := \
 PKG_BUILD_DEPENDS := \
       PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf +PACKAGE_kmod-qca-wifi-perf:kmod-qca-wifi-perf \
 	  +PACKAGE_kmod-qca-wifi-unified-perf:kmod-qca-wifi-unified-perf \
-	  +PACKAGE_kmod-qca-wifi-10.4-akronite-perf:kmod-qca-wifi-10.4-akronite-perf \
-	  +PACKAGE_kmod-qca-wifi-10.4-unified-profile:kmod-qca-wifi-10.4-unified-profile
+	  +PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf \
+	  +PACKAGE_kmod-qca-wifi-unified-profile:kmod-qca-wifi-unified-profile
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -41,8 +41,8 @@ define Package/libiwinfo
   DEPENDS:=+PACKAGE_kmod-mac80211:libnl-tiny  +PACKAGE_kmod-qca-mac80211:libnl-tiny +PACKAGE_kmod-qca-wil6210:libnl-tiny \
            +PACKAGE_kmod-qca-wifi-perf:kmod-qca-wifi-perf +CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf \
 	   +PACKAGE_kmod-qca-wifi-unified-perf:kmod-qca-wifi-unified-perf \
-	   +PACKAGE_kmod-qca-wifi-10.4-akronite-perf:kmod-qca-wifi-10.4-akronite-perf \
-	   +PACKAGE_kmod-qca-wifi-10.4-unified-profile:kmod-qca-wifi-10.4-unified-profile
+	   +PACKAGE_kmod-qca-wifi-akronite-perf:kmod-qca-wifi-akronite-perf \
+	   +PACKAGE_kmod-qca-wifi-unified-profile:kmod-qca-wifi-unified-profile
 
   MAINTAINER:=Jo-Philipp Wich <xm@subsignal.org>
 endef
@@ -97,8 +97,8 @@ IWINFO_BACKENDS := \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-perf),qcawifi) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-unified-perf),qcawifi) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf),qcawifi) \
-	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-10.4-akronite-perf),qcawifi) \
-	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-10.4-unified-profile),qcawifi) \
+	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-akronite-perf),qcawifi) \
+	$(if $(CONFIG_PACKAGE_kmod-qca-wifi-unified-profile),qcawifi) \
 	$(if $(CONFIG_PACKAGE_kmod-mac80211),nl80211) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-mac80211),nl80211) \
 	$(if $(CONFIG_PACKAGE_kmod-qca-wil6210),nl80211)

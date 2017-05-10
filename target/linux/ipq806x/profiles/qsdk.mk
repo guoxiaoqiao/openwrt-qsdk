@@ -22,10 +22,10 @@ PACKAGES_WIFI_10_2:=kmod-qca-wifi-akronite-perf kmod-art2 qca-hostap-10.4 qca-ho
 	  qca-acfg qca-wrapd whc whc-ui qca-thermald-10.4 qca-wifi-fw-hw1-10.2 qca-wifi-fw-hw1-10.2-lteu \
 	  qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
 
-PACKAGES_WIFI_10_4:=kmod-qca-wifi-10.4-unified-profile kmod-art2 \
-	qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4-macsec \
-	qca-wpa-cli-10.4 qca-wapid sigma-dut-10.4 qca-wpc-10.4 \
-	qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc whc-ui \
+PACKAGES_WIFI:=kmod-qca-wifi-unified-profile kmod-art2 \
+	qca-hostap qca-hostapd-cli qca-wpa-supplicant-macsec \
+	qca-wpa-cli qca-wapid sigma-dut-10.4 qca-wpc \
+	qca-acfg qca-wrapd qca-spectral qcmbr-10.4 whc whc-ui \
 	qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw3-10.4-asic \
 	qca-wifi-fw-hw4-10.4-asic qca-wifi-fw-hw4-10.4-emu_m2m qca-wifi-fw-hw4-10.4-emu_bb \
 	qca-thermald-10.4 qca-wifi-fw-hw6-10.4-asic qca-wifi-fw-hw7-10.4-asic \
@@ -90,12 +90,12 @@ define Profile/QSDK_Standard_Beeliner
 		kmod-qca-nss-drv-pptp \
 		luci-app-openswan openswan-nss kmod-openswan-nss \
 		kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf kmod-qca-nss-crypto kmod-qca-nss-cfi \
-		$(PACKAGES_WIFI_10_4) kmod-qca-wil6210 wigig-firmware iwinfo $(FAILSAFE)
+		$(PACKAGES_WIFI) kmod-qca-wil6210 wigig-firmware iwinfo $(FAILSAFE)
 endef
 
 define Profile/QSDK_Standard_Beeliner/Description
 	QSDK Standard package set configuration.
-	This profile provides basic Wi-Fi router features using the QCA 10.4 Wi-Fi driver. It supports:
+	This profile provides basic Wi-Fi router features using the QCA Wi-Fi driver. It supports:
 	-Bridging and routing networking
 	-LuCI web configuration interface
 	-Integrated 11abgn/ac support using the qca-wifi driver
@@ -120,7 +120,7 @@ define Profile/QSDK_Enterprise_Beeliner
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
 	PACKAGES+=luci-app-openswan kmod-crypto-ocf \
                 $(PACKAGES_NSS_ENTERPRISE) \
-                $(PACKAGES_WIFI_10_4) $(FAILSAFE)
+                $(PACKAGES_WIFI) $(FAILSAFE)
 endef
 
 define Profile/QSDK_Enterprise_Beeliner/Description
