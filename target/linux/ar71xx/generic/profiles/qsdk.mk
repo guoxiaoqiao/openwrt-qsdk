@@ -20,7 +20,7 @@ ALLJOYN:=alljoyn alljoyn-about alljoyn-c alljoyn-config \
 	 alljoyn-services_common
 
 WIFI_OPEN:=-kmod-ath5k -kmod-qca-ath -kmod-qca-ath9k -kmod-qca-ath10k \
-	   kmod-ath kmod-ath9k hostapd hostapd-utils iwinfo wpa-supplicant-p2p \
+	   kmod-ath kmod-ath9k hostapd hostapd-utils iwinfo wpa-supplicant \
 	   wpa-cli wireless-tools -wpad-mini
 
 BLUEZ:=bluez-daemon kmod-bluetooth usbutils
