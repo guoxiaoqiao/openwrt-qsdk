@@ -231,7 +231,7 @@ define Profile/QSDK_Standard_64
 		$(STORAGE) $(COREBSP_UTILS) $(UTILS) -profilerd $(TEST_TOOLS) $(KPI) \
 		 kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic $(USB_DIAG) $(FAILSAFE) $(MAP_PKGS) \
 		$(AUDIO) -qca-icm $(CD_ROUTER) -lacpd -isc-dhcp-relay-ipv4 -isc-dhcp-relay-ipv6 $(VIDEO) \
-		$(IGMPSNOOING_RSTP)
+		$(IGMPSNOOING_RSTP) $(NSS_CLIENTS_DELUX) $(QCA_ECM)
 endef
 
 define Profile/QSDK_Standard_64/Description
