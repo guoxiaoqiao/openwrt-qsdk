@@ -11,6 +11,9 @@ NSS_COMMON:= \
 	qca-nss-fw-hk-retail \
 	$(QCA_EDMA)
 
+NSS_EIP197_FW:= \
+	qca-nss-fw-hk-eip-retail
+
 NSS_STANDARD:= \
 	qca-nss-fw2-retail
 
@@ -212,7 +215,7 @@ define Profile/QSDK_Deluxe
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(QCA_LITHIUM) $(NSS_CLIENTS_DELUX) \
+		$(QCA_LITHIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(NSS_CLIENTS_DELUX) \
 		kmod-art2 kmod-e1000e $(USB_DIAG)
 endef
 
@@ -232,7 +235,7 @@ define Profile/QSDK_Standard_64
 		$(STORAGE) $(COREBSP_UTILS) $(UTILS) -profilerd $(TEST_TOOLS) $(KPI) \
 		 kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic $(USB_DIAG) $(FAILSAFE) $(MAP_PKGS) \
 		$(AUDIO) -qca-icm $(CD_ROUTER) -lacpd -isc-dhcp-relay-ipv4 -isc-dhcp-relay-ipv6 $(VIDEO) \
-		$(IGMPSNOOING_RSTP) $(NSS_CLIENTS_DELUX) $(QCA_ECM)
+		$(IGMPSNOOING_RSTP) $(NSS_CLIENTS_DELUX) $(QCA_ECM) $(NSS_CRYPTO) $(NSS_EIP197_FW)
 endef
 
 define Profile/QSDK_Standard_64/Description
