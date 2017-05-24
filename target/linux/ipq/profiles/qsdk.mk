@@ -234,7 +234,7 @@ $(eval $(call Profile,QSDK_Deluxe))
 define Profile/QSDK_Standard_64
 	NAME:=Qualcomm-Atheros SDK Standard_64 Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		qca-nss-fw-hk-retail $(NSS_EIP197_FW) \
+		$(AQ_PHY) $(NSS_EIP197_FW) \
 		$(WIFI_PKGS) qca-wifi-fw-hw2-10.4-asic $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \

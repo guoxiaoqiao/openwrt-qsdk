@@ -112,6 +112,7 @@ $(eval $(call KernelPackage,mii))
 define KernelPackage/aq_phy
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Aquantia PHY Driver
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq_ipq806x
   KCONFIG:=CONFIG_AQ_PHY
   FILES:=$(LINUX_DIR)/drivers/net/phy/aq_phy.ko@lt4.4 \
          $(LINUX_DIR)/drivers/net/phy/qca_85xx/aq_phy.ko@ge4.4
@@ -127,6 +128,7 @@ $(eval $(call KernelPackage,aq_phy))
 define KernelPackage/qca_85xx_sw
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=QCA 85xx Switch Driver
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq_ipq806x
   KCONFIG:=CONFIG_QCA_85XX_SWITCH
   FILES:=$(LINUX_DIR)/drivers/net/phy/qca_85xx_sw.ko@lt4.4 \
          $(LINUX_DIR)/drivers/net/phy/qca_85xx/qca_85xx_sw.ko@ge4.4
