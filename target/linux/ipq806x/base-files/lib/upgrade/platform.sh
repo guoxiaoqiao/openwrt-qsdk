@@ -244,6 +244,11 @@ erase_emmc_config() {
 	fi
 }
 
+platform_pre_upgrade() {
+	cp /sbin/upgraded /tmp
+	ubus call system nandupgrade "{\"path\": \"$1\" }"
+}
+
 platform_check_image() {
 	local board=$(ipq806x_board_name)
 
