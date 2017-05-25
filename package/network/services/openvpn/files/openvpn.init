@@ -104,7 +104,7 @@ start_instance() {
 		persist_remote_ip persist_tun ping_timer_rem pull push_reset \
 		remote_random rmtun route_noexec route_nopull single_session socks_proxy_retry \
 		suppress_timestamps tcp_nodelay test_crypto tls_client tls_exit tls_server \
-		tun_ipv6 up_delay up_restart username_as_common_name
+		tun_ipv6 up_delay up_restart username_as_common_name enable_dca
 
 	# append params
 	append_params "$s" \

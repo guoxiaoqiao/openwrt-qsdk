@@ -63,4 +63,11 @@ config OPENVPN_polarssl_ENABLE_SMALL
 	  enable smaller executable size (disable OCC, usage
 	  message, and verb 4 parm list)
 
+config OPENVPN_polarssl_ENABLE_DCA
+	bool "Enable Data Channel Acceleration"
+	default y
+	help
+	  enable support for data channel acceleration (Dependent on
+	  QCA platforms.)
+
 endif
