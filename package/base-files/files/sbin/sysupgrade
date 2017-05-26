@@ -131,6 +131,10 @@ sysupgrade_image_check="platform_check_image"
 
 include /lib/upgrade
 
+[ "$ARGC" -ge 2 ] && {
+	cat /tmp/sysinfo/model | grep "IPQ" && shift && ARGV=$1
+}
+
 [ "$1" = "nand" ] && nand_upgrade_stage2 $@
 
 do_save_conffiles() {
@@ -219,7 +223,7 @@ run_hooks "" $sysupgrade_pre_upgrade
 # killing processes yet or calling ubus system upgrade method.
 # This is needed e.g. on NAND devices where we just want to trigger stage1 at
 # this point.
-if type 'platform_pre_upgrade' >/dev/null 2>/dev/null; then
+if [ "$SAVE_CONFIG" -eq 1 ] && type 'platform_pre_upgrade' >/dev/null 2>/dev/null; then
 	platform_pre_upgrade "$ARGV"
 fi
 
