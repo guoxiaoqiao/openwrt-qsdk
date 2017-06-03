@@ -89,6 +89,9 @@ ipq806x_board_detect() {
 	*"HK01")
 		name="hk01"
 		;;
+	*"HK02")
+		name="hk02"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"
