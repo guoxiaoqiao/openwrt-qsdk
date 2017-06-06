@@ -121,6 +121,13 @@ config KERNEL_DEBUG_INFO
 	help
 	  This will compile your kernel and modules with debug information.
 
+config KERNEL_DEBUG_INFO_REDUCED
+	bool "Compile the kernel with reduced debugging information"
+	default y
+	depends on KERNEL_DEBUG_KERNEL
+	help
+	  This will compile your kernel and modules with reduced debug information.
+
 config KERNEL_DEBUG_LL_UART_NONE
 	bool
 	default n
