@@ -105,7 +105,7 @@ ap-dk05.1-c1)
 	;;
 hk01|\
 hk02)
-	ucidef_set_interfaces_lan_wan "eth1 eth2" "eth0"
+	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3 eth4" "eth0"
 	;;
 *)
 	echo "Unsupported hardware. Network interfaces not intialized"
