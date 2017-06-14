@@ -41,11 +41,11 @@ QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
 NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-tun6rd \
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
-	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr kmod-qca-nss-drv-ppe-qdisc \
+	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr
 
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile \
-	kmod-qca-nss-drv-ppe-qdisc kmod-qca-nss-drv-bridge-mgr
+	kmod- kmod-qca-nss-drv-bridge-mgr
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
