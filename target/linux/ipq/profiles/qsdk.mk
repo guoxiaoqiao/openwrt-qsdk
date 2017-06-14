@@ -8,20 +8,24 @@ NSS_COMMON:= \
 	kmod-qca-nss-dp \
 	kmod-qca-nss-drv \
 	kmod-qca-nss-gmac \
-	qca-nss-fw-hk-retail \
 	$(QCA_EDMA)
 
 NSS_EIP197_FW:= \
 	qca-nss-fw-hk-eip-retail
 
 NSS_STANDARD:= \
-	qca-nss-fw2-retail
+	qca-nss-fw2-retail \
+	qca-nss-fw-hk-retail
 
 NSS_ENTERPRISE:= \
 	qca-nss-fw2-enterprise \
 	qca-nss-fw2-enterprise_custA \
 	qca-nss-fw2-enterprise_custC \
-	qca-nss-fw2-enterprise_custR
+	qca-nss-fw2-enterprise_custR \
+	qca-nss-fw-hk-enterprise \
+	qca-nss-fw-hk-enterprise_custA \
+	qca-nss-fw-hk-enterprise_custC \
+	qca-nss-fw-hk-enterprise_custR
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
@@ -35,18 +39,13 @@ QCA_ECM:= kmod-qca-nss-ecm
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
 QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
-NSS_CLIENTS:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile kmod-qca-nss-drv-tun6rd \
+NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-tun6rd \
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
 	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr kmod-qca-nss-drv-ppe-qdisc \
 	kmod-qca-nss-drv-bridge-mgr
 
-NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile
-
-# Once all NSS clients get ported to 4.4 we can use NSS_CLIENTS instead.
-NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-ppe-qdisc kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-bridge-mgr \
-                    kmod-qca-nss-drv-tun6rd kmod-qca-nss-drv-tunipip6 \
-                    kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
-                    kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr
+NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile \
+	kmod-qca-nss-drv-ppe-qdisc kmod-qca-nss-drv-bridge-mgr
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
 
@@ -142,7 +141,7 @@ ifneq ($(LINUX_VERSION),3.18.21)
 	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
 	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) \
-	$(NSS_CRYPTO) $(NSS_CLIENTS) $(MAP_PKGS) $(AQ_PHY) $(FAILSAFE) \
+	$(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(MAP_PKGS) $(AQ_PHY) $(FAILSAFE) \
 	$(SWITCH_OPEN_PKGS)
 endif
 
@@ -166,7 +165,7 @@ define Profile/QSDK_Premium
 		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
-		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
+		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM)
 endef
@@ -218,7 +217,7 @@ define Profile/QSDK_Deluxe
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) $(IPSEC) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
 		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
 		$(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(QCA_LITHIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(NSS_CLIENTS_DELUX) \
+		$(QCA_LITHIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(NSS_CLIENTS_STANDARD) \
 		kmod-art2 kmod-e1000e $(USB_DIAG)
 endef
 
@@ -238,7 +237,7 @@ define Profile/QSDK_Standard_64
 		$(WIFI_PKGS) qca-wifi-fw-hw2-10.4-asic $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
-		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
+		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(FAILSAFE) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic \
 		-lacpd $(USB_DIAG) $(KPI)
 endef
