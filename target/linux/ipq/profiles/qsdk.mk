@@ -11,7 +11,7 @@ NSS_COMMON:= \
 	$(QCA_EDMA)
 
 NSS_EIP197_FW:= \
-	qca-nss-fw-hk-eip-retail
+	qca-nss-fw-hk-eip
 
 NSS_STANDARD:= \
 	qca-nss-fw2-retail \
@@ -167,7 +167,7 @@ define Profile/QSDK_Premium
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
-		$(QCA_LITHIUM)
+		$(QCA_LITHIUM) $(NSS_EIP197_FW)
 endef
 
 define Profile/QSDK_Premium/Description
@@ -199,7 +199,7 @@ define Profile/QSDK_Enterprise
 		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
-		$(IPSEC) $(CD_ROUTER) $(AQ_PHY) -lacpd
+		$(IPSEC) $(NSS_EIP197_FW) $(CD_ROUTER) $(AQ_PHY) -lacpd
 endef
 
 define Profile/QSDK_Enterprise/Description
