@@ -10,7 +10,8 @@ USE_REFRESH=1
 RAMFS_COPY_DATA=/lib/ipq806x.sh
 RAMFS_COPY_BIN="/usr/bin/dumpimage /bin/mktemp /usr/sbin/mkfs.ubifs
 	/usr/sbin/ubiattach /usr/sbin/ubidetach /usr/sbin/ubiformat /usr/sbin/ubimkvol
-	/usr/sbin/ubiupdatevol /usr/bin/basename /bin/rm /usr/bin/find"
+	/usr/sbin/ubiupdatevol /usr/bin/basename /bin/rm /usr/bin/find
+	/usr/sbin/mkfs.ext4"
 
 get_full_section_name() {
 	local img=$1
@@ -49,7 +50,7 @@ image_demux() {
 	for sec in $(print_sections ${img}); do
 		local fullname=$(get_full_section_name ${img} ${sec})
 
-		dumpimage -i ${img} -o /tmp/${fullname}.bin ${fullname} > /dev/null || { \
+		dumpimage -i ${img} -o /tmp/${fullname}.bin -T "flat_dt" ${fullname} > /dev/null || { \
 			echo "Error while extracting \"${sec}\" from ${img}"
 			return 1
 		}
@@ -237,9 +238,15 @@ flash_section() {
 
 erase_emmc_config() {
 	local emmcblock="$(find_mmc_part "rootfs_data")"
-	if [ -e "$emmcblock" -a "$SAVE_CONFIG" -ne 1 ]; then
+	if [ -e "$emmcblock" ]; then
 		dd if=/dev/zero of=${emmcblock}
+		mkfs.ext4 "$emmcblock"
 	fi
+}
+
+platform_pre_upgrade() {
+	cp /sbin/upgraded /tmp
+	ubus call system nandupgrade "{\"path\": \"$1\" }"
 }
 
 platform_check_image() {
