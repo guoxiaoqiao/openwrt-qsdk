@@ -126,7 +126,7 @@ define Image/BuildKernel/ipq807x
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ807X_KERNEL_LOADADDR));)
 
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq807x-hkxx, \
-		$(call FindDeviceTrees, qcom-ipq807x-h), $(IPQ807X_KERNEL_LOADADDR))
+		$(call FindDeviceTrees, qcom-ipq807x-), $(IPQ807X_KERNEL_LOADADDR))
 endef
 
 define Image/BuildKernel/ipq807x_64
@@ -134,7 +134,7 @@ define Image/BuildKernel/ipq807x_64
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ807X_64_KERNEL_LOADADDR));)
 
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq807x-hkxx, \
-		$(call FindDeviceTrees, qcom-ipq807x-h), $(IPQ807X_64_KERNEL_LOADADDR))
+		$(call FindDeviceTrees, qcom-ipq807x-), $(IPQ807X_64_KERNEL_LOADADDR))
 endef
 
 define Image/BuildKernel
