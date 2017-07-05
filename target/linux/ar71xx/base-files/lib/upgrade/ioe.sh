@@ -18,7 +18,7 @@ USE_REFRESH=
 platform_add_ramfs_ioe_tools()
 {
 	install_bin /usr/sbin/fw_printenv /usr/sbin/fw_setenv
-	install_bin /bin/busybox /usr/bin/cut /usr/bin/sed
+	install_bin /bin/busybox /usr/bin/cut /usr/bin/sed /usr/bin/head
 	install_bin /usr/bin/md5sum
 	install_bin /usr/sbin/nandwrite
 	install_bin /usr/sbin/ubiattach
@@ -189,7 +189,10 @@ platform_do_upgrade_ioe() {
 	}
 
 	dual=$(cat /proc/mtd | grep fw-2)
-	[ -n "$dual" ] && fw="fw-2"
+	[ -n "$dual" ] && {
+		fw="fw-2"
+		rootfs="r-2"
+	}
 
 	sync
 
@@ -200,7 +203,7 @@ platform_do_upgrade_ioe() {
 
 		ubidetach -d $ubi_vol $ubi_ctrl_dev
 		mtd erase $mtd_dev
-		mtd_ubi_rootfs="$(cat /proc/mtd |grep "r-2" |cut -f1 -d ":"|grep -Eo '[0-9]+')"
+		mtd_ubi_rootfs="$(cat /proc/mtd |grep $rootfs |cut -f1 -d ":"|grep -Eo '[0-9]+'|head -1)"
 		dd if=$file bs=2048 | nandwrite -p $mtd_dev -
 		ubiattach -m $mtd_ubi_rootfs -d $ubi_vol $ubi_ctrl_dev
 		sleep 2
