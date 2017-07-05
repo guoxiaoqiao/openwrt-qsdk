@@ -50,7 +50,8 @@ image_demux() {
 	for sec in $(print_sections ${img}); do
 		local fullname=$(get_full_section_name ${img} ${sec})
 
-		dumpimage -i ${img} -o /tmp/${fullname}.bin -T "flat_dt" ${fullname} > /dev/null || { \
+		local position=$(dumpimage -l ${img} | grep "(${fullname})" | awk '{print $2}')
+		dumpimage -i ${img} -o /tmp/${fullname}.bin -T "flat_dt" -p "${position}" ${fullname} > /dev/null || { \
 			echo "Error while extracting \"${sec}\" from ${img}"
 			return 1
 		}
