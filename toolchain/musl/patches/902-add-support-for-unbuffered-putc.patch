@@ -1,0 +1,24 @@
+--- a/src/stdio/fputc.c
++++ b/src/stdio/fputc.c
+@@ -1,5 +1,16 @@
+ #include "stdio_impl.h"
+
++#define UNBUFFERED_PUTC
++
++#ifdef UNBUFFERED_PUTC
++int fputc(int c, FILE *f)
++{
++	FLOCK(f);
++	f->write(f, &c, 1);
++	FUNLOCK(f);
++	return c;
++}
++#else
+ int fputc(int c, FILE *f)
+ {
+ 	if (f->lock < 0 || !__lockfile(f))
+@@ -8,3 +20,4 @@
+ 	__unlockfile(f);
+ 	return c;
+ }
++#endif
