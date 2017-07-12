@@ -23,15 +23,3 @@ Index: iproute2-4.0.0/tc/m_simple.c
  			strlen(simpdata), simpdata);
  		return -1;
  	}
-Index: iproute2-4.0.0/tc/q_nss.c
-===================================================================
---- iproute2-4.0.0.orig/tc/q_nss.c	2016-06-20 12:21:44.253743787 +0530
-+++ iproute2-4.0.0/tc/q_nss.c	2016-06-20 12:21:44.293744006 +0530
-@@ -1383,7 +1383,6 @@
- {
- 	struct rtattr *tb[TCA_NSSBLACKHOLE_MAX + 1];
- 	struct tc_nssblackhole_qopt *qopt;
--	SPRINT_BUF(b1);
- 
- 	if (opt == NULL)
- 		return 0;
