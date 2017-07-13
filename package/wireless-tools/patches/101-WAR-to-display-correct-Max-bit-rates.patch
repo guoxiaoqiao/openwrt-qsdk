@@ -1,0 +1,38 @@
+From ed2eb276ae6f82d080dfb991ed8868f03d8b88d3 Mon Sep 17 00:00:00 2001
+From: Kris Muthusamy <kmuthusa@codeaurora.org>
+Date: Fri, 28 Apr 2017 18:03:12 -0700
+Subject: [PATCH] wireless-tools: WAR to display correct HE Max bit rates
+
+HE Max rates and higher NSS when convereted to bps, gets
+in to signed 32bit integer overflow issue.As as temporary
+fix changed driver to populate kbps instead of bps.
+
+Change-Id: Ica62041461843c95f4b6078198dadd4e1f351dde
+Signed-off-by: Kris Muthusamy <kmuthusa@codeaurora.org>
+---
+ .../patches/101-WAR-to-display-correct-Max-bit-rates.patch  | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+ create mode 100644 package/network/utils/wireless-tools/patches/101-WAR-to-display-correct-Max-bit-rates.patch
+
+diff --git a/package/network/utils/wireless-tools/patches/101-WAR-to-display-correct-Max-bit-rates.patch b/package/network/utils/wireless-tools/patches/101-WAR-to-display-correct-Max-bit-rates.patch
+new file mode 100644
+index 0000000..0f044d6
+--- /dev/null
++++ b/package/network/utils/wireless-tools/patches/101-WAR-to-display-correct-Max-bit-rates.patch
+@@ -0,0 +1,13 @@
++--- a/iwlib.c
+++++ b/iwlib.c
++@@ -1132,7 +1132,8 @@ iw_print_bitrate(char *	buffer,
++ 		 int	buflen,
++ 		 int	bitrate)
++ {
++-  double	rate = bitrate;
+++  /* Due to overrun, driver sends in Kbps, Convert in to bps */
+++  double        rate = (double) bitrate * 1000;
++   char		scale;
++   int		divisor;
++ 
++
+-- 
+1.9.1
+
