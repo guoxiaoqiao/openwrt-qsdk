@@ -153,6 +153,7 @@ ifneq ($(subst ",,$(KERNELNAME)),)
   endef
 else
   define Kernel/CopyFiles
+	$(CP) $(LINUX_DIR)/vmlinux $(LINUX_DIR)/vmlinux$(1).debug
   endef
 endif
 
