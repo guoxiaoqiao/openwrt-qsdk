@@ -94,7 +94,8 @@ do_flash_mtd() {
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
 	[ -f "$CONF_TAR" -a "$SAVE_CONFIG" -eq 1 -a "$2" == "rootfs" ] && append="-j $CONF_TAR"
 
-	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd $append write - -e "/dev/${mtdpart}" "/dev/${mtdpart}"
+	mtd erase "/dev/${mtdpart}"
+	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd $append write - "/dev/${mtdpart}"
 }
 
 do_flash_emmc() {
