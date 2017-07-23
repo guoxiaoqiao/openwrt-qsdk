@@ -77,7 +77,8 @@ platform_check_image_ap135() {
 	"ap152" |\
 	"ap135" |\
 	"ap135-dual" |\
-	"ap137")
+	"ap137" |\
+	"apjet01")
 		local image_size=$( get_filesize "$1" )
 		local firmware_size=$( platform_get_firmware_size )
 		[ $image_size -ge $firmware_size ] &&
@@ -126,7 +127,8 @@ platform_do_upgrade_ap135() {
 	"ap152" |\
 	"ap135" |\
 	"ap135-dual" |\
-	"ap137")
+	"ap137" |\
+	"apjet01")
 		local firmware_base_addr=$( printf "%d" "0x9f050000" )
 		local vmlinux_blockoffset=$( platform_get_offset "$1" uImage )
 		if [ ! -n "$vmlinux_blockoffset" ]; then

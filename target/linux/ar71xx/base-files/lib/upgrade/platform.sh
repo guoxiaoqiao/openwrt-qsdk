@@ -111,7 +111,8 @@ platform_check_image() {
 	ap135 |\
 	ap135-dual | \
 	ap135-nand | \
-	ap137)
+	ap137 | \
+	apjet01)
 		platform_check_image_ap135 "$1" && return 0
 		return 1
 		;;
@@ -330,7 +331,8 @@ platform_do_upgrade() {
 	ap135 |\
 	ap135-dual |\
 	ap135-nand |\
-	ap137)
+	ap137 |\
+	apjet01)
 		platform_do_upgrade_ap135 "$ARGV"
 		;;
 	*)
