@@ -90,6 +90,7 @@ define Package/qca-legacy-uboot/nand
 endef
 
 $(eval $(call Package/qca-legacy-uboot/nor,ap135))
+$(eval $(call Package/qca-legacy-uboot/nand,ap135-nand,qca955x))
 $(eval $(call Package/qca-legacy-uboot/nor,ap137-16M))
 $(eval $(call Package/qca-legacy-uboot/nor,ap143-16M))
 $(eval $(call Package/qca-legacy-uboot/nor,ap143-32M))
@@ -110,3 +111,4 @@ $(eval $(call Package/qca-legacy-uboot/nor,cus531mp3-dual))
 $(eval $(call Package/qca-legacy-uboot/nor,cus531mp3-nand))
 $(eval $(call Package/qca-legacy-uboot/nand,cus532k,ar934x))
 $(eval $(call Package/qca-legacy-uboot/nor,db12x-16M))
+$(eval $(call Package/qca-legacy-uboot/nor,db120-8M))

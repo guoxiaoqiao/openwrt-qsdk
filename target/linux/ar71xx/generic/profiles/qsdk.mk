@@ -48,7 +48,8 @@ SWITCH_SSDK_HNAT_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell swconfig
 
 UBOOT_PKGS:= qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M \
 	     qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
-	     qca-legacy-uboot-db12x-16M qca-legacy-uboot-ap152-dual
+	     qca-legacy-uboot-db12x-16M qca-legacy-uboot-ap152-dual \
+	     qca-legacy-uboot-ap135-nand
 
 HYFI:=hyfi hyfi-ui
 
@@ -122,7 +123,7 @@ define Profile/QSDK_Wireless_Router
 	  kmod-qca-wifi-lowmem-profile qca-wpa-cli kmod-usb-storage \
 	  kmod-fs-ntfs kmod-fuse qca-hostap qca-hostapd-cli qca-wpa-supplicant \
 	  kmod-qca-ssdk-nohnat qca-legacy-uboot-ap136 qca-legacy-uboot-ap152-8M \
-	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db12x
+	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db120-8M
 endef
 
 define Profile/QSDK_Wireless_Router/Description
