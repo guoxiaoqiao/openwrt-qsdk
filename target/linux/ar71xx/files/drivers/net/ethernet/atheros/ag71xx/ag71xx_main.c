@@ -1945,6 +1945,7 @@ static int __devinit ag71xx_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "unable to register net device\n");
 		goto err_free_desc;
 	}
+	netif_carrier_off(dev);
 
 	pr_info("%s: Atheros AG71xx at 0x%08lx, irq %d\n",
 		dev->name, dev->base_addr, dev->irq);
