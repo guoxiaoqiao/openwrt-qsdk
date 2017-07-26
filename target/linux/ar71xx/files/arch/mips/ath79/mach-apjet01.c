@@ -132,6 +132,24 @@ static void __init apjet01_mdio_setup(void)
 	ath79_register_mdio(0, 0x0);
 }
 
+static void __init apjet01_gmac_setup(void)
+{
+	void __iomem *base;
+	u32 t;
+
+	base = ioremap(QCA955X_GMAC_BASE, QCA955X_GMAC_SIZE);
+
+	t = __raw_readl(base + QCA955X_GMAC_REG_ETH_CFG);
+
+	t &= ~(QCA955X_ETH_CFG_RGMII_GMAC0 | QCA955X_ETH_CFG_SGMII_GMAC0);
+	/* clear bit 0, then GMAC0 is SGMII*/
+	t |= QCA955X_ETH_CFG_SGMII_GMAC0;
+
+	__raw_writel(t, base + QCA955X_GMAC_REG_ETH_CFG);
+
+	iounmap(base);
+}
+
 static void __init apjet01_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
@@ -153,6 +171,8 @@ static void __init apjet01_setup(void)
 
 	ath79_register_wmac(art + APJET01_WMAC_CALDATA_OFFSET, NULL);
 	ath79_register_pci();
+
+	apjet01_gmac_setup();
 
 	/* GMAC0 is connected to an AR8337 switch */
 	ath79_init_mac(ath79_eth0_data.mac_addr, art + APJET01_MAC0_OFFSET, 0);
