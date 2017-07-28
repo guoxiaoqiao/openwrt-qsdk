@@ -1017,6 +1017,20 @@ endef
 
 $(eval $(call KernelPackage,usb-storage))
 
+define KernelPackage/usb-uas
+  TITLE:=USB Attched SCSI support
+  DEPENDS:= +kmod-scsi-core +kmod-usb-storage
+  KCONFIG:=CONFIG_USB_UAS
+  FILES:=$(LINUX_DIR)/drivers/usb/storage/uas.ko
+  AUTOLOAD:=$(call AutoProbe,usb-uas,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-uas/description
+ Kernel support for USB Attached SCSI devices (UAS)
+endef
+
+$(eval $(call KernelPackage,usb-uas))
 
 define KernelPackage/usb-storage-extras
   SUBMENU:=$(USB_MENU)
