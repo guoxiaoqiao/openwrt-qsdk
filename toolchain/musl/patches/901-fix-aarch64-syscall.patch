@@ -1,0 +1,14 @@
+Index: musl-1.1.9/arch/aarch64/syscall_arch.h
+===================================================================
+--- musl-1.1.9.orig/arch/aarch64/syscall_arch.h	2015-05-13 04:49:08.000000000 +0530
++++ musl-1.1.9/arch/aarch64/syscall_arch.h	2017-06-22 12:04:33.262514693 +0530
+@@ -1,7 +1,5 @@
+-#define __SYSCALL_LL_E(x) \
+-((union { long long ll; long l[2]; }){ .ll = x }).l[0], \
+-((union { long long ll; long l[2]; }){ .ll = x }).l[1]
+-#define __SYSCALL_LL_O(x) 0, __SYSCALL_LL_E((x))
++#define __SYSCALL_LL_E(x) (x)
++#define __SYSCALL_LL_O(x) (x)
+ 
+ #define __asm_syscall(...) do { \
+ 	__asm__ __volatile__ ( "svc 0" \

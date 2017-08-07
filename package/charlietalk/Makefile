@@ -26,7 +26,7 @@ include $(INCLUDE_DIR)/kernel.mk
 
 define KernelPackage/$(PKG_NAME)
   SUBMENU:=USB Support
-  DEPENDS:=@TARGET_ipq806x||TARGET_ipq +kmod-usb-net
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq_ipq40xx  +kmod-usb-net
   TITLE:=Kernel USB driver for GobiNet3000
   VARIANT:=gobinet
   FILES:= $(PKG_BUILD_DIR)/GobiNet/GobiNet.ko
@@ -41,7 +41,7 @@ define Package/charlietalk
    TITLE:=Qualcomm GobiNet Connection Manager
    SECTION:=utils
    CATEGORY:=Utilities
-   DEPENDS:=+libpthread +libc +librt +libstdcpp +libuci +kmod-qca-wifi-10.4-unified-profile +kmod-gobinet
+   DEPENDS:=@TARGET_ipq806x||TARGET_ipq_ipq40xx +libpthread +libc +librt +libstdcpp +libuci +kmod-qca-wifi-unified-profile +kmod-gobinet
    VARIANT:=charlietalk
 endef
 

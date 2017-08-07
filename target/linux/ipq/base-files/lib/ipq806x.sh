@@ -86,8 +86,17 @@ ipq806x_board_detect() {
 	*"AP-DK07.1-C2")
 		name="ap-dk07.1-c2"
 		;;
-	*"HK01")
-		name="hk01"
+	*"AP-HK01")
+		name="ap-hk01"
+		;;
+	*"AP-HK02")
+		name="ap-hk02"
+		;;
+	*"AP-HK05")
+		name="ap-hk05"
+		;;
+	*"AP-HK06")
+		name="ap-hk06"
 		;;
 	esac
 

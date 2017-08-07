@@ -62,6 +62,10 @@ MAKE_FLAGS = \
 	JOBS=1 \
 	prefix=/usr
 
+ifdef CONFIG_USE_MUSL
+ MAKE_FLAGS += EXTRA_CFLAGS="-include $(CURDIR)/musl-compat.h -D__UCLIBC__"
+endif
+
 define Package/perf/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(LINUX_DIR)/tools/perf/perf $(1)/usr/bin/

@@ -1,6 +1,8 @@
---- a/wpa_supplicant/wpa_supplicant_i.h
-+++ b/wpa_supplicant/wpa_supplicant_i.h
-@@ -110,6 +110,11 @@ struct wpa_interface {
+Index: hostapd-2016-10-02/wpa_supplicant/wpa_supplicant_i.h
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/wpa_supplicant_i.h	2017-04-24 13:16:27.932847022 +0530
++++ hostapd-2016-10-02/wpa_supplicant/wpa_supplicant_i.h	2017-04-24 13:16:27.928847052 +0530
+@@ -100,6 +100,11 @@
  	const char *ifname;
  
  	/**
@@ -12,8 +14,8 @@
  	 * bridge_ifname - Optional bridge interface name
  	 *
  	 * If the driver interface (ifname) is included in a Linux bridge
-@@ -442,6 +447,8 @@ struct wpa_supplicant {
- #endif /* CONFIG_CTRL_IFACE_DBUS_NEW */
+@@ -484,6 +489,8 @@
+ #endif /* CONFIG_CTRL_IFACE_BINDER */
  	char bridge_ifname[16];
  
 +	struct wpa_ctrl *hostapd;
@@ -21,9 +23,11 @@
  	char *confname;
  	char *confanother;
  
---- a/wpa_supplicant/Makefile
-+++ b/wpa_supplicant/Makefile
-@@ -14,6 +14,10 @@ CFLAGS += $(EXTRA_CFLAGS)
+Index: hostapd-2016-10-02/wpa_supplicant/Makefile
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/Makefile	2017-04-24 13:16:27.932847022 +0530
++++ hostapd-2016-10-02/wpa_supplicant/Makefile	2017-04-24 13:16:27.932847022 +0530
+@@ -26,6 +26,10 @@
  CFLAGS += -I$(abspath ../src)
  CFLAGS += -I$(abspath ../src/utils)
  
@@ -34,8 +38,8 @@
  -include .config
  -include $(if $(MULTICALL),../hostapd/.config)
  
-@@ -84,6 +88,8 @@ OBJS_c += ../src/utils/wpa_debug.o
- OBJS_c += ../src/utils/common.o
+@@ -114,6 +118,8 @@
+ OBJS_c += ../src/common/cli.o
  OBJS += wmm_ac.o
  
 +OBJS += ../src/common/wpa_ctrl.o
@@ -43,9 +47,11 @@
  ifndef CONFIG_OS
  ifdef CONFIG_NATIVE_WINDOWS
  CONFIG_OS=win32
---- a/wpa_supplicant/wpa_supplicant.c
-+++ b/wpa_supplicant/wpa_supplicant.c
-@@ -107,6 +107,55 @@ const char *wpa_supplicant_full_license5
+Index: hostapd-2016-10-02/wpa_supplicant/wpa_supplicant.c
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/wpa_supplicant.c	2017-04-24 13:16:27.932847022 +0530
++++ hostapd-2016-10-02/wpa_supplicant/wpa_supplicant.c	2017-04-24 13:16:27.932847022 +0530
+@@ -112,6 +112,55 @@
  "\n";
  #endif /* CONFIG_NO_STDOUT_DEBUG */
  
@@ -101,7 +107,7 @@
  /* Configure default/group WEP keys for static WEP */
  int wpa_set_wep_keys(struct wpa_supplicant *wpa_s, struct wpa_ssid *ssid)
  {
-@@ -743,8 +792,12 @@ void wpa_supplicant_set_state(struct wpa
+@@ -814,8 +863,12 @@
  		wpas_p2p_completed(wpa_s);
  
  		sme_sched_obss_scan(wpa_s, 1);
@@ -114,7 +120,7 @@
  		wpa_s->new_connection = 1;
  		wpa_drv_set_operstate(wpa_s, 0);
  #ifndef IEEE8021X_EAPOL
-@@ -4038,6 +4091,20 @@ static int wpa_supplicant_init_iface(str
+@@ -4763,6 +4816,20 @@
  			   sizeof(wpa_s->bridge_ifname));
  	}
  
@@ -135,7 +141,7 @@
  	/* RSNA Supplicant Key Management - INITIALIZE */
  	eapol_sm_notify_portEnabled(wpa_s->eapol, FALSE);
  	eapol_sm_notify_portValid(wpa_s->eapol, FALSE);
-@@ -4280,6 +4347,11 @@ static void wpa_supplicant_deinit_iface(
+@@ -5056,6 +5123,11 @@
  	if (terminate)
  		wpa_msg(wpa_s, MSG_INFO, WPA_EVENT_TERMINATING);
  
@@ -147,17 +153,19 @@
  	if (wpa_s->ctrl_iface) {
  		wpa_supplicant_ctrl_iface_deinit(wpa_s->ctrl_iface);
  		wpa_s->ctrl_iface = NULL;
---- a/wpa_supplicant/bss.c
-+++ b/wpa_supplicant/bss.c
+Index: hostapd-2016-10-02/wpa_supplicant/bss.c
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/bss.c	2017-04-24 13:16:27.932847022 +0530
++++ hostapd-2016-10-02/wpa_supplicant/bss.c	2017-04-24 13:16:27.932847022 +0530
 @@ -11,6 +11,7 @@
  #include "utils/common.h"
  #include "utils/eloop.h"
  #include "common/ieee802_11_defs.h"
 +#include "common/ieee802_11_common.h"
  #include "drivers/driver.h"
+ #include "eap_peer/eap.h"
  #include "wpa_supplicant_i.h"
- #include "config.h"
-@@ -277,6 +278,10 @@ static void calculate_update_time(const
+@@ -288,6 +289,10 @@
  static void wpa_bss_copy_res(struct wpa_bss *dst, struct wpa_scan_res *src,
  			     struct os_reltime *fetch_time)
  {
@@ -168,7 +176,7 @@
  	dst->flags = src->flags;
  	os_memcpy(dst->bssid, src->bssid, ETH_ALEN);
  	dst->freq = src->freq;
-@@ -289,6 +294,15 @@ static void wpa_bss_copy_res(struct wpa_
+@@ -300,6 +305,15 @@
  	dst->est_throughput = src->est_throughput;
  	dst->snr = src->snr;
  
@@ -184,9 +192,11 @@
  	calculate_update_time(fetch_time, src->age, &dst->last_update);
  }
  
---- a/wpa_supplicant/main.c
-+++ b/wpa_supplicant/main.c
-@@ -33,7 +33,7 @@ static void usage(void)
+Index: hostapd-2016-10-02/wpa_supplicant/main.c
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/main.c	2017-04-24 13:16:27.932847022 +0530
++++ hostapd-2016-10-02/wpa_supplicant/main.c	2017-04-24 13:30:15.594729476 +0530
+@@ -34,7 +34,7 @@
  	       "vW] [-P<pid file>] "
  	       "[-g<global ctrl>] \\\n"
  	       "        [-G<group>] \\\n"
@@ -195,24 +205,24 @@
  	       "[-p<driver_param>] \\\n"
  	       "        [-b<br_ifname>] [-e<entropy file>]"
  #ifdef CONFIG_DEBUG_FILE
-@@ -84,6 +84,7 @@ static void usage(void)
- #endif /* CONFIG_DEBUG_LINUX_TRACING */
- 	printf("  -t = include timestamp in debug messages\n"
+@@ -74,6 +74,7 @@
+ 	       "  -g = global ctrl_interface\n"
+ 	       "  -G = global ctrl_interface group\n"
  	       "  -h = show this help text\n"
-+		   "  -H = connect to a hostapd instance to manage state changes\n"
- 	       "  -L = show license (BSD)\n"
- 	       "  -o = override driver parameter for new interfaces\n"
- 	       "  -O = override ctrl_interface parameter for new interfaces\n"
-@@ -175,7 +176,7 @@ int main(int argc, char *argv[])
++	       "  -H = connect to a hostapd instance to manage state changes\n"
+ 	       "  -i = interface name\n"
+ 	       "  -I = additional configuration file\n"
+ 	       "  -K = include keys (passwords, etc.) in debug output\n"
+@@ -201,7 +202,7 @@
  
  	for (;;) {
  		c = getopt(argc, argv,
--			   "b:Bc:C:D:de:f:g:G:hi:I:KLm:No:O:p:P:qsTtuvW");
-+			   "b:Bc:C:D:de:f:g:G:hH:i:I:KLm:No:O:p:P:qsTtuvW");
+-			   "b:Bc:C:D:de:f:g:G:hi:I:KLMm:No:O:p:P:qsTtuvW");
++			   "b:Bc:C:D:de:f:g:G:hH:i:I:KLMm:No:O:p:P:qsTtuvW");
  		if (c < 0)
  			break;
  		switch (c) {
-@@ -222,6 +223,9 @@ int main(int argc, char *argv[])
+@@ -248,6 +249,9 @@
  			usage();
  			exitcode = 0;
  			goto out;
@@ -222,10 +232,12 @@
  		case 'i':
  			iface->ifname = optarg;
  			break;
---- a/wpa_supplicant/bss.h
-+++ b/wpa_supplicant/bss.h
-@@ -72,6 +72,10 @@ struct wpa_bss {
- 	u8 ssid[32];
+Index: hostapd-2016-10-02/wpa_supplicant/bss.h
+===================================================================
+--- hostapd-2016-10-02.orig/wpa_supplicant/bss.h	2017-04-24 13:16:27.932847022 +0530
++++ hostapd-2016-10-02/wpa_supplicant/bss.h	2017-04-24 13:16:27.932847022 +0530
+@@ -79,6 +79,10 @@
+ 	u8 ssid[SSID_MAX_LEN];
  	/** Length of SSID */
  	size_t ssid_len;
 +	/** HT caapbilities */

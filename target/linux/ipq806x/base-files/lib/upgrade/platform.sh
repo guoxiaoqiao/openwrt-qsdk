@@ -50,7 +50,8 @@ image_demux() {
 	for sec in $(print_sections ${img}); do
 		local fullname=$(get_full_section_name ${img} ${sec})
 
-		dumpimage -i ${img} -o /tmp/${fullname}.bin ${fullname} > /dev/null || { \
+		local position=$(dumpimage -l ${img} | grep "(${fullname})" | awk '{print $2}')
+		dumpimage -i ${img} -o /tmp/${fullname}.bin -T "flat_dt" -p "${position}" ${fullname} > /dev/null || { \
 			echo "Error while extracting \"${sec}\" from ${img}"
 			return 1
 		}
@@ -93,7 +94,7 @@ do_flash_mtd() {
 	local pgsz=$(cat /sys/class/mtd/${mtdpart}/writesize)
 	[ -f "$CONF_TAR" -a "$SAVE_CONFIG" -eq 1 -a "$2" == "rootfs" ] && append="-j $CONF_TAR"
 
-	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd $append write - -e "/dev/${mtdpart}" "/dev/${mtdpart}"
+	dd if=/tmp/${bin}.bin bs=${pgsz} conv=sync | mtd $append -e "/dev/${mtdpart}" write - "/dev/${mtdpart}"
 }
 
 do_flash_emmc() {
@@ -244,6 +245,11 @@ erase_emmc_config() {
 	fi
 }
 
+platform_pre_upgrade() {
+	cp /sbin/upgraded /tmp
+	ubus call system nandupgrade "{\"path\": \"$1\" }"
+}
+
 platform_check_image() {
 	local board=$(ipq806x_board_name)
 
@@ -326,7 +332,7 @@ platform_do_upgrade() {
 	done
 
 	case "$board" in
-	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2)
+	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3)
 		for sec in $(print_sections $1); do
 			flash_section ${sec}
 		done

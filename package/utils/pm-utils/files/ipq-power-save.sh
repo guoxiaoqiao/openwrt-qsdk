@@ -67,6 +67,8 @@ ipq8064_ac_power()
 	[ -d /sys/module/dwc3_qcom ] || insmod dwc3-qcom
 	[ -d /sys/module/phy_qcom_hsusb ] || insmod phy-qcom-hsusb
 	[ -d /sys/module/phy_qcom_ssusb ] || insmod phy-qcom-ssusb
+	[ -d /sys/module/dwc3_of_simple ] || insmod dwc3-of-simple.ko
+	[ -d /sys/module/phy_qcom_dwc3 ] || insmod phy-qcom-dwc3.ko
 	[ -d /sys/module/dwc3 ] || insmod dwc3
 
 # SD/MMC Power-UP sequence
@@ -152,6 +154,8 @@ ipq8064_battery_power()
 	[ -d /sys/module/dwc3_qcom ] && rmmod dwc3-qcom
 	[ -d /sys/module/phy_qcom_hsusb ] && rmmod phy-qcom-hsusb
 	[ -d /sys/module/phy_qcom_ssusb ] && rmmod phy-qcom-ssusb
+	[ -d /sys/module/dwc3_of_simple ] && rmmod dwc3-of-simple.ko
+	[ -d /sys/module/phy_qcom_dwc3 ] && rmmod phy-qcom-dwc3.ko
 
 	sleep 1
 
@@ -442,6 +446,13 @@ ipq8074_ac_power()
 
 # USB Power-UP Sequence
 	# USB powerup sequence goes here
+	if ! [ -d /sys/module/dwc3_of_simple ]
+	then
+		insmod phy-msm-ssusb-qmp.ko
+		insmod phy-msm-qusb.ko
+		insmod dwc3-of-simple.ko
+		insmod dwc3.ko
+	fi
 
 # LAN interface up
 	ifup lan
@@ -496,7 +507,13 @@ ipq8074_battery_power()
 
 # USB Power-down Sequence
 	# USB power down sequence goes here
-
+	if [ -d sys/module/dwc3_of_simple ]
+	then
+		rmmod dwc3
+		rmmod dwc3-of-simple
+		rmmod phy_msm_qusb
+		rmmod phy_msm_ssusb_qmp
+	fi
 	sleep 2
 #SD/MMC Power-down Sequence
 	# SD/MMC powerdown sequence goes here

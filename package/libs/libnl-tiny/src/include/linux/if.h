@@ -116,6 +116,8 @@ enum {
  *	being very small might be worth keeping for clean configuration.
  */
 
+/* for compatibility with glibc net/if.h */
+#if __UAPI_DEF_IF_IFMAP
 struct ifmap 
 {
 	unsigned long mem_start;
@@ -127,5 +129,6 @@ struct ifmap
 	/* 3 bytes spare */
 };
 
+#endif
 
 #endif /* _LINUX_IF_H */

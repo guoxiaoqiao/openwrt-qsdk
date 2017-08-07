@@ -1,0 +1,20 @@
+diff --git a/src/ap/drv_callbacks.c b/src/ap/drv_callbacks.c
+index ffa8bf1..78184f6 100644
+--- a/src/ap/drv_callbacks.c
++++ b/src/ap/drv_callbacks.c
+@@ -28,6 +28,7 @@
+ #include "tkip_countermeasures.h"
+ #include "ieee802_1x.h"
+ #include "wpa_auth.h"
++#include "wpa_auth_glue.h"
+ #include "wps_hostapd.h"
+ #include "ap_drv_ops.h"
+ #include "ap_config.h"
+@@ -1567,6 +1568,7 @@ void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
+ 			 * Try to re-enable interface if the driver stopped it
+ 			 * when the interface got disabled.
+ 			 */
++			hostapd_reconfig_wpa(hapd);
+ 			wpa_auth_reconfig_group_keys(hapd->wpa_auth);
+ 			hapd->reenable_beacon = 1;
+ 			ieee802_11_set_beacon(hapd);

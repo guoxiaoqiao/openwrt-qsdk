@@ -5,7 +5,7 @@ include $(TOPDIR)/rules.mk
 ARCH:=arm
 BOARD:=ipq
 BOARDNAME:=Qualcomm Atheros IPQ
-FEATURES:=ubifs squashfs pcie
+FEATURES:=ubifs squashfs pcie usbgadget
 CPU_TYPE:=cortex-a7
 SUBTARGETS:=ipq806x ipq40xx ipq807x ipq807x_64
 MAINTAINER:=John Crispin <blogic@openwrt.org>

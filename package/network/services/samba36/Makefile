@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=samba
 PKG_VERSION:=3.6.25
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_SOURCE_URL:=http://ftp.samba.org/pub/samba \
 	http://ftp.samba.org/pub/samba/stable
@@ -21,7 +21,7 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
 
-PKG_BUILD_PARALLEL:=1
+PKG_BUILD_PARALLEL:=0
 
 include $(INCLUDE_DIR)/package.mk
 

@@ -20,10 +20,16 @@
  #ifndef __LINUX_PKT_SCHED_H
  #define __LINUX_PKT_SCHED_H
  
-@@ -112,6 +128,212 @@ enum {
+@@ -112,6 +128,237 @@ enum {
  
  #define TCA_STAB_MAX (__TCA_STAB_MAX - 1)
  
++enum {
++	TCA_NSS_ACCEL_MODE_NSS_FW,
++	TCA_NSS_ACCEL_MODE_PPE,
++	TCA_NSS_ACCEL_MODE_MAX
++};
++
 +/* NSSFIFO section */
 +
 +enum {
@@ -37,6 +43,7 @@
 +struct tc_nssfifo_qopt {
 +	__u32	limit;		/* Queue length: bytes for bfifo, packets for pfifo */
 +	__u8	set_default;	/* Sets qdisc to be the default qdisc for enqueue */
++	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
 +};
 +
 +/* NSSWRED section */
@@ -50,10 +57,10 @@
 +#define TCA_NSSWRED_MAX (__TCA_NSSWRED_MAX - 1)
 +#define NSSWRED_CLASS_MAX 6
 +struct tc_red_alg_parameter {
-+	__u32	min;			/* qlen_avg < min: all pkts are enqueued */
-+	__u32	max;			/* qlen_avg > max: all pkts are dropped */
-+	__u32	probability;		/* Drop probability at qlen_avg = max */
-+	__u32	exp_weight_factor;	/* exp_weight_factor for calculate qlen_avg */
++	__u32	min;	/* qlen_avg < min: pkts are all enqueued */
++	__u32	max;	/* qlen_avg > max: pkts are all dropped */
++	__u32	probability;/* Drop probability at qlen_avg = max */
++	__u32	exp_weight_factor;/* exp_weight_factor for calculate qlen_avg */
 +};
 +
 +struct tc_nsswred_traffic_class {
@@ -66,23 +73,25 @@
 + * Weight modes for WRED
 + */
 +enum tc_nsswred_weight_modes {
-+	TC_NSSWRED_WEIGHT_MODE_DSCP = 0,	/* Weight mode is DSCP */
-+	TC_NSSWRED_WEIGHT_MODES,		/* Must be last */
++	TC_NSSWRED_WEIGHT_MODE_DSCP = 0,/* Weight mode is DSCP */
++	TC_NSSWRED_WEIGHT_MODES,	/* Must be last */
 +};
 +typedef enum tc_nsswred_weight_modes tc_nsswred_weight_mode_t;
 +
 +struct tc_nsswred_qopt {
-+	__u32	limit;				/* Queue length */
-+	tc_nsswred_weight_mode_t weight_mode;	/* Weight mode */
-+	__u32	traffic_classes;		/* How many traffic classes: DPs */
-+	__u32	def_traffic_class;		/* Default traffic if no match: def_DP */
-+	__u32	traffic_id;			/* The traffic id to be configured */
-+	__u32	weight_mode_value;		/* Weight mode value */
-+	struct tc_red_alg_parameter rap;	/* RED algorithm parameters */
++	__u32	limit;			/* Queue length */
++	enum tc_nsswred_weight_modes weight_mode;
++					/* Weight mode */
++	__u32	traffic_classes;	/* How many traffic classes: DPs */
++	__u32	def_traffic_class;	/* Default traffic if no match: def_DP */
++	__u32	traffic_id;		/* The traffic id to be configured: DP */
++	__u32	weight_mode_value;	/* Weight mode value */
++	struct tc_red_alg_parameter rap;/* RED algorithm parameters */
 +	struct tc_nsswred_traffic_class tntc[NSSWRED_CLASS_MAX];
-+						/* Traffic settings for dumpping */
-+	__u8	ecn;				/* Setting ECN bit or dropping */
-+	__u8	set_default;			/* Sets qdisc to be the default for enqueue */
++					/* Traffic settings for dumpping */
++	__u8	ecn;			/* Setting ECN bit or dropping */
++	__u8	set_default;		/* Sets qdisc to be the default for enqueue */
++	__u8	accel_mode;		/* Dictates which data plane offloads the qdisc */
 +};
 +
 +/* NSSCODEL section */
@@ -97,9 +106,10 @@
 +
 +struct tc_nsscodel_qopt {
 +	__u32	target;		/* Acceptable queueing delay */
-+	__u32	limit;		/* Maximum number of packets that can be held in the queue */
++	__u32	limit;		/* Max number of packets that can be held in the queue */
 +	__u32	interval;	/* Monitoring interval */
 +	__u8	set_default;	/* Sets qdisc to be the default qdisc for enqueue */
++	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
 +};
 +
 +struct tc_nsscodel_xstats {
@@ -122,6 +132,7 @@
 +	__u32	rate;		/* Limiting rate of TBF */
 +	__u32	peakrate;	/* Maximum rate at which TBF is allowed to send */
 +	__u32	mtu;		/* Max size of packet, or minumim burst size */
++	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
 +};
 +
 +/* NSSPRIO section */
@@ -137,7 +148,8 @@
 +#define TCA_NSSPRIO_MAX	(__TCA_NSSPRIO_MAX - 1)
 +
 +struct tc_nssprio_qopt {
-+	int	bands;				/* Number of bands */
++	__u32	bands;		/* Number of bands */
++	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
 +};
 +
 +/* NSSBF section */
@@ -155,11 +167,12 @@
 +	__u32	burst;		/* Maximum burst size */
 +	__u32	rate;		/* Allowed bandwidth for this class */
 +	__u32	mtu;		/* MTU of the associated interface */
-+	__u32	quantum;	/* Quamtum allocation for DRR */
++	__u32	quantum;	/* Quantum allocation for DRR */
 +};
 +
 +struct tc_nssbf_qopt {
 +	__u16	defcls;		/* Default class value */
++	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
 +};
 +
 +/* NSSWRR section */
@@ -167,6 +180,7 @@
 +enum {
 +	TCA_NSSWRR_UNSPEC,
 +	TCA_NSSWRR_CLASS_PARMS,
++	TCA_NSSWRR_QDISC_PARMS,
 +	__TCA_NSSWRR_MAX
 +};
 +
@@ -176,11 +190,16 @@
 +	__u32	quantum;	/* Weight associated to this class */
 +};
 +
++struct tc_nsswrr_qopt {
++	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
++};
++
 +/* NSSWFQ section */
 +
 +enum {
 +	TCA_NSSWFQ_UNSPEC,
 +	TCA_NSSWFQ_CLASS_PARMS,
++	TCA_NSSWFQ_QDISC_PARMS,
 +	__TCA_NSSWFQ_MAX
 +};
 +
@@ -188,6 +207,10 @@
 +
 +struct tc_nsswfq_class_qopt {
 +	__u32	quantum;	/* Weight associated to this class */
++};
++
++struct tc_nsswfq_qopt {
++	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
 +};
 +
 +/* NSSHTB section */
@@ -213,6 +236,7 @@
 +
 +struct tc_nsshtb_qopt {
 +	__u32	r2q;		/* Rate to quantum ratio */
++	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
 +};
 +
 +/* NSSBLACKHOLE section */
@@ -227,6 +251,7 @@
 +
 +struct tc_nssblackhole_qopt {
 +	__u8	set_default;	/* Sets qdisc to be the default qdisc for enqueue */
++	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
 +};
 +
 +
@@ -235,7 +260,7 @@
  struct tc_fifo_qopt {
 --- a/tc/Makefile
 +++ b/tc/Makefile
-@@ -56,6 +56,7 @@ TCMODULES += q_fq_codel.o
+@@ -64,6 +64,7 @@ TCMODULES += q_fq_codel.o
  TCMODULES += q_fq.o
  TCMODULES += q_pie.o
  TCMODULES += q_hhf.o
@@ -245,7 +270,7 @@
    ifeq ($(TC_CONFIG_XT), y)
 --- /dev/null
 +++ b/tc/q_nss.c
-@@ -0,0 +1,1411 @@
+@@ -0,0 +1,1662 @@
 +/*
 + **************************************************************************
 + * Copyright (c) 2015, The Linux Foundation. All rights reserved.
@@ -282,12 +307,12 @@
 +static void nssred_explain(void)
 +{
 +	fprintf(stderr, "Usage: ...  nssred limit BYTES avpkt BYTES [ min BYTES ] [ max BYTES ] [ probability VALUE ]\n");
-+	fprintf(stderr, "                   [ burst PACKETS ] [ecn] [ set_default ]\n");
++	fprintf(stderr, "                   [ burst PACKETS ] [ecn] [ set_default ] [ accel_mode ]\n");
 +}
 +
 +static void nsswred_explain(void)
 +{
-+	fprintf(stderr, "Usage: ...  nsswred setup DPs NUMBER dp_default NUMBER [ weight_mode dscp ] [ecn] [ set_default ]\n");
++	fprintf(stderr, "Usage: ...  nsswred setup DPs NUMBER dp_default NUMBER [ weight_mode dscp ] [ecn] [ set_default ] [ accel_mode ]\n");
 +	fprintf(stderr, "            nsswred limit BYTES DP NUMBER min BYTES max BYTES avpkt BYTES dscp NUMBER [ probability VALUE ] [ burst PACKETS ]\n");
 +}
 +
@@ -299,13 +324,14 @@
 +	memset(&opt, 0, sizeof(opt));
 +	unsigned int dps = 0;
 +	unsigned int def_dp = 0;
++	bool accel_mode = false;
 +
 +	while (argc > 0) {
 +		if (strcmp(*argv, "DPs") == 0) {
 +			NEXT_ARG();
 +			if (get_unsigned(&dps, *argv, 0) || dps > NSSWRED_CLASS_MAX) {
 +
-+				fprintf(stderr, "NSSWRED: DPs should be between 1 - %d\n", NSSWRED_CLASS_MAX);
++				fprintf(stderr, "DPs should be between 1 - %d\n", NSSWRED_CLASS_MAX);
 +				return -1;
 +			}
 +		} else if (strcmp(*argv, "weight_mode") == 0) {
@@ -320,7 +346,7 @@
 +		} else if (strcmp(*argv, "dp_default") == 0) {
 +			NEXT_ARG();
 +			if (get_unsigned(&def_dp, *argv, 0) || def_dp > dps) {
-+				fprintf(stderr, "NSSWRED: Illegal dp_default value\n");
++				fprintf(stderr, "Illegal dp_default value\n");
 +				return -1;
 +			}
 +		} else if (strcmp(*argv, "help") == 0) {
@@ -328,6 +354,13 @@
 +			return -1;
 +		} else if (strcmp(*argv, "set_default") == 0) {
 +			opt.set_default = 1;
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
 +		} else {
 +			fprintf(stderr, "What is \"%s\"?\n", *argv);
 +			nsswred_explain();
@@ -336,8 +369,15 @@
 +		argc--; argv++;
 +	}
 +
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_NSS_FW;
++	} else if (opt.accel_mode != TCA_NSS_ACCEL_MODE_NSS_FW) {
++		fprintf(stderr, "accel_mode should be %d\n", TCA_NSS_ACCEL_MODE_NSS_FW);
++		return -1;
++	}
++
 +	if (!dps || !def_dp) {
-+		fprintf(stderr, "NSSWRED: Illegal nsswred setup parameters\n");
++		fprintf(stderr, "Illegal nsswred setup parameters\n");
 +		return -1;
 +	}
 +	opt.traffic_classes = dps;
@@ -347,6 +387,7 @@
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSWRED_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -360,6 +401,7 @@
 +	unsigned avpkt = 0;
 +	double probability = 0.0;
 +	unsigned char weighted = (strcmp(qu->id, "nsswred") == 0);
++	bool accel_mode = false;
 +
 +	memset(&opt, 0, sizeof(opt));
 +
@@ -404,6 +446,13 @@
 +			}
 +		} else if (strcmp(*argv, "ecn") == 0) {
 +			opt.ecn = 1;
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
 +		} else if (strcmp(*argv, "help") == 0) {
 +			if (weighted) {
 +				nsswred_explain();
@@ -443,14 +492,21 @@
 +		argc--; argv++;
 +	}
 +
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_PPE;
++	} else if (opt.accel_mode >= TCA_NSS_ACCEL_MODE_MAX) {
++		fprintf(stderr, "Accel_mode should be < %d\n", TCA_NSS_ACCEL_MODE_MAX);
++		return -1;
++	}
++
 +	if (weighted) {
 +		if (!opt.limit || !opt.rap.min || !opt.rap.max || !opt.traffic_id || !avpkt || !opt.weight_mode_value) {
-+			fprintf(stderr, "NSSWRED: Require limit, min, max, avpkt, DP, weight_mode_value\n");
++			fprintf(stderr, "Require limit, min, max, avpkt, DP, weight_mode_value\n");
 +			return -1;
 +		}
 +	} else {
 +		if (!opt.limit || !avpkt) {
-+			fprintf(stderr, "NSSRED: Require limit, avpkt");
++			fprintf(stderr, "Require limit, avpkt");
 +			return -1;
 +		}
 +	}
@@ -467,7 +523,7 @@
 +	if (!burst)
 +		burst = (2 * opt.rap.min + opt.rap.max) / (3 * avpkt);
 +	if ((opt.rap.exp_weight_factor = tc_red_eval_ewma(opt.rap.min, burst, avpkt)) < 0) {
-+		fprintf(stderr, "RED: failed to calculate EWMA constant.\n");
++		fprintf(stderr, "Failed to calculate EWMA constant.\n");
 +		return -1;
 +	}
 +
@@ -480,6 +536,7 @@
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSWRED_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -525,6 +582,8 @@
 +        if (qopt->set_default)
 +                fprintf(f, "set_default ");
 +
++	fprintf(f, "accel_mode: %d ", qopt->accel_mode);
++
 +	return 0;
 +}
 +
@@ -544,13 +603,14 @@
 +
 +static void nssfifo_explain(void)
 +{
-+	fprintf(stderr, "Usage: ...  nsspfifo [ limit PACKETS ] [ set_default ]\n");
++	fprintf(stderr, "Usage: ...  nsspfifo [ limit PACKETS ] [ set_default ] [ accel_mode ]\n");
 +}
 +
 +static int nssfifo_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
 +{
 +	struct rtattr *tail;
 +	struct tc_nssfifo_qopt opt;
++	bool accel_mode = false;
 +
 +	memset(&opt, 0, sizeof(opt));
 +
@@ -563,6 +623,13 @@
 +			}
 +		} else if (strcmp(*argv, "set_default") == 0) {
 +			opt.set_default = 1;
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
 +		} else if (strcmp(*argv, "help") == 0) {
 +			nssfifo_explain();
 +			return -1;
@@ -574,10 +641,18 @@
 +		argc--; argv++;
 +	}
 +
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_PPE;
++	} else if (opt.accel_mode >= TCA_NSS_ACCEL_MODE_MAX) {
++		fprintf(stderr, "accel_mode should be < %d\n", TCA_NSS_ACCEL_MODE_MAX);
++		return -1;
++	}
++
 +	tail = NLMSG_TAIL(n);
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSFIFO_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -608,6 +683,8 @@
 +	if (qopt->set_default)
 +		fprintf(f, "set_default ");
 +
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
++
 +	return 0;
 +}
 +
@@ -627,7 +704,7 @@
 +
 +static void nsscodel_explain(void)
 +{
-+	fprintf(stderr, "Usage: ... nsscodel target TIME interval TIME [ limit PACKETS ] [ set_default ]\n");
++	fprintf(stderr, "Usage: ... nsscodel target TIME interval TIME [ limit PACKETS ] [ set_default ] [ accel_mode ]\n");
 +}
 +
 +static void nsscodel_explain_err1(void)
@@ -639,6 +716,7 @@
 +{
 +	struct rtattr *tail;
 +	struct tc_nsscodel_qopt opt;
++	bool accel_mode = false;
 +
 +	memset(&opt, 0, sizeof(opt));
 +
@@ -663,6 +741,13 @@
 +			}
 +		} else if (strcmp(*argv, "set_default") == 0) {
 +			opt.set_default = 1;
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
 +		} else if (strcmp(*argv, "help") == 0) {
 +			nsscodel_explain();
 +			return -1;
@@ -672,6 +757,13 @@
 +			return -1;
 +		}
 +		argc--; argv++;
++	}
++
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_NSS_FW;
++	} else if (opt.accel_mode != TCA_NSS_ACCEL_MODE_NSS_FW) {
++		fprintf(stderr, "accel_mode should be %d\n", TCA_NSS_ACCEL_MODE_NSS_FW);
++		return -1;
 +	}
 +
 +	if (!opt.target || !opt.interval) {
@@ -688,6 +780,7 @@
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSCODEL_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -718,6 +811,8 @@
 +
 +	if (qopt->set_default)
 +		fprintf(f, "set_default ");
++
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
 +
 +	return 0;
 +}
@@ -750,7 +845,7 @@
 +
 +static void nsstbl_explain(void)
 +{
-+	fprintf(stderr, "Usage: ... nsstbl burst BYTES rate BPS [ mtu BYTES ]\n");
++	fprintf(stderr, "Usage: ... nsstbl burst BYTES rate BPS [ mtu BYTES ] [ accel_mode ]\n");
 +}
 +
 +static int nsstbl_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
@@ -758,6 +853,7 @@
 +	int ok = 0;
 +	struct rtattr *tail;
 +	struct tc_nsstbl_qopt opt;
++	bool accel_mode = false;
 +
 +	memset(&opt, 0, sizeof(opt));
 +
@@ -798,6 +894,13 @@
 +				return -1;
 +			}
 +			ok++;
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
 +		} else if (strcmp(*argv, "help") == 0) {
 +			nsstbl_explain();
 +			return -1;
@@ -814,11 +917,22 @@
 +		return -1;
 +	}
 +
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_PPE;
++	} else if (opt.accel_mode >= TCA_NSS_ACCEL_MODE_MAX) {
++		fprintf(stderr, "accel_mode should be < %d\n", TCA_NSS_ACCEL_MODE_MAX);
++		return -1;
++	}
++
 +	if (!opt.rate || !opt.burst) {
 +		fprintf(stderr, "Both \"rate\" and \"burst\" are required.\n");
 +		return -1;
 +	}
 +
++	/*
++	 * Peakrate is currently not supported, but we keep the infrastructure
++	 * for future use. However, we have disabled taking input for this.
++	 */
 +	if (opt.peakrate) {
 +		if (!opt.mtu) {
 +			fprintf(stderr, "\"mtu\" is required, if \"peakrate\" is requested.\n");
@@ -830,6 +944,7 @@
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSTBL_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -854,8 +969,9 @@
 +
 +	fprintf(f, "buffer/maxburst %s ", sprint_size(qopt->burst, b1));
 +	fprintf(f, "rate %s ", sprint_rate(qopt->rate, b1));
-+	fprintf(f, "peakrate %s ", sprint_rate(qopt->peakrate, b1));
-+	fprintf(f, "mtu/minburst %s ", sprint_size(qopt->mtu, b1));
++	fprintf(f, "mtu %s ", sprint_size(qopt->mtu, b1));
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
++
 +	return 0;
 +}
 +
@@ -869,7 +985,7 @@
 +
 +static void nssprio_explain(void)
 +{
-+	fprintf(stderr, "Usage: ... nssprio [ bands NUMBER (default 256) ]\n");
++	fprintf(stderr, "Usage: ... nssprio [ bands NUMBER (default 256) ] [ accel_mode ]\n");
 +}
 +
 +static int nssprio_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
@@ -877,17 +993,25 @@
 +	int ok = 0;
 +	struct rtattr *tail;
 +	struct tc_nssprio_qopt opt;
++	bool accel_mode = false;
 +
 +	memset(&opt, 0, sizeof(opt));
 +
 +	while (argc > 0) {
 +		if (strcmp(*argv, "bands") == 0) {
 +			NEXT_ARG();
-+			if (get_integer(&opt.bands, *argv, 10)) {
++			if (get_unsigned(&opt.bands, *argv, 0)) {
 +				fprintf(stderr, "Illegal \"limit\"\n");
 +				return -1;
 +			}
 +			ok++;
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
 +		} else if (strcmp(*argv, "help") == 0) {
 +			nssprio_explain();
 +			return -1;
@@ -906,10 +1030,18 @@
 +		return -1;
 +	}
 +
++        if (!accel_mode) {
++                opt.accel_mode = TCA_NSS_ACCEL_MODE_PPE;
++        } else if (opt.accel_mode >= TCA_NSS_ACCEL_MODE_MAX) {
++                fprintf(stderr, "accel_mode should be < %d\n", TCA_NSS_ACCEL_MODE_MAX);
++                return -1;
++        }
++
 +	tail = NLMSG_TAIL(n);
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSPRIO_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -932,6 +1064,7 @@
 +	qopt = RTA_DATA(tb[TCA_NSSPRIO_PARMS]);
 +
 +	fprintf(f, "bands %u ", qopt->bands);
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
 +
 +	return 0;
 +}
@@ -947,7 +1080,7 @@
 +static void nssbf_explain_qdisc(void)
 +{
 +	fprintf(stderr,
-+		"Usage: ... nssbf \n"
++		"Usage: ... nssbf [ accel_mode ]\n"
 +	);
 +}
 +
@@ -966,6 +1099,7 @@
 +{
 +	struct tc_nssbf_qopt opt;
 +	struct rtattr *tail;
++	bool accel_mode = false;
 +
 +	memset(&opt, 0, sizeof(opt));
 +
@@ -980,6 +1114,13 @@
 +				nssbf_explain1("default");
 +				return -1;
 +			}
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
 +		} else if (matches(*argv, "help") == 0) {
 +			nssbf_explain_qdisc();
 +			return -1;
@@ -991,25 +1132,40 @@
 +		argc--, argv++;
 +	}
 +
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_NSS_FW;
++	} else if (opt.accel_mode != TCA_NSS_ACCEL_MODE_NSS_FW) {
++		fprintf(stderr, "accel_mode should be %d\n", TCA_NSS_ACCEL_MODE_NSS_FW);
++		return -1;
++	}
++
 +	tail = NLMSG_TAIL(n);
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSBF_QDISC_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
 +static int nssbf_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
 +{
++	struct rtattr *tb[TCA_NSSBF_MAX + 1];
 +	struct tc_nssbf_qopt *qopt;
 +
 +	if (opt == NULL)
 +		return 0;
-+	if (RTA_PAYLOAD(opt) < sizeof(*qopt))
-+		return -1;
-+	qopt = RTA_DATA(opt);
 +
-+	if (qopt->defcls != 0)
-+		fprintf(f, "default %x ", qopt->defcls);
++	parse_rtattr_nested(tb, TCA_NSSBF_MAX, opt);
++
++	if (tb[TCA_NSSBF_QDISC_PARMS] == NULL)
++		return -1;
++
++	if (RTA_PAYLOAD(tb[TCA_NSSBF_QDISC_PARMS]) < sizeof(*qopt))
++		return -1;
++
++	qopt = RTA_DATA(tb[TCA_NSSBF_QDISC_PARMS]);
++
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
 +
 +	return 0;
 +}
@@ -1094,6 +1250,7 @@
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSBF_CLASS_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -1120,6 +1277,7 @@
 +	fprintf(f, "rate %s ", sprint_rate(qopt->rate, b1));
 +	fprintf(f, "quantum %s ", sprint_size(qopt->quantum, b1));
 +	fprintf(f, "mtu %s ", sprint_size(qopt->mtu, b1));
++
 +	return 0;
 +}
 +
@@ -1135,11 +1293,7 @@
 +
 +static void nsswrr_explain_qdisc(void)
 +{
-+	fprintf(stderr,
-+		"Usage (qdisc): ... nsswrr\n"
-+		"\n"
-+		"nsswrr qdisc does not take in any parameters\n"
-+	);
++	fprintf(stderr,	"Usage (qdisc): ... nsswrr [ accel_mode ]\n");
 +}
 +
 +static void nsswrr_explain_class(void)
@@ -1149,26 +1303,64 @@
 +
 +static int nsswrr_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
 +{
++	struct tc_nsswrr_qopt opt;
++	bool accel_mode = false;
++	struct rtattr *tail;
++
++	memset(&opt, 0, sizeof(opt));
++
 +	while (argc > 0) {
-+		if (matches(*argv, "help") == 0) {
++		if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
++		} else if (matches(*argv, "help") == 0) {
 +			nsswrr_explain_qdisc();
 +			return -1;
 +		} else {
-+			fprintf(stderr, "NSSWRR: What is \"%s\" ?\n", *argv);
++			fprintf(stderr, "What is \"%s\" ?\n", *argv);
 +			nsswrr_explain_qdisc();
 +			return -1;
 +		}
 +		argc--, argv++;
 +	}
 +
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_PPE;
++	} else if (opt.accel_mode >= TCA_NSS_ACCEL_MODE_MAX) {
++		fprintf(stderr, "accel_mode should be < %d\n", TCA_NSS_ACCEL_MODE_MAX);
++		return -1;
++	}
++
++	tail = NLMSG_TAIL(n);
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 1024, TCA_NSSWRR_QDISC_PARMS, &opt, sizeof(opt));
++	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
 +static int nsswrr_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
 +{
-+	/*
-+	 * We currently dont have any parameters to print
-+	 */
++	struct rtattr *tb[TCA_NSSWRR_MAX + 1];
++	struct tc_nsswrr_qopt *qopt;
++
++	if (opt == NULL)
++		return 0;
++
++	parse_rtattr_nested(tb, TCA_NSSWRR_MAX, opt);
++
++	if (tb[TCA_NSSWRR_QDISC_PARMS] == NULL)
++		return -1;
++
++	if (RTA_PAYLOAD(tb[TCA_NSSWRR_QDISC_PARMS]) < sizeof(*qopt))
++		return -1;
++
++	qopt = RTA_DATA(tb[TCA_NSSWRR_QDISC_PARMS]);
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
 +
 +	return 0;
 +}
@@ -1209,6 +1401,7 @@
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSWRR_CLASS_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -1246,11 +1439,7 @@
 +
 +static void nsswfq_explain_qdisc(void)
 +{
-+	fprintf(stderr,
-+		"Usage (qdisc): ... nsswfq\n"
-+		"\n"
-+		"nsswfq qdisc does not take in any parameters\n"
-+	);
++	fprintf(stderr, "Usage (qdisc): ... nsswfq [ accel_mode ]\n");
 +}
 +
 +static void nsswfq_explain_class(void)
@@ -1260,8 +1449,21 @@
 +
 +static int nsswfq_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
 +{
++	struct tc_nsswfq_qopt opt;
++	bool accel_mode = false;
++	struct rtattr *tail;
++
++	memset(&opt, 0, sizeof(opt));
++
 +	while (argc > 0) {
-+		if (matches(*argv, "help") == 0) {
++		if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
++		} else if (matches(*argv, "help") == 0) {
 +			nsswfq_explain_qdisc();
 +			return -1;
 +		} else {
@@ -1271,14 +1473,41 @@
 +		}
 +		argc--, argv++;
 +	}
++
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_PPE;
++	} else if (opt.accel_mode >= TCA_NSS_ACCEL_MODE_MAX) {
++		fprintf(stderr, "accel_mode should be < %d\n", TCA_NSS_ACCEL_MODE_MAX);
++		return -1;
++	}
++
++	tail = NLMSG_TAIL(n);
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 1024, TCA_NSSWFQ_QDISC_PARMS, &opt, sizeof(opt));
++	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
 +static int nsswfq_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
 +{
-+	/*
-+	 * We currently dont have any parameters to print
-+	 */
++	struct rtattr *tb[TCA_NSSWFQ_MAX + 1];
++	struct tc_nsswfq_qopt *qopt;
++
++	if (opt == NULL)
++		return 0;
++
++	parse_rtattr_nested(tb, TCA_NSSWFQ_MAX, opt);
++
++	if (tb[TCA_NSSWFQ_QDISC_PARMS] == NULL)
++		return -1;
++
++	if (RTA_PAYLOAD(tb[TCA_NSSWFQ_QDISC_PARMS]) < sizeof(*qopt))
++		return -1;
++
++	qopt = RTA_DATA(tb[TCA_NSSWFQ_QDISC_PARMS]);
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
++
 +	return 0;
 +}
 +
@@ -1318,6 +1547,7 @@
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSWFQ_CLASS_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -1341,6 +1571,7 @@
 +	qopt = RTA_DATA(tb[TCA_NSSWFQ_CLASS_PARMS]);
 +
 +	fprintf(f, "quantum %s ", sprint_size(qopt->quantum, b1));
++
 +	return 0;
 +}
 +
@@ -1357,7 +1588,7 @@
 +static void nsshtb_explain_qdisc(void)
 +{
 +	fprintf(stderr,
-+		"Usage: ... nsshtb [ r2q ]\n"
++		"Usage: ... nsshtb [ r2q ] [ accel_mode ]\n"
 +	);
 +}
 +
@@ -1376,6 +1607,7 @@
 +{
 +	struct tc_nsshtb_qopt opt;
 +	struct rtattr *tail;
++	bool accel_mode = false;
 +
 +	memset(&opt, 0, sizeof(opt));
 +
@@ -1390,6 +1622,13 @@
 +				nsshtb_explain1("r2q");
 +				return -1;
 +			}
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
 +		} else if (strcmp(*argv, "help") == 0) {
 +			nsshtb_explain_qdisc();
 +			return -1;
@@ -1401,25 +1640,43 @@
 +		argc--, argv++;
 +	}
 +
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_PPE;
++	} else if (opt.accel_mode >= TCA_NSS_ACCEL_MODE_MAX) {
++		fprintf(stderr, "accel_mode should be < %d\n", TCA_NSS_ACCEL_MODE_MAX);
++		return -1;
++	}
++
 +	tail = NLMSG_TAIL(n);
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSHTB_QDISC_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
 +static int nsshtb_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
 +{
++	struct rtattr *tb[TCA_NSSHTB_MAX + 1];
 +	struct tc_nsshtb_qopt *qopt;
 +
 +	if (opt == NULL)
 +		return 0;
-+	if (RTA_PAYLOAD(opt) < sizeof(*qopt))
++
++	parse_rtattr_nested(tb, TCA_NSSHTB_MAX, opt);
++
++	if (tb[TCA_NSSHTB_QDISC_PARMS] == NULL)
 +		return -1;
-+	qopt = RTA_DATA(opt);
++
++	if (RTA_PAYLOAD(tb[TCA_NSSHTB_QDISC_PARMS]) < sizeof(*qopt))
++		return -1;
++
++	qopt = RTA_DATA(tb[TCA_NSSHTB_QDISC_PARMS]);
 +
 +	if (qopt->r2q != 0)
-+		fprintf(f, "r2q %x ", qopt->r2q);
++		fprintf(f, "r2q %u ", qopt->r2q);
++
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
 +
 +	return 0;
 +}
@@ -1552,6 +1809,7 @@
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSHTB_CLASS_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -1581,6 +1839,7 @@
 +	fprintf(f, "priority %u ", qopt->priority);
 +	fprintf(f, "quantum %s ", sprint_size(qopt->quantum, b1));
 +	fprintf(f, "overhead %s ", sprint_size(qopt->overhead, b1));
++
 +	return 0;
 +}
 +
@@ -1596,19 +1855,27 @@
 +
 +static void nssblackhole_explain(void)
 +{
-+	fprintf(stderr, "Usage: ...  nssblackhole [ set_default ]\n");
++	fprintf(stderr, "Usage: ...  nssblackhole [ set_default ] [ accel_mode ]\n");
 +}
 +
 +static int nssblackhole_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
 +{
 +	struct rtattr *tail;
 +	struct tc_nssblackhole_qopt opt;
++	bool accel_mode = false;
 +
 +	memset(&opt, 0, sizeof(opt));
 +
 +	while (argc > 0) {
 +		if (strcmp(*argv, "set_default") == 0) {
 +			opt.set_default = 1;
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
 +		} else if (strcmp(*argv, "help") == 0) {
 +			nssblackhole_explain();
 +			return -1;
@@ -1620,10 +1887,18 @@
 +		argc--; argv++;
 +	}
 +
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_PPE;
++	} else if (opt.accel_mode >= TCA_NSS_ACCEL_MODE_MAX) {
++		fprintf(stderr, "accel_mode should be < %d\n", TCA_NSS_ACCEL_MODE_MAX);
++		return -1;
++	}
++
 +	tail = NLMSG_TAIL(n);
 +	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
 +	addattr_l(n, 1024, TCA_NSSBLACKHOLE_PARMS, &opt, sizeof(opt));
 +	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
 +	return 0;
 +}
 +
@@ -1631,7 +1906,6 @@
 +{
 +	struct rtattr *tb[TCA_NSSBLACKHOLE_MAX + 1];
 +	struct tc_nssblackhole_qopt *qopt;
-+	SPRINT_BUF(b1);
 +
 +	if (opt == NULL)
 +		return 0;
@@ -1648,6 +1922,8 @@
 +
 +	if (qopt->set_default)
 +		fprintf(f, "set_default ");
++
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
 +
 +	return 0;
 +}
