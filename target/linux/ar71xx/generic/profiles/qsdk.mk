@@ -34,10 +34,10 @@ WIFI_OPEN:=-kmod-ath5k -kmod-qca-ath -kmod-qca-ath9k -kmod-qca-ath10k \
 
 BLUETOOTH:=bluez-daemon kmod-bluetooth usbutils
 
-WIFI_PKGS:=kmod-qca-wifi-unified-perf kmod-art2 \
-		qca-hostap qca-hostapd-cli qca-wpa-supplicant \
-		qca-wpa-cli qca-wapid sigma-dut-10.4 qca-wpc \
-		qca-acfg qca-wrapd qca-spectral qcmbr-10.4 whc whc-ui \
+WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-perf kmod-art2 \
+		qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
+		qca-wpa-cli-10.4 qca-wapid sigma-dut-10.4 qca-wpc-10.4 \
+		qca-acfg-10.4 qca-wrapd-10.4 qca-spectral-10.4 qcmbr-10.4 whc whc-ui \
 		qca-iface-mgr-10.4
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
@@ -98,7 +98,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
-	  $(STORAGE) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) \
+	  $(STORAGE) $(WIFI_10_4_PKGS) $(WIFI_10_4_FW_PKGS) \
 	  $(SWITCH_SSDK_HNAT_PKGS) $(UBOOT_PKGS) $(HYFI) \
 	  mtd-utils mtd-utils-nandwrite kmod-fast-classifier
 endef
@@ -107,7 +107,7 @@ define Profile/QSDK_Premium_Beeliner_Router/Description
   QSDK Premium Beeliner Router package set configuration.
   This profile is designed to fit in a 16M flash and supports the following features:
   - Bridging and routing networking
-  - QCA-WiFi driver configuration
+  - QCA-WiFi driver 10.4 configuration
   - LuCI web configuration interface
   - USB hard drive support
   - Samba
@@ -120,8 +120,8 @@ define Profile/QSDK_Wireless_Router
 	NAME:=Qualcomm-Atheros SDK Wireless Router Profile
 	PACKAGES+=-kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini uhttpd kmod-ipv6 \
 	  kmod-ipt-nathelper-rtsp -dnsmasq dnsmasq-dhcpv6 bridge \
-	  kmod-qca-wifi-lowmem-profile qca-wpa-cli kmod-usb-storage \
-	  kmod-fs-ntfs kmod-fuse qca-hostap qca-hostapd-cli qca-wpa-supplicant \
+	  kmod-qca-wifi-10.4-lowmem-profile qca-wpa-cli-10.4 kmod-usb-storage \
+	  kmod-fs-ntfs kmod-fuse qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
 	  kmod-qca-ssdk-nohnat qca-legacy-uboot-ap136 qca-legacy-uboot-ap152-8M \
 	  qca-legacy-uboot-ap151-8M qca-legacy-uboot-ap147-8M qca-legacy-uboot-db120-8M
 endef
@@ -163,7 +163,7 @@ $(eval $(call Profile,QSDK_Open_Router))
 
 define Profile/QSDK_Target_Router
 	NAME:=Qualcomm-Atheros SDK Target Router Profile
-	PACKAGES+= qca-legacy-uboot-ap135 kmod-qca-wifi-unified-perf \
+	PACKAGES+= qca-legacy-uboot-ap135 kmod-qca-wifi-10.4-unified-perf \
 	  qca-wifi-fw-hw6-10.4-asic
 
 endef
