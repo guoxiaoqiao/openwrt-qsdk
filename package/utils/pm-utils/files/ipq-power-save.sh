@@ -446,19 +446,27 @@ ipq8074_ac_power()
 
 # USB Power-UP Sequence
 	# USB powerup sequence goes here
-	if ! [ -d /sys/module/dwc3_of_simple ]
-	then
-		insmod phy-msm-ssusb-qmp.ko
-		insmod phy-msm-qusb.ko
-		insmod dwc3-of-simple.ko
-		insmod dwc3.ko
-	fi
 
 # LAN interface up
 	ifup lan
 
 # SD/MMC Power-UP sequence
-	# SD/MMC powerup sequence goes here
+	local emmcblock="$(find_mmc_part "rootfs")"
+
+	if [ -z "$emmcblock" ]; then
+		if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
+		then
+			sd_drvname=$(cat /tmp/sysinfo/sd_drvname)
+			echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/bind
+		fi
+	fi
+
+	if [[ -f /tmp/sysinfo/sd1_drvname  && ! -d /sys/block/mmcblk1 ]]
+	then
+		sd1_drvname=$(cat /tmp/sysinfo/sd1_drvname)
+		echo $sd1_drvname > /sys/bus/platform/drivers/sdhci_msm/bind
+	fi
+
 	sleep 1
 
 	exit 0
@@ -507,16 +515,26 @@ ipq8074_battery_power()
 
 # USB Power-down Sequence
 	# USB power down sequence goes here
-	if [ -d sys/module/dwc3_of_simple ]
-	then
-		rmmod dwc3
-		rmmod dwc3-of-simple
-		rmmod phy_msm_qusb
-		rmmod phy_msm_ssusb_qmp
-	fi
+
 	sleep 2
 #SD/MMC Power-down Sequence
-	# SD/MMC powerdown sequence goes here
+	local emmcblock="$(find_mmc_part "rootfs")"
+
+	if [ -z "$emmcblock" ]; then
+		if [ -d /sys/block/mmcblk0 ]
+		then
+			sd_drvname=`readlink /sys/block/mmcblk0 | grep -o "[0-9]*.sdhci"`
+			echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
+			echo $sd_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
+		fi
+	fi
+
+	if [ -d /sys/block/mmcblk1 ]
+	then
+		sd1_drvname=`readlink /sys/block/mmcblk1 | grep -o "[0-9]*.sdhci"`
+		echo "$sd1_drvname" > /tmp/sysinfo/sd1_drvname
+		echo $sd1_drvname > /sys/bus/platform/drivers/sdhci_msm/unbind
+	fi
 
 # LAN interface down
 	ifdown lan
@@ -535,7 +553,7 @@ case "$1" in
 			ipq4019_ap_dk01_1_ac_power ;;
 		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2)
 			ipq4019_ap_dk04_1_ac_power ;;
-		hk01)
+		ap-hk01)
 			ipq8074_ac_power ;;
 		esac ;;
 	true)
@@ -546,7 +564,7 @@ case "$1" in
 			ipq4019_ap_dk01_1_battery_power ;;
 		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2)
 			ipq4019_ap_dk04_1_battery_power ;;
-		hk01)
+		ap-hk01)
 			ipq8074_battery_power ;;
 		esac ;;
 esac
