@@ -1,0 +1,62 @@
+From 9b173fb79fdc5590141cf37669b6730532d29f10 Mon Sep 17 00:00:00 2001
+From: Charanya Venkatraman <charanya@codeaurora.org>
+Date: Tue, 18 Jul 2017 14:24:36 +0530
+Subject: [PATCH 2/2] QCN550X: ADD APJET01 support
+
+Signed-off-by: Charanya Venkatraman <charanya@codeaurora.org>
+---
+ arch/mips/ath79/Kconfig     | 14 ++++++++++++++
+ arch/mips/ath79/Makefile    |  1 +
+ arch/mips/ath79/machtypes.h |  1 +
+ 3 files changed, 16 insertions(+)
+
+diff --git a/arch/mips/ath79/Kconfig b/arch/mips/ath79/Kconfig
+index 112f540..00991b5 100644
+--- a/arch/mips/ath79/Kconfig
++++ b/arch/mips/ath79/Kconfig
+@@ -178,6 +178,20 @@ config ATH79_MACH_AP152
+ 	  Say 'Y' here if you want your kernel to support the
+ 	  Atheros AP152 reference board.
+ 
++config ATH79_MACH_APJET01
++	bool "Qualcomm Atheros AP JET01 reference board"
++	select SOC_QCN550X
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_SPI
++	select ATH79_DEV_USB
++	select ATH79_DEV_WMAC
++	select ATH79_DEV_ETH
++	select ATH79_DEV_M25P80
++	help
++	  Say 'Y' here if you want your kernel to support the
++	  Qualcomm Atheros APJET01 reference board.
++
+ config ATH79_MACH_AP81
+ 	bool "Atheros AP81 reference board"
+ 	select SOC_AR913X
+diff --git a/arch/mips/ath79/Makefile b/arch/mips/ath79/Makefile
+index 695e51c..2efda20 100644
+--- a/arch/mips/ath79/Makefile
++++ b/arch/mips/ath79/Makefile
+@@ -57,6 +57,7 @@ obj-$(CONFIG_ATH79_MACH_AP143)		+= mach-ap143.o
+ obj-$(CONFIG_ATH79_MACH_AP147)		+= mach-ap147.o
+ obj-$(CONFIG_ATH79_MACH_AP151)		+= mach-ap151.o
+ obj-$(CONFIG_ATH79_MACH_AP152)		+= mach-ap152.o
++obj-$(CONFIG_ATH79_MACH_APJET01)	+= mach-apjet01.o
+ obj-$(CONFIG_ATH79_MACH_AP81)		+= mach-ap81.o
+ obj-$(CONFIG_ATH79_MACH_AP83)		+= mach-ap83.o
+ obj-$(CONFIG_ATH79_MACH_AP96)		+= mach-ap96.o
+diff --git a/arch/mips/ath79/machtypes.h b/arch/mips/ath79/machtypes.h
+index b5417a7..b64ce38 100644
+--- a/arch/mips/ath79/machtypes.h
++++ b/arch/mips/ath79/machtypes.h
+@@ -33,6 +33,7 @@ enum ath79_mach_type {
+ 	ATH79_MACH_AP147,		/* Atheros AP147 reference board */
+ 	ATH79_MACH_AP151,		/* Atheros AP151 reference board */
+ 	ATH79_MACH_AP152,		/* Atheros AP152 reference board */
++	ATH79_MACH_APJET01,		/* Qualcomm Atheros APJET01 reference board */
+ 	ATH79_MACH_AP81,		/* Atheros AP81 reference board */
+ 	ATH79_MACH_AP83,		/* Atheros AP83 */
+ 	ATH79_MACH_AP96,		/* Atheros AP96 */
+
