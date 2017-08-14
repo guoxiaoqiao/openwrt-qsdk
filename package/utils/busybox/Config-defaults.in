@@ -1929,13 +1929,13 @@ config BUSYBOX_DEFAULT_NC_110_COMPAT
 	default n
 config BUSYBOX_DEFAULT_PING
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_PING6
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_FANCY_PING
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_WHOIS
 	bool
 	default n
