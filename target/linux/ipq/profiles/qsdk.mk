@@ -69,7 +69,7 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
 
 WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
-	qca-wpa-cli qca-spectral qca-wpc sigma-dut-10.4 \
+	qca-wpa-cli qca-spectral qca-wpc sigma-dut \
 	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
 	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag
 
@@ -83,7 +83,7 @@ WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo qca-fst-manager
 OPENWRT_STANDARD:= \
 	luci openssl-util
 
-STORAGE:=kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-iso8859-1  \
+STORAGE:=kmod-scsi-core kmod-usb-storage kmod-nls-cp437 kmod-nls-iso8859-1  \
 	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs
 
 USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
@@ -210,43 +210,3 @@ define Profile/QSDK_Enterprise/Description
 endef
 
 $(eval $(call Profile,QSDK_Enterprise))
-
-define Profile/QSDK_Deluxe
-	NAME:=Qualcomm-Atheros SDK Deluxe Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) \
-		$(SWITCH_SSDK_PKGS) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) \
-		$(CD_ROUTER) -lacpd $(NETWORKING) $(SHORTCUT_FE) $(MAP_PKGS) \
-		$(QCA_RFS) $(IGMPSNOOING_RSTP) $(IPSEC) -rstp $(QOS) $(QCA_ECM) $(AQ_PHY) \
-		$(STORAGE) $(AUDIO) $(VIDEO) $(COREBSP_UTILS) $(FAILSAFE) \
-		$(UTILS) $(TEST_TOOLS) $(KPI) \
-		$(QCA_LITHIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(NSS_CLIENTS_STANDARD) \
-		kmod-art2 kmod-e1000e $(USB_DIAG)
-endef
-
-define Profile/QSDK_Deluxe/Description
-	QSDK Deluxe package set configuration.
-	Enables wifi source packages
-	Intended for IPQ807x
-endef
-
-$(eval $(call Profile,QSDK_Deluxe))
-
-
-define Profile/QSDK_Standard_64
-	NAME:=Qualcomm-Atheros SDK Standard_64 Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(AQ_PHY) $(NSS_EIP197_FW) \
-		$(WIFI_PKGS) qca-wifi-fw-hw2-10.4-asic $(STORAGE) $(CD_ROUTER) \
-		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
-		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
-		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(FAILSAFE) kmod-art2 qca-wifi-hk-fw-hw1-10.4-asic \
-		-lacpd $(USB_DIAG) $(KPI)
-endef
-
-define Profile/QSDK_Standard_64/Description
-	QSDK Standard_64 package set configuration.
-	Enables wifi source packages
-endef
-
-$(eval $(call Profile,QSDK_Standard_64))

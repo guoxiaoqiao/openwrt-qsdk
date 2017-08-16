@@ -41,6 +41,18 @@ enable_smp_affinity_wifi() {
 		esac
 
 		case "$board" in
+			ap-dk07.1-c3)
+				if [ $device == "wifi0" ]; then
+					#Assign core 0 for wifi0
+					smp_affinity=1
+				elif [ $device == "wifi1" ]; then
+					#Assign core 2 for wifi1
+					smp_affinity=4
+				else
+					# Assign core 1 for wifi2. For ap-dkXX,wifi2 is always the third radio
+					smp_affinity=2
+				fi
+			;;
 			ap-dk0*)
 				if [ $device == "wifi0" ]; then
 					#Assign core 2 for wifi0
