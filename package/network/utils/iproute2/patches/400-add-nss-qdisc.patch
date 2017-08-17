@@ -1522,7 +1522,7 @@
 +	while (argc > 0) {
 +		if (strcmp(*argv, "quantum") == 0) {
 +			NEXT_ARG();
-+			if (get_u32(&opt.quantum, *argv, 10)) {
++			if (get_size(&opt.quantum, *argv)) {
 +				fprintf(stderr, "Illegal \"quantum\"\n");
 +				return -1;
 +			}
