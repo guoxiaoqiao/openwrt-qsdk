@@ -51,7 +51,7 @@ proto_map_setup() {
 		if [ "$type" = "map-t" ]; then
 			rule="$rule,dmr=$peeraddr"
 		else
-			rule="$rule,br=$peeraddr"
+			rule="$rule,br=$peeraddr,fmr=1"
 		fi
 	fi
 
