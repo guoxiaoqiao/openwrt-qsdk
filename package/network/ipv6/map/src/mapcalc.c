@@ -235,6 +235,8 @@ int main(int argc, char *argv[])
 			int idx = getsubopt(&rule, token, &value);
 			errno = 0;
 
+			if (*value == '=')
+				value++;
 			if (idx == OPT_TYPE) {
 				lw4o6 = (value && !strcmp(value, "lw4o6"));
 			} else if (idx == OPT_FMR) {
