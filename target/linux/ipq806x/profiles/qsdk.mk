@@ -117,6 +117,9 @@ BLUETOPIA:=bluetopia
 
 ZIGBEE:=zigbee_efr32
 
+CSR_BLE:=bluetopia btdiag libCsrCrypto libmeshPsPorting \
+        csrMeshGw csrMeshGwRefApp csrMeshGwTestApp csrLotApp
+
 QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
@@ -170,7 +173,8 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 $(QCA_VOICE)
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 $(QCA_VOICE) $(ZIGBEE) \
+		$(CSR_BLE)
 endef
 
 define Profile/QSDK_Premium/Description
