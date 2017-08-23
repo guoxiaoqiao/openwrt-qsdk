@@ -431,7 +431,11 @@ ipq8074_ac_power()
 	/etc/init.d/powerctl restart
 
 # Power on Malibu PHY of LAN ports
-	# ssdk_sh port poweron sequence goes here
+	ssdk_sh port poweron set 1
+	ssdk_sh port poweron set 2
+	ssdk_sh port poweron set 3
+	ssdk_sh port poweron set 4
+	ssdk_sh port poweron set 5
 
 # PCIe Power-UP Sequence
 	sleep 1
@@ -442,7 +446,7 @@ ipq8074_ac_power()
 	sleep 1
 
 # Wifi Power-up Sequence
-	# wifi powerup sequence goes here
+	wifi load
 
 # USB Power-UP Sequence
 	if ! [ -d /sys/module/dwc3_of_simple ]
@@ -451,6 +455,11 @@ ipq8074_ac_power()
 		insmod phy-msm-qusb.ko
 		insmod dwc3-of-simple.ko
 		insmod dwc3.ko
+	fi
+
+	if [ -d config/usb_gadget/g1 ]
+	then
+		echo "8a00000.dwc3" > /config/usb_gadget/g1/UDC
 	fi
 
 # LAN interface up
@@ -512,14 +521,35 @@ ipq8074_battery_power()
 	sleep 1
 
 # Wifi Power-down Sequence
-	# wifi unload sequence goes here
+	wifi unload
 
 # Find scsi devices and remove it
+	partition=`cat /proc/partitions | awk -F " " '{print $4}'`
+
+	for entry in $partition; do
+		sd_entry=$(echo $entry | head -c 2)
+
+		if [ "$sd_entry" = "sd" ]; then
+			[ -f /sys/block/$entry/device/delete ] && {
+				echo 1 > /sys/block/$entry/device/delete
+			}
+		fi
+	done
+
 
 # Power off Malibu PHY of LAN ports
-	# ssdk_sh port poweroff sequence goes here
+	ssdk_sh port poweroff set 1
+	ssdk_sh port poweroff set 2
+	ssdk_sh port poweroff set 3
+	ssdk_sh port poweroff set 4
+	ssdk_sh port poweroff set 5
 
 # USB Power-down Sequence
+	if [ -d config/usb_gadget/g1 ]
+	then
+		echo "" > /config/usb_gadget/g1/UDC
+	fi
+
 	if [ -d sys/module/dwc3_of_simple ]
 	then
 		rmmod dwc3
