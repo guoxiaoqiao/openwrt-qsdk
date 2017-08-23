@@ -1,18 +1,18 @@
-From 0b06577513e19f63afbba3f8f4f63c082db5a780 Mon Sep 17 00:00:00 2001
-From: Natesh babu <nrameg@codeaurora.org>
-Date: Tue, 12 Apr 2016 15:30:12 +0530
+From 7068dca124f2301f431521b5056443439bae81c9 Mon Sep 17 00:00:00 2001
+From: Natesh Babu <nrameg@codeaurora.org>
+Date: Mon, 21 Aug 2017 14:21:20 +0530
 Subject: [PATCH] ipq40xx: Enable debug image parsing
 
-Signed-off-by: Natesh babu <nrameg@codeaurora.org>
+Signed-off-by: Natesh Babu <nrameg@codeaurora.org>
 ---
- linux-ramdump-parser-v2/ramdump.py | 134 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 131 insertions(+), 3 deletions(-)
+ linux-ramdump-parser-v2/ramdump.py | 135 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 132 insertions(+), 3 deletions(-)
 
 diff --git a/linux-ramdump-parser-v2/ramdump.py b/linux-ramdump-parser-v2/ramdump.py
-index eebc6ea..40f6a3e 100755
+index 3269b9f..bc08207 100755
 --- a/linux-ramdump-parser-v2/ramdump.py
 +++ b/linux-ramdump-parser-v2/ramdump.py
-@@ -417,14 +417,25 @@ class RamDump():
+@@ -422,14 +422,25 @@ class RamDump():
                  if frame.pc is None:
                      break
  
@@ -41,7 +41,7 @@ index eebc6ea..40f6a3e 100755
                  if out_file:
                      out_file.write(pstring + '\n')
                  else:
-@@ -434,6 +445,103 @@ class RamDump():
+@@ -439,6 +450,104 @@ class RamDump():
                  if urc < 0:
                      break
  
@@ -99,14 +99,15 @@ index eebc6ea..40f6a3e 100755
 +                self.sym_off = offset
 +                self.symtab_st_size = symtab_st_size
 +
++
 +        def mod_addr_func(self, mod_list):
-+            if ((mod_list & 0xff000000) != 0xbf000000):
-+               return
++            if((mod_list & 0xff000000) !=  0xbf000000):
++                return
 +
 +            name = self.ramdump.read_cstring(mod_list + self.ramdump.mod_name_offset, 30)
 +
 +            if len(name) <= 1:
-+               return
++                return
 +
 +            module_init_addr = self.ramdump.read_word(mod_list + self.ramdump.module_init_offset)
 +            module_init_size = self.ramdump.read_word(mod_list + self.ramdump.module_init_size_offset)
@@ -142,10 +143,10 @@ index eebc6ea..40f6a3e 100755
 +            else:
 +                return None
 +
-     def __init__(self, vmlinux_path, nm_path, gdb_path, objdump_path, ebi, file_path, phys_offset, outdir, qtf_path, hw_id=None, hw_version=None, arm64=False, page_offset=None, qtf=False):
-         self.ebi_files = []
-         self.phys_offset = None
-@@ -552,6 +660,26 @@ class RamDump():
+         def arm_symbol_mapping(self, sym):
+             sym1="atd"
+             if len(sym)>=3:
+@@ -578,6 +687,26 @@ class RamDump():
              print_out_str('!!! Some features may be disabled!')
          self.unwind = self.Unwinder(self)
  
