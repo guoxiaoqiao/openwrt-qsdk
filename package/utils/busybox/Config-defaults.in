@@ -1695,7 +1695,7 @@ config BUSYBOX_DEFAULT_SETSERIAL
 	default n
 config BUSYBOX_DEFAULT_TASKSET
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_TASKSET_FANCY
 	bool
 	default n
