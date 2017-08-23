@@ -70,3 +70,29 @@ enable_smp_affinity_wifi() {
 		[ -n "$irq_affinity_num" ] && echo $smp_affinity > /proc/irq/$irq_affinity_num/smp_affinity
 	fi
 }
+
+enable_smp_affinity_audio() {
+	board=$(ipq806x_board_name)
+
+	case "$board" in
+		ap-dk07.1-c3)
+			smp_affinity=8
+
+			spi_irq=`grep -E -m1 'spi' /proc/interrupts | cut -d ':' -f 1 | tr -d ' '`
+			[ -n "$spi_irq" ] && echo $smp_affinity > /proc/irq/$spi_irq/smp_affinity
+
+			i2c_irq=`grep -E -m1 'i2c' /proc/interrupts | cut -d ':' -f 1  | tr -d ' '`
+			[ -n "$i2c_irq" ] && echo $smp_affinity > /proc/irq/$i2c_irq/smp_affinity
+
+			for mbox_irq in $(grep -E 'mbox' /proc/interrupts | cut -d ':' -f 1 | tr -d ' '); do
+				[ -n "$mbox_irq" ] && echo $smp_affinity > /proc/irq/$mbox_irq/smp_affinity
+			done
+
+			# For I2C / SPI SPS Interrupts
+			echo $smp_affinity > /proc/irq/270/smp_affinity
+
+			# For WCD Interrupt
+			echo $smp_affinity > /proc/irq/240/smp_affinity
+			;;
+		esac
+}
