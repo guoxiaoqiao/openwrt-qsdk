@@ -445,7 +445,13 @@ ipq8074_ac_power()
 	# wifi powerup sequence goes here
 
 # USB Power-UP Sequence
-	# USB powerup sequence goes here
+	if ! [ -d /sys/module/dwc3_of_simple ]
+	then
+		insmod phy-msm-ssusb-qmp.ko
+		insmod phy-msm-qusb.ko
+		insmod dwc3-of-simple.ko
+		insmod dwc3.ko
+	fi
 
 # LAN interface up
 	ifup lan
@@ -514,9 +520,15 @@ ipq8074_battery_power()
 	# ssdk_sh port poweroff sequence goes here
 
 # USB Power-down Sequence
-	# USB power down sequence goes here
-
+	if [ -d sys/module/dwc3_of_simple ]
+	then
+		rmmod dwc3
+		rmmod dwc3-of-simple
+		rmmod phy_msm_qusb
+		rmmod phy_msm_ssusb_qmp
+	fi
 	sleep 2
+
 #SD/MMC Power-down Sequence
 	local emmcblock="$(find_mmc_part "rootfs")"
 
