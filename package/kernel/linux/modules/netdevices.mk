@@ -216,8 +216,9 @@ define KernelPackage/switch-ar8216
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Qualcomm Atheros AR82XX/AR83XX switch support
   DEPENDS:=+kmod-swconfig
-  KCONFIG:=CONFIG_AR8216_PHY
-  FILES:=$(LINUX_DIR)/drivers/net/phy/ar8216.ko
+  KCONFIG:=CONFIG_AR8216_PHY=y@ge3.18 \
+	   CONFIG_AR8216_PHY@lt3.18
+  FILES:=$(LINUX_DIR)/drivers/net/phy/ar8216.ko@lt3.18
   AUTOLOAD:=$(call AutoLoad,30,ar8216)
 endef
 
