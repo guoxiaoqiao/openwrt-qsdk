@@ -564,6 +564,7 @@ static void __init ath79_init_eth_pll_data(unsigned int id)
 	case ATH79_SOC_QCA9531:
 	case ATH79_SOC_QCA9558:
 	case ATH79_SOC_QCA956X:
+	case ATH79_SOC_QCN5502:
 		pll_10 = AR934X_PLL_VAL_10;
 		pll_100 = AR934X_PLL_VAL_100;
 		pll_1000 = AR934X_PLL_VAL_1000;
@@ -643,7 +644,8 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
 		case ATH79_SOC_AR9330:
 		case ATH79_SOC_AR9331:
 		case ATH79_SOC_QCA9531:
-	    case ATH79_SOC_QCA956X:
+		case ATH79_SOC_QCA956X:
+		case ATH79_SOC_QCN5502:
 			pdata->phy_if_mode = PHY_INTERFACE_MODE_MII;
 			break;
 
@@ -714,7 +716,8 @@ static int __init ath79_setup_phy_if_mode(unsigned int id,
 		case ATH79_SOC_AR9342:
 		case ATH79_SOC_AR9344:
 		case ATH79_SOC_QCA9531:
-	    case ATH79_SOC_QCA956X:
+		case ATH79_SOC_QCA956X:
+		case ATH79_SOC_QCN5502:
 			switch (pdata->phy_if_mode) {
 			case PHY_INTERFACE_MODE_MII:
 			case PHY_INTERFACE_MODE_GMII:
@@ -958,6 +961,7 @@ void ath79_init_eth_pdata(unsigned int id)
 
 	case ATH79_SOC_QCA9531:
 	case ATH79_SOC_QCA956X:
+	case ATH79_SOC_QCN5502:
 		pdata->is_qca956x = 1;
 	case ATH79_SOC_AR9341:
 	case ATH79_SOC_AR9342:
@@ -981,10 +985,12 @@ void ath79_init_eth_pdata(unsigned int id)
 		}
 
 		pdata->ddr_flush = ath79_ddr_no_flush;
-		if (id == 0 && ATH79_SOC_QCA956X == ath79_soc) {
+		if (id == 0 && ((ATH79_SOC_QCA956X == ath79_soc) ||
+				(ATH79_SOC_QCN5502 == ath79_soc))) {
 			pdata->ddr_flush = ath79_ddr_flush_ge0;
 		}
-		else if (id == 1 && ATH79_SOC_QCA956X == ath79_soc) {
+		else if (id == 1 && ((ATH79_SOC_QCA956X == ath79_soc) ||
+				  (ATH79_SOC_QCN5502 == ath79_soc))) {
 			pdata->ddr_flush = ath79_ddr_flush_ge1;
 		}
 		pdata->has_gbit = 1;
@@ -1007,7 +1013,8 @@ void ath79_init_eth_pdata(unsigned int id)
 	 * we couldnt use the above switch statement.
 	 * it can be cleaned up later
 	 */
-	if ((id == 0)  && (ath79_soc == ATH79_SOC_QCA956X)) {
+	if ((id == 0)  && ((ath79_soc == ATH79_SOC_QCA956X) ||
+			(ath79_soc == ATH79_SOC_QCN5502))) {
 		pdata->is_qca9561 = 1;
 	} else if (ath79_soc == ATH79_SOC_QCA9558) {
 		pdata->is_qca955x = 1;
