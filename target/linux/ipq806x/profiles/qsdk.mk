@@ -101,6 +101,10 @@ BLUETOPIA:=bluetopia
 
 ZIGBEE:=zigbee_efr32
 
+CSR_BLE:=bluetopia btdiag libCsrCrypto libmeshPsPorting \
+	csrMeshGw csrMeshGwRefApp csrMeshGwTestApp csrLotApp
+
+
 QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
@@ -122,6 +126,8 @@ VIDEO:=kmod-qpic_panel_ertft
 KPI:=iperf sysstat
 
 FST:=qca-fst-manager
+
+QCA_VOICE:=graphite-client alsa-plugins-gcs wdsp-fw meeami-utils iotcontrol
 
 ifneq ($(LINUX_VERSION),3.18.21)
 	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
@@ -151,7 +157,8 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-art2
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) $(FST) kmod-art2 $(QCA_VOICE) $(ZIGBEE) \
+		$(CSR_BLE)
 endef
 
 define Profile/QSDK_Premium/Description
