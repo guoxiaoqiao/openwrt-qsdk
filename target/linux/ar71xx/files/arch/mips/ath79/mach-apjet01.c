@@ -42,8 +42,9 @@
 #define APJET01_GPIO_LED_LAN3             4
 #define APJET01_GPIO_LED_LAN4             5
 
-#define APJET01_GPIO_LED_USB		20
+#define APJET01_GPIO_LED_USB		4
 
+#define APJET01_GPIO_BTN_RESET            3
 #define APJET01_GPIO_BTN_WPS              1
 #define APJET01_KEYS_POLL_INTERVAL        20     /* msecs */
 #define APJET01_KEYS_DEBOUNCE_INTERVAL    (3 * APJET01_KEYS_POLL_INTERVAL)
@@ -66,26 +67,6 @@ static struct gpio_led apjet01_leds_gpio[] __initdata = {
 		.gpio		= APJET01_GPIO_LED_WLAN_2G,
 		.active_low	= 1,
 	},
-	{
-		.name		= "apjet01:green:lan1",
-		.gpio		= APJET01_GPIO_LED_LAN1,
-		.active_low	= 1,
-	},
-	{
-		.name		= "apjet01:green:lan2",
-		.gpio		= APJET01_GPIO_LED_LAN2,
-		.active_low	= 1,
-	},
-	{
-		.name		= "apjet01:green:lan3",
-		.gpio		= APJET01_GPIO_LED_LAN3,
-		.active_low	= 1,
-	},
-	{
-		.name		= "apjet01:green:lan4",
-		.gpio		= APJET01_GPIO_LED_LAN4,
-		.active_low	= 1,
-	},
 };
 
 static struct gpio_keys_button apjet01_gpio_keys[] __initdata = {
@@ -95,6 +76,14 @@ static struct gpio_keys_button apjet01_gpio_keys[] __initdata = {
                 .code           = KEY_WPS_BUTTON,
                 .debounce_interval = APJET01_KEYS_DEBOUNCE_INTERVAL,
                 .gpio           = APJET01_GPIO_BTN_WPS,
+                .active_low     = 1,
+        },
+        {
+                .desc           = "Reset button",
+                .type           = EV_KEY,
+                .code           = KEY_RESTART,
+                .debounce_interval = APJET01_KEYS_DEBOUNCE_INTERVAL,
+                .gpio           = APJET01_GPIO_BTN_RESET,
                 .active_low     = 1,
         },
 };
