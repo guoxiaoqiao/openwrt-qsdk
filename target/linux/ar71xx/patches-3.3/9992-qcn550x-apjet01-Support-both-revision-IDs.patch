@@ -1,0 +1,52 @@
+From 2613e576068cc0ba1b4e25f52491137dc0f0e9ad Mon Sep 17 00:00:00 2001
+From: Charanya Venkatraman <charanya@codeaurora.org>
+Date: Mon, 4 Sep 2017 12:44:18 +0530
+Subject: [PATCH] qcn550x: apjet01: Support both revision IDs
+
+Support rev IDs 0x170 and 0x3170 on qcn550x
+to avoid any bootup issues.
+
+Signed-off-by: Charanya Venkatraman <charanya@codeaurora.org>
+---
+ arch/mips/ath79/early_printk.c                 | 1 +
+ arch/mips/ath79/setup.c                        | 1 +
+ arch/mips/include/asm/mach-ath79/ar71xx_regs.h | 1 +
+ 3 files changed, 3 insertions(+)
+
+diff --git a/arch/mips/ath79/early_printk.c b/arch/mips/ath79/early_printk.c
+index 09a8409..a402d85 100644
+--- a/arch/mips/ath79/early_printk.c
++++ b/arch/mips/ath79/early_printk.c
+@@ -119,6 +119,7 @@ static void prom_putchar_init(void)
+ 	case REV_ID_MAJOR_QCA9558:
+ 	case REV_ID_MAJOR_QCA956X:
+ 	case REV_ID_MAJOR_QCN5502:
++	case REV_ID_MAJOR_QCN5500:
+ 		_prom_putchar = prom_putchar_ar71xx;
+ 		break;
+ 
+diff --git a/arch/mips/ath79/setup.c b/arch/mips/ath79/setup.c
+index e4c9d35..85be3e3 100644
+--- a/arch/mips/ath79/setup.c
++++ b/arch/mips/ath79/setup.c
+@@ -184,6 +184,7 @@ static void __init ath79_detect_sys_type(void)
+ 		rev = id & QCA956X_REV_ID_REVISION_MASK;
+ 		break;
+ 	case REV_ID_MAJOR_QCN5502:
++	case REV_ID_MAJOR_QCN5500:
+ 		ath79_soc = ATH79_SOC_QCN5502;
+ 		chip = "5502";
+ 		rev = id & QCN550X_REV_ID_REVISION_MASK;
+diff --git a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+index 27c402f..6842cd9 100644
+--- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
++++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+@@ -878,6 +878,7 @@
+ #define REV_ID_MAJOR_QCA9531_V2	0x0160
+ #define REV_ID_MAJOR_QCA9558		0x1130
+ #define REV_ID_MAJOR_QCA956X		0x1150
++#define REV_ID_MAJOR_QCN5500		0x0170
+ #define REV_ID_MAJOR_QCN5502		0x3170
+ 
+ #define AR71XX_REV_ID_MINOR_MASK	0x3
+
