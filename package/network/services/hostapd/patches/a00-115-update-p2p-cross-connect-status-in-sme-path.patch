@@ -1,0 +1,25 @@
+--- a/wpa_supplicant/sme.c
++++ b/wpa_supplicant/sme.c
+@@ -414,6 +414,22 @@ static void sme_send_authentication(struct wpa_supplicant *wpa_s,
+ 		if (res >= 0)
+ 			wpa_s->sme.assoc_req_ie_len += res;
+ 	}
++
++	wpa_s->cross_connect_disallowed = 0;
++	if (bss) {
++		struct wpabuf *p2p;
++
++		p2p = wpa_bss_get_vendor_ie_multi(bss, P2P_IE_VENDOR_TYPE);
++		if (p2p) {
++			wpa_s->cross_connect_disallowed =
++				p2p_get_cross_connect_disallowed(p2p);
++			wpabuf_free(p2p);
++			wpa_printf(MSG_DEBUG, "P2P: WLAN AP %s cross "
++				"connection",
++				wpa_s->cross_connect_disallowed ?
++				"disallows" : "allows");
++		}
++	}
+ #endif /* CONFIG_P2P */
+ 
+ #ifdef CONFIG_HS20
