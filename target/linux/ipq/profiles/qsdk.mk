@@ -106,8 +106,7 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
-	isc-dhcp-relay-ipv4 isc-dhcp-relay-ipv6 \
-	rp-pppoe-server ppp-mod-pptp
+	isc-dhcp-relay-ipv6 rp-pppoe-server ppp-mod-pptp
 
 BLUETOOTH:=kmod-bluetooth bluez-libs bluez-utils kmod-ath3k
 
