@@ -1,0 +1,20 @@
+diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c
+index 23ab84c..986819a 100644
+--- a/wpa_supplicant/wpa_supplicant.c
++++ b/wpa_supplicant/wpa_supplicant.c
+@@ -1774,6 +1774,15 @@ void wpa_supplicant_associate(struct wpa_supplicant *wpa_s,
+ 		return;
+ 	}
+ 
++	/*
++	* Set WPA state machine configuration to match the selected network now
++	* so that the information is available before wpas_start_assoc_cb()
++	* gets called. This is needed at least for RSN pre-authentication where
++	* candidate APs are added to a list based on scan result processing
++	* before completion of the first association.
++	*/
++        wpa_supplicant_rsn_supp_set_config(wpa_s, ssid);
++
+ 	if (ssid->mode == WPAS_MODE_MESH) {
+ #ifdef CONFIG_MESH
+ 		if (!(wpa_s->drv_flags & WPA_DRIVER_FLAGS_MESH)) {
