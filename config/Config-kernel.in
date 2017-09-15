@@ -626,6 +626,9 @@ if KERNEL_LXC_MISC
 
 endif
 
+config KERNEL_MSM_GLINK_LOOPBACK_SERVER
+	bool "Enable Generic Link (G-Link) Loopback Server"
+
 config KERNEL_SECCOMP_FILTER
 	bool
 	default n
