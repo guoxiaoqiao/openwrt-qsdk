@@ -431,7 +431,6 @@ ipq8074_ac_power()
 	/etc/init.d/powerctl restart
 
 # Power on Malibu PHY of LAN ports
-	ssdk_sh port poweron set 1
 	ssdk_sh port poweron set 2
 	ssdk_sh port poweron set 3
 	ssdk_sh port poweron set 4
@@ -538,7 +537,6 @@ ipq8074_battery_power()
 
 
 # Power off Malibu PHY of LAN ports
-	ssdk_sh port poweroff set 1
 	ssdk_sh port poweroff set 2
 	ssdk_sh port poweroff set 3
 	ssdk_sh port poweroff set 4
