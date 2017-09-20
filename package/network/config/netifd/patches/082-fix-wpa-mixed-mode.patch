@@ -1,0 +1,12 @@
+diff --git a/scripts/netifd-wireless.sh b/scripts/netifd-wireless.sh
+index 68a122b..f5739d8 100644
+--- a/scripts/netifd-wireless.sh
++++ b/scripts/netifd-wireless.sh
+@@ -221,7 +221,6 @@ wireless_vif_parse_encryption() {
+ 		;;
+ 		*mixed*)
+ 			wpa=3
+-			wpa_pairwise="CCMP TKIP"
+ 		;;
+ 		wpa*|*psk*)
+ 			wpa=1
