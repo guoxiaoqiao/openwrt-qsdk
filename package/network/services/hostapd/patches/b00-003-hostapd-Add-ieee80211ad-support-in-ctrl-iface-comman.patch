@@ -1,0 +1,38 @@
+From 3a0122eebe71a1b9d83e742db7b01457ea92aa59 Mon Sep 17 00:00:00 2001
+From: bhagavathiperumal s <bperumal@codeaurora.org>
+Date: Sat, 23 Sep 2017 10:24:01 +0530
+Subject: [PATCH] hostapd: Add ieee80211ad support in ctrl iface command
+ STATUS
+
+This allows external programs to ensure the configured ieee80211ad phy mode.
+
+Signed-off-by: bhagavathiperumal s <bperumal@codeaurora.org>
+---
+ src/ap/ctrl_iface_ap.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/ap/ctrl_iface_ap.c b/src/ap/ctrl_iface_ap.c
+index 4fb3ac0..38dff9b 100644
+--- a/src/ap/ctrl_iface_ap.c
++++ b/src/ap/ctrl_iface_ap.c
+@@ -539,13 +539,15 @@ int hostapd_ctrl_iface_status(struct hostapd_data *hapd, char *buf,
+ 			  "channel=%u\n"
+ 			  "secondary_channel=%d\n"
+ 			  "ieee80211n=%d\n"
+-			  "ieee80211ac=%d\n",
++			  "ieee80211ac=%d\n"
++			  "ieee80211ad=%d\n",
+ 			  iface->conf->channel,
+ 			  iface->conf->ieee80211n && !hapd->conf->disable_11n ?
+ 			  iface->conf->secondary_channel : 0,
+ 			  iface->conf->ieee80211n && !hapd->conf->disable_11n,
+ 			  iface->conf->ieee80211ac &&
+-			  !hapd->conf->disable_11ac);
++			  !hapd->conf->disable_11ac,
++			  iface->conf->hw_mode == HOSTAPD_MODE_IEEE80211AD);
+ 	if (os_snprintf_error(buflen - len, ret))
+ 		return len;
+ 	len += ret;
+-- 
+1.7.9.5
+
