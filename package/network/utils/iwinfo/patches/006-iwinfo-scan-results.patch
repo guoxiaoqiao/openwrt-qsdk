@@ -1,0 +1,28 @@
+--- a/iwinfo_nl80211.c
++++ b/iwinfo_nl80211.c
+@@ -2148,7 +2148,24 @@ static int nl80211_get_scanlist_wpactl(const char *ifname, char *buf, int *len)
+ 	}
+ 
+ 	/* receive and parse scan results if the wait above didn't time out */
+-	if (ready && nl80211_wpactl_recv(sock, reply, sizeof(reply)) > 0)
++	/* In some states, device may receive some msgs after CTRL-EVENT-SCAN-RESULT
++	 * and before scan results.
++	 * So filter them and receive scan results*/
++	tries = 5;
++	while (tries--)
++	{
++		if (ready == 0 || nl80211_wpactl_recv(sock, reply, sizeof(reply)) <= 0)
++		{
++			tries = 0;
++			break;
++		}
++		if (reply[0] != '<')
++		{
++			/* this msg could be scan result*/
++			break;
++		}
++	}
++	if (tries)
+ 	{
+ 		nl80211_get_quality_max(ifname, &qmax);
+ 
