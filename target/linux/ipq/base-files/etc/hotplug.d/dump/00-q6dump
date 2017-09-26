@@ -15,7 +15,7 @@
  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 '
 
-SERVER=
+SERVER=$(fw_printenv serverip | cut -c10-24);
 
 if [ ! -n "$SERVER" ]; then
 	echo "Wrong configuaration\nSERVER = $SERVER\n" > /dev/console
