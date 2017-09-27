@@ -103,7 +103,7 @@ ap-dk05.1-c1)
 	ucidef_add_switch_ext "switch0" "QosPtMode" "4" "dscp" "enable"
 	ucidef_add_switch_ext "switch0" "QosPtMode" "5" "dscp" "enable"
 	;;
-ap-hk01|\
+ap-hk01-c1|\
 ap-hk01-c2|\
 ap-hk02|\
 ap-hk05|\
