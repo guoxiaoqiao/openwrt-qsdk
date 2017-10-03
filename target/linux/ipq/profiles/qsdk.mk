@@ -69,7 +69,7 @@ WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
 
 WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
-	qca-wpa-cli qca-spectral qca-wpc sigma-dut \
+	qca-wpa-cli qca-spectral qca-wpc sigma-dut-10.4 \
 	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
 	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag
 
