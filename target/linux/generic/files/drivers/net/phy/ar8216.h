@@ -464,6 +464,10 @@
 #define AR8327_REG_ROUTE_EG_MODE		0xc80
 #define   AR8327_ROUTE_EG_MODE_S(_i)		((_i) * 4)
 
+#define AR8327_REG_NAT_CTRL	0xe38
+#define   AR8327_HNAPT_EN	BIT(0)
+#define   AR8327_HNAT_EN	BIT(1)
+
 #define AR8327_REG_PORT_STATS_BASE(_i)		(0x1000 + (_i) * 0x100)
 
 #define AR8xxx_ARL_NO_MORE_ENTRY		1

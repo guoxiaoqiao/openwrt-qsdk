@@ -1390,6 +1390,11 @@ ar8327_init_globals(struct ar8216_priv *priv)
 	if (chip_is_ar8327(priv))
 		ar8216_sw_reg_set(priv, AR8327_REG_GLOBAL_FC_THRESH,
 				AR8327_GLOBAL_FC_THRESH_DFLT_VAL);
+
+	/* Disable NAT/NAPT */
+	t = priv->read(priv, AR8327_REG_NAT_CTRL);
+	t &= ~(AR8327_HNAPT_EN | AR8327_HNAT_EN);
+	priv->write(priv, AR8327_REG_NAT_CTRL, t);
 }
 
 static void
