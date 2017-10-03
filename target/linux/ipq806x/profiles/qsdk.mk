@@ -88,7 +88,7 @@ TEST_TOOLS:=sysstat ethtool i2c-tools tcpdump
 
 UTILS:=file luci-app-samba iperf rng-tools profilerd
 
-COREBSP_UTILS:=pm-utils qca-thermald-10.4
+COREBSP_UTILS:=pm-utils qca-thermald-10.4 gpio-debug
 
 FAILSAFE:= kmod-bootconfig
 
