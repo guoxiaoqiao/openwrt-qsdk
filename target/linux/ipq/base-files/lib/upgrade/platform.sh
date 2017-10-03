@@ -230,6 +230,8 @@ flash_section() {
 		ddr-${board}-*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:DDRCONFIG";;
 		ssd*) switch_layout boot; do_flash_partition ${sec} "0:SSD";;
 		tz*) switch_layout boot; do_flash_tz ${sec};;
+		apdp*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APDP";;
+		devcfg*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:DEVCFG";;
 		rpm*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:RPM";;
 		*) echo "Section ${sec} ignored"; return 1;;
 	esac
