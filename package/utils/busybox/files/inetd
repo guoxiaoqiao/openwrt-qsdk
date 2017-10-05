@@ -17,7 +17,7 @@ SERVICE_DAEMONIZE=1
 SERVICE_WRITE_PID=1
 
 [ -e /etc/inetd.conf ] || {
-        echo -e "ftp\tstream\ttcp\tnowait\troot\t/usr/sbin/ftpd\tftpd\t/" >> etc/inetd.conf;
+        echo -e "ftp\tstream\ttcp\tnowait\troot\t/usr/sbin/ftpd\tftpd\t/" >> /etc/inetd.conf;
 }
 
 start() {
