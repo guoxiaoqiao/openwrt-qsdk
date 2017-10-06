@@ -107,7 +107,9 @@ ap-hk01-c1|\
 ap-hk01-c2|\
 ap-hk02|\
 ap-hk05|\
-ap-hk06)
+ap-hk06|\
+db-hk01|\
+db-hk02)
 	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3 eth4 eth5" "eth0"
 	;;
 *)

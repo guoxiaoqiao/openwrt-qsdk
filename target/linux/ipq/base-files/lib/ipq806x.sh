@@ -104,6 +104,12 @@ ipq806x_board_detect() {
 	*"AP-HK06")
 		name="ap-hk06"
 		;;
+	*"DB.HK01")
+		name="db-hk01"
+		;;
+	*"DB.HK02")
+		name="db-hk02"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"
