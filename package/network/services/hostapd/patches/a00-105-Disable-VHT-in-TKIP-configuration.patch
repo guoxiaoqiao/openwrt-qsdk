@@ -1,7 +1,7 @@
 index 228de2b..9c178c7 100644
 --- a/src/ap/ap_config.c
 +++ b/src/ap/ap_config.c
-@@ -848,6 +848,17 @@ static int hostapd_config_check_bss(struct hostapd_bss_config *bss,
+@@ -927,6 +927,17 @@ static int hostapd_config_check_bss(stru
  		wpa_printf(MSG_ERROR,
  			   "VHT (IEEE 802.11ac) with WEP is not allowed, disabling VHT capabilities");
  	}

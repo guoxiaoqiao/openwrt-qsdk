@@ -11,11 +11,9 @@ Signed-off-by: bhagavathiperumal s <bperumal@codeaurora.org>
  src/ap/ctrl_iface_ap.c |    6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/src/ap/ctrl_iface_ap.c b/src/ap/ctrl_iface_ap.c
-index 4fb3ac0..38dff9b 100644
 --- a/src/ap/ctrl_iface_ap.c
 +++ b/src/ap/ctrl_iface_ap.c
-@@ -539,13 +539,15 @@ int hostapd_ctrl_iface_status(struct hostapd_data *hapd, char *buf,
+@@ -608,13 +608,15 @@ int hostapd_ctrl_iface_status(struct hos
  			  "channel=%u\n"
  			  "secondary_channel=%d\n"
  			  "ieee80211n=%d\n"
@@ -33,6 +31,3 @@ index 4fb3ac0..38dff9b 100644
  	if (os_snprintf_error(buflen - len, ret))
  		return len;
  	len += ret;
--- 
-1.7.9.5
-

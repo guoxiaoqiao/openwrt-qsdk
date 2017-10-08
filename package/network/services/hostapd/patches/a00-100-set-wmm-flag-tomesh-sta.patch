@@ -1,8 +1,8 @@
 --- a/wpa_supplicant/mesh_mpm.c
 +++ b/wpa_supplicant/mesh_mpm.c
-@@ -548,6 +548,9 @@ static struct sta_info * mesh_mpm_add_pe
- 			return NULL;
- 	}
+@@ -671,6 +671,9 @@ static struct sta_info * mesh_mpm_add_pe
+ 	/* Set WMM by default since Mesh STAs are QoS STAs */
+ 	sta->flags |= WLAN_STA_WMM;
  
 +	/* Set WMM by default since Mesh STAs are QoS STAs */
 +	sta->flags |= WLAN_STA_WMM;
