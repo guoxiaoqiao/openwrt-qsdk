@@ -1,7 +1,5 @@
-Index: hostapd-2016-10-02/hostapd/main.c
-===================================================================
---- hostapd-2016-10-02.orig/hostapd/main.c	2017-04-24 13:35:45.396275524 +0530
-+++ hostapd-2016-10-02/hostapd/main.c	2017-04-24 13:47:51.226859396 +0530
+--- a/hostapd/main.c
++++ b/hostapd/main.c
 @@ -15,6 +15,7 @@
  #include "utils/common.h"
  #include "utils/eloop.h"
@@ -10,16 +8,16 @@ Index: hostapd-2016-10-02/hostapd/main.c
  #include "crypto/random.h"
  #include "crypto/tls.h"
  #include "common/version.h"
-@@ -664,7 +665,7 @@
- 	wpa_supplicant_event = hostapd_wpa_event;
+@@ -677,7 +678,7 @@ int main(int argc, char *argv[])
+ 	wpa_supplicant_event_global = hostapd_wpa_event_global;
  
  	for (;;) {
--		c = getopt(argc, argv, "b:Bde:f:hi:KP:STtu:vg:G:");
+-		c = getopt(argc, argv, "b:Bde:f:hi:KP:sSTtu:vg:G:");
 +		c = getopt(argc, argv, "b:Bde:f:hi:KP:STtu:g:G:v::");
  		if (c < 0)
  			break;
  		switch (c) {
-@@ -701,6 +702,8 @@
+@@ -714,6 +715,8 @@ int main(int argc, char *argv[])
  			break;
  #endif /* CONFIG_DEBUG_LINUX_TRACING */
  		case 'v':
@@ -28,10 +26,8 @@ Index: hostapd-2016-10-02/hostapd/main.c
  			show_version();
  			exit(1);
  			break;
-Index: hostapd-2016-10-02/src/utils/build_features.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ hostapd-2016-10-02/src/utils/build_features.h	2017-04-24 13:35:45.392275555 +0530
+--- /dev/null
++++ b/src/utils/build_features.h
 @@ -0,0 +1,17 @@
 +#ifndef BUILD_FEATURES_H
 +#define BUILD_FEATURES_H
@@ -50,10 +46,8 @@ Index: hostapd-2016-10-02/src/utils/build_features.h
 +}
 +
 +#endif /* BUILD_FEATURES_H */
-Index: hostapd-2016-10-02/wpa_supplicant/main.c
-===================================================================
---- hostapd-2016-10-02.orig/wpa_supplicant/main.c	2017-04-24 13:35:45.396275524 +0530
-+++ hostapd-2016-10-02/wpa_supplicant/main.c	2017-04-24 13:35:45.396275524 +0530
+--- a/wpa_supplicant/main.c
++++ b/wpa_supplicant/main.c
 @@ -12,6 +12,7 @@
  #endif /* __linux__ */
  
@@ -62,7 +56,7 @@ Index: hostapd-2016-10-02/wpa_supplicant/main.c
  #include "fst/fst.h"
  #include "wpa_supplicant_i.h"
  #include "driver_i.h"
-@@ -305,8 +306,12 @@
+@@ -305,8 +306,12 @@ int main(int argc, char *argv[])
  			break;
  #endif /* CONFIG_DBUS */
  		case 'v':

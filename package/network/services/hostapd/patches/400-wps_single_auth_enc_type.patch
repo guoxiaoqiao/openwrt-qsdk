@@ -1,8 +1,6 @@
-Index: hostapd-2016-10-02/src/ap/wps_hostapd.c
-===================================================================
---- hostapd-2016-10-02.orig/src/ap/wps_hostapd.c	2017-04-24 13:32:28.861743089 +0530
-+++ hostapd-2016-10-02/src/ap/wps_hostapd.c	2017-04-24 13:35:25.636422955 +0530
-@@ -1067,14 +1067,11 @@
+--- a/src/ap/wps_hostapd.c
++++ b/src/ap/wps_hostapd.c
+@@ -1067,14 +1067,11 @@ int hostapd_init_wps(struct hostapd_data
  		if (conf->rsn_pairwise & (WPA_CIPHER_CCMP | WPA_CIPHER_GCMP)) {
  			wps->encr_types |= WPS_ENCR_AES;
  			wps->encr_types_rsn |= WPS_ENCR_AES;
@@ -19,7 +17,7 @@ Index: hostapd-2016-10-02/src/ap/wps_hostapd.c
  		if (conf->wpa_key_mgmt & WPA_KEY_MGMT_PSK)
  			wps->auth_types |= WPS_AUTH_WPAPSK;
  		if (conf->wpa_key_mgmt & WPA_KEY_MGMT_IEEE8021X)
-@@ -1083,8 +1080,7 @@
+@@ -1083,8 +1080,7 @@ int hostapd_init_wps(struct hostapd_data
  		if (conf->wpa_pairwise & WPA_CIPHER_CCMP) {
  			wps->encr_types |= WPS_ENCR_AES;
  			wps->encr_types_wpa |= WPS_ENCR_AES;

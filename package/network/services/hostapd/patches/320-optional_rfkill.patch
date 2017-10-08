@@ -1,8 +1,6 @@
-Index: hostapd-2016-10-02/src/drivers/drivers.mak
-===================================================================
---- hostapd-2016-10-02.orig/src/drivers/drivers.mak	2017-04-24 13:15:00.709491676 +0530
-+++ hostapd-2016-10-02/src/drivers/drivers.mak	2017-04-24 13:16:06.785003328 +0530
-@@ -36,7 +36,6 @@
+--- a/src/drivers/drivers.mak
++++ b/src/drivers/drivers.mak
+@@ -49,7 +49,6 @@ NEED_SME=y
  NEED_AP_MLME=y
  NEED_NETLINK=y
  NEED_LINUX_IOCTL=y
@@ -10,7 +8,7 @@ Index: hostapd-2016-10-02/src/drivers/drivers.mak
  NEED_RADIOTAP=y
  
  ifdef CONFIG_LIBNL32
-@@ -123,7 +122,6 @@
+@@ -136,7 +135,6 @@ DRV_WPA_CFLAGS += -DCONFIG_DRIVER_WEXT
  CONFIG_WIRELESS_EXTENSION=y
  NEED_NETLINK=y
  NEED_LINUX_IOCTL=y
@@ -18,7 +16,7 @@ Index: hostapd-2016-10-02/src/drivers/drivers.mak
  endif
  
  ifdef CONFIG_DRIVER_NDIS
-@@ -149,7 +147,6 @@
+@@ -162,7 +160,6 @@ endif
  ifdef CONFIG_WIRELESS_EXTENSION
  DRV_WPA_CFLAGS += -DCONFIG_WIRELESS_EXTENSION
  DRV_WPA_OBJS += ../src/drivers/driver_wext.o
@@ -26,7 +24,7 @@ Index: hostapd-2016-10-02/src/drivers/drivers.mak
  endif
  
  ifdef NEED_NETLINK
-@@ -162,6 +159,7 @@
+@@ -175,6 +172,7 @@ endif
  
  ifdef NEED_RFKILL
  DRV_OBJS += ../src/drivers/rfkill.o
@@ -34,11 +32,9 @@ Index: hostapd-2016-10-02/src/drivers/drivers.mak
  endif
  
  ifdef NEED_RADIOTAP
-Index: hostapd-2016-10-02/src/drivers/rfkill.h
-===================================================================
---- hostapd-2016-10-02.orig/src/drivers/rfkill.h	2017-04-24 13:15:00.709491676 +0530
-+++ hostapd-2016-10-02/src/drivers/rfkill.h	2017-04-24 13:15:00.709491676 +0530
-@@ -18,8 +18,24 @@
+--- a/src/drivers/rfkill.h
++++ b/src/drivers/rfkill.h
+@@ -18,8 +18,24 @@ struct rfkill_config {
  	void (*unblocked_cb)(void *ctx);
  };
  
