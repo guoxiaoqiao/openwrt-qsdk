@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_DISTNAME:=sysupgrade-helper
-PKG_NAME:=u-boot
+PKG_NAME:=u-boot-2016
 PKG_SOURCE_PROTO:=git
 PKG_BRANCH:=master
 PKG_RELEASE:=1
