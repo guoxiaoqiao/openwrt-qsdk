@@ -102,6 +102,8 @@ udev-extra-lib-bin-$(CONFIG_UDEV_EXTRA_usb_id) += usb_id
 udev-extra-lib-bin-$(CONFIG_UDEV_EXTRA_v4l_id) += v4l_id
 udev-extra-rules-$(CONFIG_UDEV_EXTRA_v4l_id) += 60-persistent-v4l.rules
 
+TARGET_CFLAGS+= -include stdint.h
+
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/libudev.h $(1)/usr/include
