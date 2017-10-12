@@ -32,6 +32,10 @@ do_load_ipq4019_board_bin()
                     dd if=${mtdblock} of=${apdk}/wifi1.caldata bs=32 count=377 skip=640
                     dd if=${mtdblock} of=${apdk}/wifi2.caldata bs=32 count=377 skip=1152
             ;;
+             ap-hk*)
+                    mkdir -p ${apdk}
+                    dd if=${mtdblock} of=${apdk}/caldata.b0c bs=1 count=131072 skip=4096
+            ;;
     esac
 }
 
