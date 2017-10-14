@@ -430,6 +430,9 @@ ipq8074_ac_power()
 # Cortex Power-UP Sequence
 	/etc/init.d/powerctl restart
 
+# Enabling Auto scale on NSS cores
+	echo 1 > /proc/sys/dev/nss/clock/auto_scale
+
 # Power on Malibu PHY of LAN ports
 	ssdk_sh port poweron set 2
 	ssdk_sh port poweron set 3
@@ -579,7 +582,14 @@ ipq8074_battery_power()
 # LAN interface down
 	ifdown lan
 
+# Disabling Auto scale on NSS cores
+	echo 0 > /proc/sys/dev/nss/clock/auto_scale
+
+# Scaling Down UBI Cores
+	echo 748800000 > /proc/sys/dev/nss/clock/current_freq
+
 # Cortex Power-down Sequence
+	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
 }
 
