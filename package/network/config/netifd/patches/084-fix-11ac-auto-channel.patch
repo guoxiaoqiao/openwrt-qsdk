@@ -1,0 +1,10 @@
+--- a/scripts/netifd-wireless.sh
++++ b/scripts/netifd-wireless.sh
+@@ -71,6 +71,7 @@ _wdev_prepare_channel() {
+ 
+ 	case "$hwmode" in
+ 		a|b|g|ad) ;;
++		ac) hwmode=a;;
+ 		*)
+ 			if [ "$channel" -gt 14 ]; then
+ 				hwmode=a
