@@ -37,30 +37,38 @@ do_load_ipq4019_board_bin()
              ap-hk01-*)
                     mkdir -p ${apdk}
                     FILESIZE=$(stat -c%s "$HK_BD_FILENAME")
-                    dd if=${mtdblock} of=${apdk}/caldata.b10 bs=1 count=$FILESIZE skip=4096
+                    dd if=${mtdblock} of=${apdk}/caldata.bin bs=1 count=$FILESIZE skip=4096
+                    [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
+                    ln -s /tmp/caldata.bin /lib/firmware/IPQ8074/caldata.bin
                     [ -L /lib/firmware/IPQ8074/caldata.b10 ] || \
-                    ln -s /tmp/caldata.b10 /lib/firmware/IPQ8074/caldata.b10
+                    ln -s /tmp/caldata.bin /lib/firmware/IPQ8074/caldata.b10
             ;;
              ap-hk02)
                     mkdir -p ${apdk}
                     FILESIZE=$(stat -c%s "$HK_BD_FILENAME")
                     dd if=${mtdblock} of=${apdk}/caldata.b20 bs=1 count=$FILESIZE skip=4096
+                    [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
+                    ln -s /tmp/caldata.bin /lib/firmware/IPQ8074/caldata.bin
                     [ -L /lib/firmware/IPQ8074/caldata.b20 ] || \
-                    ln -s /tmp/caldata.b20 /lib/firmware/IPQ8074/caldata.b20
+                    ln -s /tmp/caldata.bin /lib/firmware/IPQ8074/caldata.b20
             ;;
              ap-hk05)
                     mkdir -p ${apdk}
                     FILESIZE=$(stat -c%s "$HK_BD_FILENAME")
                     dd if=${mtdblock} of=${apdk}/caldata.b50 bs=1 count=$FILESIZE skip=4096
+                    [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
+                    ln -s /tmp/caldata.bin /lib/firmware/IPQ8074/caldata.bin
                     [ -L /lib/firmware/IPQ8074/caldata.b50 ] || \
-                    ln -s /tmp/caldata.b50 /lib/firmware/IPQ8074/caldata.b50
+                    ln -s /tmp/caldata.bin /lib/firmware/IPQ8074/caldata.b50
             ;;
              ap-hk06)
                     mkdir -p ${apdk}
                     FILESIZE=$(stat -c%s "$HK_BD_FILENAME")
                     dd if=${mtdblock} of=${apdk}/caldata.b60 bs=1 count=$FILESIZE skip=4096
+                    [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
+                    ln -s /tmp/caldata.bin /lib/firmware/IPQ8074/caldata.bin
                     [ -L /lib/firmware/IPQ8074/caldata.b60 ] || \
-                    ln -s /tmp/caldata.b60 /lib/firmware/IPQ8074/caldata.b60
+                    ln -s /tmp/caldata.bin /lib/firmware/IPQ8074/caldata.b60
             ;;
 
     esac
