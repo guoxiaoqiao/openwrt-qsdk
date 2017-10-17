@@ -21,8 +21,8 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
 +#include "drivers/nl80211_copy.h"
  #include "common/defs.h"
  #include "common/ieee802_11_defs.h"
- #include "utils/list.h"
-@@ -539,6 +540,9 @@
+ #include "common/wpa_common.h"
+@@ -762,6 +763,9 @@ struct wpa_driver_associate_params {
  	 * responsible for selecting with which BSS to associate. */
  	const u8 *bssid;
  
@@ -34,7 +34,7 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
  	 *
 --- a/wpa_supplicant/config.c
 +++ b/wpa_supplicant/config.c
-@@ -15,6 +15,7 @@
+@@ -16,6 +16,7 @@
  #include "rsn_supp/wpa.h"
  #include "eap_peer/eap.h"
  #include "p2p/p2p.h"
@@ -42,9 +42,9 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
  #include "fst/fst.h"
  #include "config.h"
  
-@@ -1733,6 +1734,96 @@
- 
- #endif /* CONFIG_MESH */
+@@ -1732,6 +1733,96 @@ static int wpa_config_parse_wep_key1(con
+ 					value, 1);
+ }
  
 +static int wpa_config_parse_mcast_rate(const struct parse_data *data,
 +					struct wpa_ssid *ssid, int line,
@@ -137,9 +137,9 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
 +}
 +#endif /* NO_CONFIG_WRITE */
  
- /* Helper macros for network block parser */
- 
-@@ -1960,6 +2051,9 @@
+ static int wpa_config_parse_wep_key2(const struct parse_data *data,
+ 				     struct wpa_ssid *ssid, int line,
+@@ -2278,6 +2369,9 @@ static const struct parse_data ssid_fiel
  	{ INT(ap_max_inactivity) },
  	{ INT(dtim_period) },
  	{ INT(beacon_int) },
@@ -148,7 +148,7 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
 +	{ FUNC(mcast_rate) },
  #ifdef CONFIG_MACSEC
  	{ INT_RANGE(macsec_policy, 0, 1) },
- #endif /* CONFIG_MACSEC */
+ 	{ INT_RANGE(macsec_integ_only, 0, 1) },
 --- a/wpa_supplicant/config_ssid.h
 +++ b/wpa_supplicant/config_ssid.h
 @@ -12,7 +12,7 @@
@@ -160,7 +160,7 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
  
  #define DEFAULT_EAP_WORKAROUND ((unsigned int) -1)
  #define DEFAULT_EAPOL_FLAGS (EAPOL_FLAG_REQUIRE_KEY_UNICAST | \
-@@ -682,6 +682,9 @@
+@@ -743,6 +743,9 @@ struct wpa_ssid {
  	 */
  	void *parent_cred;
  
@@ -172,7 +172,7 @@ Signed-hostap: Antonio Quartulli <ordex@autistici.org>
  	 * macsec_policy - Determines the policy for MACsec secure session
 --- a/wpa_supplicant/wpa_supplicant.c
 +++ b/wpa_supplicant/wpa_supplicant.c
-@@ -2332,6 +2332,13 @@
+@@ -2848,6 +2848,13 @@ static void wpas_start_assoc_cb(struct w
  			params.beacon_int = ssid->beacon_int;
  		else
  			params.beacon_int = wpa_s->conf->beacon_int;

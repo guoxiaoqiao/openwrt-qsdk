@@ -1,5 +1,3 @@
-diff --git a/src/ap/drv_callbacks.c b/src/ap/drv_callbacks.c
-index ffa8bf1..78184f6 100644
 --- a/src/ap/drv_callbacks.c
 +++ b/src/ap/drv_callbacks.c
 @@ -28,6 +28,7 @@
@@ -10,7 +8,7 @@ index ffa8bf1..78184f6 100644
  #include "wps_hostapd.h"
  #include "ap_drv_ops.h"
  #include "ap_config.h"
-@@ -1567,6 +1568,7 @@ void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
+@@ -1580,6 +1581,7 @@ void hostapd_wpa_event(void *ctx, enum w
  			 * Try to re-enable interface if the driver stopped it
  			 * when the interface got disabled.
  			 */

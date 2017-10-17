@@ -1,8 +1,6 @@
-diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c
-index 23ab84c..986819a 100644
 --- a/wpa_supplicant/wpa_supplicant.c
 +++ b/wpa_supplicant/wpa_supplicant.c
-@@ -1774,6 +1774,15 @@ void wpa_supplicant_associate(struct wpa_supplicant *wpa_s,
+@@ -1918,6 +1918,15 @@ void wpa_supplicant_associate(struct wpa
  		return;
  	}
  

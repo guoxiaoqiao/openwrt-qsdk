@@ -1,9 +1,7 @@
-Index: hostapd-2016-10-02/src/ap/beacon.c
-===================================================================
---- hostapd-2016-10-02.orig/src/ap/beacon.c	2017-04-24 14:15:48.058515599 +0530
-+++ hostapd-2016-10-02/src/ap/beacon.c	2017-04-24 14:17:29.749783107 +0530
-@@ -362,6 +362,74 @@
- 	return eid;
+--- a/src/ap/beacon.c
++++ b/src/ap/beacon.c
+@@ -423,6 +423,74 @@ static u8 * hostapd_eid_owe_trans(struct
+ #endif /* CONFIG_OWE */
  }
  
 +static u8 * hostapd_eid_wide_bw_chansw(struct hostapd_data *hapd, u8 *eid)
@@ -77,7 +75,7 @@ Index: hostapd-2016-10-02/src/ap/beacon.c
  
  static u8 * hostapd_gen_probe_resp(struct hostapd_data *hapd,
  				   const struct ieee80211_mgmt *req,
-@@ -391,6 +459,11 @@
+@@ -452,6 +520,11 @@ static u8 * hostapd_gen_probe_resp(struc
  		buflen += 5 + 2 + sizeof(struct ieee80211_vht_capabilities) +
  			2 + sizeof(struct ieee80211_vht_operation);
  	}
@@ -87,5 +85,5 @@ Index: hostapd-2016-10-02/src/ap/beacon.c
 +		pos = hostapd_eid_vht_txpwr_env(hapd, pos);
 +	}
  
- 	buflen += hostapd_mbo_ie_len(hapd);
- 
+ #ifdef CONFIG_IEEE80211AX
+ 	if (hapd->iconf->ieee80211ax) {

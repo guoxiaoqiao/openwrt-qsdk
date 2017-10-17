@@ -1,7 +1,7 @@
 --- a/src/ap/hostapd.c
 +++ b/src/ap/hostapd.c
-@@ -295,6 +295,7 @@ static void hostapd_free_hapd_data(struc
- 	hostapd_deinit_wps(hapd);
+@@ -312,6 +312,7 @@ static void hostapd_free_hapd_data(struc
+ #endif /* CONFIG_DPP */
  
  	authsrv_deinit(hapd);
 +	hostapd_drv_stop_ap(hapd);

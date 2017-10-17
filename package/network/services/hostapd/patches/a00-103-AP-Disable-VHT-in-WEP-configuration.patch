@@ -1,8 +1,8 @@
 --- a/src/ap/ap_config.c
 +++ b/src/ap/ap_config.c
-@@ -841,6 +841,15 @@ static int hostapd_config_check_bss(struct hostapd_bss_config *bss,
+@@ -920,6 +920,15 @@ static int hostapd_config_check_bss(stru
  	}
- #endif /* CONFIG_IEEE80211N */
+ #endif /* CONFIG_IEEE80211AC */
  
 +#ifdef CONFIG_IEEE80211AC
 +	if (full_config && conf->ieee80211ac &&
@@ -16,4 +16,3 @@
  #ifdef CONFIG_WPS
  	if (full_config && bss->wps_state && bss->ignore_broadcast_ssid) {
  		wpa_printf(MSG_INFO, "WPS: ignore_broadcast_ssid "
-
