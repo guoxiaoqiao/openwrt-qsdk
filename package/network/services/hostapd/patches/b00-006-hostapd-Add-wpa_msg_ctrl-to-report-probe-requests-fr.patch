@@ -1,0 +1,74 @@
+From a29469887f328800d57a72952bb708347bfdea8f Mon Sep 17 00:00:00 2001
+From: Bhagavathi Perumal S <bperumal@codeaurora.org>
+Date: Wed, 4 Oct 2017 16:21:18 +0530
+Subject: [PATCH] hostapd: Add wpa_msg_ctrl to report probe requests from sta
+
+This allows external applications to get event indication
+for probe requests.
+
+Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
+---
+ hostapd/Makefile      | 4 ++++
+ hostapd/defconfig     | 4 ++++
+ src/ap/beacon.c       | 6 ++++++
+ src/common/wpa_ctrl.h | 4 ++++
+ 4 files changed, 18 insertions(+)
+
+--- a/hostapd/Makefile
++++ b/hostapd/Makefile
+@@ -1172,6 +1172,10 @@ OBJS += ../src/fst/fst_ctrl_iface.o
+ endif
+ endif
+ 
++ifdef CONFIG_RX_PROBE_REQ_EVENT
++CFLAGS += -DCONFIG_RX_PROBE_REQ_EVENT
++endif
++
+ ALL=hostapd hostapd_cli
+ 
+ all: verify_config $(ALL)
+--- a/hostapd/defconfig
++++ b/hostapd/defconfig
+@@ -373,3 +373,7 @@ CONFIG_IPV6=y
+ # Override default value for the wpa_disable_eapol_key_retries configuration
+ # parameter. See that parameter in hostapd.conf for more details.
+ #CFLAGS += -DDEFAULT_WPA_DISABLE_EAPOL_KEY_RETRIES=1
++
++#Add event support to indicate probe requests from sta.
++#Disabled by default.
++#CONFIG_RX_PROBE_REQ_EVENT=y
+--- a/src/ap/beacon.c
++++ b/src/ap/beacon.c
+@@ -30,6 +30,7 @@
+ #include "hs20.h"
+ #include "dfs.h"
+ #include "taxonomy.h"
++#include "common/wpa_ctrl.h"
+ 
+ 
+ #ifdef NEED_AP_MLME
+@@ -1082,6 +1083,11 @@ void handle_probe_req(struct hostapd_dat
+ 	}
+ #endif /* CONFIG_TESTING_OPTIONS */
+ 
++#ifdef CONFIG_RX_PROBE_REQ_EVENT
++	wpa_msg_ctrl(hapd->msg_ctx, MSG_INFO, RX_PROBE_REQUEST "sa=" MACSTR " "
++		     "signal=%d", MAC2STR(mgmt->sa), ssi_signal);
++#endif /* CONFIG_RX_PROBE_REQ_EVENT */
++
+ 	resp = hostapd_gen_probe_resp(hapd, mgmt, elems.p2p != NULL,
+ 				      &resp_len);
+ 	if (resp == NULL)
+--- a/src/common/wpa_ctrl.h
++++ b/src/common/wpa_ctrl.h
+@@ -323,6 +323,10 @@ extern "C" {
+  */
+ #define FILS_HLP_RX "FILS-HLP-RX "
+ 
++/* Event to indicate probe request frame; parameters: <sta mac> <signal>
++ */
++#define RX_PROBE_REQUEST "RX-PROBE-REQUEST "
++
+ /* BSS command information masks */
+ 
+ #define WPA_BSS_MASK_ALL		0xFFFDFFFF
