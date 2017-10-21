@@ -660,3 +660,16 @@ define KernelPackage/crypto-qcrypto
 endef
 
 $(eval $(call KernelPackage,crypto-qcrypto))
+
+define KernelPackage/crypto-qce
+  TITLE:=Qualcomm Crypto Engine (QCE)
+  KCONFIG:= \
+	CONFIG_CRYPTO_DEV_QCE
+  FILES:= \
+	$(LINUX_DIR)/drivers/crypto/qce/qcrypto.ko
+  AUTOLOAD:=$(call AutoLoad,09,qcrypto)
+  DEPENDS:=@TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64 +kmod-crypto-manager +kmod-crypto-aes +kmod-crypto-hash +kmod-crypto-des
+  $(call AddDepends/crypto)
+endef
+
+$(eval $(call KernelPackage,crypto-qce))
