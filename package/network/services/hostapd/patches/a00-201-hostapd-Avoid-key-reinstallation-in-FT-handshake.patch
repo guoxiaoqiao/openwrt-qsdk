@@ -1,0 +1,176 @@
+diff --git a/src/ap/ap_drv_ops.c b/src/ap/ap_drv_ops.c
+index 6cafcb7..ff08764 100644
+--- a/src/ap/ap_drv_ops.c
++++ b/src/ap/ap_drv_ops.c
+@@ -390,7 +390,7 @@ int hostapd_sta_add(struct hostapd_data *hapd,
+ 		    u16 listen_interval,
+ 		    const struct ieee80211_ht_capabilities *ht_capab,
+ 		    const struct ieee80211_vht_capabilities *vht_capab,
+-		    u32 flags, u8 qosinfo, u8 vht_opmode)
++		    u32 flags, u8 qosinfo, u8 vht_opmode, int set)
+ {
+ 	struct hostapd_sta_add_params params;
+ 
+@@ -412,6 +412,7 @@ int hostapd_sta_add(struct hostapd_data *hapd,
+ 	params.vht_opmode = vht_opmode;
+ 	params.flags = hostapd_sta_flags_to_drv(flags);
+ 	params.qosinfo = qosinfo;
++
+ 	return hapd->driver->sta_add(hapd->drv_priv, &params);
+ }
+ 
+diff --git a/src/ap/ap_drv_ops.h b/src/ap/ap_drv_ops.h
+index 82eaf3f..14059b8 100644
+--- a/src/ap/ap_drv_ops.h
++++ b/src/ap/ap_drv_ops.h
+@@ -41,7 +41,7 @@ int hostapd_sta_add(struct hostapd_data *hapd,
+ 		    u16 listen_interval,
+ 		    const struct ieee80211_ht_capabilities *ht_capab,
+ 		    const struct ieee80211_vht_capabilities *vht_capab,
+-		    u32 flags, u8 qosinfo, u8 vht_opmode);
++		    u32 flags, u8 qosinfo, u8 vht_opmode, int set);
+ int hostapd_set_privacy(struct hostapd_data *hapd, int enabled);
+ int hostapd_set_generic_elem(struct hostapd_data *hapd, const u8 *elem,
+ 			     size_t elem_len);
+diff --git a/src/ap/ieee802_11.c b/src/ap/ieee802_11.c
+index 7bb18c0..5e1b2b0 100644
+--- a/src/ap/ieee802_11.c
++++ b/src/ap/ieee802_11.c
+@@ -2455,6 +2455,7 @@ static void handle_assoc_cb(struct hostapd_data *hapd,
+ 	int new_assoc = 1;
+ 	struct ieee80211_ht_capabilities ht_cap;
+ 	struct ieee80211_vht_capabilities vht_cap;
++	int set = 1;
+ 
+ 	if (len < IEEE80211_HDRLEN + (reassoc ? sizeof(mgmt->u.reassoc_resp) :
+ 				      sizeof(mgmt->u.assoc_resp))) {
+@@ -2522,7 +2523,19 @@ static void handle_assoc_cb(struct hostapd_data *hapd,
+ 	 * cleared and configuration gets updated in case of reassociation back
+ 	 * to the same AP.
+ 	 */
+-	hostapd_drv_sta_remove(hapd, sta->addr);
++
++	/*
++	 * Skip this if the STA has already completed FT reassociation and the
++	 * TK has been configured since the TX/RX PN must not be reset to 0 for
++	 * the same key.
++	 */
++
++	if ((!(sta->flags & WLAN_STA_AUTHORIZED) ||
++	    !wpa_auth_sta_ft_tk_already_set(sta->wpa_sm))) {
++		hostapd_drv_sta_remove(hapd, sta->addr);
++		wpa_auth_sm_event(sta->wpa_sm, WPA_DRV_STA_REMOVED);
++		set = 0;
++	}
+ 
+ #ifdef CONFIG_IEEE80211N
+ 	if (sta->flags & WLAN_STA_HT)
+@@ -2538,7 +2551,7 @@ static void handle_assoc_cb(struct hostapd_data *hapd,
+ 			    sta->listen_interval,
+ 			    sta->flags & WLAN_STA_HT ? &ht_cap : NULL,
+ 			    sta->flags & WLAN_STA_VHT ? &vht_cap : NULL,
+-			    sta->flags, sta->qosinfo, sta->vht_opmode)) {
++			    sta->flags, sta->qosinfo, sta->vht_opmode, set)) {
+ 		hostapd_logger(hapd, sta->addr, HOSTAPD_MODULE_IEEE80211,
+ 			       HOSTAPD_LEVEL_NOTICE,
+ 			       "Could not add STA to kernel driver");
+diff --git a/src/ap/wpa_auth.c b/src/ap/wpa_auth.c
+index 2760a3f..aefabf8 100644
+--- a/src/ap/wpa_auth.c
++++ b/src/ap/wpa_auth.c
+@@ -1740,6 +1740,9 @@ int wpa_auth_sm_event(struct wpa_state_machine *sm, enum wpa_event event)
+ #else /* CONFIG_IEEE80211R */
+ 		break;
+ #endif /* CONFIG_IEEE80211R */
++	case WPA_DRV_STA_REMOVED:
++		sm->tk_already_set = FALSE;
++		return 0;
+ 	}
+ 
+ #ifdef CONFIG_IEEE80211R
+@@ -3209,6 +3212,14 @@ int wpa_auth_sta_wpa_version(struct wpa_state_machine *sm)
+ }
+ 
+ 
++int wpa_auth_sta_ft_tk_already_set(struct wpa_state_machine *sm)
++{
++	if (!sm || !wpa_key_mgmt_ft(sm->wpa_key_mgmt))
++		return 0;
++	return sm->tk_already_set;
++}
++
++
+ int wpa_auth_sta_clear_pmksa(struct wpa_state_machine *sm,
+ 			     struct rsn_pmksa_cache_entry *entry)
+ {
+diff --git a/src/ap/wpa_auth.h b/src/ap/wpa_auth.h
+index fd04f16..3e53461 100644
+--- a/src/ap/wpa_auth.h
++++ b/src/ap/wpa_auth.h
+@@ -258,7 +258,7 @@ void wpa_receive(struct wpa_authenticator *wpa_auth,
+ 		 u8 *data, size_t data_len);
+ enum wpa_event {
+ 	WPA_AUTH, WPA_ASSOC, WPA_DISASSOC, WPA_DEAUTH, WPA_REAUTH,
+-	WPA_REAUTH_EAPOL, WPA_ASSOC_FT
++	WPA_REAUTH_EAPOL, WPA_ASSOC_FT, WPA_DRV_STA_REMOVED
+ };
+ void wpa_remove_ptk(struct wpa_state_machine *sm);
+ int wpa_auth_sm_event(struct wpa_state_machine *sm, enum wpa_event event);
+@@ -271,6 +271,7 @@ int wpa_auth_pairwise_set(struct wpa_state_machine *sm);
+ int wpa_auth_get_pairwise(struct wpa_state_machine *sm);
+ int wpa_auth_sta_key_mgmt(struct wpa_state_machine *sm);
+ int wpa_auth_sta_wpa_version(struct wpa_state_machine *sm);
++int wpa_auth_sta_ft_tk_already_set(struct wpa_state_machine *sm);
+ int wpa_auth_sta_clear_pmksa(struct wpa_state_machine *sm,
+ 			     struct rsn_pmksa_cache_entry *entry);
+ struct rsn_pmksa_cache_entry *
+diff --git a/src/ap/wpa_auth_ft.c b/src/ap/wpa_auth_ft.c
+index eeaffbf..f8f5dbe 100644
+--- a/src/ap/wpa_auth_ft.c
++++ b/src/ap/wpa_auth_ft.c
+@@ -780,6 +780,14 @@ void wpa_ft_install_ptk(struct wpa_state_machine *sm)
+ 		return;
+ 	}
+ 
++	if (sm->tk_already_set) {
++		/* Must avoid TK reconfiguration to prevent clearing of TX/RX
++		 * PN in the driver */
++		wpa_printf(MSG_DEBUG,
++			   "FT: Do not re-install same PTK to the driver");
++		return;
++	}
++
+ 	/* FIX: add STA entry to kernel/driver here? The set_key will fail
+ 	 * most likely without this.. At the moment, STA entry is added only
+ 	 * after association has been completed. This function will be called
+@@ -792,6 +800,7 @@ void wpa_ft_install_ptk(struct wpa_state_machine *sm)
+ 
+ 	/* FIX: MLME-SetProtection.Request(TA, Tx_Rx) */
+ 	sm->pairwise_set = TRUE;
++	sm->tk_already_set = TRUE;
+ }
+ 
+ 
+@@ -898,6 +907,7 @@ static int wpa_ft_process_auth_req(struct wpa_state_machine *sm,
+ 
+ 	sm->pairwise = pairwise;
+ 	sm->PTK_valid = TRUE;
++	sm->tk_already_set = FALSE;
+ 	wpa_ft_install_ptk(sm);
+ 
+ 	buflen = 2 + sizeof(struct rsn_mdie) + 2 + sizeof(struct rsn_ftie) +
+diff --git a/src/ap/wpa_auth_i.h b/src/ap/wpa_auth_i.h
+index 57b098f..234d84c 100644
+--- a/src/ap/wpa_auth_i.h
++++ b/src/ap/wpa_auth_i.h
+@@ -64,6 +64,7 @@ struct wpa_state_machine {
+ 	struct wpa_ptk PTK;
+ 	Boolean PTK_valid;
+ 	Boolean pairwise_set;
++	Boolean tk_already_set;
+ 	int keycount;
+ 	Boolean Pair;
+ 	struct wpa_key_replay_counter {
+-- 
+1.9.1
+
