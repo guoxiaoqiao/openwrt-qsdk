@@ -1,0 +1,281 @@
+diff --git a/hostapd/config_file.c b/hostapd/config_file.c
+index 82ac61d..30c329e 100644
+--- a/hostapd/config_file.c
++++ b/hostapd/config_file.c
+@@ -2499,6 +2499,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
+ 		bss->pmk_r1_push = atoi(pos);
+ 	} else if (os_strcmp(buf, "ft_over_ds") == 0) {
+ 		bss->ft_over_ds = atoi(pos);
++	} else if (os_strcmp(buf, "ft_psk_generate_local") == 0) {
++		bss->ft_psk_generate_local = atoi(pos);
+ #endif /* CONFIG_IEEE80211R */
+ #ifndef CONFIG_NO_CTRL_IFACE
+ 	} else if (os_strcmp(buf, "ctrl_interface") == 0) {
+diff --git a/hostapd/hostapd.conf b/hostapd/hostapd.conf
+index a0071f7..d882939 100644
+--- a/hostapd/hostapd.conf
++++ b/hostapd/hostapd.conf
+@@ -1262,6 +1262,14 @@ own_ip_addr=127.0.0.1
+ # 1 = FT-over-DS enabled (default)
+ #ft_over_ds=1
+ 
++# Whether to generate FT response locally for PSK networks
++# This avoids use of PMK-R1 push/pull from other APs with FT-PSK networks as
++# the required information (PSK and other session data) is already locally
++# available.
++# 0 = disabled (default)
++# 1 = enabled
++#ft_psk_generate_local=0
++
+ ##### Neighbor table ##########################################################
+ # Maximum number of entries kept in AP table (either for neigbor table or for
+ # detecting Overlapping Legacy BSS Condition). The oldest entry will be
+diff --git a/src/ap/ap_config.h b/src/ap/ap_config.h
+index de470a9..0d7b0eb 100644
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -317,6 +317,7 @@ struct hostapd_bss_config {
+ 	struct ft_remote_r1kh *r1kh_list;
+ 	int pmk_r1_push;
+ 	int ft_over_ds;
++	int ft_psk_generate_local;
+ #endif /* CONFIG_IEEE80211R */
+ 
+ 	char *ctrl_interface; /* directory for UNIX domain sockets */
+diff --git a/src/ap/wpa_auth.h b/src/ap/wpa_auth.h
+index 3e53461..505aaa6 100644
+--- a/src/ap/wpa_auth.h
++++ b/src/ap/wpa_auth.h
+@@ -161,6 +161,7 @@ struct wpa_auth_config {
+ 	struct ft_remote_r1kh *r1kh_list;
+ 	int pmk_r1_push;
+ 	int ft_over_ds;
++	int ft_psk_generate_local;
+ #endif /* CONFIG_IEEE80211R */
+ 	int disable_gtk;
+ 	int ap_mlme;
+diff --git a/src/ap/wpa_auth_ft.c b/src/ap/wpa_auth_ft.c
+index f8f5dbe..bf5fb63 100644
+--- a/src/ap/wpa_auth_ft.c
++++ b/src/ap/wpa_auth_ft.c
+@@ -51,6 +51,17 @@ static int wpa_ft_action_send(struct wpa_authenticator *wpa_auth,
+ }
+ 
+ 
++static const u8 * wpa_ft_get_psk(struct wpa_authenticator *wpa_auth,
++				 const u8 *addr, const u8 *p2p_dev_addr,
++				 const u8 *prev_psk)
++{
++	if (wpa_auth->cb.get_psk == NULL)
++		return NULL;
++	return wpa_auth->cb.get_psk(wpa_auth->cb.ctx, addr, p2p_dev_addr,
++				    prev_psk);
++}
++
++
+ static struct wpa_state_machine *
+ wpa_ft_add_sta(struct wpa_authenticator *wpa_auth, const u8 *sta_addr)
+ {
+@@ -373,6 +384,7 @@ int wpa_auth_derive_ptk_ft(struct wpa_state_machine *sm, const u8 *pmk,
+ 	const u8 *r1kh = sm->wpa_auth->conf.r1_key_holder;
+ 	const u8 *ssid = sm->wpa_auth->conf.ssid;
+ 	size_t ssid_len = sm->wpa_auth->conf.ssid_len;
++	int psk_local = sm->wpa_auth->conf.ft_psk_generate_local;
+ 
+ 	if (sm->xxkey_len == 0) {
+ 		wpa_printf(MSG_DEBUG, "FT: XXKey not available for key "
+@@ -384,16 +396,18 @@ int wpa_auth_derive_ptk_ft(struct wpa_state_machine *sm, const u8 *pmk,
+ 			  r0kh, r0kh_len, sm->addr, pmk_r0, pmk_r0_name);
+ 	wpa_hexdump_key(MSG_DEBUG, "FT: PMK-R0", pmk_r0, PMK_LEN);
+ 	wpa_hexdump(MSG_DEBUG, "FT: PMKR0Name", pmk_r0_name, WPA_PMK_NAME_LEN);
+-	wpa_ft_store_pmk_r0(sm->wpa_auth, sm->addr, pmk_r0, pmk_r0_name,
+-			    sm->pairwise);
++	if (!psk_local || !wpa_key_mgmt_ft_psk(sm->wpa_key_mgmt))
++		wpa_ft_store_pmk_r0(sm->wpa_auth, sm->addr, pmk_r0, pmk_r0_name,
++				    sm->pairwise);
+ 
+ 	wpa_derive_pmk_r1(pmk_r0, pmk_r0_name, r1kh, sm->addr,
+ 			  pmk_r1, sm->pmk_r1_name);
+ 	wpa_hexdump_key(MSG_DEBUG, "FT: PMK-R1", pmk_r1, PMK_LEN);
+ 	wpa_hexdump(MSG_DEBUG, "FT: PMKR1Name", sm->pmk_r1_name,
+ 		    WPA_PMK_NAME_LEN);
+-	wpa_ft_store_pmk_r1(sm->wpa_auth, sm->addr, pmk_r1, sm->pmk_r1_name,
+-			    sm->pairwise);
++	if (!psk_local || !wpa_key_mgmt_ft_psk(sm->wpa_key_mgmt))
++		wpa_ft_store_pmk_r1(sm->wpa_auth, sm->addr, pmk_r1,
++				    sm->pmk_r1_name, sm->pairwise);
+ 
+ 	return wpa_pmk_r1_to_ptk(pmk_r1, sm->SNonce, sm->ANonce, sm->addr,
+ 				 sm->wpa_auth->addr, sm->pmk_r1_name,
+@@ -804,6 +818,89 @@ void wpa_ft_install_ptk(struct wpa_state_machine *sm)
+ }
+ 
+ 
++/* Derive PMK-R1 from PSK, check all available PSK */
++static int wpa_ft_psk_pmk_r1(struct wpa_state_machine *sm,
++			     const u8 *req_pmk_r1_name,
++			     u8 *out_pmk_r1, int *out_pairwise)
++{
++	const u8 *pmk = NULL;
++	u8 pmk_r0[PMK_LEN], pmk_r0_name[WPA_PMK_NAME_LEN];
++	u8 pmk_r1[PMK_LEN], pmk_r1_name[WPA_PMK_NAME_LEN];
++	struct wpa_authenticator *wpa_auth = sm->wpa_auth;
++	const u8 *mdid = wpa_auth->conf.mobility_domain;
++	const u8 *r0kh = sm->r0kh_id;
++	size_t r0kh_len = sm->r0kh_id_len;
++	const u8 *r1kh = wpa_auth->conf.r1_key_holder;
++	const u8 *ssid = wpa_auth->conf.ssid;
++	size_t ssid_len = wpa_auth->conf.ssid_len;
++	int pairwise;
++
++	pairwise = sm->pairwise;
++
++	for (;;) {
++		pmk = wpa_ft_get_psk(wpa_auth, sm->addr, sm->p2p_dev_addr,
++				     pmk);
++		if (pmk == NULL)
++			break;
++
++		wpa_derive_pmk_r0(pmk, PMK_LEN, ssid, ssid_len, mdid, r0kh,
++				  r0kh_len, sm->addr, pmk_r0, pmk_r0_name);
++		wpa_derive_pmk_r1(pmk_r0, pmk_r0_name, r1kh, sm->addr,
++				  pmk_r1, pmk_r1_name);
++
++		if (os_memcmp_const(pmk_r1_name, req_pmk_r1_name,
++				    WPA_PMK_NAME_LEN) != 0)
++			continue;
++
++		/* We found a PSK that matches the requested pmk_r1_name */
++		wpa_printf(MSG_DEBUG,
++			   "FT: Found PSK to generate PMK-R1 locally");
++		os_memcpy(out_pmk_r1, pmk_r1, PMK_LEN);
++		if (out_pairwise)
++			*out_pairwise = pairwise;
++		return 0;
++	}
++
++	wpa_printf(MSG_DEBUG,
++		   "FT: Did not find PSK to generate PMK-R1 locally");
++	return -1;
++}
++
++
++/* Detect the configuration the station asked for.
++ * Required to detect FT-PSK and pairwise cipher.
++ */
++static int wpa_ft_set_key_mgmt(struct wpa_state_machine *sm,
++			       struct wpa_ft_ies *parse)
++{
++	int key_mgmt, ciphers;
++
++	if (sm->wpa_key_mgmt)
++		return 0;
++
++	key_mgmt = parse->key_mgmt & sm->wpa_auth->conf.wpa_key_mgmt;
++	if (!key_mgmt) {
++		wpa_printf(MSG_DEBUG, "FT: Invalid key mgmt (0x%x) from "
++			   MACSTR, parse->key_mgmt, MAC2STR(sm->addr));
++		return -1;
++	}
++	if (key_mgmt & WPA_KEY_MGMT_FT_IEEE8021X)
++		sm->wpa_key_mgmt = WPA_KEY_MGMT_FT_IEEE8021X;
++	else if (key_mgmt & WPA_KEY_MGMT_FT_PSK)
++		sm->wpa_key_mgmt = WPA_KEY_MGMT_FT_PSK;
++	ciphers = parse->pairwise_cipher & sm->wpa_auth->conf.rsn_pairwise;
++	if (!ciphers) {
++		wpa_printf(MSG_DEBUG, "FT: Invalid pairwise cipher (0x%x) from "
++			   MACSTR,
++			   parse->pairwise_cipher, MAC2STR(sm->addr));
++		return -1;
++	}
++	sm->pairwise = wpa_pick_pairwise_cipher(ciphers, 0);
++
++	return 0;
++}
++
++
+ static int wpa_ft_process_auth_req(struct wpa_state_machine *sm,
+ 				   const u8 *ies, size_t ies_len,
+ 				   u8 **resp_ies, size_t *resp_ies_len)
+@@ -865,6 +962,9 @@ static int wpa_ft_process_auth_req(struct wpa_state_machine *sm,
+ 		return WLAN_STATUS_INVALID_PMKID;
+ 	}
+ 
++	if (wpa_ft_set_key_mgmt(sm, &parse) < 0)
++		return WLAN_STATUS_UNSPECIFIED_FAILURE;
++
+ 	wpa_hexdump(MSG_DEBUG, "FT: Requested PMKR0Name",
+ 		    parse.rsn_pmkid, WPA_PMK_NAME_LEN);
+ 	wpa_derive_pmk_r1_name(parse.rsn_pmkid,
+@@ -873,8 +973,12 @@ static int wpa_ft_process_auth_req(struct wpa_state_machine *sm,
+ 	wpa_hexdump(MSG_DEBUG, "FT: Derived requested PMKR1Name",
+ 		    pmk_r1_name, WPA_PMK_NAME_LEN);
+ 
+-	if (wpa_ft_fetch_pmk_r1(sm->wpa_auth, sm->addr, pmk_r1_name, pmk_r1,
+-		    &pairwise) < 0) {
++	if (conf->ft_psk_generate_local &&
++	    wpa_key_mgmt_ft_psk(sm->wpa_key_mgmt)) {
++		if (wpa_ft_psk_pmk_r1(sm, pmk_r1_name, pmk_r1, &pairwise) < 0)
++			return WLAN_STATUS_INVALID_PMKID;
++	} else if (wpa_ft_fetch_pmk_r1(sm->wpa_auth, sm->addr, pmk_r1_name,
++				       pmk_r1, &pairwise) < 0) {
+ 		if (wpa_ft_pull_pmk_r1(sm, ies, ies_len, parse.rsn_pmkid) < 0) {
+ 			wpa_printf(MSG_DEBUG, "FT: Did not have matching "
+ 				   "PMK-R1 and unknown R0KH-ID");
+diff --git a/src/ap/wpa_auth_glue.c b/src/ap/wpa_auth_glue.c
+index f98cc50..32c9f23 100644
+--- a/src/ap/wpa_auth_glue.c
++++ b/src/ap/wpa_auth_glue.c
+@@ -72,6 +72,7 @@ static void hostapd_wpa_auth_conf(struct hostapd_bss_config *conf,
+ 	wconf->r1kh_list = conf->r1kh_list;
+ 	wconf->pmk_r1_push = conf->pmk_r1_push;
+ 	wconf->ft_over_ds = conf->ft_over_ds;
++	wconf->ft_psk_generate_local = conf->ft_psk_generate_local;
+ #endif /* CONFIG_IEEE80211R */
+ #ifdef CONFIG_HS20
+ 	wconf->disable_gtk = conf->disable_dgaf;
+diff --git a/src/common/defs.h b/src/common/defs.h
+index 6aea375..6d057cf 100644
+--- a/src/common/defs.h
++++ b/src/common/defs.h
+@@ -79,6 +79,11 @@ static inline int wpa_key_mgmt_ft(int akm)
+ 			 WPA_KEY_MGMT_FT_SAE));
+ }
+ 
++static inline int wpa_key_mgmt_ft_psk(int akm)
++{
++	return !!(akm & WPA_KEY_MGMT_FT_PSK);
++}
++
+ static inline int wpa_key_mgmt_sae(int akm)
+ {
+ 	return !!(akm & (WPA_KEY_MGMT_SAE |
+diff --git a/src/common/wpa_common.c b/src/common/wpa_common.c
+index e9d4248..3289560 100644
+--- a/src/common/wpa_common.c
++++ b/src/common/wpa_common.c
+@@ -360,6 +360,8 @@ int wpa_ft_parse_ies(const u8 *ies, size_t ies_len,
+ 			}
+ 			if (data.num_pmkid == 1 && data.pmkid)
+ 				parse->rsn_pmkid = data.pmkid;
++			parse->key_mgmt = data.key_mgmt;
++			parse->pairwise_cipher = data.pairwise_cipher;
+ 			break;
+ 		case WLAN_EID_MOBILITY_DOMAIN:
+ 			if (pos[1] < sizeof(struct rsn_mdie))
+diff --git a/src/common/wpa_common.h b/src/common/wpa_common.h
+index a04e759..1b624de 100644
+--- a/src/common/wpa_common.h
++++ b/src/common/wpa_common.h
+@@ -440,6 +440,8 @@ struct wpa_ft_ies {
+ 	size_t igtk_len;
+ 	const u8 *ric;
+ 	size_t ric_len;
++	int key_mgmt;
++	int pairwise_cipher;
+ };
+ 
+ int wpa_ft_parse_ies(const u8 *ies, size_t ies_len, struct wpa_ft_ies *parse);
+-- 
+1.9.1
+
