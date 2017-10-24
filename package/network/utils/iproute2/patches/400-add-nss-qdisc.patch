@@ -1,9 +1,11 @@
---- a/include/linux/pkt_sched.h
-+++ b/include/linux/pkt_sched.h
+Index: iproute2-4.0.0/include/linux/pkt_sched.h
+===================================================================
+--- iproute2-4.0.0.orig/include/linux/pkt_sched.h	2018-01-31 10:37:12.065884237 -0800
++++ iproute2-4.0.0/include/linux/pkt_sched.h	2018-01-31 10:39:35.267992891 -0800
 @@ -1,3 +1,19 @@
 +/*
 + **************************************************************************
-+ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2015, 2018 The Linux Foundation. All rights reserved.
 + * Permission to use, copy, modify, and/or distribute this software for
 + * any purpose with or without fee is hereby granted, provided that the
 + * above copyright notice and this permission notice appear in all copies.
@@ -20,7 +22,7 @@
  #ifndef __LINUX_PKT_SCHED_H
  #define __LINUX_PKT_SCHED_H
  
-@@ -112,6 +128,237 @@ enum {
+@@ -112,6 +128,251 @@
  
  #define TCA_STAB_MAX (__TCA_STAB_MAX - 1)
  
@@ -108,6 +110,9 @@
 +	__u32	target;		/* Acceptable queueing delay */
 +	__u32	limit;		/* Max number of packets that can be held in the queue */
 +	__u32	interval;	/* Monitoring interval */
++	__u32	flows;		/* Number of flow buckets */
++	__u32	quantum;	/* Weight (in bytes) used for DRR of flow buckets */
++	__u8	ecn;		/* 0 - disable ECN, 1 - enable ECN */
 +	__u8	set_default;	/* Sets qdisc to be the default qdisc for enqueue */
 +	__u8	accel_mode;	/* Dictates which data plane offloads the qdisc */
 +};
@@ -115,6 +120,17 @@
 +struct tc_nsscodel_xstats {
 +	__u32 peak_queue_delay;	/* Peak delay experienced by a dequeued packet */
 +	__u32 peak_drop_delay;	/* Peak delay experienced by a dropped packet */
++};
++
++/* NSSFQ_CODEL section */
++
++struct tc_nssfq_codel_xstats {
++	__u32 new_flow_count;	/* Total number of new flows seen */
++	__u32 new_flows_len;	/* Current number of new flows */
++	__u32 old_flows_len;	/* Current number of old flows */
++	__u32 ecn_mark;		/* Number of packets marked with ECN */
++	__u32 drop_overlimit;	/* Number of packets dropped due to overlimit */
++	__u32 maxpacket;	/* The largest packet seen so far in the queue */
 +};
 +
 +/* NSSTBL section */
@@ -258,9 +274,11 @@
  /* FIFO section */
  
  struct tc_fifo_qopt {
---- a/tc/Makefile
-+++ b/tc/Makefile
-@@ -64,6 +64,7 @@ TCMODULES += q_fq_codel.o
+Index: iproute2-4.0.0/tc/Makefile
+===================================================================
+--- iproute2-4.0.0.orig/tc/Makefile	2018-01-31 10:37:12.065884237 -0800
++++ iproute2-4.0.0/tc/Makefile	2018-01-31 10:37:12.061884066 -0800
+@@ -64,6 +64,7 @@
  TCMODULES += q_fq.o
  TCMODULES += q_pie.o
  TCMODULES += q_hhf.o
@@ -268,12 +286,14 @@
  
  ifeq ($(TC_CONFIG_IPSET), y)
    ifeq ($(TC_CONFIG_XT), y)
---- /dev/null
-+++ b/tc/q_nss.c
-@@ -0,0 +1,1662 @@
+Index: iproute2-4.0.0/tc/q_nss.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ iproute2-4.0.0/tc/q_nss.c	2018-01-31 10:38:55.246286077 -0800
+@@ -0,0 +1,1826 @@
 +/*
 + **************************************************************************
-+ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2015, 2018 The Linux Foundation. All rights reserved.
 + * Permission to use, copy, modify, and/or distribute this software for
 + * any purpose with or without fee is hereby granted, provided that the
 + * above copyright notice and this permission notice appear in all copies.
@@ -568,13 +588,15 @@
 +		for (i = 0;i < qopt->traffic_classes; i ++) {
 +			if (qopt->tntc[i].rap.exp_weight_factor) {
 +				double prob = (double)qopt->tntc[i].rap.probability;
-+				fprintf(f, "DP %d: limit %d, weight mode value: %d min: %d max: %d exp_weight_factor: %d probability %.2f\n", i+1, qopt->tntc[i].limit, qopt->tntc[i].weight_mode_value
++				fprintf(f, "DP %d: limit %d, weight mode value: %d min: %d max: %d exp_weight_factor: %d probability %.2f\n",
++						i + 1, qopt->tntc[i].limit, qopt->tntc[i].weight_mode_value
 +						, qopt->tntc[i].rap.min,qopt->tntc[i].rap.max,qopt->tntc[i].rap.exp_weight_factor,prob/255);
 +			}
 +		}
 +	} else {
 +		double prob = (double)qopt->rap.probability;
-+		fprintf(f, "limit %d, min: %d max: %d exp_weight_factor: %d probability %.2f\n", qopt->limit, qopt->rap.min,qopt->rap.max,qopt->rap.exp_weight_factor,prob/255);
++		fprintf(f, "limit %d, min: %d max: %d exp_weight_factor: %d probability %.2f\n",
++				qopt->limit, qopt->rap.min,qopt->rap.max,qopt->rap.exp_weight_factor,prob/255);
 +	}
 +
 +	if (qopt->ecn)
@@ -698,6 +720,168 @@
 +	.id		= "nssbfifo",
 +	.parse_qopt	= nssfifo_parse_opt,
 +	.print_qopt	= nssfifo_print_opt,
++};
++
++/* ======================== NSSFQ_CODEL =======================*/
++
++static void nssfq_codel_explain(void)
++{
++	fprintf(stderr, "Usage: ... nssfq_codel target TIME interval TIME [ flows NUMBER ] [ quantum BYTES ]"
++				"[ limit PACKETS ] [ ecn ] [ set_default ] [ accel_mode ]\n");
++}
++
++static void nssfq_codel_explain_err1(void)
++{
++	fprintf(stderr, "Value of target and interval should be greater than 1ms\n");
++}
++
++static int nssfq_codel_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	struct rtattr *tail;
++	struct tc_nsscodel_qopt opt;
++	bool accel_mode = false;
++
++	memset(&opt, 0, sizeof(opt));
++
++	while (argc > 0) {
++		if (strcmp(*argv, "target") == 0) {
++			NEXT_ARG();
++			if (get_time(&opt.target, *argv)) {
++				fprintf(stderr, "Illegal \"target\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "limit") == 0) {
++			NEXT_ARG();
++			if (get_size(&opt.limit, *argv) || opt.limit == 0) {
++				fprintf(stderr, "Illegal \"limit\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "flows") == 0) {
++			NEXT_ARG();
++			if (get_size(&opt.flows, *argv) || opt.flows == 0) {
++				fprintf(stderr, "Illegal \"flows\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "quantum") == 0) {
++			NEXT_ARG();
++			if (get_size(&opt.quantum, *argv) || opt.quantum == 0) {
++				fprintf(stderr, "Illegal \"quantum\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "interval") == 0) {
++			NEXT_ARG();
++			if (get_time(&opt.interval, *argv)) {
++				fprintf(stderr, "Illegal \"interval\"\n");
++				return -1;
++			}
++		} else if (strcmp(*argv, "ecn") == 0) {
++			opt.ecn = 1;
++		} else if (strcmp(*argv, "set_default") == 0) {
++			opt.set_default = 1;
++		} else if (strcmp(*argv, "accel_mode") == 0) {
++			NEXT_ARG();
++			if (get_u8(&opt.accel_mode, *argv, 0)) {
++				fprintf(stderr, "Illegal accel_mode value\n");
++				return -1;
++			}
++			accel_mode = true;
++		} else if (strcmp(*argv, "help") == 0) {
++			nssfq_codel_explain();
++			return -1;
++		} else {
++			fprintf(stderr, "What is \"%s\"?\n", *argv);
++			nssfq_codel_explain();
++			return -1;
++		}
++		argc--; argv++;
++	}
++
++	if (!accel_mode) {
++		opt.accel_mode = TCA_NSS_ACCEL_MODE_NSS_FW;
++	} else if (opt.accel_mode != TCA_NSS_ACCEL_MODE_NSS_FW) {
++		fprintf(stderr, "accel_mode should be %d\n", TCA_NSS_ACCEL_MODE_NSS_FW);
++		return -1;
++	}
++
++	if (!opt.target || !opt.interval) {
++		nssfq_codel_explain();
++		return -1;
++	}
++
++	if (opt.target < 1000 || opt.interval < 1000) {
++		nssfq_codel_explain_err1();
++		return -1;
++	}
++
++	tail = NLMSG_TAIL(n);
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 1024, TCA_NSSCODEL_PARMS, &opt, sizeof(opt));
++	tail->rta_len = (void *) NLMSG_TAIL(n) - (void *) tail;
++
++	return 0;
++}
++
++static int nssfq_codel_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
++{
++	struct rtattr *tb[TCA_NSSCODEL_MAX + 1];
++	struct tc_nsscodel_qopt *qopt;
++	SPRINT_BUF(b1);
++	SPRINT_BUF(b2);
++
++	if (opt == NULL)
++		return 0;
++
++	parse_rtattr_nested(tb, TCA_NSSCODEL_MAX, opt);
++
++	if (tb[TCA_NSSCODEL_PARMS] == NULL)
++		return -1;
++
++	if (RTA_PAYLOAD(tb[TCA_NSSCODEL_PARMS]) < sizeof(*qopt))
++		return -1;
++
++	qopt = RTA_DATA(tb[TCA_NSSCODEL_PARMS]);
++
++	fprintf(f, "target %s limit %up interval %s flows %u quantum %u ",
++		sprint_time(qopt->target, b1),
++		qopt->limit,
++		sprint_time(qopt->interval, b2),
++		qopt->flows,
++		qopt->quantum);
++
++	if (qopt->ecn)
++		fprintf(f, "ecn ");
++
++	if (qopt->set_default)
++		fprintf(f, "set_default ");
++
++	fprintf(f, "accel_mode %d ", qopt->accel_mode);
++
++	return 0;
++}
++
++static int nssfq_codel_print_xstats(struct qdisc_util *qu, FILE *f, struct rtattr *xstats)
++{
++	struct tc_nssfq_codel_xstats *st;
++
++	if (xstats == NULL)
++		return 0;
++
++	if (RTA_PAYLOAD(xstats) < sizeof(*st))
++		return -1;
++
++	st = RTA_DATA(xstats);
++	fprintf(f, " maxpacket %u drop_overlimit %u new_flow_count %u ecn_mark %u\n",
++			st->maxpacket, st->drop_overlimit, st->new_flow_count, st->ecn_mark);
++	fprintf(f, " new_flows_len %u old_flows_len %u", st->new_flows_len, st->old_flows_len);
++
++	return 0;
++}
++
++struct qdisc_util nssfq_codel_qdisc_util = {
++	.id		= "nssfq_codel",
++	.parse_qopt	= nssfq_codel_parse_opt,
++	.print_qopt	= nssfq_codel_print_opt,
++	.print_xstats	= nssfq_codel_print_xstats,
 +};
 +
 +/* ======================== NSSCODEL =======================*/
