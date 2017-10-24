@@ -647,7 +647,7 @@ $(eval $(call KernelPackage,crypto-mv-cesa))
 
 
 define KernelPackage/crypto-qcrypto
-  TITLE:=Qualcomm crypto CE engine
+  TITLE:=QTI crypto CE engine
   KCONFIG:= \
 	CONFIG_CRYPTO_DEV_QCRYPTO \
 	CONFIG_CRYPTO_DEV_QCEDEV
@@ -662,7 +662,7 @@ endef
 $(eval $(call KernelPackage,crypto-qcrypto))
 
 define KernelPackage/crypto-qce
-  TITLE:=Qualcomm Crypto Engine (QCE)
+  TITLE:=QTI Crypto Engine (QCE)
   KCONFIG:= \
 	CONFIG_CRYPTO_DEV_QCE
   FILES:= \
