@@ -105,6 +105,17 @@ endef
 
 $(eval $(call Profile,AP96))
 
+define Profile/APJET01
+	NAME:=Atheros APJET01 reference board
+	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+endef
+
+define Profile/APJET01/Description
+	Package set optimized for the Atheros APJET01 reference board.
+endef
+
+$(eval $(call Profile,APJET01))
+
 define Profile/DB120
 	NAME:=Atheros DB120 reference board
 	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage

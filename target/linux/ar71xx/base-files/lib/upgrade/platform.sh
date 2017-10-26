@@ -186,6 +186,7 @@ platform_check_image() {
 	ap151 |\
 	ap152 |\
 	ap96 | \
+	apjet01 |\
 	bxu2000n-2-a1 | \
 	db120 | \
 	f9k1115v2 |\

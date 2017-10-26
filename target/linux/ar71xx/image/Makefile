@@ -1046,6 +1046,7 @@ ap151_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),
 ap151_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 ap152_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),1472k(kernel),64k(art),7808k@0x50000(firmware)
 ap152_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
+apjet01_mtdlayoyt=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 bxu2000n2_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,1408k(kernel),8448k(rootfs),6016k(user),64k(cfg),64k(oem),64k(art)ro
 cameo_ap81_mtdlayout=mtdparts=spi0.0:128k(u-boot)ro,64k(config)ro,3840k(firmware),64k(art)ro
 cameo_ap91_mtdlayout=mtdparts=spi0.0:192k(u-boot)ro,64k(nvram)ro,3712k(firmware),64k(mac)ro,64k(art)ro
@@ -2005,6 +2006,7 @@ $(eval $(call SingleProfile,AthLzma,64k,AP151_8M,ap151-8M,AP151,ttyS0,115200,$$(
 $(eval $(call SingleProfile,AthLzma,64k,AP151_16M,ap151-16M,AP151,ttyS0,115200,$$(ap151_mtdlayout_16M),RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP152_8M,ap152-8M,AP152,ttyS0,115200,$$(ap152_mtdlayout_8M),RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,AP152_16M,ap152-16M,AP152,ttyS0,115200,$$(ap152_mtdlayout_16M),RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE)))
+$(eval $(call SingleProfile,AthLzma,64k,APJET01,apjet01,APJET01,ttyS0,115200,$$(apjet01_mtdlayout),RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE)))
 $(eval $(call SingleProfile,AthLzma,64k,BXU2000N2,bxu2000n-2-a1,BXU2000n-2-A1,ttyS0,115200,$$(bxu2000n2_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CAP4200AG,cap4200ag,CAP4200AG,ttyS0,115200,$$(cap4200ag_mtdlayout),KRuImage))
 $(eval $(call SingleProfile,AthLzma,64k,CUS531_16M,cus531-16M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_16M),RKuImage))
@@ -2048,6 +2050,7 @@ $(eval $(call SingleProfile,AthDTBLzma,64k,AP151_16M_DTB,ap151-16M,,,,,RKuImage,
 $(eval $(call SingleProfile,AthDTBLzma,64k,AP152_8M_DTB,ap152-8M,,,,,RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE),ath79_ap152_8M))
 $(eval $(call SingleProfile,AthDTBLzma,64k,AP152_16M_DTB,ap152-16M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_ap152))
 $(eval $(call SingleProfile,AthDTBLzma,128k,AP152DUAL_DTB,ap152-dual,,,,,RKuImage,2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),ath79_ap152_dual))
+$(eval $(call SingleProfile,AthDTBLzma,64k,APJET01_DTB,apjet01,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_apjet01))
 $(eval $(call SingleProfile,AthDTBLzma,64k,DB120_8M_DTB,db120-8M,,,,,RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE),ath79_db120_8M))
 $(eval $(call SingleProfile,AthDTBLzma,64k,DB120_16M_DTB,db120-16M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_db120))
 
@@ -2321,6 +2324,7 @@ define Image/Build/Profile/QSDK_Premium_Beeliner_Router
 	$(call Image/Build/Profile/AP152DUAL_DTB,$(1))
 	$(call Image/Build/Profile/AP151_16M_DTB,$(1))
 	$(call Image/Build/Profile/AP147_16M_DTB,$(1))
+	$(call Image/Build/Profile/APJET01_DTB,$(1))
 	$(call Image/Build/Profile/DB120_16M_DTB,$(1))
 endef
 
