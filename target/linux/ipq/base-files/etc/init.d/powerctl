@@ -58,8 +58,7 @@ ipq40xx_power_auto() {
 
 ipq807x_power_auto() {
 	# change scaling governor as ondemand to enable clock scaling based on system load
-	# By default it is in performance governor but needs to be changed to ondemand
-	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+	echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
 	# Change sampling rate for frequency scaling decisions to 1s, from 10 ms
 	echo "1000000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
