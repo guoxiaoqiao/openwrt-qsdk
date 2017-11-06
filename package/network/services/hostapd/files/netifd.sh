@@ -65,7 +65,7 @@ hostapd_prepare_device_config() {
 	local base="${config%%.conf}"
 	local base_cfg=
 
-	json_get_vars country country_ie beacon_int doth require_mode
+	json_get_vars country country_ie beacon_int doth require_mode bss_load_update_period
 
 	hostapd_set_log_options base_cfg
 
@@ -100,6 +100,7 @@ hostapd_prepare_device_config() {
 	[ -n "$rlist" ] && append base_cfg "supported_rates=$rlist" "$N"
 	[ -n "$brlist" ] && append base_cfg "basic_rates=$brlist" "$N"
 	[ -n "$beacon_int" ] && append base_cfg "beacon_int=$beacon_int" "$N"
+	[ -n "$bss_load_update_period" ] && append base_cfg "bss_load_update_period=$bss_load_update_period" "$N"
 
 	cat > "$config" <<EOF
 driver=$driver
