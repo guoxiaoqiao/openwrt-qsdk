@@ -430,6 +430,11 @@ ipq8074_ac_power()
 # Cortex Power-UP Sequence
 	/etc/init.d/powerctl restart
 
+# CPU Cores Power-UP Sequence
+	echo 1 > /sys/devices/system/cpu/cpu1/online
+	echo 1 > /sys/devices/system/cpu/cpu2/online
+	echo 1 > /sys/devices/system/cpu/cpu3/online
+
 # Enabling Auto scale on NSS cores
 	echo 1 > /proc/sys/dev/nss/clock/auto_scale
 
@@ -590,6 +595,11 @@ ipq8074_battery_power()
 
 # Cortex Power-down Sequence
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+# CPU Cores Power-Down Sequence
+	echo 0 > /sys/devices/system/cpu/cpu1/online
+	echo 0 > /sys/devices/system/cpu/cpu2/online
+	echo 0 > /sys/devices/system/cpu/cpu3/online
 
 }
 
