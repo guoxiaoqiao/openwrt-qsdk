@@ -94,7 +94,7 @@ enable_smp_affinity_audio() {
 
 	case "$board" in
 		ap-dk07.1-c3)
-			smp_affinity=2
+			smp_affinity=4
 
 			spi_irq=`grep -E -m1 'spi' /proc/interrupts | cut -d ':' -f 1 | tr -d ' '`
 			[ -n "$spi_irq" ] && echo $smp_affinity > /proc/irq/$spi_irq/smp_affinity
