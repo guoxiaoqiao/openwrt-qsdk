@@ -67,8 +67,8 @@ enable_smp_affinity_wifi() {
 					#Assign core 0 for wifi0
 					smp_affinity=1
 				elif [ $device == "wifi1" ]; then
-					#Assign core 2 for wifi1
-					smp_affinity=4
+					#Assign core 1 for wifi1
+					smp_affinity=2
 				else
 					# Assign core 1 for wifi2. For ap-dkXX,wifi2 is always the third radio
 					smp_affinity=2
