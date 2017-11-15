@@ -17,7 +17,7 @@ qcmbr_do_load_ar71xx_board_bin()
 
     # load board.bin
     case "$board" in
-            ap147 | ap151 | ap135)
+            ap147 | ap151 | ap135 | apjet01)
                     mkdir -p ${cal_data_path}
                     # As for Qcmdr ahbskip is given so the Radio chip connect to PCI will be wifi0 instead of wifi1
                     dd if=${mtdblock} of=${cal_data_path}/wifi0.caldata bs=32 count=377 skip=640
