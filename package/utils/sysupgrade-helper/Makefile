@@ -28,6 +28,7 @@ define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) TARGETCC=$(TARGET_CC) \
 		CROSS_COMPILE=$(TARGET_CROSS) \
 		TARGET_CFLAGS="$(TARGET_CFLAGS)" \
+		HOSTLDFLAGS="$(TARGET_LDFLAGS)" \
 		tools-only
 endef
 
