@@ -927,7 +927,7 @@ define CatFiles
 		if [ `stat -c%s "$(1)"` -gt $(2) ]; then \
 			echo "Warning: $(1) is too big (> $(2) bytes)" >&2; \
 		else if [ `stat -c%s $(3)` -gt $(4) ]; then \
-			echo "Warning: $(3) is too big (> $(4) bytes)" >&2; \
+			echo "Error: $(3) is too big (> $(4) bytes)" >&2; exit 1; \
 		else if [ $(2) -eq $(AR71XX_16M_ROOTFS_SIZE) ]; then \
 			( dd if=$(1) bs=$(AR71XX_16M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
 		else \
