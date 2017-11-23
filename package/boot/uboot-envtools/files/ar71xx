@@ -17,6 +17,7 @@ case "$board" in
 alfa-ap120c | \
 all0258n | \
 ap135 |\
+apjet01 |\
 ap137 |\
 ap143 |\
 ap147 |\
