@@ -248,7 +248,7 @@ define KernelPackage/sound-soc-ipq
 	CONFIG_SND_QCA_SOC_IPQ40XX \
 	CONFIG_SND_SOC_QCOM=y \
 	CONFIG_SND_SOC_IPQ=y \
-	CONFIG_SND_SOC_IPQ_CODEC
+	CONFIG_SND_SOC_IPQ_CODEC=y
   FILES:= \
 	$(LINUX_DIR)/sound/soc/qca/snd-soc-ipq40xx-codec.ko@lt4.4 \
 	$(LINUX_DIR)/sound/soc/qcom/ipq/snd-soc-ipq-codec.ko@ge4.4
