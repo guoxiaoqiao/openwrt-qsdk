@@ -169,6 +169,13 @@ hostapd_common_add_bss_config() {
 	config_add_int obss_interval
 
 	config_add_string vendor_elements
+
+	config_add_boolean disable_ht
+	config_add_boolean disable_ht40
+	config_add_boolean disable_sgi
+	config_add_boolean ht40_intolerant
+	config_add_boolean disable_ldpc
+	config_add_boolean disable_vht
 }
 
 hostapd_set_bss_options() {
@@ -564,7 +571,8 @@ wpa_supplicant_add_network() {
 		ssid bssid key basic_rate mcast_rate ieee80211w \
 		wps_device_type wps_device_name wps_manufacturer \
 		wps_config wps_model_name wps_model_number \
-		wps_serial_number
+		wps_serial_number disable_ht disable_ht40 disable_sgi \
+		ht40_intolerant disable_ldpc disable_vht
 
 	local key_mgmt='NONE'
 	local enc_str=
@@ -715,6 +723,13 @@ wpa_supplicant_add_network() {
 		serial_number="serial_number=$wps_serial_number"
 		config_methods="config_methods=$config_methods"
 	}
+
+	[ "$disable_ht" -gt 0 ] && append network_data "disable_ht=$disable_ht" "$N$T"
+	[ "$disable_ht40" -gt 0 ] && append network_data "disable_ht40=$disable_ht40" "$N$T"
+	[ "$disable_sgi" -gt 0 ] && append network_data "disable_sgi=$disable_sgi" "$N$T"
+	[ "$ht40_intolerant" -gt 0 ] && append network_data "ht40_intolerant=$ht40_intolerant" "$N$T"
+	[ "$disable_ldpc" -gt 0 ] && append network_data "disable_ldpc=$disable_ldpc" "$N$T"
+	[ "$disable_vht" -gt 0 ] && append network_data "disable_vht=$disable_vht" "$N$T"
 
 	cat >> "$_config" <<EOF
 $mesh_ctrl_interface
