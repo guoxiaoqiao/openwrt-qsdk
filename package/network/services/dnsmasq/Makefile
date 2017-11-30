@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnsmasq
-PKG_VERSION:=2.75
-PKG_RELEASE:=7
+PKG_VERSION:=2.78
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=http://thekelleys.org.uk/dnsmasq
-PKG_MD5SUM:=887236f1ddde6eb57cdb9d01916c9f72
+PKG_SOURCE_URL:=http://thekelleys.org.uk/dnsmasq/
+PKG_HASH:=89949f438c74b0c7543f06689c319484bd126cc4b1f8c745c742ab397681252b
 
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING
@@ -26,7 +26,9 @@ PKG_CONFIG_DEPENDS:=CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_dhcpv6 \
 	CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_dnssec \
 	CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_auth \
 	CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_ipset \
-	CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_conntrack
+	CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_conntrack \
+	CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_noid \
+	CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_broken_rtc
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -52,7 +54,7 @@ endef
 
 define Package/dnsmasq-full
 $(call Package/dnsmasq/Default)
-  TITLE += (with DNSSEC, DHCPv6, Auth DNS, IPset, Conntrack enabled by default)
+  TITLE += (with DNSSEC, DHCPv6, Auth DNS, IPset, Conntrack, NO_ID enabled by default)
   DEPENDS:=+PACKAGE_dnsmasq_full_dnssec:libnettle \
 	+PACKAGE_dnsmasq_full_ipset:kmod-ipt-ipset \
 	+PACKAGE_dnsmasq_full_conntrack:libnetfilter-conntrack
@@ -73,7 +75,7 @@ define Package/dnsmasq-full/description
 $(call Package/dnsmasq/description)
 
 This is a fully configurable variant with DHCPv6, DNSSEC, Authoritative DNS and
-IPset, Conntrack support enabled by default.
+IPset, Conntrack support & NO_ID enabled by default.
 endef
 
 define Package/dnsmasq/conffiles
@@ -99,6 +101,12 @@ define Package/dnsmasq-full/config
 	config PACKAGE_dnsmasq_full_conntrack
 		bool "Build with Conntrack support."
 		default y
+	config PACKAGE_dnsmasq_full_noid
+		bool "Build with NO_ID. (hide *.bind pseudo domain)"
+		default y
+	config PACKAGE_dnsmasq_full_broken_rtc
+		bool "Build with HAVE_BROKEN_RTC."
+		default n
 	endif
 endef
 
@@ -119,10 +127,12 @@ ifeq ($(BUILD_VARIANT),full)
 		$(if $(CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_dnssec),-DHAVE_DNSSEC) \
 		$(if $(CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_auth),,-DNO_AUTH) \
 		$(if $(CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_ipset),,-DNO_IPSET) \
-		$(if $(CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_conntrack),-DHAVE_CONNTRACK,)
+		$(if $(CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_conntrack),-DHAVE_CONNTRACK,) \
+		$(if $(CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_noid),-DNO_ID,) \
+		$(if $(CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_broken_rtc),-DHAVE_BROKEN_RTC)
 	COPTS += $(if $(CONFIG_LIBNETTLE_MINI),-DNO_GMP,)
 else
-	COPTS += -DNO_AUTH -DNO_IPSET
+	COPTS += -DNO_AUTH -DNO_IPSET -DNO_ID
 endif
 
 MAKE_FLAGS := \
@@ -142,6 +152,8 @@ define Package/dnsmasq/install
 	$(INSTALL_BIN) ./files/dnsmasq.init $(1)/etc/init.d/dnsmasq
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
 	$(INSTALL_DATA) ./files/dnsmasq.hotplug $(1)/etc/hotplug.d/iface/25-dnsmasq
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/ntp
+	$(INSTALL_DATA) ./files/dnsmasqsec.hotplug $(1)/etc/hotplug.d/ntp/25-dnsmasqsec
 endef
 
 Package/dnsmasq-dhcpv6/install = $(Package/dnsmasq/install)
