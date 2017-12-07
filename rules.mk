@@ -118,7 +118,9 @@ STAGING_DIR_ROOT:=$(STAGING_DIR)/root-$(BOARD)
 BUILD_LOG_DIR:=$(TOPDIR)/logs
 PKG_INFO_DIR := $(STAGING_DIR)/pkginfo
 
-TARGET_PATH:=$(STAGING_DIR_HOST)/bin:$(subst $(space),:,$(filter-out .,$(filter-out ./,$(subst :,$(space),$(PATH)))))
+TARGET_PATH:=$(subst $(space),:,$(filter-out .,$(filter-out ./,$(subst :,$(space),$(PATH)))))
+TARGET_INIT_PATH:=$(call qstrip,$(CONFIG_TARGET_INIT_PATH))
+TARGET_INIT_PATH:=$(if $(TARGET_INIT_PATH),$(TARGET_INIT_PATH),/usr/sbin:/sbin:/usr/bin:/bin)
 TARGET_CFLAGS:=$(TARGET_OPTIMIZATION)$(if $(CONFIG_DEBUG), -g3) $(EXTRA_OPTIMIZATION)
 TARGET_CXXFLAGS = $(TARGET_CFLAGS)
 TARGET_ASFLAGS_DEFAULT = $(TARGET_CFLAGS)
@@ -140,12 +142,12 @@ ifeq ($(CONFIG_ARCH_64BIT),y)
   LIB_SUFFIX:=64
 endif
 
-TARGET_CFLAGS+= -fhonour-copts $(if $(CONFIG_GCC_VERSION_4_4)$(CONFIG_GCC_VERSION_4_5),,-Wno-error=unused-but-set-variable) -Wno-error=unused-result
 ifndef DUMP
   ifeq ($(CONFIG_EXTERNAL_TOOLCHAIN),)
     -include $(TOOLCHAIN_DIR)/info.mk
     export GCC_HONOUR_COPTS:=0
     TARGET_CROSS:=$(if $(TARGET_CROSS),$(TARGET_CROSS),$(OPTIMIZE_FOR_CPU)-openwrt-linux$(if $(TARGET_SUFFIX),-$(TARGET_SUFFIX))-)
+    TARGET_CFLAGS+= -fhonour-copts $(if $(CONFIG_GCC_VERSION_4_4)$(CONFIG_GCC_VERSION_4_5),,-Wno-error=unused-but-set-variable) -Wno-error=unused-result
     TARGET_CPPFLAGS+= -I$(TOOLCHAIN_DIR)/usr/include -I$(TOOLCHAIN_DIR)/include
     TARGET_LDFLAGS+= -L$(TOOLCHAIN_DIR)/usr/lib -L$(TOOLCHAIN_DIR)/lib
     TARGET_PATH:=$(TOOLCHAIN_DIR)/bin:$(TARGET_PATH)

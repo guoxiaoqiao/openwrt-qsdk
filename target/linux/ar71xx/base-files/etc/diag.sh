@@ -92,6 +92,9 @@ get_status_led() {
 	dragino2)
 		status_led="dragino2:red:system"
 		;;
+	dw33d)
+		status_led="dw33d:blue:status"
+		;;
 	eap300v2)
 		status_led="engenius:blue:power"
 		;;
@@ -149,6 +152,10 @@ get_status_led() {
 	mr600v2)
 		status_led="mr600:blue:power"
 		;;
+	mr1750 | \
+	mr1750v2)
+		status_led="mr1750:blue:power"
+		;;
 	mr900 | \
 	mr900v2)
 		status_led="mr900:blue:power"
@@ -174,12 +181,17 @@ get_status_led() {
 	om2pv2 | \
 	om2p-hs | \
 	om2p-hsv2 | \
+	om2p-hsv3 | \
 	om2p-lc)
 		status_led="om2p:blue:power"
 		;;
 	om5p | \
 	om5p-an)
 		status_led="om5p:blue:power"
+		;;
+	om5p-ac | \
+	om5p-acv2)
+		status_led="om5pac:blue:power"
 		;;
 	onion-omega)
 		status_led="onion:amber:system"
@@ -271,6 +283,7 @@ get_status_led() {
 	tl-wr841n-v1 | \
 	tl-wr841n-v7 | \
 	tl-wr841n-v8 | \
+	tl-wr841n-v11 | \
 	tl-wa830re-v2 | \
 	tl-wr842n-v2 | \
 	tl-wr941nd | \
@@ -350,6 +363,9 @@ get_status_led() {
 		;;
 	wrt400n)
 		status_led="wrt400n:blue:wps"
+		;;
+	e2100l)
+		status_led="e2100l:blue:wps"
 		;;
 	wrt160nl)
 		status_led="wrt160nl:blue:wps"

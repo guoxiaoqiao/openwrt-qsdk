@@ -570,6 +570,8 @@ define KernelPackage/crypto-ocf
 	$(LINUX_DIR)/crypto/ocf/cryptosoft.ko
   AUTOLOAD:=$(call AutoLoad,09, \
 	ocf \
+	cryptodev \
+	cryptosoft \
   )
   $(call AddDepends/crypto)
 endef

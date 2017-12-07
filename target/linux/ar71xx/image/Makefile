@@ -587,7 +587,7 @@ endef
 
 define Device/tl-wr841n-v11
     $(Device/tplink-4mlzma)
-    BOARDNAME := TL-WR841N-v9
+    BOARDNAME := TL-WR841N-v11
     DEVICE_PROFILE := TLWR841
     TPLINK_HWID := 0x08410011
 endef
@@ -1078,6 +1078,7 @@ f9k1115v2_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14464k(rootfs
 dlrtdev_mtdlayout=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,6208k(firmware),64k(caldata)ro,640k(certs),960k(unknown)ro,64k@0x7f0000(caldata_copy)
 dlrtdev_mtdlayout_fat=mtdparts=spi0.0:256k(uboot)ro,64k(config)ro,7168k(firmware),640k(certs),64k(caldata)ro,64k@0x660000(caldata_orig),6208k@0x50000(firmware_orig)
 dragino2_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,16000k(firmware),64k(config)ro,64k(art)ro
+dw33d_mtdlayout=mtdparts=spi0.0:256k(u-boot),64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware);ar934x-nfc:96m(rootfs_data),32m(backup)ro
 hiwifi_hc6361_mtdlayout=mtdparts=spi0.0:64k(u-boot)ro,64k(bdinfo)ro,1280k(kernel),14848k(rootfs),64k(backup)ro,64k(art)ro,16128k@0x20000(firmware)
 mr12_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,256k(u-boot-env)ro,13440k(rootfs),2304k(kernel),128k(art)ro,15744k@0x80000(firmware)
 mr16_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,256k(u-boot-env)ro,13440k(rootfs),2304k(kernel),128k(art)ro,15744k@0x80000(firmware)
@@ -1914,6 +1915,9 @@ define Image/Build/OpenMesh
 		"$(BUILD_DIR)/fwupgrade.cfg-$(4)" "fwupgrade.cfg" \
 		"$(KDIR_TMP)/vmlinux-$(2).uImage" "kernel" \
 		"$(KDIR)/root.$(1)" "rootfs"
+	if [ -e "$(call factoryname,$(1),$(2))" ]; then \
+		cp "$(call factoryname,$(1),$(2))" "$(call sysupname,$(1),$(2))"; \
+	fi
 endef
 
 
@@ -1977,10 +1981,12 @@ ifeq ($(SUBTARGET),generic)
 $(eval $(call SingleProfile,ALFA,64k,ALFANX,alfa-nx,ALFA-NX,ttyS0,115200,$$(alfa_mtdlayout_8M),1638400,6291456,vmlinux.gz.uImage,pb9x-2.6.31-jffs2))
 $(eval $(call SingleProfile,ALFA,64k,HORNETUB,hornet-ub,HORNET-UB,ttyATH0,115200,$$(alfa_mtdlayout_8M),1638400,6291456,kernel_image,rootfs_image))
 $(eval $(call SingleProfile,ALFA,64k,TUBE2H8M,tube2h-8M,TUBE2H,ttyATH0,115200,$$(alfa_mtdlayout_8M),1638400,6291456,kernel.image,rootfs.image))
+
 $(eval $(call SingleProfile,AthGzip,64k,AP81,ap81,AP81,ttyS0,115200,$$(ap81_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthGzip,64k,AP83,ap83,AP83,ttyS0,115200,$$(ap83_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthGzip,64k,AP96,ap96,AP96,ttyS0,115200,$$(ap96_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthGzip,64k,WNDAP360,wndap360,WNDAP360,ttyS0,9600,$$(wndap360_mtdlayout),KRuImage))
+
 $(eval $(call SingleProfile,AthLzma,64k,ALFAAP96,alfa-ap96,ALFA-AP96,ttyS0,115200,$$(alfa_ap96_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,ALFAAP120C,alfa-ap120c,ALFA-AP120C,ttyS0,115200,$$(alfa_ap120c_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,ALL0258N,all0258n,ALL0258N,ttyS0,115200,$$(all0258n_mtdlayout),KRuImage,65536))
@@ -2026,6 +2032,7 @@ $(eval $(call SingleProfile,IoENAND,64k,CUS531MP3NAND_DUAL,cus531MP3nand-dual,CU
 $(eval $(call SingleProfile,IoENAND,64k,CUS532K,cus532k,CUS532K,ttyS0,115200,,KRuImage,CUS532K,2097152))
 $(eval $(call SingleProfile,AthLzma,64k,DB120,db120,DB120,ttyS0,115200,$$(db120_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,DRAGINO2,dragino2,DRAGINO2,ttyATH0,115200,$$(dragino2_mtdlayout),KRuImage,65536))
+$(eval $(call SingleProfile,AthLzma,64k,DW33D,domywifi-dw33d,DW33D,ttyS0,115200,$$(dw33d_mtdlayout) mem=256M,RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,EWDORINAP,ew-dorin,EW-DORIN,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),KRuImage,65536))
 $(eval $(call SingleProfile,AthLzma,64k,EWDORINRT,ew-dorin-router,EW-DORIN-ROUTER,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),KRuImage,65536))
 $(eval $(call SingleProfile,AthLzma,64k,EWDORIN16M,ew-dorin-16M,EW-DORIN,ttyATH0,115200,$$(ew-dorin_mtdlayout_16M),KRuImage,65536))
@@ -2086,6 +2093,8 @@ $(eval $(call SingleProfile,CameoDB120_8M,64kraw,TEW732BR,tew-732br,TEW-732BR,tt
 
 $(eval $(call SingleProfile,CyberTANGZIP,64k,WRT160NL,wrt160nl,WRT160NL,ttyS0,115200,,1.00.01))
 
+$(eval $(call SingleProfile,CyberTANGZIP,64k,E2100L,e2100l,E2100L,ttyS0,115200,,1.00.01))
+
 $(eval $(call SingleProfile,CyberTANLZMA,64k,MYNETREXT,mynet-rext,MYNET-REXT,ttyS0,115200,$$(mynet_rext_mtdlayout) root=31:2,1.00.01))
 
 $(eval $(call SingleProfile,CameoAP94,64kraw,DIR825B1,dir-825-b1,DIR-825-B1,ttyS0,115200,$$(cameo_ap94_mtdlayout),$$(cameo_ap94_mtdlayout_fat),01AP94-AR7161-RT-080619-00,00AP94-AR7161-RT-080619-00))
@@ -2120,8 +2129,10 @@ $(eval $(call SingleProfile,Netgear,64kraw,WPN824N,wpn824n,WPN824N,ttyS0,115200,
 
 $(eval $(call SingleProfile,OpenMesh,squashfs-only,OM2P,om2p,,,,OM2P))
 $(eval $(call SingleProfile,OpenMesh,squashfs-only,OM5P,om5p,,,,OM5P))
+$(eval $(call SingleProfile,OpenMesh,squashfs-only,OM5PAC,om5pac,,,,OM5PAC))
 $(eval $(call SingleProfile,OpenMesh,squashfs-only,MR600,mr600,,,,MR600))
 $(eval $(call SingleProfile,OpenMesh,squashfs-only,MR900,mr900,,,,MR900))
+$(eval $(call SingleProfile,OpenMesh,squashfs-only,MR1750,mr1750,,,,MR1750))
 
 $(eval $(call SingleProfile,PB4X,128k,ALL0305,all0305,ALL0305,ttyS0,115200))
 $(eval $(call SingleProfile,PB4X,128k,EAP7660D,eap7660d,EAP7660D,ttyS0,115200))
@@ -2222,7 +2233,7 @@ $(eval $(call MultiProfile,AP147,AP147_010))
 $(eval $(call MultiProfile,AP151,AP151_16M))
 $(eval $(call MultiProfile,AP152,AP152_16M))
 $(eval $(call MultiProfile,EWDORIN, EWDORINAP EWDORINRT EWDORIN16M))
-$(eval $(call MultiProfile,OPENMESH,OM2P OM5P MR600 MR900))
+$(eval $(call MultiProfile,OPENMESH,OM2P OM5P OM5PAC MR600 MR900 MR1750))
 $(eval $(call MultiProfile,TEW652BRP,TEW652BRP_FW TEW652BRP_RECOVERY))
 $(eval $(call MultiProfile,TLMR3220,TLMR3220V1))
 $(eval $(call MultiProfile,TLMR3420,TLMR3420V1))

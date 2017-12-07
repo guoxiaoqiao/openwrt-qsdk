@@ -41,8 +41,7 @@ config EXTRA_GCC_CONFIG_OPTIONS
 config SSP_SUPPORT
 	bool
 	prompt "Enable Stack-Smashing Protection support" if TOOLCHAINOPTS
-	depends on !USE_MUSL
-	default y if !USE_MUSL
+	default n
 	help
 	    Enable Stack-Smashing Protection support
 
