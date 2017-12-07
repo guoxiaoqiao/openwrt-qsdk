@@ -55,6 +55,9 @@ hostapd_common_add_device_config() {
 	config_add_boolean country_ie doth
 	config_add_string require_mode
 
+	config_add_int pwr_constraint
+	config_add_boolean spectrum_mgmt
+
 	hostapd_add_log_config
 }
 
@@ -65,7 +68,8 @@ hostapd_prepare_device_config() {
 	local base="${config%%.conf}"
 	local base_cfg=
 
-	json_get_vars country country_ie beacon_int doth require_mode
+	json_get_vars country country_ie beacon_int doth require_mode \
+		pwr_constraint spectrum_mgmt
 
 	hostapd_set_log_options base_cfg
 
@@ -77,6 +81,8 @@ hostapd_prepare_device_config() {
 
 		[ "$country_ie" -gt 0 ] && append base_cfg "ieee80211d=1" "$N"
 		[ "$hwmode" = "a" -a "$doth" -gt 0 ] && append base_cfg "ieee80211h=1" "$N"
+		[ "$country_ie" -gt 0 -a -n "$pwr_constraint" ] && append base_cfg "local_pwr_constraint=$pwr_constraint" "$N"
+		[ "$country_ie" -gt 0 -a -n "$pwr_constraint" -a -n "$spectrum_mgmt" ] && append base_cfg "spectrum_mgmt_required=$spectrum_mgmt" "$N"
 	}
 	[ -n "$hwmode" ] && append base_cfg "hw_mode=$hwmode" "$N"
 
@@ -169,6 +175,9 @@ hostapd_common_add_bss_config() {
 	config_add_int obss_interval
 
 	config_add_string vendor_elements
+
+	config_add_int bss_load_update_period
+	config_add_boolean rrm
 }
 
 hostapd_set_bss_options() {
@@ -189,7 +198,8 @@ hostapd_set_bss_options() {
 		wps_device_type wps_config wps_device_name wps_manufacturer wps_pin \
 		wps_model_name wps_model_number wps_serial_number \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
-		iapp_interface obss_interval vendor_elements
+		iapp_interface obss_interval vendor_elements \
+		bss_load_update_period rrm
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -456,6 +466,11 @@ hostapd_set_bss_options() {
 	}
 
 	[ -n "$vendor_elements" ] && append bss_conf "vendor_elements=$vendor_elements" "$N"
+	[ -n "$bss_load_update_period" ] && append bss_conf "bss_load_update_period=$bss_load_update_period" "$N"
+	[ -n "$rrm" ] && {
+		append bss_conf "rrm_beacon_report=1" "$N"
+		append bss_conf "rrm_neighbor_report=1" "$N"
+	}
 
 	append "$var" "$bss_conf" "$N"
 	return 0
