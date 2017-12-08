@@ -1,0 +1,97 @@
+--- a/hostapd/config_file.c
++++ b/hostapd/config_file.c
+@@ -2621,6 +2621,14 @@ static int hostapd_config_fill(struct hostapd_config *conf,
+ 			return 1;
+ 		}
+ 		conf->acs_num_scans = val;
++	} else if (os_strcmp(buf, "acs_scan_dwell") == 0) {
++		int val = atoi(pos);
++		if (val < 30 || val > 1000) {
++			wpa_printf(MSG_ERROR, "Line %d: invalid acs_scan_dwell %d (expected 30..1000)",
++				   line, val);
++			return 1;
++		}
++		conf->acs_scan_dwell = val;
+ 	} else if (os_strcmp(buf, "acs_chan_bias") == 0) {
+ 		if (hostapd_config_parse_acs_chan_bias(conf, pos)) {
+ 			wpa_printf(MSG_ERROR, "Line %d: invalid acs_chan_bias",
+--- a/src/ap/acs.c
++++ b/src/ap/acs.c
+@@ -901,6 +901,9 @@ static int acs_request_scan(struct hostapd_iface *iface)
+ 	}
+ 	*freq = 0;
+ 
++	if (iface->conf->acs_scan_dwell)
++		params.duration = iface->conf->acs_scan_dwell;
++
+ 	iface->scan_cb = acs_scan_complete;
+ 
+ 	wpa_printf(MSG_DEBUG, "ACS: Scanning %d / %d",
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -667,6 +667,7 @@ struct hostapd_config {
+ 
+ #ifdef CONFIG_ACS
+ 	unsigned int acs_num_scans;
++	unsigned int acs_scan_dwell;
+ 	struct acs_bias {
+ 		int channel;
+ 		double bias;
+--- a/src/drivers/driver.h
++++ b/src/drivers/driver.h
+@@ -408,6 +408,8 @@ struct wpa_driver_scan_params {
+ 	 */
+ 	const u8 *mac_addr_mask;
+ 
++	u16 duration;
++
+ 	/*
+ 	 * NOTE: Whenever adding new parameters here, please make sure
+ 	 * wpa_scan_clone_params() and wpa_scan_free_params() get updated with
+--- a/src/drivers/driver_nl80211_scan.c
++++ b/src/drivers/driver_nl80211_scan.c
+@@ -197,6 +197,14 @@ nl80211_scan_common(struct i802_bss *bss, u8 cmd,
+ 	    nla_put_u32(msg, NL80211_ATTR_SCAN_FLAGS, scan_flags))
+ 		goto fail;
+ 
++	if (params->duration) {
++	    if (nla_put_u16(msg, NL80211_ATTR_MEASUREMENT_DURATION, params->duration))
++		    goto fail;
++
++	    if (nla_put_flag(msg, NL80211_ATTR_MEASUREMENT_DURATION_MANDATORY))
++		    goto fail;
++	}
++
+ 	return msg;
+ 
+ fail:
+--- a/src/drivers/nl80211_copy.h
++++ b/src/drivers/nl80211_copy.h
+@@ -2129,6 +2129,27 @@ enum nl80211_attrs {
+ 
+ 	NL80211_ATTR_REG_INDOOR,
+ 
++	NL80211_ATTR_MAX_NUM_SCHED_SCAN_PLANS,
++	NL80211_ATTR_MAX_SCAN_PLAN_INTERVAL,
++	NL80211_ATTR_MAX_SCAN_PLAN_ITERATIONS,
++	NL80211_ATTR_SCHED_SCAN_PLANS,
++	NL80211_ATTR_PBSS,
++	NL80211_ATTR_BSS_SELECT,
++	NL80211_ATTR_STA_SUPPORT_P2P_PS,
++	NL80211_ATTR_PAD,
++	NL80211_ATTR_IFTYPE_EXT_CAPA,
++	NL80211_ATTR_MU_MIMO_GROUP_DATA,
++	NL80211_ATTR_MU_MIMO_FOLLOW_MAC_ADDR,
++	NL80211_ATTR_SCAN_START_TIME_TSF,
++	NL80211_ATTR_SCAN_START_TIME_TSF_BSSID,
++	NL80211_ATTR_MEASUREMENT_DURATION,
++	NL80211_ATTR_MEASUREMENT_DURATION_MANDATORY,
++	NL80211_ATTR_MESH_PEER_AID,
++	NL80211_ATTR_NAN_MASTER_PREF,
++	NL80211_ATTR_NAN_DUAL,
++	NL80211_ATTR_NAN_FUNC,
++	NL80211_ATTR_NAN_MATCH,
++
+ 	/* add attributes here, update the policy in nl80211.c */
+ 
+ 	__NL80211_ATTR_AFTER_LAST,
