@@ -176,6 +176,9 @@ hostapd_common_add_bss_config() {
 	config_add_boolean ht40_intolerant
 	config_add_boolean disable_ldpc
 	config_add_boolean disable_vht
+
+	config_add_int acs_num_scans
+	config_add_int acs_scan_dwell
 }
 
 hostapd_set_bss_options() {
@@ -196,7 +199,7 @@ hostapd_set_bss_options() {
 		wps_device_type wps_config wps_device_name wps_manufacturer wps_pin \
 		wps_model_name wps_model_number wps_serial_number \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
-		iapp_interface obss_interval vendor_elements
+		iapp_interface obss_interval vendor_elements acs_num_scans acs_scan_dwell
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -463,6 +466,9 @@ hostapd_set_bss_options() {
 	}
 
 	[ -n "$vendor_elements" ] && append bss_conf "vendor_elements=$vendor_elements" "$N"
+
+	[ -n "$acs_num_scans" ] && append bss_conf "acs_num_scans=$acs_num_scans" "$N"
+	[ -n "$acs_scan_dwell" ] && append bss_conf "acs_scan_dwell=$acs_scan_dwell" "$N"
 
 	append "$var" "$bss_conf" "$N"
 	return 0
