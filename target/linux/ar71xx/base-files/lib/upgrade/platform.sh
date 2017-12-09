@@ -189,6 +189,7 @@ platform_check_image() {
 	apjet01 |\
 	bxu2000n-2-a1 | \
 	db120 | \
+	dw33d | \
 	f9k1115v2 |\
 	hornet-ub | \
 	mr12 | \
@@ -276,6 +277,7 @@ platform_check_image() {
 		;;
 
 	mynet-rext|\
+	e2100l|\
 	wrt160nl)
 		cybertan_check_image "$1" && return 0
 		return 1
@@ -297,6 +299,8 @@ platform_check_image() {
 
 		return 0;
 		;;
+	mr1750 | \
+	mr1750v2 | \
 	mr600 | \
 	mr600v2 | \
 	mr900 | \
@@ -305,9 +309,12 @@ platform_check_image() {
 	om2pv2 | \
 	om2p-hs | \
 	om2p-hsv2 | \
+	om2p-hsv3 | \
 	om2p-lc | \
 	om5p | \
-	om5p-an)
+	om5p-an | \
+	om5p-ac | \
+	om5p-acv2)
 		platform_check_image_openmesh "$magic_long" "$1" && return 0
 		return 1
 		;;
@@ -359,6 +366,7 @@ platform_check_image() {
 	tl-wr841n-v7 | \
 	tl-wr841n-v8 | \
 	tl-wr841n-v9 | \
+	tl-wr841n-v11 | \
 	tl-wr842n-v2 | \
 	tl-wr941nd | \
 	tl-wr941nd-v5 | \
@@ -536,6 +544,8 @@ platform_do_upgrade() {
 	tew-673gru)
 		platform_do_upgrade_dir825b "$ARGV"
 		;;
+	mr1750 | \
+	mr1750v2 | \
 	mr600 | \
 	mr600v2 | \
 	mr900 | \
@@ -544,9 +554,12 @@ platform_do_upgrade() {
 	om2pv2 | \
 	om2p-hs | \
 	om2p-hsv2 | \
+	om2p-hsv3 | \
 	om2p-lc | \
 	om5p | \
-	om5p-an)
+	om5p-an | \
+	om5p-ac | \
+	om5p-acv2)
 		platform_do_upgrade_openmesh "$ARGV"
 		;;
 	unifi-outdoor-plus | \

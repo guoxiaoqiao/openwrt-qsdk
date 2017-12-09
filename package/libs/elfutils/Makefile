@@ -54,8 +54,15 @@ ifeq ($(CONFIG_BUILD_NLS),y)
 TARGET_LDFLAGS += "-lintl"
 endif
 
+ifdef CONFIG_USE_UCLIBC
 CONFIGURE_VARS += \
 	LIBS="-largp"
+endif
+
+ifdef CONFIG_USE_MUSL
+CONFIGURE_VARS += \
+	LIBS="-largp"
+endif
 
 CONFIGURE_ARGS += \
 	--disable-werror \
