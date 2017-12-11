@@ -33,7 +33,7 @@ ubivol() {
 	if [ "$image" ]; then
 		echo "image=$image"
 	else
-		echo "vol_size=1KiB"
+		echo "vol_size=1MiB"
 	fi
 	if [ "$autoresize" ]; then
 		echo "vol_flags=autoresize"
@@ -109,7 +109,7 @@ if [ ! -r "$rootfs" -o ! -r "$kernel" -a ! "$outfile" ]; then
 	exit 1
 fi
 
-ubinize="$( which $ubinize_dir/ubinize )"
+ubinize="$( which ubinize )"
 if [ ! -x "$ubinize" ]; then
 	echo "ubinize tool not found or not usable"
 	exit 1
@@ -123,7 +123,7 @@ fi
 ubilayout "$ubootenv" "$rootfs" "$kernel" > "$ubinizecfg"
 
 cat "$ubinizecfg"
-$ubinize_dir/ubinize -o "$outfile" $ubinize_param "$ubinizecfg"
+ubinize -o "$outfile" $ubinize_param "$ubinizecfg"
 err="$?"
 [ ! -e "$outfile" ] && err=2
 rm "$ubinizecfg"
