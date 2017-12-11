@@ -27,7 +27,7 @@
  
  static int hostapd_ctrl_driver_flags(struct hostapd_iface *iface, char *buf,
  				     size_t buflen)
-@@ -3137,6 +3157,9 @@ static int hostapd_ctrl_iface_receive_pr
+@@ -3136,6 +3156,9 @@ static int hostapd_ctrl_iface_receive_pr
  	} else if(os_strncmp(buf, "BLACKLIST_CLEAR", 15) == 0) {
  		if (hostapd_ctrl_iface_blacklist_clear(hapd))
  			reply_len = -1;
