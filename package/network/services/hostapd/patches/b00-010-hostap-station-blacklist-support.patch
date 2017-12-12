@@ -1,6 +1,6 @@
 --- a/hostapd/ctrl_iface.c
 +++ b/hostapd/ctrl_iface.c
-@@ -2684,6 +2684,80 @@ static int hostapd_ctrl_driver_flags(str
+@@ -2684,6 +2684,79 @@ static int hostapd_ctrl_driver_flags(str
  	return pos - buf;
  }
  
@@ -51,9 +51,8 @@
 +		}
 +	}
 +
-+	return ret;
++	return len;
 +}
-+
 +
 +static int hostapd_ctrl_iface_blacklist_del(struct hostapd_data *hapd, char *txtaddr)
 +{
@@ -81,7 +80,7 @@
  
  static int hostapd_ctrl_iface_receive_process(struct hostapd_data *hapd,
  					      char *buf, char *reply,
-@@ -3047,6 +3121,22 @@ static int hostapd_ctrl_iface_receive_pr
+@@ -3047,6 +3120,22 @@ static int hostapd_ctrl_iface_receive_pr
  		if (hostapd_dpp_pkex_remove(hapd, buf + 16) < 0)
  			reply_len = -1;
  #endif /* CONFIG_DPP */
@@ -181,18 +180,19 @@
  
 --- a/src/ap/beacon.c
 +++ b/src/ap/beacon.c
-@@ -1047,6 +1047,11 @@ void handle_probe_req(struct hostapd_dat
- 		return;
- 	}
+@@ -879,6 +879,12 @@ void handle_probe_req(struct hostapd_dat
+ 		sta_track_add(hapd->iface, mgmt->sa, ssi_signal);
+ 	ie_len = len - IEEE80211_HDRLEN;
  
 +	if (mac_blacklist_get(hapd, mgmt->sa)) {
 +		wpa_msg(hapd->msg_ctx, MSG_DEBUG, "Ignoring probe request "
 +			MACSTR "due to blacklist", MAC2STR(mgmt->sa));
 +		return;
 +	}
- 	/* TODO: verify that supp_rates contains at least one matching rate
- 	 * with AP configuration */
- 
++
+ 	for (i = 0; hapd->probereq_cb && i < hapd->num_probereq_cb; i++)
+ 		if (hapd->probereq_cb[i].cb(hapd->probereq_cb[i].ctx,
+ 					    mgmt->sa, mgmt->da, mgmt->bssid,
 --- a/src/ap/hostapd.c
 +++ b/src/ap/hostapd.c
 @@ -3389,6 +3389,74 @@ hostapd_switch_channel_fallback(struct h
