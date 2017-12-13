@@ -26,7 +26,7 @@
  
  static int hostapd_ctrl_driver_flags(struct hostapd_iface *iface, char *buf,
  				     size_t buflen)
-@@ -3160,6 +3179,9 @@ static int hostapd_ctrl_iface_receive_pr
+@@ -3159,6 +3178,9 @@ static int hostapd_ctrl_iface_receive_pr
  	} else if (os_strncmp(buf, "SIGNAL_MONITOR", 14) == 0) {
  		if (hostapd_ctrl_iface_signal_monitor(hapd, buf + 14))
  			reply_len = -1;
@@ -254,7 +254,7 @@
  
 -
 +enum nl80211_cqm_tx_rate_threshold_event {
-+	NL80211_CQM_TX_RATE_THRESHOLD_EVENT_LOW,
++	NL80211_CQM_TX_RATE_THRESHOLD_EVENT_LOW = 1,
 +	NL80211_CQM_TX_RATE_THRESHOLD_EVENT_HIGH,
 +};
  /**
