@@ -38,7 +38,6 @@ define Package/iperf/description
 endef
 
 TARGET_CFLAGS += -D_GNU_SOURCE
-CONFIGURE_ARGS += --disable-multicast
 
 ifeq ($(CONFIG_IPV6),)
 	CONFIGURE_ARGS += --disable-ipv6
