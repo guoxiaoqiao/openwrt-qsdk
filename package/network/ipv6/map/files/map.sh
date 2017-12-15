@@ -157,7 +157,8 @@ proto_map_setup() {
               done
 	    done
 	  fi
-	  if [ "$type" = "map-t" ]; then
+	fi
+	if [ "$type" = "map-t" ]; then
 	  	json_add_object ""
 	  		json_add_string type rule
 	  		json_add_string family inet6
@@ -179,7 +180,7 @@ proto_map_setup() {
 	  		json_add_string target ACCEPT
 	  	json_close_object
 		proto_add_ipv6_route $(eval "echo \$RULE_${k}_IPV6ADDR") 128
-	  fi
+	fi
 	json_close_array
 	proto_close_data
 
