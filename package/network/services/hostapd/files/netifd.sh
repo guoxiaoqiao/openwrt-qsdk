@@ -177,7 +177,7 @@ hostapd_common_add_bss_config() {
 	config_add_string vendor_elements
 
 	config_add_int bss_load_update_period
-	config_add_boolean rrm
+	config_add_boolean rrm wnm wnm_sleep
 }
 
 hostapd_set_bss_options() {
@@ -199,7 +199,7 @@ hostapd_set_bss_options() {
 		wps_model_name wps_model_number wps_serial_number \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
 		iapp_interface obss_interval vendor_elements \
-		bss_load_update_period rrm
+		bss_load_update_period rrm wnm wnm_sleep
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -467,6 +467,8 @@ hostapd_set_bss_options() {
 
 	[ -n "$vendor_elements" ] && append bss_conf "vendor_elements=$vendor_elements" "$N"
 	[ -n "$bss_load_update_period" ] && append bss_conf "bss_load_update_period=$bss_load_update_period" "$N"
+	[ -n "$wnm" ] && append bss_conf "bss_transition=$wnm" "$N"
+	[ -n "$wnm_sleep" ] && append bss_conf "wnm_sleep_mode=$wnm_sleep" "$N"
 	[ -n "$rrm" ] && {
 		append bss_conf "rrm_beacon_report=1" "$N"
 		append bss_conf "rrm_neighbor_report=1" "$N"
