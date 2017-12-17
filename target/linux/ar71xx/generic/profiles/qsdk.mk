@@ -24,7 +24,7 @@ PACKAGES_WIFI_10_2:=kmod-qca-wifi-perf kmod-art2 qca-hostap qca-hostapd-cli \
 	  qca-wifi-fw-hw1-10.2-maxclients qca-wifi-fw-hw2-10.2
 
 PACKAGES_WIFI:=kmod-qca-wifi-unified-perf kmod-art2 \
-	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
+	qca-hostap-lite qca-hostapd-cli qca-wpa-supplicant-lite \
 	qca-wpa-cli qca-wapid qca-wpc \
 	qca-acfg qca-wrapd qca-spectral qcmbr-10.4 whc whc-ui \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \

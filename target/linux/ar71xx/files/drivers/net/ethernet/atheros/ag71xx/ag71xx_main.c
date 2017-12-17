@@ -919,6 +919,15 @@ void ag71xx_link_adjust(struct ag71xx *ag)
 
 	if (!pdata->is_qca9561 && pdata->is_ar724x)
 		ag71xx_fast_reset(ag);
+	else {
+		if (ag->dev->mtu < AG71XX_TX_MTU_LEN)
+			ag71xx_wr(ag, AG71XX_REG_MAC_MFL, AG71XX_TX_MTU_LEN);
+		else {
+			ag71xx_wr(ag, AG71XX_REG_MAC_MFL, ag->dev->mtu);
+			if (pdata->is_ar724x)
+				ag71xx_enable_jumbo_frame(ag);
+		}
+	}
 
 	cfg2 = ag71xx_rr(ag, AG71XX_REG_MAC_CFG2);
 	cfg2 &= ~(MAC_CFG2_IF_1000 | MAC_CFG2_IF_10_100 | MAC_CFG2_FDX);
