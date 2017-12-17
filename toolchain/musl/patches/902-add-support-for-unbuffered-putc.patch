@@ -1,10 +1,11 @@
---- a/src/stdio/fputc.c
-+++ b/src/stdio/fputc.c
-@@ -1,5 +1,16 @@
+Index: musl-1.1.16/src/stdio/fputc.c
+===================================================================
+--- musl-1.1.16.orig/src/stdio/fputc.c	2017-01-01 08:57:17.000000000 +0530
++++ musl-1.1.16/src/stdio/fputc.c	2017-10-20 12:10:54.073719904 +0530
+@@ -1,5 +1,15 @@
  #include "stdio_impl.h"
-
 +#define UNBUFFERED_PUTC
-+
+ 
 +#ifdef UNBUFFERED_PUTC
 +int fputc(int c, FILE *f)
 +{
@@ -17,7 +18,7 @@
  int fputc(int c, FILE *f)
  {
  	if (f->lock < 0 || !__lockfile(f))
-@@ -8,3 +20,4 @@
+@@ -8,3 +18,4 @@
  	__unlockfile(f);
  	return c;
  }

@@ -110,6 +110,9 @@ ap-hk05|\
 ap-hk06|\
 db-hk01|\
 db-hk02)
+	ucidef_add_switch "switch0"
+	ucidef_add_switch_ext_profile  "switch0" "CtrlpktRfdb" "0" "01-80-c2-00-00-00"
+	ucidef_add_switch_ext_hkxx "switch0" "CtrlpktAppProfile" "0x7e" "0x0" "0x1" "no" "no" "no" "no" "no" "no" "no" "no" "no" "no" "rdtcpu" "no" "no" "yes" "no"
 	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3 eth4 eth5" "eth0"
 	;;
 *)

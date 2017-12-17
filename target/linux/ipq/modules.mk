@@ -1,6 +1,6 @@
 define KernelPackage/usb-phy-qcom-dwc3
   TITLE:=DWC3 USB QCOM PHY driver
-  DEPENDS:=@TARGET_ipq
+  DEPENDS:=@TARGET_ipq||TARGET_ipq806x
   KCONFIG:= CONFIG_PHY_QCOM_DWC3
   FILES:= $(LINUX_DIR)/drivers/phy/phy-qcom-dwc3.ko
   AUTOLOAD:=$(call AutoLoad,45,phy-qcom-dwc3,1)
@@ -31,7 +31,7 @@ $(eval $(call KernelPackage,usb-dwc3-of-simple))
 
 define KernelPackage/usb-dwc3-qcom
   TITLE:=DWC3 USB QCOM controller driver
-  DEPENDS:=@TARGET_ipq +kmod-usb-dwc3 +kmod-usb-phy-dwc3-qcom
+  DEPENDS:=@TARGET_ipq||TARGET_ipq806x +kmod-usb-dwc3 +kmod-usb-phy-dwc3-qcom
   KCONFIG:= CONFIG_USB_DWC3_QCOM
   FILES:= $(LINUX_DIR)/drivers/usb/dwc3/dwc3-qcom.ko
   AUTOLOAD:=$(call AutoLoad,53,dwc3-qcom,1)
@@ -47,7 +47,7 @@ $(eval $(call KernelPackage,usb-dwc3-qcom))
 
 define KernelPackage/usb-dwc3-ipq40xx
   TITLE:=DWC3 USB IPQ40XX controller driver
-  DEPENDS:=@TARGET_ipq +kmod-usb-dwc3 +kmod-usb-phy-dwc3-ipq40xx
+  DEPENDS:=@TARGET_ipq||TARGET_ipq806x +kmod-usb-dwc3 +kmod-usb-phy-dwc3-ipq40xx
   KCONFIG:= CONFIG_USB_DWC3_IPQ40XX
   FILES:= $(LINUX_DIR)/drivers/usb/dwc3/dwc3-ipq40xx.ko
   AUTOLOAD:=$(call AutoLoad,53,dwc3-ipq40xx,1)
@@ -63,7 +63,7 @@ $(eval $(call KernelPackage,usb-dwc3-ipq40xx))
 
 define KernelPackage/usb-phy-dwc3-qcom
   TITLE:=DWC3 USB QCOM PHY driver
-  DEPENDS:=@TARGET_ipq
+  DEPENDS:=@TARGET_ipq||TARGET_ipq806x
   KCONFIG:= CONFIG_USB_QCOM_DWC3_PHY
   FILES:= \
 	$(LINUX_DIR)/drivers/usb/phy/phy-qcom-hsusb.ko \
@@ -81,7 +81,7 @@ $(eval $(call KernelPackage,usb-phy-dwc3-qcom))
 
 define KernelPackage/usb-phy-dwc3-ipq40xx
   TITLE:=DWC3 USB IPQ40xx PHY driver
-  DEPENDS:=@TARGET_ipq
+  DEPENDS:=@TARGET_ipq||TARGET_ipq806x
   KCONFIG:= CONFIG_USB_IPQ40XX_PHY
   FILES:= \
 	$(LINUX_DIR)/drivers/usb/phy/phy-qca-baldur.ko \
@@ -99,7 +99,7 @@ $(eval $(call KernelPackage,usb-phy-dwc3-ipq40xx))
 
 define KernelPackage/usb-phy-dwc3-ipq4019
   TITLE:=DWC3 USB IPQ4019 PHY driver
-  DEPENDS:=@TARGET_ipq +kmod-usb-dwc3-of-simple
+  DEPENDS:=@TARGET_ipq||TARGET_ipq806x +kmod-usb-dwc3-of-simple
   KCONFIG:= CONFIG_PHY_IPQ_BALDUR_USB \
                 CONFIG_PHY_IPQ_UNIPHY_USB
   FILES:= \
@@ -118,7 +118,7 @@ $(eval $(call KernelPackage,usb-phy-dwc3-ipq4019))
 
 define KernelPackage/usb-phy-ipq807x
   TITLE:=DWC3 USB QCOM PHY driver for IPQ807x
-  DEPENDS:=@TARGET_ipq +kmod-usb-dwc3-of-simple
+  DEPENDS:=@TARGET_ipq||TARGET_ipq806x +kmod-usb-dwc3-of-simple
   KCONFIG:= \
 	CONFIG_USB_QCOM_QUSB_PHY \
 	CONFIG_USB_QCOM_QMP_PHY

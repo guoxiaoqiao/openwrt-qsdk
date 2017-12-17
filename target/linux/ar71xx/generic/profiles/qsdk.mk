@@ -35,7 +35,7 @@ WIFI_OPEN:=-kmod-ath5k -kmod-qca-ath -kmod-qca-ath9k -kmod-qca-ath10k \
 BLUETOOTH:=bluez-daemon kmod-bluetooth usbutils
 
 WIFI_PKGS:=kmod-qca-wifi-unified-perf kmod-art2 \
-		qca-hostap qca-hostapd-cli qca-wpa-supplicant \
+		qca-hostap-lite qca-hostapd-cli qca-wpa-supplicant-lite \
 		qca-wpa-cli qca-wapid sigma-dut-10.4 qca-wpc \
 		qca-acfg qca-wrapd qca-spectral qcmbr-10.4 whc whc-ui \
 		qca-iface-mgr-10.4
@@ -49,7 +49,7 @@ SWITCH_SSDK_HNAT_PKGS:= kmod-qca-ssdk-hnat qca-ssdk-shell swconfig
 UBOOT_PKGS:= qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M \
 	     qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	     qca-legacy-uboot-db12x-16M qca-legacy-uboot-ap152-dual \
-	     qca-legacy-uboot-ap135-nand
+	     qca-legacy-uboot-ap135-nand qca-legacy-uboot-apjet01
 
 HYFI:=hyfi hyfi-ui
 

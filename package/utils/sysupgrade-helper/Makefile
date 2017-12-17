@@ -23,11 +23,16 @@ define Package/sysupgrade-helper
   TITLE:=U-boot images tools (dumpimage, mkimage)
 endef
 
+HOSTLDFLAGS:= \
+	      -L$(STAGING_DIR)/usr/lib \
+	      -znow -zrelro
+
 define Build/Compile
 	cp config $(PKG_BUILD_DIR)/.config
 	$(MAKE) -C $(PKG_BUILD_DIR) TARGETCC=$(TARGET_CC) \
 		CROSS_COMPILE=$(TARGET_CROSS) \
 		TARGET_CFLAGS="$(TARGET_CFLAGS)" \
+		HOSTLDFLAGS="$(HOSTLDFLAGS)" \
 		tools-only
 endef
 

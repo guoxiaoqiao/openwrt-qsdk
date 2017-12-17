@@ -130,8 +130,8 @@ define KernelPackage/crypto-iv
   DEPENDS:=+kmod-crypto-manager +kmod-crypto-rng +kmod-crypto-wq
   KCONFIG:= CONFIG_CRYPTO_BLKCIPHER2
   FILES:= \
-	$(LINUX_DIR)/crypto/eseqiv.ko \
-	$(LINUX_DIR)/crypto/chainiv.ko
+	$(LINUX_DIR)/crypto/eseqiv.ko@lt4.9 \
+	$(LINUX_DIR)/crypto/chainiv.ko@lt4.9
   AUTOLOAD:=$(call AutoLoad,10,eseqiv chainiv)
   $(call AddDepends/crypto)
 endef
@@ -570,6 +570,8 @@ define KernelPackage/crypto-ocf
 	$(LINUX_DIR)/crypto/ocf/cryptosoft.ko
   AUTOLOAD:=$(call AutoLoad,09, \
 	ocf \
+	cryptodev \
+	cryptosoft \
   )
   $(call AddDepends/crypto)
 endef

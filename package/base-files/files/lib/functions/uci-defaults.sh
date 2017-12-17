@@ -305,6 +305,66 @@ set network.@switch_ext[-1].status='$status'
 EOF
 }
 
+ucidef_add_switch_ext_profile() {
+	local device=$1
+	local name=$2
+	local profile_id=$3
+	local rfdb_macaddr=$4
+	uci batch <<EOF
+add network switch_ext
+set network.@switch_ext[-1].device='$device'
+set network.@switch_ext[-1].name='$name'
+set network.@switch_ext[-1].profile_id='$profile_id'
+set network.@switch_ext[-1].rfdb_macaddr='$rfdb_macaddr'
+EOF
+}
+
+ucidef_add_switch_ext_hkxx() {
+	local device=$1
+	local name=$2
+	local port_bitmap=$3
+	local ethtype_profile_bitmap=$4
+	local rfdb_profile_bitmap=$5
+	local eapol_en=$6
+	local pppoe_en=$7
+	local igmp_en=$8
+	local arp_request_en=$9
+	local arp_reponse_en=$10
+	local dhcp4_en=$11
+	local dhcp6_en=$12
+	local mld_en=$13
+	local ip6ns_en=$14
+	local ip6na_en=$15
+	local ctrlpkt_profile_action=$16
+	local sourceguard_bypass=$17
+	local l2filter_bypass=$18
+	local ingress_stp_bypass=$19
+	local ingress_vlan_filter_bypass=$20
+	uci batch <<EOF
+add network switch_ext
+set network.@switch_ext[-1].device='$device'
+set network.@switch_ext[-1].name='$name'
+set network.@switch_ext[-1].port_bitmap='$port_bitmap'
+set network.@switch_ext[-1].ethtype_profile_bitmap='$ethtype_profile_bitmap'
+set network.@switch_ext[-1].rfdb_profile_bitmap='$rfdb_profile_bitmap'
+set network.@switch_ext[-1].eapol_en='$eapol_en'
+set network.@switch_ext[-1].pppoe_en='$pppoe_en'
+set network.@switch_ext[-1].igmp_en='$igmp_en'
+set network.@switch_ext[-1].arp_request_en='$arp_request_en'
+set network.@switch_ext[-1].arp_reponse_en='$arp_reponse_en'
+set network.@switch_ext[-1].dhcp4_en='$dhcp4_en'
+set network.@switch_ext[-1].dhcp6_en='$dhcp6_en'
+set network.@switch_ext[-1].mld_en='$mld_en'
+set network.@switch_ext[-1].ip6ns_en='$ip6ns_en'
+set network.@switch_ext[-1].ip6na_en='$ip6na_en'
+set network.@switch_ext[-1].ctrlpkt_profile_action='$ctrlpkt_profile_action'
+set network.@switch_ext[-1].sourceguard_bypass='$sourceguard_bypass'
+set network.@switch_ext[-1].l2filter_bypass='$l2filter_bypass'
+set network.@switch_ext[-1].ingress_stp_bypass='$ingress_stp_bypass'
+set network.@switch_ext[-1].ingress_vlan_filter_bypass='$ingress_vlan_filter_bypass'
+EOF
+}
+
 ucidef_add_switch_ext_trunk() {
 	local device=$1
 	local name=$2
