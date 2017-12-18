@@ -62,11 +62,11 @@ $(call Package/iperf/Default/description)
  This package is built with multithread support.
 endef
 
-CONFIGURE_ARGS += --disable-multicast
 CONFIGURE_VARS += ac_cv_func_malloc_0_nonnull=yes
 
 ifeq ($(BUILD_VARIANT),single)
   CONFIGURE_ARGS += --disable-threads
+  CONFIGURE_ARGS += --disable-multicast
 else
   CONFIGURE_ARGS += --enable-threads=posix
   CONFIGURE_VARS += ac_cv_func_pthread_cancel=no
