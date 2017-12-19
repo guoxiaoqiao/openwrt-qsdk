@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zlib
-PKG_VERSION:=1.2.8
+PKG_VERSION:=1.2.11
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.zlib.net @SF/libpng
-PKG_MD5SUM:=44d667c142d7cda120332623eab69f40
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_SOURCE_URL:=@SF/libpng http://www.zlib.net
+PKG_HASH:=4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066
 
 PKG_LICENSE:=Zlib
 PKG_LICENSE_FILES:=README
@@ -25,6 +25,24 @@ define Package/zlib
   CATEGORY:=Libraries
   TITLE:=Library implementing the deflate compression method
   URL:=http://www.zlib.net/
+endef
+
+define Package/zlib-dev
+  SECTION:=devel
+  CATEGORY:=Development
+  SUBMENU:=Libraries
+  DEPENDS:=zlib
+  TITLE:=Development files for the zlib library
+endef
+
+define Package/zlib/description
+ zlib is a lossless data-compression library.
+ This package includes the shared library.
+endef
+
+define Package/zlib-dev/description
+ zlib is a lossless data-compression library.
+ This package includes the development support files.
 endef
 
 define Build/Configure
@@ -69,4 +87,18 @@ define Package/zlib/install
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libz.so.* $(1)/usr/lib/
 endef
 
+define Package/zlib-dev/install
+	$(INSTALL_DIR) $(1)/usr/include
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/include/zconf.h \
+	  $(1)/usr/include/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/include/zlib.h \
+	  $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libz.a $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/zlib.pc \
+	  $(1)/usr/lib/pkgconfig/
+endef
+
 $(eval $(call BuildPackage,zlib))
+$(eval $(call BuildPackage,zlib-dev))
