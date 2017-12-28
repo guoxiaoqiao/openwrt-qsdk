@@ -91,7 +91,7 @@ USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
 
 TEST_TOOLS:=sysstat ethtool i2c-tools tcpdump
 
-UTILS:=file luci-app-samba iperf rng-tools profilerd
+UTILS:=file luci-app-samba iperf-mt rng-tools profilerd
 
 COREBSP_UTILS:=pm-utils qca-thermald-10.4 qca-qmi-framework qca-time-services gpio-debug
 
@@ -133,7 +133,7 @@ AUDIO:=kmod-sound-soc-ipq alsa
 
 VIDEO:=kmod-qpic_panel_ertft
 
-KPI:=iperf sysstat
+KPI:=iperf-mt sysstat
 
 USB_DIAG:=kmod-usb-f-diag qca-diag
 
