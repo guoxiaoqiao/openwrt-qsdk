@@ -111,7 +111,7 @@
 +static int hostapd_cli_cmd_ht40_allow_map(struct wpa_ctrl *ctrl,
 +					  int argc, char *argv[])
 +{
-+	return hostapd_cli_cmd(ctrl, "HT40_ALLOW_MAP", 1, argc, argv);
++	return wpa_ctrl_command(ctrl, "HT40_ALLOW_MAP");
 +}
 +
  static int hostapd_cli_cmd_poll_client(struct wpa_ctrl *ctrl, int argc, char *argv[])
@@ -122,7 +122,7 @@
  	  "= set signal tx rate parameters: signal_txrate "
  	  "LOW=<> HIGH=<>" },
 +	{ "ht40_allow_map", hostapd_cli_cmd_ht40_allow_map, NULL,
-+	  "show ht40 allow map status" },
++	  "= show ht40 allow map status" },
  	{ NULL, NULL, NULL, NULL }
  };
  
