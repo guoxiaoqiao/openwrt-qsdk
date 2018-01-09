@@ -36,12 +36,11 @@ do_load_ipq4019_board_bin()
             ;;
             ap-hk*)
                     mkdir -p ${apdk}/IPQ8074
-                    FILESIZE=$(stat -c%s "$HK_BD_FILENAME")
+                    FILESIZE=$(stat -Lc%s "$HK_BD_FILENAME")
                     dd if=${mtdblock} of=${apdk}/IPQ8074/caldata.bin bs=1 count=$FILESIZE skip=4096
                     [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
                     ln -s ${apdk}/IPQ8074/caldata.bin /lib/firmware/IPQ8074/caldata.bin
             ;;
-
     esac
 }
 
