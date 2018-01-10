@@ -95,3 +95,16 @@
  	/* add attributes here, update the policy in nl80211.c */
  
  	__NL80211_ATTR_AFTER_LAST,
+--- a/src/drivers/driver_nl80211_scan.c
++++ b/src/drivers/driver_nl80211_scan.c
+@@ -300,6 +300,10 @@ int wpa_driver_nl80211_scan(struct i802_bss *bss,
+ 		 */
+ 		timeout = 30;
+ 	}
++
++	if (params->duration)
++		timeout += 30;
++
+ 	wpa_printf(MSG_DEBUG, "Scan requested (ret=%d) - scan timeout %d "
+ 		   "seconds", ret, timeout);
+ 	eloop_cancel_timeout(wpa_driver_nl80211_scan_timeout, drv, drv->ctx);
