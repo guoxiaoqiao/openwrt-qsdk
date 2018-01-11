@@ -946,7 +946,7 @@ define KernelPackage/bootconfig
   KCONFIG:=CONFIG_BOOTCONFIG_PARTITION
   FILES:=$(LINUX_DIR)/drivers/platform/msm/bootconfig.ko@lt4.4 \
 	$(LINUX_DIR)/drivers/platform/ipq/bootconfig.ko@ge4.4
-  AUTOLOAD:=$(call AutoLoad,56,bootconfig)
+  AUTOLOAD:=$(call AutoLoad,56,bootconfig,1)
 endef
 
 define KernelPackage/bootconfig/description
