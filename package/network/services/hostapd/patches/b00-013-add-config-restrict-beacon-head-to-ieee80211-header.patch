@@ -1,0 +1,48 @@
+--- a/hostapd/config_file.c
++++ b/hostapd/config_file.c
+@@ -2612,6 +2612,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
+ 			return 1;
+ 		}
+ 		conf->beacon_int = val;
++	} else if (os_strcmp(buf, "ieee80211_hdr_bcn_head") == 0) {
++		bss->ieee80211_hdr_bcn_head = atoi(pos);
+ #ifdef CONFIG_ACS
+ 	} else if (os_strcmp(buf, "acs_num_scans") == 0) {
+ 		int val = atoi(pos);
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -565,6 +565,8 @@ struct hostapd_bss_config {
+ 
+ 	char *no_probe_resp_if_seen_on;
+ 	char *no_auth_if_seen_on;
++
++	int ieee80211_hdr_bcn_head;
+ };
+ 
+ 
+--- a/src/ap/beacon.c
++++ b/src/ap/beacon.c
+@@ -1050,6 +1050,11 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
+ 	head->u.beacon.capab_info = host_to_le16(capab_info);
+ 	pos = &head->u.beacon.variable[0];
+ 
++	if (hapd->conf->ieee80211_hdr_bcn_head) {
++		head_len = pos - (u8 *) head;
++		pos = tailpos;
++	}
++
+ 	/* SSID */
+ 	*pos++ = WLAN_EID_SSID;
+ 	if (hapd->conf->ignore_broadcast_ssid == 2) {
+@@ -1072,7 +1077,10 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
+ 	/* DS Params */
+ 	pos = hostapd_eid_ds_params(hapd, pos);
+ 
+-	head_len = pos - (u8 *) head;
++	if (!hapd->conf->ieee80211_hdr_bcn_head)
++		head_len = pos - (u8 *) head;
++	else
++		tailpos = pos;
+ 
+ 	tailpos = hostapd_eid_country(hapd, tailpos,
+ 				      tail + BEACON_TAIL_BUF_SIZE - tailpos);

@@ -179,6 +179,8 @@ hostapd_common_add_bss_config() {
 
 	config_add_int acs_num_scans
 	config_add_int acs_scan_dwell
+
+	config_add_boolean ieee80211_hdr_bcn_head
 }
 
 hostapd_set_bss_options() {
@@ -199,7 +201,8 @@ hostapd_set_bss_options() {
 		wps_device_type wps_config wps_device_name wps_manufacturer wps_pin \
 		wps_model_name wps_model_number wps_serial_number \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
-		iapp_interface obss_interval vendor_elements acs_num_scans acs_scan_dwell
+		iapp_interface obss_interval vendor_elements acs_num_scans acs_scan_dwell \
+		ieee80211_hdr_bcn_head
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -469,6 +472,8 @@ hostapd_set_bss_options() {
 
 	[ -n "$acs_num_scans" ] && append bss_conf "acs_num_scans=$acs_num_scans" "$N"
 	[ -n "$acs_scan_dwell" ] && append bss_conf "acs_scan_dwell=$acs_scan_dwell" "$N"
+
+	[ -n "$ieee80211_hdr_bcn_head" ] && append bss_conf "ieee80211_hdr_bcn_head=$ieee80211_hdr_bcn_head" "$N"
 
 	append "$var" "$bss_conf" "$N"
 	return 0
