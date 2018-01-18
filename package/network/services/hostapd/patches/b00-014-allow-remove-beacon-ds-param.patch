@@ -1,0 +1,36 @@
+--- a/hostapd/config_file.c
++++ b/hostapd/config_file.c
+@@ -2614,6 +2614,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
+ 		conf->beacon_int = val;
+ 	} else if (os_strcmp(buf, "ieee80211_hdr_bcn_head") == 0) {
+ 		bss->ieee80211_hdr_bcn_head = atoi(pos);
++	} else if (os_strcmp(buf, "no_bcn_ds") == 0) {
++		bss->no_bcn_ds = atoi(pos);
+ #ifdef CONFIG_ACS
+ 	} else if (os_strcmp(buf, "acs_num_scans") == 0) {
+ 		int val = atoi(pos);
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -567,6 +567,7 @@ struct hostapd_bss_config {
+ 	char *no_auth_if_seen_on;
+ 
+ 	int ieee80211_hdr_bcn_head;
++	int no_bcn_ds;
+ };
+ 
+ 
+--- a/src/ap/beacon.c
++++ b/src/ap/beacon.c
+@@ -1074,8 +1074,10 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
+ 	/* Supported rates */
+ 	pos = hostapd_eid_supp_rates(hapd, pos);
+ 
+-	/* DS Params */
+-	pos = hostapd_eid_ds_params(hapd, pos);
++	if (!hapd->conf->no_bcn_ds) {
++		/* DS Params */
++		pos = hostapd_eid_ds_params(hapd, pos);
++	}
+ 
+ 	if (!hapd->conf->ieee80211_hdr_bcn_head)
+ 		head_len = pos - (u8 *) head;
