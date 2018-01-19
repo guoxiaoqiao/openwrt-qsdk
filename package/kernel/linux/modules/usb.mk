@@ -221,6 +221,38 @@ endef
 
 $(eval $(call KernelPackage,usb-gadget))
 
+define KernelPackage/usb-gzero
+  TITLE:=USB GZERO support
+  KCONFIG:=CONFIG_USB_ZERO
+  FILES:=\
+       $(LINUX_DIR)/drivers/usb/gadget/g_zero.ko
+  AUTOLOAD:=$(call AutoLoad,45,g_zero)
+  DEPENDS:=+kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-gzero/description
+ Kernel support for USB gzero mode
+endef
+
+$(eval $(call KernelPackage,usb-gzero))
+
+define KernelPackage/usb-f_ss_lb
+  TITLE:=USB F_SS_LB support
+  KCONFIG:=CONFIG_USB_F_SS_LB
+  FILES:=\
+        $(LINUX_DIR)/drivers/usb/gadget/usb_f_ss_lb.ko
+  AUTOLOAD:=$(call AutoLoad,45,usb_f_ss_lb)
+  DEPENDS:=+kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-f_ss_lb/description
+ Kernel support for USB f_ss_lb mode
+endef
+
+$(eval $(call KernelPackage,usb-f_ss_lb))
+
 define KernelPackage/usb-lib-composite
   TITLE:=USB lib composite
   KCONFIG:=CONFIG_USB_LIBCOMPOSITE
@@ -1583,6 +1615,27 @@ $(call KernelPackage/usbip/Default)
 endef
 
 $(eval $(call KernelPackage,usbip-server))
+
+define KernelPackage/usb-chipidea-qti
+  TITLE:=ChipIdea controllers support
+  DEPENDS:= +kmod-usb2 +USB_GADGET_SUPPORT:kmod-usb-gadget
+  KCONFIG:=\
+	CONFIG_USB_CHIPIDEA \
+	CONFIG_USB_CHIPIDEA_HOST=y \
+	CONFIG_USB_CHIPIDEA_UDC=y \
+	CONFIG_USB_CHIPIDEA_DEBUG=y
+	FILES:=\
+	  $(LINUX_DIR)/drivers/usb/chipidea/ci_hdrc.ko \
+	  $(LINUX_DIR)/drivers/usb/chipidea/ci_hdrc_msm.ko
+  AUTOLOAD :=$(call AutoLoad,51,ci_hdrc ci_hdrc_msm)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-chipidea-msm/description
+  Kernel support for USB ChipIdea controllers
+endef
+
+$(eval $(call KernelPackage,usb-chipidea-qti))
 
 
 define KernelPackage/usb-chipidea-imx
