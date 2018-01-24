@@ -358,6 +358,12 @@ if KERNEL_CGROUPS
 		  Provides a cgroup implementing whitelists for devices which
 		  a process in the cgroup can mknod or open.
 
+	  config KERNEL_CGROUP_PIDS
+		bool "Process number limiting controller for cgroups"
+		default y
+		help
+		  Provides process number limiting controller for cgroups.
+
 	config KERNEL_CPUSETS
 		bool "Cpuset support"
 		default n
