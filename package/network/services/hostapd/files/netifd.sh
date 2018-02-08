@@ -178,6 +178,7 @@ hostapd_common_add_bss_config() {
 
 	config_add_int bss_load_update_period
 	config_add_boolean rrm wnm wnm_sleep
+	config_add_int chan_util_avg_period
 }
 
 hostapd_set_bss_options() {
@@ -199,7 +200,7 @@ hostapd_set_bss_options() {
 		wps_model_name wps_model_number wps_serial_number \
 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
 		iapp_interface obss_interval vendor_elements \
-		bss_load_update_period rrm wnm wnm_sleep
+		bss_load_update_period rrm wnm wnm_sleep chan_util_avg_period
 
 	set_default isolate 0
 	set_default maxassoc 0
@@ -467,6 +468,7 @@ hostapd_set_bss_options() {
 
 	[ -n "$vendor_elements" ] && append bss_conf "vendor_elements=$vendor_elements" "$N"
 	[ -n "$bss_load_update_period" ] && append bss_conf "bss_load_update_period=$bss_load_update_period" "$N"
+	[ -n "$chan_util_avg_period" ] && append bss_conf "chan_util_avg_period=$chan_util_avg_period" "$N"
 	[ -n "$wnm" ] && append bss_conf "bss_transition=$wnm" "$N"
 	[ -n "$wnm_sleep" ] && append bss_conf "wnm_sleep_mode=$wnm_sleep" "$N"
 	[ -n "$rrm" ] && {

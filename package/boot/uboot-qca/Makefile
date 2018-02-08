@@ -32,6 +32,15 @@ define Package/uboot-2016-ipq806x
   VARIANT:=ipq806x
 endef
 
+define Package/uboot-2016-ipq806x_standard
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
+  TITLE:=U-boot(Standard Variant) for IPQ806x based platforms
+  URL:=http://www.denx.de/wiki/U-Boot
+  VARIANT:=ipq806x_standard
+endef
+
 define Package/uboot-2016-ipq807x
   SECTION:=boot
   CATEGORY:=Boot Loaders
@@ -48,6 +57,15 @@ define Package/uboot-2016-ipq40xx
   TITLE:=U-boot for IPQ40xx based platforms
   URL:=http://www.denx.de/wiki/U-Boot
   VARIANT:=ipq40xx
+endef
+
+define Package/uboot-2016-ipq40xx_standard
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
+  TITLE:=U-boot(Standard Variant) for IPQ40xx based platforms
+  URL:=http://www.denx.de/wiki/U-Boot
+  VARIANT:=ipq40xx_standard
 endef
 
 define Package/uboot-2016-ar71xx/common
@@ -87,9 +105,16 @@ endef
 
 define Package/uboot-2016-ipq806x/install
 	$(INSTALL_DIR) $(1)
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq806x-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq806x-u-boot.img
-	$(CP) $(PKG_BUILD_DIR)/u-boot.mbn $(BIN_DIR)/openwrt-ipq806x-u-boot.mbn
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq806x-u-boot-2016.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq806x-u-boot-2016.img
+	$(CP) $(PKG_BUILD_DIR)/u-boot.mbn $(BIN_DIR)/openwrt-ipq806x-u-boot-2016.mbn
+endef
+
+define Package/uboot-2016-ipq806x_standard/install
+	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq806x_standard-u-boot-2016.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq806x_standard-u-boot-2016.img
+	$(CP) $(PKG_BUILD_DIR)/u-boot.mbn $(BIN_DIR)/openwrt-ipq806x_standard-u-boot-2016.mbn
 endef
 
 define Package/uboot-2016-ipq807x/install
@@ -102,16 +127,25 @@ endef
 
 define Package/uboot-2016-ipq40xx/install
 	$(INSTALL_DIR) $(1)
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)/openwrt-ipq40xx-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq40xx-u-boot.img
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx-u-boot-2016.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx-u-boot-2016-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq40xx-u-boot-2016-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq40xx-u-boot-2016.img
 endef
 
+define Package/uboot-2016-ipq40xx_standard/install
+	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx_standard-u-boot-2016.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx_standard-u-boot-2016-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-u-boot-2016-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq40xx_standard-u-boot-2016.img
+endef
 
 $(eval $(call BuildPackage,uboot-2016-ipq807x))
 $(eval $(call BuildPackage,uboot-2016-ipq40xx))
+$(eval $(call BuildPackage,uboot-2016-ipq40xx_standard))
 $(eval $(call BuildPackage,uboot-2016-ipq806x))
+$(eval $(call BuildPackage,uboot-2016-ipq806x_standard))
 $(eval $(call Package/uboot-2016-ar71xx/nor,ap147-8M,qca953x))
 $(eval $(call Package/uboot-2016-ar71xx/nor,ap147-16M,qca953x))
 $(eval $(call Package/uboot-2016-ar71xx/nor,ap135,qca955x))
