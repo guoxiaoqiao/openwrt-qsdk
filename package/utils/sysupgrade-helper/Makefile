@@ -23,7 +23,7 @@ define Package/sysupgrade-helper
   TITLE:=U-boot images tools (dumpimage, mkimage)
 endef
 
-HOSTLDFLAGS:= \
+HOSTLDFLAGS+= \
 	      -L$(STAGING_DIR)/usr/lib \
 	      -znow -zrelro
 
