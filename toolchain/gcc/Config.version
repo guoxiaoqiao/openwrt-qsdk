@@ -3,7 +3,6 @@ config GCC_VERSION_4_6_LINARO
 	bool
 
 config GCC_VERSION_4_8_LINARO
-	default y if (!TOOLCHAINOPTS && !TARGET_octeon)
 	bool
 
 config GCC_VERSION
@@ -24,3 +23,4 @@ config GCC_VERSION_4_8
 
 config GCC_VERSION_5
 	bool
+	default y	if (!TOOLCHAINOPTS && !TARGET_octeon)
