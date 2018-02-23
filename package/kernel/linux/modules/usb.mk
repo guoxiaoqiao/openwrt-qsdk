@@ -301,6 +301,7 @@ define KernelPackage/usb-f-diag
   TITLE:=USB DIAG
   KCONFIG:=CONFIG_USB_F_DIAG \
 	CONFIG_USB_CONFIGFS_F_DIAG=y \
+	CONFIG_DIAGFWD_BRIDGE_CODE=y \
 	CONFIG_DIAG_CHAR \
 	CONFIG_DIAG_OVER_USB=y
   DEPENDS:=+kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt
