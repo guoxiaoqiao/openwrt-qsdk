@@ -32,4 +32,5 @@
 	syslog = 2
 	use sendfile = yes
 	writeable = yes
+	max smbd processes = 32
 	
