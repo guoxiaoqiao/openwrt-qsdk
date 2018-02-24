@@ -214,3 +214,22 @@ define Profile/QSDK_Enterprise/Description
 endef
 
 $(eval $(call Profile,QSDK_Enterprise))
+
+define Profile/QSDK_Deluxe
+	NAME:=Qualcomm-Atheros SDK Deluxe Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
+		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
+		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
+		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
+		qca-wifi-npr-fw-hw1-10.4-asic
+endef
+
+define Profile/QSDK_Deluxe/Description
+	QSDK Deluxe package set configuration.
+	Enables qca-wifi 11.0 packages
+endef
+
+$(eval $(call Profile,QSDK_Deluxe))

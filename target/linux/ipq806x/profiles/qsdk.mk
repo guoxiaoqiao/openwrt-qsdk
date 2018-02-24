@@ -47,7 +47,7 @@ NSS_CLIENTS_DELUX:= kmod-qca-nss-drv-ppe-qdisc kmod-qca-nss-drv-qdisc kmod-qca-n
                     kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
                     kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr kmod-qca-nss-drv-gre
 
-NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi kmod-qca-nss-drv-ipsecmgr
+NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi-cryptoapi kmod-qca-nss-cfi-ocf kmod-qca-nss-drv-ipsecmgr
 
 HW_CRYPTO:= kmod-crypto-qcrypto
 
