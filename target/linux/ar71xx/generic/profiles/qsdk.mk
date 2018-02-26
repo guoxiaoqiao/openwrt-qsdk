@@ -35,7 +35,7 @@ WIFI_OPEN:=-kmod-ath5k -kmod-qca-ath -kmod-qca-ath9k -kmod-qca-ath10k \
 BLUETOOTH:=bluez-daemon kmod-bluetooth usbutils
 
 WIFI_PKGS:=kmod-qca-wifi-unified-perf kmod-art2 \
-		qca-hostap-lite qca-hostapd-cli qca-wpa-supplicant-lite \
+		qca-hostap qca-hostapd-cli qca-wpa-supplicant \
 		qca-wpa-cli qca-wapid sigma-dut-10.4 qca-wpc \
 		qca-acfg qca-wrapd qca-spectral qcmbr-10.4 whc whc-ui \
 		qca-iface-mgr-10.4
