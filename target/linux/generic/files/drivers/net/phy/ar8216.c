@@ -2880,7 +2880,7 @@ ar8216_read_status(struct phy_device *phydev)
 	struct ar8216_priv *priv = phydev->priv;
 	struct switch_port_link link;
 	struct switch_dev *dev;
-	int ret;
+	int ret = 0;
 	int i, port_status = 0;
 
 	if (phydev->addr != 0)
@@ -2893,7 +2893,7 @@ ar8216_read_status(struct phy_device *phydev)
 			port_status |= 1 << i;
 	}
 
-	if(priv->old_port_status ^ port_status != 0) {
+	if((priv->old_port_status ^ port_status) != 0) {
 		for(i = 0; i < AR8X16_MAX_VLANS; i++) {
 			if(((port_status & priv->vlan_table[i]) != 0) &&
 					(priv->vlan_status[i] == 0)){
