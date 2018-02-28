@@ -1625,6 +1625,7 @@ define KernelPackage/usb-chipidea-qti
 	CONFIG_USB_CHIPIDEA_UDC=y \
 	CONFIG_USB_CHIPIDEA_DEBUG=y
 	FILES:=\
+	  $(LINUX_DIR)/drivers/extcon/extcon.ko@ge4.3 \
 	  $(LINUX_DIR)/drivers/usb/chipidea/ci_hdrc.ko \
 	  $(LINUX_DIR)/drivers/usb/chipidea/ci_hdrc_msm.ko
   AUTOLOAD :=$(call AutoLoad,51,ci_hdrc ci_hdrc_msm)
