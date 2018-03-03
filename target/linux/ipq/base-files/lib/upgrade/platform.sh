@@ -303,7 +303,11 @@ platform_check_image() {
 
 	[ -f /tmp/hlos_version ] && rm -f /tmp/*_version
 	dumpimage -c $1
-	return $?
+	if [[ "$?" == 0 ]];then
+		return $?
+	fi
+	echo "Rebooting the system"
+	reboot
 }
 
 platform_version_upgrade() {
