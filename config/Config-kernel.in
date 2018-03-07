@@ -88,6 +88,13 @@ if KERNEL_TASKSTATS
 
 endif
 
+config KERNEL_KALLSYMS_ALL
+	bool "Include all symbols in kallsyms"
+	default n
+	depends on KERNEL_KALLSYMS
+	help
+	  This will give you more information in stack traces from kernel oopses.
+
 config KERNEL_KALLSYMS
 	bool "Compile the kernel with symbol table information"
 	default y if !SMALL_FLASH
@@ -147,6 +154,13 @@ config KERNEL_FUNCTION_PROFILER
 config KERNEL_DEBUG_KERNEL
 	bool
 	default n
+
+config KERNEL_DEBUG_INFO_REDUCED
+	bool "Compile the kernel with reduced debugging information"
+	default y
+	depends on KERNEL_DEBUG_KERNEL
+	help
+	  This will compile your kernel and modules with reduced debug information.
 
 config KERNEL_DEBUG_INFO
 	bool "Compile the kernel with debug information"
