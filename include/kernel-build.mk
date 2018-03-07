@@ -53,7 +53,6 @@ ifdef CONFIG_COLLECT_KERNEL_DEBUG
 	-$(CP) \
 		$(STAGING_DIR_ROOT)/lib/modules/$(LINUX_VERSION)/* \
 		$(KERNEL_BUILD_DIR)/debug/modules/
-	$(FIND) $(KERNEL_BUILD_DIR)/debug -type f -not -name vmlinux | $(XARGS) $(KERNEL_CROSS)strip --only-keep-debug
 	$(CP) $(KERNEL_BUILD_DIR)/debug $(BIN_DIR)/
   endef
 endif
