@@ -21,8 +21,8 @@ IPQ807X_64_KERNEL_LOADADDR = 0x41080000
 ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
 	$(call Image/ubifs_128MB,$(1))
-	$(call Image/ubifs_512MB,$(1))
-	$(call Image/ubifs_1GB,$(1))
+	$(call Image/ubifs_m4096_p256KiB,$(1))
+	$(call Image/ubifs_m4096_p512KiB,$(1))
 endef
 endif
 
@@ -148,21 +148,21 @@ define Image/BuildKernel/Initramfs
 	$(call Image/BuildKernel/$(SUBTARGET),FITInitramfs)
 endef
 
-define Image/ubifs_1GB
+define Image/ubifs_m4096_p512KiB
 
-  ifeq ($(CONFIG_TARGET_ipq_ipq40xx),y)
+  ifeq ($(CONFIG_TARGET_ipq_ipq806x),)
 	$(eval UBI_OPTS:="-m 4096 -p 512KiB")
 	$(call Image/mkfs/ubifs/generate,$(1))
-	$(call Image/Build,ubi,$(1),-1GB)
+	$(call Image/Build,ubi,$(1),-m4096-p512KiB)
   endif
 endef
 
-define Image/ubifs_512MB
+define Image/ubifs_m4096_p256KiB
 
-  ifeq ($(CONFIG_TARGET_ipq_ipq40xx),y)
+  ifeq ($(CONFIG_TARGET_ipq_ipq806x),)
 	$(eval UBI_OPTS:="-m 4096 -p 256KiB")
 	$(call Image/mkfs/ubifs/generate,$(1))
-	$(call Image/Build,ubi,$(1),-512MB)
+	$(call Image/Build,ubi,$(1),-m4096-p256KiB)
   endif
 endef
 
