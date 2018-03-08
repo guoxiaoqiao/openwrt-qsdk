@@ -169,16 +169,6 @@ proto_map_setup() {
 	  		json_add_string src_ip $(eval "echo \$RULE_${k}_IPV6ADDR")
 	  		json_add_string target ACCEPT
 	  	json_close_object
-	  	json_add_object ""
-	  		json_add_string type rule
-	  		json_add_string family inet6
-	  		json_add_string proto all
-	  		json_add_string direction out
-			json_add_string dest "$zone"
-			json_add_string src "$zone"
-	  		json_add_string dest_ip $(eval "echo \$RULE_${k}_IPV6ADDR")
-	  		json_add_string target ACCEPT
-	  	json_close_object
 		proto_add_ipv6_route $(eval "echo \$RULE_${k}_IPV6ADDR") 128
 	fi
 	json_close_array
