@@ -30,7 +30,7 @@ proto_map_setup() {
 
 	local type mtu ttl tunlink zone encaplimit
 	local rule ipaddr ip4prefixlen ip6prefix ip6prefixlen peeraddr ealen psidlen psid offset mode fmr
-	json_get_vars type mtu ttl tunlink zone fmr mode encaplimit
+	json_get_vars type mtu ttl tunlink zone fmr mode encaplimit draft03
 	json_get_vars rule ipaddr ip4prefixlen ip6prefix ip6prefixlen peeraddr ealen psidlen psid offset
 
 	[ "$zone" = "-" ] && zone=""
@@ -51,7 +51,7 @@ proto_map_setup() {
 		if [ "$type" = "map-t" ]; then
 			rule="$rule,dmr=$peeraddr"
 		else
-			rule="$rule,br=$peeraddr"
+			rule="$rule,br=$peeraddr,draft03=${draft03:0}"
 			[ $fmr = 1 ] && rule="$rule,fmr=1"
 		fi
 	fi
@@ -82,6 +82,7 @@ proto_map_setup() {
 		json_add_string mode ipip6
 		json_add_int mtu "${mtu:-1280}"
 		json_add_int ttl "${ttl:-64}"
+		json_add_int draft03 "${draft03:0}"
 		if [ "$mode" = br ]; then
 			json_add_string remote $(eval "echo \$RULE_${k}_IPV6ADDR")
 			json_add_string local $(eval "echo \$RULE_${k}_BR")
@@ -234,6 +235,7 @@ proto_map_init_config() {
 	proto_config_add_string "encaplimit"
 	proto_config_add_string "mode"
 	proto_config_add_int "fmr"
+	proto_config_add_int "draft03"
 }
 
 [ -n "$INCLUDE_ONLY" ] || {
