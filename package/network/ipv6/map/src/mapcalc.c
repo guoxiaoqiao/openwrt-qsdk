@@ -157,6 +157,7 @@ enum {
 	OPT_PSID,
 	OPT_BR,
 	OPT_DMR,
+	OPT_DRAFT03,
 	OPT_MAX
 };
 
@@ -173,6 +174,7 @@ static char *const token[] = {
 	[OPT_PSID] = "psid",
 	[OPT_BR] = "br",
 	[OPT_DMR] = "dmr",
+	[OPT_DRAFT03] = "draft03",
 	[OPT_MAX] = NULL
 };
 
@@ -215,6 +217,7 @@ int main(int argc, char *argv[])
 		int offset = -1;
 		int psidlen = -1;
 		int psid = -1;
+		int draft03 = 0;
 		uint16_t psid16 = 0;
 		const char *dmr = NULL;
 		const char *br = NULL;
@@ -251,6 +254,8 @@ int main(int argc, char *argv[])
 				dmr = value;
 			} else if (idx == OPT_BR) {
 				br = value;
+			} else if (idx == OPT_DRAFT03 && (intval = strtoul(value, NULL, 0)) <= 65535 && !errno) {
+				draft03=intval;
 			} else {
 				if (idx == -1 || idx >= OPT_MAX)
 					fprintf(stderr, "Skipped invalid option: %s\n", value);
@@ -332,6 +337,10 @@ int main(int argc, char *argv[])
 			memcpy(&ipv6addr.s6_addr[v4offset], &ipv4addr, 4);
 			memcpy(&ipv6addr.s6_addr[v4offset + 4], &psid16, 2);
 			bmemcpy(&ipv6addr, &pd, (ealen + prefix6len) < pdlen ? (ealen + prefix6len) : pdlen);
+			if (draft03) {
+				memmove(&ipv6addr.s6_addr[9], &ipv6addr.s6_addr[10], 6);
+				ipv6addr.s6_addr[15] = 0;
+			}
 		}
 
 		++rulecnt;
