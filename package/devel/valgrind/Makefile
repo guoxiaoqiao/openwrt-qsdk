@@ -94,6 +94,7 @@ else
 	BITS := 32bit
 endif
 
+TARGET_CFLAGS += -fno-stack-protector
 CONFIGURE_ARGS += \
 	--enable-tls \
 	--without-x \
