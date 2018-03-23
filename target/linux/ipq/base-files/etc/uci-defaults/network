@@ -68,6 +68,7 @@ ap-dk04.1-c1|\
 ap-dk04.1-c2|\
 ap-dk04.1-c3|\
 ap-dk04.1-c5|\
+ap-dk05.1-c1|\
 ap-dk06.1-c1|\
 ap-dk07.1-c1|\
 ap-dk07.1-c2)
@@ -92,16 +93,6 @@ ap-dk04.1-c4)
 	ucidef_add_switch_ext "switch0" "QosPtMode" "4" "dscp" "enable"
 	ucidef_add_switch_ext "switch0" "QosPtMode" "5" "dscp" "enable"
 	ucidef_add_switch_ext_trunk "switch0" "TrunkGroup" "0" "enable" "0x30"
-	;;
-ap-dk05.1-c1)
-	ucidef_set_interface_lan "eth0"
-	ucidef_add_switch "switch0" "1" "0"
-	ucidef_add_switch_vlan "switch0" "0" "0 1 2 3 4 5"
-	ucidef_add_switch_ext "switch0" "QosPtMode" "1" "dscp" "enable"
-	ucidef_add_switch_ext "switch0" "QosPtMode" "2" "dscp" "enable"
-	ucidef_add_switch_ext "switch0" "QosPtMode" "3" "dscp" "enable"
-	ucidef_add_switch_ext "switch0" "QosPtMode" "4" "dscp" "enable"
-	ucidef_add_switch_ext "switch0" "QosPtMode" "5" "dscp" "enable"
 	;;
 ap-hk01-c1|\
 ap-hk01-c2|\
