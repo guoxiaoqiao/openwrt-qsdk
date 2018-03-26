@@ -271,12 +271,15 @@ define KernelPackage/dm
 	CONFIG_DM_ZERO=n \
 	CONFIG_DM_SNAPSHOT=n \
 	CONFIG_DM_LOG_USERSPACE=n \
+	CONFIG_DM_MQ_DEFAULT=n \
+	CONFIG_DM_LOG_WRITES=n \
 	CONFIG_MD=y \
-	CONFIG_BLK_DEV_DM \
+	CONFIG_BLK_DEV_DM=y\
 	CONFIG_DM_CRYPT \
+	CONFIG_DM_REQ_CRYPT \
 	CONFIG_DM_MIRROR
   FILES:=$(LINUX_DIR)/drivers/md/dm-*.ko
-  AUTOLOAD:=$(call AutoLoad,30,dm-mod dm-log dm-region-hash dm-mirror dm-crypt)
+  AUTOLOAD:=$(call AutoLoad,30,dm-log dm-region-hash dm-mirror dm-crypt dm-req-crypt)
 endef
 
 define KernelPackage/dm/description
