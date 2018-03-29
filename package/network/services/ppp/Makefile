@@ -48,7 +48,6 @@ $(call Package/ppp/Default)
   DEPENDS:=+kmod-ppp
   TITLE:=PPP daemon (with multilink support)
   VARIANT:=multilink
-  PROVIDES:=ppp
 endef
 
 define Package/ppp/description
@@ -67,7 +66,7 @@ endef
 
 define Package/ppp-mod-pppoa
 $(call Package/ppp/Default)
-  DEPENDS:=ppp +linux-atm +kmod-pppoa
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +linux-atm +kmod-pppoa
   TITLE:=PPPoA plugin
 endef
 
@@ -77,7 +76,7 @@ endef
 
 define Package/ppp-mod-pppoe
 $(call Package/ppp/Default)
-  DEPENDS:=ppp +kmod-pppoe
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +kmod-pppoe
   TITLE:=PPPoE plugin
 endef
 
@@ -87,7 +86,7 @@ endef
 
 define Package/ppp-mod-radius
 $(call Package/ppp/Default)
-  DEPENDS:=ppp
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink)
   TITLE:=RADIUS plugin
 endef
 
@@ -103,7 +102,7 @@ endef
 
 define Package/ppp-mod-pppol2tp
 $(call Package/ppp/Default)
-  DEPENDS:=ppp +kmod-pppol2tp
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +kmod-pppol2tp
   TITLE:=PPPoL2TP plugin
 endef
 
@@ -113,7 +112,7 @@ endef
 
 define Package/ppp-mod-pptp
 $(call Package/ppp/Default)
-  DEPENDS:=ppp +kmod-pptp +kmod-mppe +resolveip
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +kmod-pptp +kmod-mppe +resolveip
   TITLE:=PPtP plugin
 endef
 
@@ -123,7 +122,7 @@ endef
 
 define Package/ppp-mod-passwordfd
 $(call Package/ppp/Default)
-  DEPENDS:=ppp
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink)
   TITLE:=pap/chap secret from filedescriptor
 endef
 
@@ -144,7 +143,7 @@ endef
 
 define Package/pppdump
 $(call Package/ppp/Default)
-  DEPENDS:=ppp
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink)
   TITLE:=Read PPP record file
 endef
 
@@ -154,7 +153,7 @@ endef
 
 define Package/pppstats
 $(call Package/ppp/Default)
-  DEPENDS:=ppp
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink)
   TITLE:=Report PPP statistics
 endef
 
@@ -164,7 +163,7 @@ endef
 
 define Package/pppoe-discovery
 $(call Package/ppp/Default)
-  DEPENDS:=ppp +ppp-mod-pppoe
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +ppp-mod-pppoe
   TITLE:=Perform a PPPoE-discovery process
 endef
 
