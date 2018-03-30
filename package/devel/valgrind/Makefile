@@ -13,7 +13,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://valgrind.org/downloads/
-PKG_MD5SUM:=67ca4395b2527247780f36148b084f5743a68ab0c850cb43e4a5b4b012cf76a1
+PKG_HASH:=67ca4395b2527247780f36148b084f5743a68ab0c850cb43e4a5b4b012cf76a1
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
 PKG_LICENSE:=GPL-2.0+
@@ -30,7 +30,7 @@ include $(INCLUDE_DIR)/kernel.mk
 define Package/valgrind
   SECTION:=devel
   CATEGORY:=Development
-  DEPENDS:=@mips||mipsel||i386||x86_64||powerpc||arm_v7 +libpthread +librt
+  DEPENDS:=@mips||mipsel||i386||x86_64||powerpc||arm||aarch64 +libpthread +librt
   TITLE:=debugging and profiling tools for Linux
   URL:=http://www.valgrind.org
 endef
@@ -84,7 +84,7 @@ CPU := $(patsubst x86_64,amd64,$(patsubst x86,i386,$(patsubst um,$(ARCH),$(LINUX
 CONFIGURE_VARS += \
 	UNAME_R=$(LINUX_VERSION)
 
-ifeq ($(ARCH),x86_64)
+ifeq ($(CONFIG_ARCH_64BIT),y)
 	CONFIGURE_ARGS += \
 		--enable-only64bit
 	BITS := 64bit
@@ -114,12 +114,17 @@ define Package/valgrind/install
 		./files/default.supp \
 		$(PKG_INSTALL_DIR)/usr/lib/valgrind/none-* \
 		$(PKG_INSTALL_DIR)/usr/lib/valgrind/vgpreload_core*.so \
-		$(PKG_INSTALL_DIR)/usr/lib/valgrind/$(CPU)-*.xml \
 		$(PKG_INSTALL_DIR)/usr/lib/valgrind/$(BITS)-core*.xml \
 		$(PKG_INSTALL_DIR)/usr/lib/valgrind/$(BITS)-linux*.xml \
 		$(PKG_INSTALL_DIR)/usr/lib/valgrind/memcheck-* \
 		$(PKG_INSTALL_DIR)/usr/lib/valgrind/vgpreload_memcheck*.so \
 		$(1)/usr/lib/valgrind/
+
+ifneq ($(ARCH),aarch64)
+	$(CP) \
+		$(PKG_INSTALL_DIR)/usr/lib/valgrind/$(CPU)-*.xml \
+		$(1)/usr/lib/valgrind/
+endif
 endef
 
 define Package/valgrind-cachegrind/install
