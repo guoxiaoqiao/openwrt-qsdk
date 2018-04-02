@@ -257,6 +257,7 @@ platform_check_image() {
 	local mandatory_nor_emmc="hlos fs"
 	local mandatory_nor="hlos"
 	local mandatory_section_found=0
+	local ddr_section="ddr"
 	local optional="sb11 sbl2 u-boot ddr-${board} ssd tz rpm"
 	local ignored="mibib bootconfig"
 
@@ -279,6 +280,13 @@ platform_check_image() {
 		return 1
 	fi
 
+	image_has_mandatory_section $1 $ddr_section && {\
+		image_contains $1 ddr-$board || {\
+			image_contains $1 ddr-$(to_upper $board) || {\
+			return 1
+			}
+		}
+	}
 	for sec in ${optional}; do
 		image_contains $1 ${sec} || {\
 			echo "Warning: optional section \"${sec}\" missing from \"$1\". Continue..."
