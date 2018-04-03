@@ -1,6 +1,6 @@
 --- a/hostapd/config_file.c
 +++ b/hostapd/config_file.c
-@@ -2200,6 +2200,8 @@ static int hostapd_config_fill(struct ho
+@@ -2256,6 +2256,8 @@ static int hostapd_config_fill(struct ho
  		conf->ieee80211d = atoi(pos);
  	} else if (os_strcmp(buf, "ieee80211h") == 0) {
  		conf->ieee80211h = atoi(pos);
@@ -11,7 +11,7 @@
  	} else if (os_strcmp(buf, "eapol_version") == 0) {
 --- a/src/ap/ap_config.h
 +++ b/src/ap/ap_config.h
-@@ -721,6 +721,7 @@ struct hostapd_config {
+@@ -736,6 +736,7 @@ struct hostapd_config {
  	int ieee80211d;
  
  	int ieee80211h; /* DFS */
