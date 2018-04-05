@@ -109,22 +109,6 @@ endef
 
 $(eval $(call KernelPackage,qseecom))
 
-
-define KernelPackage/ipq40xx_qseecom
-  SUBMENU:=$(OTHER_MENU)
-  TITLE:=QSEECOM Client Test Driver for ipq40xx
-  KCONFIG:=CONFIG_QSEECOM
-  FILES:=$(LINUX_DIR)/drivers/misc/ipq40xx_qseecom.ko
-  AUTOLOAD:=$(call AutoLoad,09,ipq40xx_qseecom)
-endef
-
-define KernelPackage/ipq40xx_qseecom/description
- QSEECOM Client Test Driver based on SCM interface for ipq40xx
-endef
-
-$(eval $(call KernelPackage,ipq40xx_qseecom))
-
-
 define KernelPackage/bluetooth_6lowpan
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Bluetooth 6LoWPAN support
