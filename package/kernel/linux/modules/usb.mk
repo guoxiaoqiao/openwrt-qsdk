@@ -1628,7 +1628,7 @@ define KernelPackage/usb-chipidea-qti
 	  $(LINUX_DIR)/drivers/extcon/extcon.ko@ge4.3 \
 	  $(LINUX_DIR)/drivers/usb/chipidea/ci_hdrc.ko \
 	  $(LINUX_DIR)/drivers/usb/chipidea/ci_hdrc_msm.ko
-  AUTOLOAD :=$(call AutoLoad,51,ci_hdrc ci_hdrc_msm)
+  AUTOLOAD :=$(call AutoLoad,51,extcon ci_hdrc ci_hdrc_msm)
   $(call AddDepends/usb)
 endef
 
@@ -1637,6 +1637,21 @@ define KernelPackage/usb-chipidea-msm/description
 endef
 
 $(eval $(call KernelPackage,usb-chipidea-qti))
+
+define KernelPackage/usb-phy-ci-qti
+  TITLE:=Chipidea USB PHY driver
+  DEPENDS:=+kmod-usb-chipidea-qti
+  KCONFIG:=CONFIG_USB_MSM_OTG
+  FILES:=$(LINUX_DIR)/drivers/usb/phy/phy-msm-usb.ko
+  AUTOLOAD:=$(call AutoLoad,50,phy-msm-usb)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-phy-ci-qti/description
+  Kernel support for qti chipidea USB PHY
+endef
+
+$(eval $(call KernelPackage,usb-phy-ci-qti))
 
 
 define KernelPackage/usb-chipidea-imx
