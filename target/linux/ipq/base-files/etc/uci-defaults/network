@@ -105,9 +105,11 @@ ap-dk05.1-c1)
 	;;
 ap-hk01-c1|\
 ap-hk01-c2|\
+ap-hk01-c3|\
 ap-hk02|\
 ap-hk05|\
 ap-hk06|\
+ap-hk07|\
 db-hk01|\
 db-hk02)
 	ucidef_add_switch "switch0"
