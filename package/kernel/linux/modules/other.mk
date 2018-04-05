@@ -96,6 +96,7 @@ $(eval $(call KernelPackage,bluetooth))
 
 
 define KernelPackage/qseecom
+  SUBMENU:=$(OTHER_MENU)
   TITLE:=QSEECOM Client Test Driver
   KCONFIG:= \
 	CONFIG_QSEECOM
@@ -105,8 +106,11 @@ define KernelPackage/qseecom
   AUTOLOAD:=$(call AutoLoad,09,qseecom ipq40xx_qseecom)
 endef
 
-$(eval $(call KernelPackage,qseecom))
+define KernelPackage/qseecom/description
+ QSEECOM Client Test Driver based on SCM interface
+endef
 
+$(eval $(call KernelPackage,qseecom))
 
 define KernelPackage/bluetooth_6lowpan
   SUBMENU:=$(OTHER_MENU)
