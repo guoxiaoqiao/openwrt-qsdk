@@ -171,26 +171,19 @@ proto_map_setup() {
 	  	json_close_object
 		proto_add_ipv6_route $(eval "echo \$RULE_${k}_IPV6ADDR") 128
 	fi
+
+	if [ "$type" = "lw4o6" -o "$type" = "map-e" ]; then
+		if [ "$mode" = br ]; then
+			proto_add_ipv6_address "$(eval "echo \$RULE_${k}_BR")" "128"
+		else
+			proto_add_ipv6_address "$(eval "echo \$RULE_${k}_IPV6ADDR")" "128"
+		fi
+	fi
+
 	json_close_array
 	proto_close_data
 
 	proto_send_update "$cfg"
-
-	if [ "$type" = "lw4o6" -o "$type" = "map-e" ]; then
-		json_init
-		json_add_string name "${cfg}_"
-		json_add_string ifname "@$(eval "echo \$RULE_${k}_PD6IFACE")"
-		json_add_string proto "static"
-		json_add_array ip6addr
-		if [ "$mode" = br ]; then
-			json_add_string "" "$(eval "echo \$RULE_${k}_BR")"
-		else
-			json_add_string "" "$(eval "echo \$RULE_${k}_IPV6ADDR")"
-		fi
-		json_close_array
-		json_close_object
-		ubus call network add_dynamic "$(json_dump)"
-	fi
 }
 
 proto_map_teardown() {
