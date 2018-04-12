@@ -214,6 +214,54 @@ foreach my $mirror (@ARGV) {
 push @mirrors, 'http://mirror2.openwrt.org/sources';
 push @mirrors, 'http://downloads.openwrt.org/sources';
 
+#first check in CAF server
+my $caf = 'https://portland.source.codeaurora.org/mirrored_source/quic/qsdk';
+download($caf);
+if(!-f "$target/$filename") {
+    my $ok = 1;
+    if (index($filename, "rtl8712u.bin") != -1) {
+	print ("The $target/$filename cannot be mirrored on CAF.\n");
+	$ok = 0;
+    }
+    if (index($filename, "shadow-4.2.1") != -1) {
+	print ("The $target/$filename - CAF mirror pending.\n");
+	$ok = 0;
+    }
+    if (index($filename, "flac-1.3.1") != -1) {
+	print ("The $target/$filename - CAF mirror pending.\n");
+	$ok = 0;
+    }
+    if (index($filename, "mbedtls-1.3.17-gpl.tgz") != -1) {
+	print ("The $target/$filename - CAF mirror pending.\n");
+	$ok = 0;
+    }
+    if (index($filename, "jpegsrc.v9a.tar.gz") != -1) {
+	print ("The $target/$filename - CAF mirror pending.\n");
+	$ok = 0;
+    }
+    if (index($filename, "gstreamer-1.10.5.tar.xz") != -1) {
+	print ("The $target/$filename - CAF mirror pending.\n");
+	$ok = 0;
+    }
+    if (index($filename, "ca-certificates") != -1) {
+	print ("The $target/$filename - CAF mirror pending.\n");
+	$ok = 0;
+    }
+    foreach my $mirror(@mirrors)
+    {
+	if ((index($mirror, "vm-cnsswebserv") != -1) or (index($mirror, "qualcomm.com") != -1)) {
+	    print ("The $target/$filename is not present in CAF but should be there in $mirror\n");
+	    $ok = 0;
+	    last;
+	}
+    }
+    if($ok != 0)
+    {
+	print ("The $target/$filename is not present\n");
+	exit -1;
+    }
+}
+
 while (!$ok) {
 	my $mirror = shift @mirrors;
 	$mirror or die "No more mirrors to try - giving up.\n";
