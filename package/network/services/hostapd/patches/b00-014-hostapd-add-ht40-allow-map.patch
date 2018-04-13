@@ -1,6 +1,6 @@
 --- a/hostapd/ctrl_iface.c
 +++ b/hostapd/ctrl_iface.c
-@@ -2633,6 +2633,90 @@ set:
+@@ -2632,6 +2632,92 @@ set:
  	return ret;
  }
  
@@ -55,15 +55,17 @@
 +					HOSTAPD_CHAN_DISABLED))
 +				ok = -1;
 +
-+			if (ok != -1)
++			if (ok != -1) {
 +				ret = os_snprintf(buf + len, buflen - len,
 +						  "Channel: %d : %d HT40%s\n",
 +						  chan->chan, chan->freq,
 +						  ok == 1 ? "+" : "-");
 +
-+			if (os_snprintf_error(buflen - len, ret))
-+				return len;
-+			len += ret;
++				if (os_snprintf_error(buflen - len, ret))
++					return len;
++
++				len += ret;
++			}
 +		}
 +	}
 +	return len;
@@ -91,7 +93,7 @@
  
  static int hostapd_ctrl_iface_remove_neighbor(struct hostapd_data *hapd,
  					      char *buf)
-@@ -3181,6 +3265,10 @@ static int hostapd_ctrl_iface_receive_pr
+@@ -3180,6 +3266,10 @@ static int hostapd_ctrl_iface_receive_pr
  	} else if (os_strncmp(buf, "SIGNAL_TXRATE", 13) == 0) {
  		if (hostapd_ctrl_iface_signal_txrate(hapd, buf + 13))
  			reply_len = -1;
