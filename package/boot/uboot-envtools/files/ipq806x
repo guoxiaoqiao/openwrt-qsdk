@@ -41,7 +41,7 @@ default_uboot_env () {
 
 validate_device_node() {
 	config_get dev $1 dev
-	if [ "$dev" != "$2" ]; then
+	if [ "$dev" != "$2" ] || [ ! -e /etc/fw_env.config ]; then
 		rm /etc/config/ubootenv /etc/fw_env.config
 		return;
 	fi
