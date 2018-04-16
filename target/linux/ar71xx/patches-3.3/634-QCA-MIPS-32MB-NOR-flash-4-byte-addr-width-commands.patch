@@ -1,0 +1,194 @@
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 67696b2..2cd7553 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -40,14 +40,19 @@
+ #define	OPCODE_RDSR		0x05	/* Read status register */
+ #define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
+ #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
++#define	OPCODE_NORM_READ_4B_ADDR	0x13	/* Read Data with 4-Byte Address (low frequency) */
+ #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
++#define	OPCODE_FAST_READ_4B_ADDR	0x0c	/* Fast Read with 4-Byte Address */
+ #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
++#define	OPCODE_PP_4B_ADDR	0x12	/* Page Program with 4-Byte Address (up to 256 bytes) */
+ #define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
++#define	OPCODE_SE_4B_ADDR	0x21	/* Sector Erase with 4-Byte Address */
+ #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
+ #define	OPCODE_WR_EXT		0xc5	/* Write extended address */
+ #define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
+ #define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips*/
+ #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
++#define	OPCODE_BE_64K		0xdc	/* 64KB Block Erase with 4-Byte Address (usually 64KiB) */
+ #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
+ 
+ /* Used for SST flashes only. */
+@@ -77,9 +82,11 @@
+ 
+ #ifdef CONFIG_M25PXX_USE_FAST_READ
+ #define OPCODE_READ 	OPCODE_FAST_READ
++#define OPCODE_READ_4B_ADDR	OPCODE_FAST_READ_4B_ADDR
+ #define FAST_READ_DUMMY_BYTE 1
+ #else
+ #define OPCODE_READ 	OPCODE_NORM_READ
++#define OPCODE_READ_4B_ADDR	OPCODE_NORM_READ_4B_ADDR
+ #define FAST_READ_DUMMY_BYTE 0
+ #endif
+ 
+@@ -104,6 +111,8 @@ struct m25p {
+ 	u16			page_size;
+ 	u16			addr_width;
+ 	u8			erase_opcode;
++	u8			read_opcode;
++	u8			write_opcode;
+ 	u8			*command;
+ 	size_t			max_read_len;
+ };
+@@ -434,7 +443,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	 */
+ 
+ 	/* Set up the write data buffer. */
+-	flash->command[0] = OPCODE_READ;
++	flash->command[0] = flash->read_opcode;
+ 
+ 	ofs = 0;
+ 	while (len) {
+@@ -532,7 +541,7 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	write_enable(flash);
+ 
+ 	/* Set up the opcode in the write buffer. */
+-	flash->command[0] = OPCODE_PP;
++	flash->command[0] = flash->write_opcode;
+ 	m25p_addr2cmd(flash, to, flash->command);
+ 
+ 	page_offset = to & (flash->page_size - 1);
+@@ -888,6 +897,10 @@ MODULE_DEVICE_TABLE(spi, m25p_ids);
+  * Extended Address Register values will be cleared to 0.
+  */
+ static const u32 m25p_ext_addr_ids[] = {
++	/* add id here */
++};
++
++static const u32 m25p_4byte_addr_ids[] = {
+ 	0xef4019,
+ 	/* add id here */
+ };
+@@ -903,6 +916,17 @@ static int m25p_ext_addr_mode(u32 jedec_id)
+ 	return 0;
+ }
+ 
++static int m25p_4byte_addr_width(u32 jedec_id)
++{
++	int id;
++
++	for (id = 0; id < ARRAY_SIZE(m25p_4byte_addr_ids); id++)
++		if (jedec_id == m25p_4byte_addr_ids[id])
++			return 1;
++
++	return 0;
++}
++
+ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+ {
+ 	int			tmp;
+@@ -1058,14 +1082,24 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 
+ 	/* prefer "small sector" erase if possible */
+ 	if (PREFER_SMALL_SECTOR_ERASE && (info->flags & SECT_4K)) {
+-		flash->erase_opcode = OPCODE_BE_4K;
+-		flash->mtd.erasesize = 4096;
++		if (m25p_4byte_addr_width(info->jedec_id)) {
++			flash->erase_opcode = OPCODE_SE_4B_ADDR;
++			flash->mtd.erasesize = 4096;
++		} else {
++			flash->erase_opcode = OPCODE_BE_4K;
++			flash->mtd.erasesize = 4096;
++		}
+ 	} else if (info->flags & SECT_4K_PMC) {
+ 		flash->erase_opcode = OPCODE_BE_4K_PMC;
+ 		flash->mtd.erasesize = 4096;
+ 	} else {
+-		flash->erase_opcode = OPCODE_SE;
+-		flash->mtd.erasesize = info->sector_size;
++		if (m25p_4byte_addr_width(info->jedec_id)) {
++			flash->erase_opcode = OPCODE_BE_64K;
++			flash->mtd.erasesize = info->sector_size;
++		} else {
++			flash->erase_opcode = OPCODE_SE;
++			flash->mtd.erasesize = info->sector_size;
++		}
+ 	}
+ 
+ 	if (info->flags & M25P_NO_ERASE)
+@@ -1084,11 +1118,20 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 		if (flash->mtd.size > FLASH_16M_SIZE &&
+ 				!m25p_ext_addr_mode(info->jedec_id)) {
+ 			flash->addr_width = 4;
+-			set_4byte(flash, info->jedec_id, 1);
++			if (!m25p_4byte_addr_width(info->jedec_id))
++				set_4byte(flash, info->jedec_id, 1);
+ 		} else
+ 			flash->addr_width = 3;
+ 	}
+ 
++	if (m25p_4byte_addr_width(info->jedec_id)) {
++		flash->read_opcode = OPCODE_READ_4B_ADDR;
++		flash->write_opcode = OPCODE_PP_4B_ADDR;
++	} else {
++		flash->read_opcode = OPCODE_READ;
++		flash->write_opcode = OPCODE_PP;
++	}
++
+ 	dev_info(&spi->dev, "%s (%lld Kbytes)\n", id->name,
+ 			(long long)flash->mtd.size >> 10);
+ 
+@@ -1109,7 +1152,6 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 				flash->mtd.eraseregions[i].erasesize / 1024,
+ 				flash->mtd.eraseregions[i].numblocks);
+ 
+-
+ 	/* partitions should match sector boundaries; and it may be good to
+ 	 * use readonly partitions for writeprotected sectors (BP2..BP0).
+ 	 */
+diff --git a/drivers/spi/spi-ath79.c b/drivers/spi/spi-ath79.c
+index 07e2a14..5d05f35 100644
+--- a/drivers/spi/spi-ath79.c
++++ b/drivers/spi/spi-ath79.c
+@@ -40,6 +40,7 @@
+ #define MHZ				(1000 * 1000)
+ 
+ #define ATH79_SPI_CS_LINE_MAX		2
++#define FLASH_16M_SIZE			0x1000000
+ 
+ enum ath79_spi_state {
+ 	ATH79_SPI_STATE_WAIT_CMD = 0,
+@@ -383,6 +384,18 @@ static int ath79_spi_do_read_flash_data(struct spi_device *spi,
+ 	return t->len;
+ }
+ 
++/**
++ * Return true, If requested addr + len is grater than 16M
++ * Otherwise, return false (First 16M are memory mapped).
++ */
++static bool ath79_spi_is_addr_grater_than_16m(struct spi_device *spi,
++					struct spi_transfer *t)
++{
++	struct ath79_spi *sp = ath79_spidev_to_sp(spi);
++
++	return ((sp->read_addr + t->len) > FLASH_16M_SIZE);
++}
++
+ static int ath79_spi_do_read_flash_cmd(struct spi_device *spi,
+ 				       struct spi_transfer *t)
+ {
+@@ -425,7 +438,10 @@ static int ath79_spi_txrx_bufs(struct spi_device *spi, struct spi_transfer *t)
+ 	case ATH79_SPI_STATE_WAIT_CMD:
+ 		if (ath79_spi_is_read_cmd(spi, t)) {
+ 			ret = ath79_spi_do_read_flash_cmd(spi, t);
+-			sp->state = ATH79_SPI_STATE_WAIT_READ;
++			if (ath79_spi_is_addr_grater_than_16m(spi, t))
++				ret = spi_bitbang_bufs(spi, t);
++			else
++				sp->state = ATH79_SPI_STATE_WAIT_READ;
+ 		} else {
+ 			ret = spi_bitbang_bufs(spi, t);
+ 		}
