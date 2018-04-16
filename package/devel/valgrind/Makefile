@@ -94,7 +94,7 @@ else
 	BITS := 32bit
 endif
 
-TARGET_CFLAGS += -fno-stack-protector
+TARGET_CFLAGS += -fno-stack-protector -D__UCLIBC__
 CONFIGURE_ARGS += \
 	--enable-tls \
 	--without-x \
