@@ -1,6 +1,6 @@
 --- a/hostapd/ctrl_iface.c
 +++ b/hostapd/ctrl_iface.c
-@@ -2676,6 +2676,25 @@ static int hostapd_ctrl_iface_signal_mon
+@@ -2745,6 +2745,25 @@ static int hostapd_ctrl_iface_signal_mon
  	return -1;
  }
  
@@ -26,7 +26,7 @@
  
  static int hostapd_ctrl_driver_flags(struct hostapd_iface *iface, char *buf,
  				     size_t buflen)
-@@ -3159,6 +3178,9 @@ static int hostapd_ctrl_iface_receive_pr
+@@ -3274,6 +3293,9 @@ static int hostapd_ctrl_iface_receive_pr
  	} else if (os_strncmp(buf, "SIGNAL_MONITOR", 14) == 0) {
  		if (hostapd_ctrl_iface_signal_monitor(hapd, buf + 14))
  			reply_len = -1;
@@ -38,7 +38,7 @@
  		reply_len = 16;
 --- a/hostapd/hostapd_cli.c
 +++ b/hostapd/hostapd_cli.c
-@@ -1505,6 +1505,12 @@ static int hostapd_cli_cmd_signal_monito
+@@ -1483,6 +1483,12 @@ static int hostapd_cli_cmd_signal_monito
  	return hostapd_cli_cmd(ctrl, "SIGNAL_MONITOR", 0, argc, argv);
  }
  
@@ -51,8 +51,8 @@
  struct hostapd_cli_cmd {
  	const char *cmd;
  	int (*handler)(struct wpa_ctrl *ctrl, int argc, char *argv[]);
-@@ -1673,6 +1679,9 @@ static const struct hostapd_cli_cmd host
- 	  "clear blacklist mac address list "},
+@@ -1654,6 +1660,9 @@ static const struct hostapd_cli_cmd host
+ 	  "<addr> = poll a STA to check connectivity with a QoS null frame" },
  	{ "signal_monitor", hostapd_cli_cmd_signal_monitor, NULL,
  	  "= set signal monitor parameters" },
 +	{ "signal_txrate", hostapd_cli_cmd_signal_txrate, NULL,
@@ -63,11 +63,10 @@
  
 --- a/src/drivers/driver.h
 +++ b/src/drivers/driver.h
-@@ -3993,6 +3993,20 @@ struct wpa_driver_ops {
- 	 * TDLS peers.
+@@ -4056,6 +4056,20 @@ struct wpa_driver_ops {
  	 */
  	int (*get_peer_inactive_time)(void *priv, const u8 *addr);
-+
+ 
 + 	/**
 +	 * signal_txrate - Set signal monitoring parameters
 +	 * @priv: Private driver interface data
@@ -81,12 +80,13 @@
 +	 */
 +	int (*signal_txrate)(void *priv, const u32 low_thold,
 +			     u32 high_thold);
- };
- 
- /**
++
+ 	/**
+ 	 * update_connect_params - Update the connection parameters
+ 	 * @priv: Private driver interface data
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
-@@ -7424,6 +7424,29 @@ static int nl80211_signal_monitor(void *
+@@ -7537,6 +7537,29 @@ static int nl80211_signal_monitor(void *
  	return send_and_recv_msgs(drv, msg, NULL, NULL);
  }
  
@@ -116,7 +116,7 @@
  
  static int get_channel_width(struct nl_msg *msg, void *arg)
  {
-@@ -10403,6 +10426,7 @@ const struct wpa_driver_ops wpa_driver_n
+@@ -10643,6 +10666,7 @@ const struct wpa_driver_ops wpa_driver_n
  	.deinit_p2p_cli = wpa_driver_nl80211_deinit_p2p_cli,
  	.resume = wpa_driver_nl80211_resume,
  	.signal_monitor = nl80211_signal_monitor,
@@ -126,7 +126,7 @@
  	.set_param = nl80211_set_param,
 --- a/src/drivers/driver_nl80211_event.c
 +++ b/src/drivers/driver_nl80211_event.c
-@@ -1177,12 +1177,15 @@ static void nl80211_cqm_event(struct wpa
+@@ -1178,12 +1178,15 @@ static void nl80211_cqm_event(struct wpa
  		[NL80211_ATTR_CQM_TXE_INTVL] = { .type = NLA_U32 },
  		[NL80211_ATTR_CQM_BEACON_LOSS_EVENT] = { .type = NLA_FLAG },
  		[NL80211_ATTR_CQM_RSSI_LEVEL] = { .type = NLA_U32 },
@@ -144,7 +144,7 @@
  	u8 *addr;
  
  	if (tb[NL80211_ATTR_CQM] == NULL ||
-@@ -1227,19 +1230,41 @@ static void nl80211_cqm_event(struct wpa
+@@ -1228,19 +1231,41 @@ static void nl80211_cqm_event(struct wpa
  		return;
  	}
  
@@ -191,7 +191,7 @@
  		if (addr) {
  			wpa_msg(drv->ctx, MSG_INFO, "nl80211: CQM RSSI HIGH "
  				"event for "MACSTR " RSSI :%d", MAC2STR(addr),
-@@ -1249,7 +1274,7 @@ static void nl80211_cqm_event(struct wpa
+@@ -1250,7 +1275,7 @@ static void nl80211_cqm_event(struct wpa
  		wpa_printf(MSG_DEBUG, "nl80211: Connection quality monitor "
  			   "event: RSSI high");
  		ed.signal_change.above_threshold = 1;
@@ -200,7 +200,7 @@
  		if (addr) {
  			wpa_msg(drv->ctx, MSG_INFO, "nl80211: CQM RSSI LOW "
  				"event for "MACSTR " RSSI :%d", MAC2STR(addr),
-@@ -1262,7 +1287,7 @@ static void nl80211_cqm_event(struct wpa
+@@ -1263,7 +1288,7 @@ static void nl80211_cqm_event(struct wpa
  	} else {
  		wpa_printf(MSG_DEBUG,
  			   "nl80211: Unknown CQM RSSI threshold event: %d",
@@ -211,7 +211,7 @@
  
 --- a/src/drivers/nl80211_copy.h
 +++ b/src/drivers/nl80211_copy.h
-@@ -4065,6 +4065,17 @@ enum nl80211_ps_state {
+@@ -4215,6 +4215,17 @@ enum nl80211_ps_state {
   *	loss event
   * @NL80211_ATTR_CQM_RSSI_LEVEL: the RSSI value in dBm that triggered the
   *	RSSI threshold event.
@@ -229,7 +229,7 @@
   * @__NL80211_ATTR_CQM_AFTER_LAST: internal
   * @NL80211_ATTR_CQM_MAX: highest key attribute
   */
-@@ -4079,7 +4090,10 @@ enum nl80211_attr_cqm {
+@@ -4229,7 +4240,10 @@ enum nl80211_attr_cqm {
  	NL80211_ATTR_CQM_TXE_INTVL,
  	NL80211_ATTR_CQM_BEACON_LOSS_EVENT,
  	NL80211_ATTR_CQM_RSSI_LEVEL,
@@ -241,7 +241,7 @@
  	/* keep last */
  	__NL80211_ATTR_CQM_AFTER_LAST,
  	NL80211_ATTR_CQM_MAX = __NL80211_ATTR_CQM_AFTER_LAST - 1
-@@ -4093,13 +4107,17 @@ enum nl80211_attr_cqm {
+@@ -4243,13 +4257,17 @@ enum nl80211_attr_cqm {
   *      configured threshold
   * @NL80211_CQM_RSSI_BEACON_LOSS_EVENT: (reserved, never sent)
   */

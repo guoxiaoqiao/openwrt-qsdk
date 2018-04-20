@@ -8,8 +8,8 @@
  #include "crypto/random.h"
  #include "crypto/tls.h"
  #include "common/version.h"
-@@ -677,7 +678,7 @@ int main(int argc, char *argv[])
- 	wpa_supplicant_event_global = hostapd_wpa_event_global;
+@@ -681,7 +682,7 @@ int main(int argc, char *argv[])
+ #endif /* CONFIG_DPP */
  
  	for (;;) {
 -		c = getopt(argc, argv, "b:Bde:f:hi:KP:sSTtu:vg:G:");
@@ -17,7 +17,7 @@
  		if (c < 0)
  			break;
  		switch (c) {
-@@ -714,6 +715,8 @@ int main(int argc, char *argv[])
+@@ -718,6 +719,8 @@ int main(int argc, char *argv[])
  			break;
  #endif /* CONFIG_DEBUG_LINUX_TRACING */
  		case 'v':
