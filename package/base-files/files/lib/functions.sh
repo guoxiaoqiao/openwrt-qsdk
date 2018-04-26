@@ -11,7 +11,7 @@ find_mmc_part() {
 		echo "" && return 0
 	fi
 
-	for DEVNAME in /sys/block/mmcblk0/mmcblk*p*; do
+	for DEVNAME in /sys/block/mmcblk*/mmcblk*p*; do
 		PARTNAME=$(grep PARTNAME ${DEVNAME}/uevent | cut -f2 -d'=')
 		[ "$PARTNAME" = "$1" ] && echo "/dev/$(basename $DEVNAME)" && return 0
 	done
