@@ -210,18 +210,23 @@ to_upper ()
 {
 	echo $1 | awk '{print toupper($0)}'
 }
+image_is_nand()
+{
+	local nand_part="$(find_mtd_part "ubi_rootfs")"
+	[ -e "$nand_part" ] || return 1
 
+}
 flash_section() {
 	local sec=$1
 
 	local board=$(ipq806x_board_name)
 	case "${sec}" in
-		hlos*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:HLOS";;
-		rootfs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
+		hlos*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "0:HLOS";;
+		rootfs*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "rootfs";;
 		wififw*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
 		wififw_ubi*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
 		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
-		ubi*) switch_layout linux; do_flash_ubi ${sec} "rootfs";;
+		ubi*) switch_layout linux; image_is_nand || return && do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "0:SBL1";;
 		sbl2*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:SBL2";;
 		sbl3*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:SBL3";;
