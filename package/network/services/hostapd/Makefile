@@ -404,9 +404,15 @@ endif
 define Package/wpad/install
 	$(call Install/hostapd,$(1))
 	$(call Install/supplicant,$(1))
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/usr/include
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/wpad $(1)/usr/sbin/
 	$(LN) wpad $(1)/usr/sbin/hostapd
 	$(LN) wpad $(1)/usr/sbin/wpa_supplicant
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/wpa_supplicant/libwpa_client.so $(1)/usr/lib/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/common/wpa_ctrl.h $(1)/usr/include/
+	$(CP) $(PKG_BUILD_DIR)/wpa_supplicant/libwpa_client.so $(STAGING_DIR)/usr/lib
+	$(CP) $(PKG_BUILD_DIR)/src/common/wpa_ctrl.h $(STAGING_DIR)/usr/include
 endef
 Package/wpad-mini/install = $(Package/wpad/install)
 Package/wpad-mesh/install = $(Package/wpad/install)
@@ -421,13 +427,7 @@ Package/wpa-supplicant-p2p/install = $(Package/wpa-supplicant/install)
 ifneq ($(LOCAL_TYPE),hostapd)
   define Package/wpa-cli/install
 	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DIR) $(1)/usr/include
 	$(CP) $(PKG_BUILD_DIR)/wpa_supplicant/wpa_cli $(1)/usr/sbin/
-	$(CP) $(PKG_BUILD_DIR)/wpa_supplicant/libwpa_client.so $(1)/usr/lib/
-	$(CP) $(PKG_BUILD_DIR)/src/common/wpa_ctrl.h $(1)/usr/include/
-	$(CP) $(PKG_BUILD_DIR)/wpa_supplicant/libwpa_client.so $(STAGING_DIR)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/src/common/wpa_ctrl.h $(STAGING_DIR)/usr/include
   endef
 endif
 
