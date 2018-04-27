@@ -1,0 +1,221 @@
+Index: hostapd-2018-04-01/hostapd/ctrl_iface.c
+===================================================================
+--- hostapd-2018-04-01.orig/hostapd/ctrl_iface.c	2018-05-07 16:44:59.382922156 +0530
++++ hostapd-2018-04-01/hostapd/ctrl_iface.c	2018-05-07 16:44:59.378922127 +0530
+@@ -141,10 +141,43 @@
+ 		return NULL;
+ }
+ 
++static void adjust_vht_center_freq(struct hostapd_config *conf)
++{
++	switch (conf->vht_oper_chwidth) {
++		case VHT_CHANWIDTH_USE_HT:
++			if (conf->secondary_channel == 1 &&
++				conf->vht_oper_centr_freq_seg0_idx != conf->channel + 2)
++					conf->vht_oper_centr_freq_seg0_idx = conf->channel + 2;
++
++			else if (conf->secondary_channel == -1 &&
++				conf->vht_oper_centr_freq_seg0_idx != conf->channel - 2)
++					conf->vht_oper_centr_freq_seg0_idx = conf->channel - 2;
++
++			else if (conf->vht_oper_centr_freq_seg0_idx != conf->channel)
++					conf->vht_oper_centr_freq_seg0_idx = conf->channel;
++			break;
++		case VHT_CHANWIDTH_80MHZ:
++			if (conf->vht_oper_centr_freq_seg0_idx !=
++				conf->channel + 6)
++					conf->vht_oper_centr_freq_seg0_idx = conf->channel + 6;
++			break;
++		case VHT_CHANWIDTH_160MHZ:
++			if (conf->vht_oper_centr_freq_seg0_idx !=
++				conf->channel + 14)
++					conf->vht_oper_centr_freq_seg0_idx = conf->channel + 14;
++			break;
++		default:
++			break;
++        }
++}
++
+ static struct hostapd_config *hostapd_ctrl_iface_config_read(const char *fname)
+ {
+ 	struct hostapd_config *conf;
+ 	char *opt, *val;
++	u8   chan_width;
++	u8   vht_chan_width;
++	int ieee80211ac;
+ 
+ 	conf = hostapd_config_read(fname);
+ 	if (!conf)
+@@ -156,20 +189,58 @@
+ 
+ 		if ((val = get_option(opt, "channel=")))
+ 			conf->channel = atoi(val);
+-		else if ((val = get_option(opt, "ht_capab=")))
+-			conf->ht_capab = atoi(val);
+-		else if ((val = get_option(opt, "ht_capab_mask=")))
+-			conf->ht_capab &= atoi(val);
+ 		else if ((val = get_option(opt, "sec_chan=")))
+ 			conf->secondary_channel = atoi(val);
+ 		else if ((val = get_option(opt, "hw_mode=")))
+ 			conf->hw_mode = atoi(val);
++		else if ((val = get_option(opt, "width=")))
++			chan_width = atoi(val);
++		else if ((val = get_option(opt, "vht=")))
++			ieee80211ac = atoi(val);
++		else if ((val = get_option(opt, "ht_capab=")))
++			conf->ht_capab = atoi(val);
++		else if ((val = get_option(opt, "ht_capab_mask=")))
++			conf->ht_capab &= atoi(val);
+ 		else if ((val = get_option(opt, "ieee80211n=")))
+ 			conf->ieee80211n = atoi(val);
+ 		else
+ 			break;
+ 	}
+ 
++	if (ieee80211ac) {
++		conf->ieee80211n = 1;
++		conf->ieee80211ac = 1;
++		switch(chan_width) {
++			case CHAN_WIDTH_80:
++				vht_chan_width = VHT_CHANWIDTH_80MHZ;
++				break;
++			case CHAN_WIDTH_80P80:
++				vht_chan_width = VHT_CHANWIDTH_80P80MHZ;
++				break;
++			case CHAN_WIDTH_160:
++				vht_chan_width = VHT_CHANWIDTH_160MHZ;
++				break;
++			case CHAN_WIDTH_20_NOHT:
++			case CHAN_WIDTH_20:
++			case CHAN_WIDTH_40:
++			default:
++				vht_chan_width = VHT_CHANWIDTH_USE_HT;
++				break;
++		}
++		if (vht_chan_width != conf->vht_oper_chwidth) {
++			conf->vht_oper_chwidth = vht_chan_width;
++		}
++	} else {
++		conf->ieee80211ac = 0;
++		conf->vht_oper_chwidth = 0;
++		if (chan_width == CHAN_WIDTH_20_NOHT)
++			conf->ieee80211n = 0;
++		else
++			conf->ieee80211n = 1;
++	}
++
++	adjust_vht_center_freq(conf);
++
+ 	return conf;
+ }
+ 
+Index: hostapd-2018-04-01/wpa_supplicant/wpa_supplicant.c
+===================================================================
+--- hostapd-2018-04-01.orig/wpa_supplicant/wpa_supplicant.c	2018-05-07 16:44:59.382922156 +0530
++++ hostapd-2018-04-01/wpa_supplicant/wpa_supplicant.c	2018-05-07 16:44:59.378922127 +0530
+@@ -144,6 +144,7 @@
+ 	char buf[256];
+ 	size_t len = sizeof(buf);
+ 	enum hostapd_hw_mode hw_mode;
++	struct wpa_signal_info si;
+ 	u8 channel;
+ 	int sec_chan = 0;
+ 	int ret;
+@@ -160,18 +161,22 @@
+ 	}
+ 
+ 	hw_mode = ieee80211_freq_to_chan(bss->freq, &channel);
+-	if (asprintf(&cmd, "UPDATE channel=%d sec_chan=%d hw_mode=%d",
+-		     channel, sec_chan, hw_mode) < 0)
++	ret = wpa_drv_signal_poll(wpa_s, &si);
++	if (ret || !channel)
+ 		return -1;
+-
+-	ret = wpa_ctrl_request(wpa_s->hostapd, cmd, os_strlen(cmd), buf, &len, NULL);
+-	free(cmd);
+-
+-	if (ret < 0) {
+-		wpa_printf(MSG_ERROR, "\nFailed to reload hostapd AP interfaces\n");
+-		return -1;
+-	}
+-	return 0;
++        if (asprintf(&cmd, "UPDATE channel=%d sec_chan=%d hw_mode=%d width=%d vht=%d",
++                     channel, sec_chan, hw_mode, si.chanwidth,
++                     wpa_s->ieee80211ac) < 0)
++                return -1;
++
++        ret = wpa_ctrl_request(wpa_s->hostapd, cmd, os_strlen(cmd), buf, &len, NULL);
++        free(cmd);
++
++        if (ret < 0) {
++                wpa_printf(MSG_ERROR, "\nFailed to reload hostapd AP interfaces\n");
++                return -1;
++        }
++        return 0;
+ }
+ 
+ /* Configure default/group WEP keys for static WEP */
+Index: hostapd-2018-04-01/wpa_supplicant/ctrl_iface.c
+===================================================================
+--- hostapd-2018-04-01.orig/wpa_supplicant/ctrl_iface.c	2018-05-07 16:44:59.382922156 +0530
++++ hostapd-2018-04-01/wpa_supplicant/ctrl_iface.c	2018-05-07 16:44:59.382922156 +0530
+@@ -2340,6 +2340,13 @@
+ 		}
+ 	}
+ #endif /* ANDROID */
++	if(wpa_s->ieee80211ac) {
++		ret = os_snprintf(pos, end - pos, "ieee80211ac=%u\n",
++			  wpa_s->ieee80211ac);
++		if (os_snprintf_error(end - pos, ret))
++			return pos - buf;
++		pos += ret;
++	}
+ 
+ 	return pos - buf;
+ }
+Index: hostapd-2018-04-01/wpa_supplicant/events.c
+===================================================================
+--- hostapd-2018-04-01.orig/wpa_supplicant/events.c	2018-05-07 16:44:59.382922156 +0530
++++ hostapd-2018-04-01/wpa_supplicant/events.c	2018-05-07 16:44:59.382922156 +0530
+@@ -319,6 +319,7 @@
+ 	wpa_s->last_tk_alg = WPA_ALG_NONE;
+ 	os_memset(wpa_s->last_tk, 0, sizeof(wpa_s->last_tk));
+ #endif /* CONFIG_TESTING_OPTIONS */
++	wpa_s->ieee80211ac = 0;
+ }
+ 
+ 
+@@ -2286,6 +2287,7 @@
+ 		wpa_hexdump(MSG_DEBUG, "req_ies", data->assoc_info.req_ies,
+ 			    data->assoc_info.req_ies_len);
+ 	if (data->assoc_info.resp_ies) {
++		struct ieee802_11_elems elems;
+ 		wpa_hexdump(MSG_DEBUG, "resp_ies", data->assoc_info.resp_ies,
+ 			    data->assoc_info.resp_ies_len);
+ #ifdef CONFIG_TDLS
+@@ -2300,6 +2302,13 @@
+ 		interworking_process_assoc_resp(wpa_s, data->assoc_info.resp_ies,
+ 						data->assoc_info.resp_ies_len);
+ #endif /* CONFIG_INTERWORKING */
++		if(ieee802_11_parse_elems(data->assoc_info.resp_ies,
++			  data->assoc_info.resp_ies_len,
++			  &elems, 1) != ParseFailed)
++			if(elems.vht_capabilities &&
++	   			wpa_s->hw_capab == CAPAB_VHT)
++					wpa_s->ieee80211ac = 1;
++
+ 	}
+ 	if (data->assoc_info.beacon_ies)
+ 		wpa_hexdump(MSG_DEBUG, "beacon_ies",
+Index: hostapd-2018-04-01/wpa_supplicant/wpa_supplicant_i.h
+===================================================================
+--- hostapd-2018-04-01.orig/wpa_supplicant/wpa_supplicant_i.h	2018-05-07 16:44:59.382922156 +0530
++++ hostapd-2018-04-01/wpa_supplicant/wpa_supplicant_i.h	2018-05-07 16:46:58.747770251 +0530
+@@ -1226,6 +1226,7 @@
+ 	unsigned int dpp_ignore_netaccesskey_mismatch:1;
+ #endif /* CONFIG_TESTING_OPTIONS */
+ #endif /* CONFIG_DPP */
++	u8 ieee80211ac;
+ 
+ #ifdef CONFIG_FILS
+ 	unsigned int disable_fils:1;
