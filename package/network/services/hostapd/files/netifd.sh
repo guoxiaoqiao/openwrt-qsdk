@@ -531,7 +531,7 @@ wpa_supplicant_prepare_interface() {
 
 	_wpa_supplicant_common "$1"
 
-	json_get_vars mode wds
+	json_get_vars mode wds extsta
 
 	[ -n "$network_bridge" ] && {
 		fail=
@@ -540,7 +540,7 @@ wpa_supplicant_prepare_interface() {
 				fail=1
 			;;
 			sta)
-				[ "$wds" = 1 ] || fail=1
+				[ "$wds" = 1 ] || [ "$extsta" = 1 ] || fail=1
 			;;
 		esac
 
