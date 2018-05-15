@@ -1,8 +1,6 @@
-Index: hostapd-2018-04-01/hostapd/ctrl_iface.c
-===================================================================
---- hostapd-2018-04-01.orig/hostapd/ctrl_iface.c	2018-05-07 16:44:59.382922156 +0530
-+++ hostapd-2018-04-01/hostapd/ctrl_iface.c	2018-05-07 16:44:59.378922127 +0530
-@@ -141,10 +141,43 @@
+--- a/hostapd/ctrl_iface.c
++++ b/hostapd/ctrl_iface.c
+@@ -141,10 +141,43 @@ static char *get_option(char *opt, char
  		return NULL;
  }
  
@@ -46,7 +44,7 @@ Index: hostapd-2018-04-01/hostapd/ctrl_iface.c
  
  	conf = hostapd_config_read(fname);
  	if (!conf)
-@@ -156,20 +189,58 @@
+@@ -156,20 +189,58 @@ static struct hostapd_config *hostapd_ct
  
  		if ((val = get_option(opt, "channel=")))
  			conf->channel = atoi(val);
@@ -109,11 +107,9 @@ Index: hostapd-2018-04-01/hostapd/ctrl_iface.c
  	return conf;
  }
  
-Index: hostapd-2018-04-01/wpa_supplicant/wpa_supplicant.c
-===================================================================
---- hostapd-2018-04-01.orig/wpa_supplicant/wpa_supplicant.c	2018-05-07 16:44:59.382922156 +0530
-+++ hostapd-2018-04-01/wpa_supplicant/wpa_supplicant.c	2018-05-07 16:44:59.378922127 +0530
-@@ -144,6 +144,7 @@
+--- a/wpa_supplicant/wpa_supplicant.c
++++ b/wpa_supplicant/wpa_supplicant.c
+@@ -144,6 +144,7 @@ static int hostapd_reload(struct wpa_sup
  	char buf[256];
  	size_t len = sizeof(buf);
  	enum hostapd_hw_mode hw_mode;
@@ -121,7 +117,7 @@ Index: hostapd-2018-04-01/wpa_supplicant/wpa_supplicant.c
  	u8 channel;
  	int sec_chan = 0;
  	int ret;
-@@ -160,18 +161,22 @@
+@@ -160,18 +161,22 @@ static int hostapd_reload(struct wpa_sup
  	}
  
  	hw_mode = ieee80211_freq_to_chan(bss->freq, &channel);
@@ -155,67 +151,3 @@ Index: hostapd-2018-04-01/wpa_supplicant/wpa_supplicant.c
  }
  
  /* Configure default/group WEP keys for static WEP */
-Index: hostapd-2018-04-01/wpa_supplicant/ctrl_iface.c
-===================================================================
---- hostapd-2018-04-01.orig/wpa_supplicant/ctrl_iface.c	2018-05-07 16:44:59.382922156 +0530
-+++ hostapd-2018-04-01/wpa_supplicant/ctrl_iface.c	2018-05-07 16:44:59.382922156 +0530
-@@ -2340,6 +2340,13 @@
- 		}
- 	}
- #endif /* ANDROID */
-+	if(wpa_s->ieee80211ac) {
-+		ret = os_snprintf(pos, end - pos, "ieee80211ac=%u\n",
-+			  wpa_s->ieee80211ac);
-+		if (os_snprintf_error(end - pos, ret))
-+			return pos - buf;
-+		pos += ret;
-+	}
- 
- 	return pos - buf;
- }
-Index: hostapd-2018-04-01/wpa_supplicant/events.c
-===================================================================
---- hostapd-2018-04-01.orig/wpa_supplicant/events.c	2018-05-07 16:44:59.382922156 +0530
-+++ hostapd-2018-04-01/wpa_supplicant/events.c	2018-05-07 16:44:59.382922156 +0530
-@@ -319,6 +319,7 @@
- 	wpa_s->last_tk_alg = WPA_ALG_NONE;
- 	os_memset(wpa_s->last_tk, 0, sizeof(wpa_s->last_tk));
- #endif /* CONFIG_TESTING_OPTIONS */
-+	wpa_s->ieee80211ac = 0;
- }
- 
- 
-@@ -2286,6 +2287,7 @@
- 		wpa_hexdump(MSG_DEBUG, "req_ies", data->assoc_info.req_ies,
- 			    data->assoc_info.req_ies_len);
- 	if (data->assoc_info.resp_ies) {
-+		struct ieee802_11_elems elems;
- 		wpa_hexdump(MSG_DEBUG, "resp_ies", data->assoc_info.resp_ies,
- 			    data->assoc_info.resp_ies_len);
- #ifdef CONFIG_TDLS
-@@ -2300,6 +2302,13 @@
- 		interworking_process_assoc_resp(wpa_s, data->assoc_info.resp_ies,
- 						data->assoc_info.resp_ies_len);
- #endif /* CONFIG_INTERWORKING */
-+		if(ieee802_11_parse_elems(data->assoc_info.resp_ies,
-+			  data->assoc_info.resp_ies_len,
-+			  &elems, 1) != ParseFailed)
-+			if(elems.vht_capabilities &&
-+	   			wpa_s->hw_capab == CAPAB_VHT)
-+					wpa_s->ieee80211ac = 1;
-+
- 	}
- 	if (data->assoc_info.beacon_ies)
- 		wpa_hexdump(MSG_DEBUG, "beacon_ies",
-Index: hostapd-2018-04-01/wpa_supplicant/wpa_supplicant_i.h
-===================================================================
---- hostapd-2018-04-01.orig/wpa_supplicant/wpa_supplicant_i.h	2018-05-07 16:44:59.382922156 +0530
-+++ hostapd-2018-04-01/wpa_supplicant/wpa_supplicant_i.h	2018-05-07 16:46:58.747770251 +0530
-@@ -1226,6 +1226,7 @@
- 	unsigned int dpp_ignore_netaccesskey_mismatch:1;
- #endif /* CONFIG_TESTING_OPTIONS */
- #endif /* CONFIG_DPP */
-+	u8 ieee80211ac;
- 
- #ifdef CONFIG_FILS
- 	unsigned int disable_fils:1;

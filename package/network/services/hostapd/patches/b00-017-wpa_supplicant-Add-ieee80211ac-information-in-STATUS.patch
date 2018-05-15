@@ -1,0 +1,70 @@
+From d7f038ded2cf56d6e75ca8aab00686e855389884 Mon Sep 17 00:00:00 2001
+From: Bhagavathi Perumal S <bperumal@codeaurora.org>
+Date: Tue, 24 Apr 2018 13:24:20 +0530
+Subject: [PATCH] wpa_supplicant: Add ieee80211ac information in STATUS
+
+This allows user to get current operating mode of station.
+
+Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
+---
+ wpa_supplicant/ctrl_iface.c       | 7 +++++++
+ wpa_supplicant/events.c           | 5 +++++
+ wpa_supplicant/wpa_supplicant_i.h | 1 +
+ 3 files changed, 13 insertions(+)
+
+diff --git a/wpa_supplicant/ctrl_iface.c b/wpa_supplicant/ctrl_iface.c
+index 2080419..fe39c25 100644
+--- a/wpa_supplicant/ctrl_iface.c
++++ b/wpa_supplicant/ctrl_iface.c
+@@ -2292,6 +2292,13 @@ static int wpa_supplicant_ctrl_iface_status(struct wpa_supplicant *wpa_s,
+ 	}
+ #endif /* CONFIG_WPS */
+ 
++	if (wpa_s->ieee80211ac) {
++		ret = os_snprintf(pos, end - pos, "ieee80211ac=1\n");
++		if (os_snprintf_error(end - pos, ret))
++			return pos - buf;
++		pos += ret;
++	}
++
+ #ifdef ANDROID
+ 	/*
+ 	 * Allow using the STATUS command with default behavior, say for debug,
+diff --git a/wpa_supplicant/events.c b/wpa_supplicant/events.c
+index 2fa3381..02dfedd 100644
+--- a/wpa_supplicant/events.c
++++ b/wpa_supplicant/events.c
+@@ -319,6 +319,7 @@ void wpa_supplicant_mark_disassoc(struct wpa_supplicant *wpa_s)
+ 	wpa_s->last_tk_alg = WPA_ALG_NONE;
+ 	os_memset(wpa_s->last_tk, 0, sizeof(wpa_s->last_tk));
+ #endif /* CONFIG_TESTING_OPTIONS */
++	wpa_s->ieee80211ac = 0;
+ }
+ 
+ 
+@@ -2300,6 +2301,10 @@ static int wpa_supplicant_event_associnfo(struct wpa_supplicant *wpa_s,
+ 		interworking_process_assoc_resp(wpa_s, data->assoc_info.resp_ies,
+ 						data->assoc_info.resp_ies_len);
+ #endif /* CONFIG_INTERWORKING */
++		if (wpa_s->hw_capab == CAPAB_VHT &&
++		    get_ie(data->assoc_info.resp_ies,
++			   data->assoc_info.resp_ies_len, WLAN_EID_VHT_CAP))
++			wpa_s->ieee80211ac = 1;
+ 	}
+ 	if (data->assoc_info.beacon_ies)
+ 		wpa_hexdump(MSG_DEBUG, "beacon_ies",
+diff --git a/wpa_supplicant/wpa_supplicant_i.h b/wpa_supplicant/wpa_supplicant_i.h
+index 4d18177..2b0dca0 100644
+--- a/wpa_supplicant/wpa_supplicant_i.h
++++ b/wpa_supplicant/wpa_supplicant_i.h
+@@ -1225,6 +1225,7 @@ struct wpa_supplicant {
+ #ifdef CONFIG_FILS
+ 	unsigned int disable_fils:1;
+ #endif /* CONFIG_FILS */
++	unsigned int ieee80211ac:1;
+ };
+ 
+ 
+-- 
+1.9.1
+
