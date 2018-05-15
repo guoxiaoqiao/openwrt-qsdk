@@ -1,66 +1,68 @@
-Index: u-boot-2014.10/tools/env/fw_env.c
-===================================================================
---- u-boot-2014.10.orig/tools/env/fw_env.c	2017-11-01 12:53:09.477769600 +0530
-+++ u-boot-2014.10/tools/env/fw_env.c	2017-11-01 12:54:18.193945833 +0530
-@@ -712,6 +712,7 @@
- 	size_t blocklen;	/* erase / write length - one block on NAND,
- 				   0 on NOR */
- 	size_t processed = 0;	/* progress counter */
-+	int no_of_badblock = 0;      /* no of bad block present */
- 	size_t readlen = count;	/* current read length */
- 	off_t top_of_range;	/* end of the last block we may use */
- 	off_t block_seek;	/* offset inside the current block to the start
-@@ -762,6 +763,7 @@
+--- a/tools/env/fw_env.c
++++ b/tools/env/fw_env.c
+@@ -701,6 +701,19 @@
+ 	return 0;
+ }
  
- 		if (rc) {		/* block is bad */
- 			blockstart += blocklen;
-+			no_of_badblock++;
- 			continue;
++int find_mtd_size(int fd)
++{
++	struct mtd_info_user mtdinfo;
++	int size = 0;
++
++	if (ioctl(fd, MEMGETINFO, &mtdinfo) == -1) {
++		return size;
++	}
++	size = mtdinfo.size;
++
++	return size;
++}
++
+ /*
+  * Read data from flash at an offset into a provided buffer. On NAND it skips
+  * bad blocks but makes sure it stays within ENVSECTORS (dev) starting from
+@@ -719,6 +732,7 @@
+ 	loff_t blockstart;	/* running start of the current block -
+ 				   MEMGETBADBLOCK needs 64 bits */
+ 	int rc;
++	int size;
+ 
+ 	blockstart = (offset / DEVESIZE (dev)) * DEVESIZE (dev);
+ 
+@@ -753,10 +767,14 @@
+ 		if (rc < 0)		/* block test failed */
+ 			return -1;
+ 
+-		if (blockstart + block_seek + readlen > top_of_range) {
++		if (rc)
++			top_of_range += readlen;
++
++		size = find_mtd_size(fd);
++		if ((blockstart + block_seek + readlen > top_of_range) || (size > 0 &&  top_of_range > size)) {
+ 			/* End of range is reached */
+ 			fprintf (stderr,
+-				 "Too few good blocks within range\n");
++				"Too few good blocks within range\n");
+ 			return -1;
  		}
  
-@@ -781,6 +783,14 @@
- 		fprintf(stderr, "Read 0x%x bytes at 0x%llx on %s\n",
- 			 rc, blockstart + block_seek, DEVNAME(dev));
+@@ -821,6 +839,7 @@
+ 	void *libubi = NULL;
  #endif
-+		/*
-+		 * Add badblock size to processed to avoid out of partition
-+		 * check
-+		 */
-+		if (no_of_badblock)
-+			processed += readlen * no_of_badblock;
-+
-+		no_of_badblock=0;
- 		processed += readlen;
- 		readlen = min (blocklen, count - processed);
- 		block_seek = 0;
-@@ -806,6 +816,7 @@
- 	size_t erasesize;	/* erase / write length - one block on NAND,
- 				   whole area on NOR */
- 	size_t processed = 0;	/* progress counter */
-+	int no_of_badblock = 0; /* no of bad block present */
- 	size_t write_total;	/* total size to actually write - excluding
- 				   bad blocks */
- 	off_t erase_offset;	/* offset to the first erase block (aligned)
-@@ -922,6 +933,7 @@
+ 	int rc;
++	int size;
  
- 		if (rc) {		/* block is bad */
- 			blockstart += blocklen;
-+			no_of_badblock++;
- 			continue;
+ 	/*
+ 	 * For mtd devices only offset and size of the environment do matter
+@@ -915,7 +934,11 @@
+ 		if (rc < 0)		/* block test failed */
+ 			return rc;
+ 
+-		if (blockstart + erasesize > top_of_range) {
++		if(rc)
++			top_of_range += blocklen;
++
++		size = find_mtd_size(fd);
++		if ((blockstart + erasesize > top_of_range) || (size > 0 && top_of_range > size)) {
+ 			fprintf (stderr, "End of range reached, aborting\n");
+ 			return -1;
  		}
- 
-@@ -983,6 +995,14 @@
- 		if (!libubi && mtd_type != MTD_ABSENT)
- 			ioctl(fd, MEMLOCK, &erase);
- 
-+		/*
-+		 * Add badblock size to processed to avoid out of partition
-+		 * check
-+		 */
-+		if (no_of_badblock)
-+			processed += erasesize * no_of_badblock;
-+
-+		no_of_badblock=0;
- 		processed  += erasesize;
- 		block_seek = 0;
- 		blockstart += erasesize;
