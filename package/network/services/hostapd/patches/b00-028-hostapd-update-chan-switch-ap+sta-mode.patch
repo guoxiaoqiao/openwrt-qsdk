@@ -1,6 +1,6 @@
 --- a/hostapd/ctrl_iface.c
 +++ b/hostapd/ctrl_iface.c
-@@ -141,10 +141,43 @@ static char *get_option(char *opt, char
+@@ -141,10 +141,53 @@ static char *get_option(char *opt, char
  		return NULL;
  }
  
@@ -20,14 +20,24 @@
 +					conf->vht_oper_centr_freq_seg0_idx = conf->channel;
 +			break;
 +		case VHT_CHANWIDTH_80MHZ:
-+			if (conf->vht_oper_centr_freq_seg0_idx !=
-+				conf->channel + 6)
-+					conf->vht_oper_centr_freq_seg0_idx = conf->channel + 6;
++			if(conf->channel <= 48)
++				conf->vht_oper_centr_freq_seg0_idx = 42;
++			else if(conf->channel <= 64)
++				conf->vht_oper_centr_freq_seg0_idx = 58;
++			else if(conf->channel <= 112)
++				conf->vht_oper_centr_freq_seg0_idx = 106;
++			else if(conf->channel <= 128)
++				conf->vht_oper_centr_freq_seg0_idx = 122;
++			else if(conf->channel <= 144)
++				conf->vht_oper_centr_freq_seg0_idx = 138;
++			else if(conf->channel <= 161)
++				conf->vht_oper_centr_freq_seg0_idx = 155;
 +			break;
 +		case VHT_CHANWIDTH_160MHZ:
-+			if (conf->vht_oper_centr_freq_seg0_idx !=
-+				conf->channel + 14)
-+					conf->vht_oper_centr_freq_seg0_idx = conf->channel + 14;
++			if(conf->channel <= 64)
++				conf->vht_oper_centr_freq_seg0_idx = 50;
++			else if(conf->channel <= 128)
++				conf->vht_oper_centr_freq_seg0_idx = 114;
 +			break;
 +		default:
 +			break;
@@ -44,7 +54,7 @@
  
  	conf = hostapd_config_read(fname);
  	if (!conf)
-@@ -156,20 +189,58 @@ static struct hostapd_config *hostapd_ct
+@@ -156,20 +199,58 @@ static struct hostapd_config *hostapd_ct
  
  		if ((val = get_option(opt, "channel=")))
  			conf->channel = atoi(val);
