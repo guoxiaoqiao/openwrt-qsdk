@@ -86,7 +86,7 @@ endef
 Package/opkg-smime/conffiles = $(Package/opkg/conffiles)
 
 TARGET_CFLAGS += $(if $(CONFIG_GCC_VERSION_4_3)$(CONFIG_GCC_VERSION_4_4),-Wno-array-bounds)
-TARGET_CFLAGS += -ffunction-sections -fdata-sections
+TARGET_CFLAGS += -ffunction-sections -fdata-sections -fpie
 EXTRA_CFLAGS += $(TARGET_CPPFLAGS)
 
 CONFIGURE_ARGS += \
@@ -108,7 +108,7 @@ MAKE_FLAGS = \
 		CC="$(TARGET_CC)" \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
 		HOST_CPU="$(PKGARCH)" \
-		LDFLAGS="-Wl,--gc-sections" \
+		LDFLAGS="-Wl,--gc-sections -pie" \
 
 define Package/opkg/Default/install
 	$(INSTALL_DIR) $(1)/usr/lib/opkg
