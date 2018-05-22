@@ -150,7 +150,7 @@ index 67696b2..2cd7553 100644
  	 * use readonly partitions for writeprotected sectors (BP2..BP0).
  	 */
 diff --git a/drivers/spi/spi-ath79.c b/drivers/spi/spi-ath79.c
-index 07e2a14..5d05f35 100644
+index 07e2a14..c0aafd3 100644
 --- a/drivers/spi/spi-ath79.c
 +++ b/drivers/spi/spi-ath79.c
 @@ -40,6 +40,7 @@
@@ -161,7 +161,15 @@ index 07e2a14..5d05f35 100644
  
  enum ath79_spi_state {
  	ATH79_SPI_STATE_WAIT_CMD = 0,
-@@ -383,6 +384,18 @@ static int ath79_spi_do_read_flash_data(struct spi_device *spi,
+@@ -59,6 +60,7 @@ struct ath79_spi {
+ 	u32			clk_div;
+ 	unsigned long 		read_addr;
+ 	unsigned long		ahb_rate;
++	struct spi_transfer     *read_cmd;
+ };
+ 
+ static inline u32 ath79_spi_rr(struct ath79_spi *sp, unsigned reg)
+@@ -383,6 +385,18 @@ static int ath79_spi_do_read_flash_data(struct spi_device *spi,
  	return t->len;
  }
  
@@ -180,15 +188,25 @@ index 07e2a14..5d05f35 100644
  static int ath79_spi_do_read_flash_cmd(struct spi_device *spi,
  				       struct spi_transfer *t)
  {
-@@ -425,7 +438,10 @@ static int ath79_spi_txrx_bufs(struct spi_device *spi, struct spi_transfer *t)
- 	case ATH79_SPI_STATE_WAIT_CMD:
+@@ -426,6 +440,7 @@ static int ath79_spi_txrx_bufs(struct spi_device *spi, struct spi_transfer *t)
  		if (ath79_spi_is_read_cmd(spi, t)) {
  			ret = ath79_spi_do_read_flash_cmd(spi, t);
--			sp->state = ATH79_SPI_STATE_WAIT_READ;
-+			if (ath79_spi_is_addr_grater_than_16m(spi, t))
-+				ret = spi_bitbang_bufs(spi, t);
-+			else
-+				sp->state = ATH79_SPI_STATE_WAIT_READ;
+ 			sp->state = ATH79_SPI_STATE_WAIT_READ;
++			sp->read_cmd = t;
  		} else {
  			ret = spi_bitbang_bufs(spi, t);
  		}
+@@ -433,7 +448,12 @@ static int ath79_spi_txrx_bufs(struct spi_device *spi, struct spi_transfer *t)
+ 
+ 	case ATH79_SPI_STATE_WAIT_READ:
+ 		if (ath79_spi_is_data_read(spi, t)) {
+-			ret = ath79_spi_do_read_flash_data(spi, t);
++			if (ath79_spi_is_addr_grater_than_16m(spi, t)) {
++				spi_bitbang_bufs(spi, sp->read_cmd);
++				ret = spi_bitbang_bufs(spi, t);
++			} else {
++				ret = ath79_spi_do_read_flash_data(spi, t);
++			}
+ 		} else {
+ 			dev_warn(&spi->dev, "flash data read expected\n");
+ 			ret = -EIO;
