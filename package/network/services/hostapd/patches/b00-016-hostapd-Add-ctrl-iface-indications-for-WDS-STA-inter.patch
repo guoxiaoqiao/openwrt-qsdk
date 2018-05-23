@@ -1,0 +1,198 @@
+From 1952b626ba575fcdc6bb7e19c2a4348ff28b0d4a Mon Sep 17 00:00:00 2001
+From: Bhagavathi Perumal S <bperumal@codeaurora.org>
+Date: Fri, 20 Apr 2018 14:35:36 +0530
+Subject: [PATCH] hostapd: Add ctrl iface indications for WDS STA interface
+
+This allows user to get event indication when a new interface is
+added/removed for 4addr WDS STA and also WDS STA ifname is informed
+through the STA command.
+
+Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
+---
+ src/ap/ctrl_iface_ap.c       |  7 +++++++
+ src/ap/drv_callbacks.c       | 28 ++++++++++++++++++++++++++++
+ src/ap/sta_info.c            |  2 ++
+ src/ap/sta_info.h            |  1 +
+ src/common/wpa_ctrl.h        |  4 ++++
+ src/drivers/driver.h         | 19 +++++++++++++++++++
+ src/drivers/driver_common.c  |  1 +
+ src/drivers/driver_nl80211.c | 15 +++++++++++++++
+ 8 files changed, 77 insertions(+)
+
+--- a/src/ap/ctrl_iface_ap.c
++++ b/src/ap/ctrl_iface_ap.c
+@@ -335,6 +335,13 @@ static int hostapd_ctrl_iface_sta_mib(st
+ 		len += os_snprintf(buf + len, buflen - len, "\n");
+ 	}
+ 
++	if (sta->flags & WLAN_STA_WDS && sta->ifname_wds) {
++		ret = os_snprintf(buf + len, buflen - len,
++				  "wds_sta_ifname=%s\n", sta->ifname_wds);
++		if (!os_snprintf_error(buflen - len, ret))
++			len += ret;
++	}
++
+ 	return len;
+ }
+ 
+--- a/src/ap/drv_callbacks.c
++++ b/src/ap/drv_callbacks.c
+@@ -1484,6 +1484,28 @@ static void hostapd_event_dfs_cac_starte
+ #endif /* NEED_AP_MLME */
+ 
+ 
++static void hostapd_event_wds_sta_interface_status(struct hostapd_data *hapd,
++						   int istatus,
++						   const char *ifname,
++						   const u8 *addr)
++{
++	struct sta_info *sta = ap_get_sta(hapd, addr);
++
++	if (sta) {
++		os_free(sta->ifname_wds);
++		if (istatus == INTERFACE_ADDED)
++			sta->ifname_wds = os_strdup(ifname);
++		else
++			sta->ifname_wds = NULL;
++	}
++
++	wpa_msg(hapd->msg_ctx, MSG_INFO, "%sifname=%s sta_addr=" MACSTR,
++			istatus == INTERFACE_ADDED ?
++			WDS_STA_INTERFACE_ADDED : WDS_STA_INTERFACE_REMOVED,
++			ifname, MAC2STR(addr));
++}
++
++
+ void hostapd_wpa_event(void *ctx, enum wpa_event_type event,
+ 			  union wpa_event_data *data)
+ {
+@@ -1699,6 +1721,12 @@ void hostapd_wpa_event(void *ctx, enum w
+ 						 data->sta_opmode.chan_width,
+ 						 data->sta_opmode.rx_nss);
+ 		break;
++	case EVENT_WDS_STA_INTERFACE_STATUS:
++		hostapd_event_wds_sta_interface_status(
++			hapd, data->wds_sta_interface.istatus,
++			data->wds_sta_interface.ifname,
++			data->wds_sta_interface.sta_addr);
++		break;
+ 	default:
+ 		wpa_printf(MSG_DEBUG, "Unknown event %d", event);
+ 		break;
+--- a/src/ap/sta_info.c
++++ b/src/ap/sta_info.c
+@@ -365,6 +365,8 @@ void ap_free_sta(struct hostapd_data *ha
+ 	eloop_cancel_timeout(ap_sta_reset_steer_flag_timer, hapd, sta);
+ #endif /* CONFIG_WNM_AP */
+ 
++	os_free(sta->ifname_wds);
++
+ 	os_free(sta);
+ }
+ 
+--- a/src/ap/sta_info.h
++++ b/src/ap/sta_info.h
+@@ -254,6 +254,7 @@ struct sta_info {
+ #endif /* CONFIG_OWE */
+ 
+ 	u8 *ext_capability;
++	char *ifname_wds; /* WDS ifname, if in use */
+ 
+ #ifdef CONFIG_TESTING_OPTIONS
+ 	enum wpa_alg last_tk_alg;
+--- a/src/common/wpa_ctrl.h
++++ b/src/common/wpa_ctrl.h
+@@ -351,6 +351,10 @@ extern "C" {
+ #define STA_OPMODE_SMPS_MODE_CHANGED "STA-OPMODE-SMPS-MODE-CHANGED "
+ #define STA_OPMODE_N_SS_CHANGED "STA-OPMODE-N_SS-CHANGED "
+ 
++/* New interface addition or removal for 4addr WDS SDA */
++#define WDS_STA_INTERFACE_ADDED "WDS-STA-INTERFACE-ADDED "
++#define WDS_STA_INTERFACE_REMOVED "WDS-STA-INTERFACE-REMOVED "
++
+ /* BSS command information masks */
+ 
+ #define WPA_BSS_MASK_ALL		0xFFFDFFFF
+--- a/src/drivers/driver.h
++++ b/src/drivers/driver.h
+@@ -4625,6 +4625,13 @@ enum wpa_event_type {
+ 	 * must be always assumed that the MAC possibly changed.
+ 	 */
+ 	EVENT_INTERFACE_MAC_CHANGED,
++
++	/**
++	 * EVENT_WDS_STA_INTERFACE_STATUS - Notify WDS STA interface status
++	 *
++	 * This event is emitted when an interface is added/removed for WDS STA.
++	 */
++	EVENT_WDS_STA_INTERFACE_STATUS,
+ };
+ 
+ 
+@@ -5446,6 +5453,18 @@ union wpa_event_data {
+ 		enum chan_width chan_width;
+ 		u8 rx_nss;
+ 	} sta_opmode;
++
++	/**
++	 * struct wds_sta_interface - Data for EVENT_WDS_STA_INTERFACE_STATUS.
++	 */
++	struct wds_sta_interface {
++		const u8 *sta_addr;
++		const char *ifname;
++		enum {
++			INTERFACE_ADDED,
++			INTERFACE_REMOVED
++		} istatus;
++	} wds_sta_interface;
+ };
+ 
+ /**
+--- a/src/drivers/driver_common.c
++++ b/src/drivers/driver_common.c
+@@ -86,6 +86,7 @@ const char * event_to_string(enum wpa_ev
+ 	E2S(PORT_AUTHORIZED);
+ 	E2S(STATION_OPMODE_CHANGED);
+ 	E2S(INTERFACE_MAC_CHANGED);
++	E2S(WDS_STA_INTERFACE_STATUS);
+ 	}
+ 
+ 	return "UNKNOWN";
+--- a/src/drivers/driver_nl80211.c
++++ b/src/drivers/driver_nl80211.c
+@@ -6560,6 +6560,7 @@ static int i802_set_wds_sta(void *priv,
+ 	struct i802_bss *bss = priv;
+ 	struct wpa_driver_nl80211_data *drv = bss->drv;
+ 	char name[IFNAMSIZ + 1];
++	union wpa_event_data event;
+ 
+ 	os_snprintf(name, sizeof(name), "%s.sta%d", bss->ifname, aid);
+ 	if (ifname_wds)
+@@ -6578,6 +6579,14 @@ static int i802_set_wds_sta(void *priv,
+ 			    linux_br_add_if(drv->global->ioctl_sock,
+ 					    bridge_ifname, name) < 0)
+ 				return -1;
++
++			os_memset(&event, 0, sizeof(event));
++			event.wds_sta_interface.sta_addr = addr;
++			event.wds_sta_interface.ifname = name;
++			event.wds_sta_interface.istatus = INTERFACE_ADDED;
++			wpa_supplicant_event(drv->ctx,
++					     EVENT_WDS_STA_INTERFACE_STATUS,
++					     &event);
+ 		}
+ 		if (linux_set_iface_flags(drv->global->ioctl_sock, name, 1)) {
+ 			wpa_printf(MSG_ERROR, "nl80211: Failed to set WDS STA "
+@@ -6591,6 +6600,12 @@ static int i802_set_wds_sta(void *priv,
+ 
+ 		i802_set_sta_vlan(priv, addr, bss->ifname, 0);
+ 		nl80211_remove_iface(drv, if_nametoindex(name));
++		os_memset(&event, 0, sizeof(event));
++		event.wds_sta_interface.sta_addr = addr;
++		event.wds_sta_interface.ifname = name;
++		event.wds_sta_interface.istatus = INTERFACE_REMOVED;
++		wpa_supplicant_event(drv->ctx, EVENT_WDS_STA_INTERFACE_STATUS,
++				     &event);
+ 		return 0;
+ 	}
+ }
