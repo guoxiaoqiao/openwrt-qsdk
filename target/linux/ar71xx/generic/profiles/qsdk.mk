@@ -103,7 +103,7 @@ define Profile/QSDK_Premium_Router
 	$(Profile/QSDK_Test)
 	NAME:=Qualcomm-Atheros SDK Premium Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
-	  streamboost kmod-fast-classifier $(STORAGE) $(PACKAGES_WIFI_10_2) \
+	  streamboost kmod-shortcut-fe-cm $(STORAGE) $(PACKAGES_WIFI_10_2) \
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-hnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand \
@@ -128,7 +128,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	$(Profile/QSDK_Base)
 	NAME:=Qualcomm-Atheros SDK Premium Beeliner Router Profile
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
-	  kmod-fast-classifier $(STORAGE) $(PACKAGES_WIFI) \
+	  kmod-shortcut-fe-cm $(STORAGE) $(PACKAGES_WIFI) \
 	  qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M kmod-qca-ssdk-hnat \
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand \
