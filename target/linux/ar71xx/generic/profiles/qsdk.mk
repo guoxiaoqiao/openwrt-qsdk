@@ -100,7 +100,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	PACKAGES+= -kmod-ath9k -kmod-ath5k -kmod-ath -wpad-mini luci-app-samba \
 	  $(STORAGE) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) \
 	  $(SWITCH_SSDK_HNAT_PKGS) $(UBOOT_PKGS) $(HYFI) \
-	  mtd-utils mtd-utils-nandwrite kmod-fast-classifier
+	  mtd-utils mtd-utils-nandwrite kmod-shortcut-fe-cm
 endef
 
 define Profile/QSDK_Premium_Beeliner_Router/Description
