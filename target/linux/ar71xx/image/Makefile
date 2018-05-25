@@ -189,6 +189,7 @@ ap151_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),6336k(rootfs),
 ap151_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 apjet01_mtdlayout_32M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),30912k(rootfs),1472k(kernel),64k(art),32384k@0x50000(firmware)
 apjet01_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
+apjet01dual_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env),1664k(reserved1),64k(art);spi0.1:64m(rootfs),2m(kernel),62m(reserved2),66m@0x0(firmware)
 cus531_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 cus531_mtdlayout_32M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),256k(reserve)ro,16128k(user),16000k@0x50000(firmware)
 cus531_mtdlayout_dual=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware);spi0.1:16m(user)
@@ -868,6 +869,7 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP152_16M,ap152-16M,AP152,ttyS0,11
 $(eval $(call SingleProfile,AthLzma,$(fs_128k),AP152DUAL,ap152-dual,AP152,ttyS0,115200,$$(ap152dual_mtdlayout),2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),APJET01,apjet01,APJET01,ttyS0,115200,$$(apjet01_mtdlayout),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),APJET01_32M,apjet01-32M,APJET01,ttyS0,115200,$$(apjet01_mtdlayout_32M),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_128k),APJET01DUAL,apjet01-dual,APJET01,ttyS0,115200,$$(apjet01dual_mtdlayout),2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_16M,cus531-16M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_32M,cus531-32M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_32M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_32M_DUAL,cus531-32M-dual,CUS531,ttyS0,115200,,1507328,14876672,RKuImage))
@@ -1106,6 +1108,7 @@ define Image/Build/Profile/QSDK_Premium_Beeliner_Router
 	$(call Image/Build/Profile/AP147_16M,$(1))
 	$(call Image/Build/Profile/APJET01,$(1))
 	$(call Image/Build/Profile/APJET01_32M,$(1))
+	$(call Image/Build/Profile/APJET01DUAL,$(1))
 	$(call Image/Build/Profile/DB120_16M,$(1))
 endef
 

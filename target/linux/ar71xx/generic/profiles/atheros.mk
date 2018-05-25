@@ -155,6 +155,17 @@ endef
 
 $(eval $(call Profile,APJET01))
 
+define Profile/APJET01DUAL
+        NAME:=QCA APJET01 DUAL reference board
+        PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+endef
+
+define Profile/APJET01DUAL/Description
+        Package set optimized for the QCA APJET01 DUAL reference board.
+endef
+
+$(eval $(call Profile,APJET01DUAL))
+
 define Profile/AP81
 	NAME:=Atheros AP81 reference board
 	PACKAGES:=kmod-usb-core kmod-usb2

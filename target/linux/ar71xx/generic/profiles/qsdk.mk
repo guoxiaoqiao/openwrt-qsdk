@@ -133,7 +133,7 @@ define Profile/QSDK_Premium_Beeliner_Router
 	  qca-ssdk-shell qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	  mtd-utils mtd-utils-nandwrite qca-legacy-uboot-ap135-nand qca-legacy-uboot-apjet01-32M \
 	  qca-legacy-uboot-db12x-16M qca-legacy-uboot-ap152-dual ip6tables $(HYFI) \
-	  qca-legacy-uboot-apjet01
+	  qca-legacy-uboot-apjet01 qca-legacy-uboot-apjet01-dual
 endef
 
 define Profile/QSDK_Premium_Beeliner_Router/Description
