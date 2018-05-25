@@ -1,0 +1,89 @@
+diff --git a/drivers/mtd/nand/ath79_spinand.c b/drivers/mtd/nand/ath79_spinand.c
+index 3c2fca9..bee46fc 100644
+--- a/drivers/mtd/nand/ath79_spinand.c
++++ b/drivers/mtd/nand/ath79_spinand.c
+@@ -75,6 +75,7 @@
+ 
+ struct ath79_spinand_priv {
+ 	u8 			mfr;
++	u8			devid;
+ 	u8			ecc_error;
+ 	int			ecc_size;
+ 	int			ecc_bytes;
+@@ -1036,6 +1037,7 @@ static inline int ath79_spinand_program_execute_win(struct spi_device *spi_nand,
+ static struct ath79_spinand_priv ath79_spinand_ids[] = {
+ 	{ /* Giga Device */
+ 		NAND_MFR_GIGADEVICE,			/* manufacturer */
++		0xa1,					/* device id */
+ 		0x07,					/* ecc error code */
+ 		512,					/* ecc size */
+ 		16,					/* ecc bytes */
+@@ -1051,6 +1053,7 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
+ 	},
+ 	{ /* Macronix */
+ 		NAND_MFR_MACRONIX,			/* manufacturer*/
++		0x12,					/* device id */
+ 		0x02,					/* ecc error code */
+ 		512,					/* ecc size */
+ 		7,					/* ecc bytes */
+@@ -1066,6 +1069,7 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
+ 	},
+ 	{ /* Winbond */
+ 		NAND_MFR_WINBOND,			/* manufacturer*/
++		0xaa,					/* device id*/
+ 		0x02,					/* ecc error code */
+ 		512,					/* ecc size */
+ 		10,					/* ecc bytes */
+@@ -1079,6 +1083,24 @@ static struct ath79_spinand_priv ath79_spinand_ids[] = {
+ 		ath79_spinand_page_read_to_cache_win,	/* page read to cache */
+ 		ath79_spinand_program_execute_win,	/* program execute */
+ 	},
++	{ /* Giga Device */
++		NAND_MFR_GIGADEVICE,			/* manufacturer */
++		0xd1,					/* device id*/
++		0x02,					/* ecc error code */
++		512,					/* ecc size */
++		16,					/* ecc bytes */
++/*		1,*/					/* ecc strength */
++		&ath79_spinand_oob_128_gd,		/* ecc layout */
++		&ath79_badblock_pattern_default,	/* bad block pattern */
++		ath79_spinand_eccsr_common,		/* get ecc status */
++		ath79_spinand_read_rdm_addr_common,	/* wrap address for 03h
++							   command */
++		ath79_spinand_program_load_gd,		/* program load data to
++							   cache */
++		ath79_spinand_erase_block_erase_common,	/* erase block */
++		ath79_spinand_page_read_to_cache_common,/* page read to cache */
++		ath79_spinand_program_execute_common,	/* program execute */
++	},
+ };
+ 
+ static void *ath79_spinand_priv_data_get(struct spi_device *spi_nand)
+@@ -1089,7 +1111,8 @@ static void *ath79_spinand_priv_data_get(struct spi_device *spi_nand)
+ 	ath79_spinand_read_id(spi_nand, id);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(ath79_spinand_ids); i++)
+-		if (ath79_spinand_ids[i].mfr == id[0])
++		if (ath79_spinand_ids[i].mfr == id[0] &&
++		    ath79_spinand_ids[i].devid == id[1])
+ 			return &ath79_spinand_ids[i];
+ 
+ 	return NULL;
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index 0c91ee9..7288b39 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -87,12 +87,12 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 	/* 1 Gigabit */
+ 	{"NAND 128MiB 1,8V 8-bit",	0xA1, 0, 128, 0, LP_OPTIONS},
+ 	{"NAND 128MiB 3,3V 8-bit",	0xF1, 0, 128, 0, LP_OPTIONS},
+-	{"NAND 128MiB 3,3V 8-bit",	0xD1, 0, 128, 0, LP_OPTIONS},
+ 	{"NAND 128MiB 1,8V 16-bit",	0xB1, 0, 128, 0, LP_OPTIONS16},
+ 	{"NAND 128MiB 3,3V 16-bit",	0xC1, 0, 128, 0, LP_OPTIONS16},
+ 	{"NAND 128MiB 1,8V 16-bit",     0xAD, 0, 128, 0, LP_OPTIONS16},
+ 	{"MX35LF1G4EAB 1G 3,3V 8-bit",	0x12, 2048, 128, 131072, 0},
+ 	{"W25N01GV 1G 3,3V 8-bit",	0xAA, 2048, 128, 131072, 0},
++	{"GD5F1GQ4xBxIG 1G 3,3V 8-bit",	0xD1, 2048, 128, 131072, 0},
+ 
+ 	/* 2 Gigabit */
+ 	{"NAND 256MiB 1,8V 8-bit",	0xAA, 0, 256, 0, LP_OPTIONS},
