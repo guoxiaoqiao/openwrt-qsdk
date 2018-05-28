@@ -2058,6 +2058,7 @@ $(eval $(call SingleProfile,AthDTBLzma,64k,AP152_8M_DTB,ap152-8M,,,,,RKuImage,15
 $(eval $(call SingleProfile,AthDTBLzma,64k,AP152_16M_DTB,ap152-16M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_ap152))
 $(eval $(call SingleProfile,AthDTBLzma,128k,AP152DUAL_DTB,ap152-dual,,,,,RKuImage,2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),ath79_ap152_dual))
 $(eval $(call SingleProfile,AthDTBLzma,64k,APJET01_DTB,apjet01,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_apjet01))
+$(eval $(call SingleProfile,AthDTBLzma,64k,APJET01_32M_DTB,apjet01-32M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_apjet01_32M))
 $(eval $(call SingleProfile,AthDTBLzma,64k,DB120_8M_DTB,db120-8M,,,,,RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE),ath79_db120_8M))
 $(eval $(call SingleProfile,AthDTBLzma,64k,DB120_16M_DTB,db120-16M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_db120))
 
@@ -2336,6 +2337,7 @@ define Image/Build/Profile/QSDK_Premium_Beeliner_Router
 	$(call Image/Build/Profile/AP151_16M_DTB,$(1))
 	$(call Image/Build/Profile/AP147_16M_DTB,$(1))
 	$(call Image/Build/Profile/APJET01_DTB,$(1))
+	$(call Image/Build/Profile/APJET01_32M_DTB,$(1))
 	$(call Image/Build/Profile/DB120_16M_DTB,$(1))
 endef
 
