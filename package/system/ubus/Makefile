@@ -50,7 +50,8 @@ define Package/libubus-lua
   TITLE:=Lua binding for the OpenWrt RPC client
 endef
 
-TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include
+TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include -fpie
+TARGET_LDFLAGS += -pie
 
 CMAKE_OPTIONS = \
 	-DLUAPATH=/usr/lib/lua
