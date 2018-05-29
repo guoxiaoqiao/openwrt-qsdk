@@ -33,6 +33,7 @@ define Package/libnl/description
 endef
 
 TARGET_CFLAGS += -ffunction-sections $(FPIC)
+TARGET_LDFLAGS += -pie
 
 define Build/Compile
 	$(call Build/Compile/Default)
