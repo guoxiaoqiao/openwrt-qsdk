@@ -92,6 +92,7 @@ define Build/Configure
 endef
 
 TARGET_CFLAGS += -DLUA_USE_LINUX $(FPIC) -std=gnu99
+TARGET_LDFLAGS += -pie
 
 ifneq ($(CONFIG_USE_GLIBC),)
   ifeq ($(CONFIG_EGLIBC_OPTION_EGLIBC_UTMP),)
