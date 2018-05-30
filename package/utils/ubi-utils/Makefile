@@ -30,6 +30,8 @@ PKG_LICENSE_FILES:=
 PKG_MAINTAINER:=John Crispin <blogic@openwrt.org>
 
 include $(INCLUDE_DIR)/package.mk
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
 
 define Package/ubi-utils
   TITLE:=Utilities for ubi info/debug
