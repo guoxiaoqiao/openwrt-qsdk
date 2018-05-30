@@ -156,7 +156,8 @@ define Build/Configure
 		depend
 endef
 
-TARGET_CFLAGS += $(FPIC)
+TARGET_CFLAGS += $(FPIC) -fpie
+TARGET_LDFLAGS += -pie
 
 define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
