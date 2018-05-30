@@ -32,6 +32,9 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/include/rpcd $(1)/usr/include/
 endef
 
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
+
 define Package/rpcd/default
   SECTION:=utils
   CATEGORY:=Base system
