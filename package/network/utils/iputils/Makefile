@@ -22,7 +22,8 @@ PKG_BUILD_DEPENDS:=sysfsutils
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-s$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
-
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
 
 define Package/iputils/Default
   SECTION:=net
