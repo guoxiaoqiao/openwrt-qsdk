@@ -31,7 +31,8 @@ PKG_CONFIG_DEPENDS:= CONFIG_KERNEL_SECCOMP CONFIG_NAND_SUPPORT CONFIG_PROCD_SHOW
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-lrt)
+TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-lrt) -pie
+TARGET_CFLAGS += -fpie
 
 define Package/procd
   SECTION:=base
