@@ -77,8 +77,8 @@ CONFIGURE_ARGS += \
 	--disable-zlib \
 	--enable-bundled-libtom
 
-TARGET_CFLAGS += -DDEFAULT_PATH=\\\"$(TARGET_INIT_PATH)\\\" -DARGTYPE=3 -ffunction-sections -fdata-sections
-TARGET_LDFLAGS += -Wl,--gc-sections
+TARGET_CFLAGS += -DDEFAULT_PATH=\\\"$(TARGET_INIT_PATH)\\\" -DARGTYPE=3 -ffunction-sections -fdata-sections -fpie
+TARGET_LDFLAGS += -Wl,--gc-sections -pie
 
 define Build/Configure
 	$(Build/Configure/Default)
