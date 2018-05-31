@@ -44,7 +44,8 @@ CONFIGURE_ARGS += \
 	--without-udev		\
 	$(if $(CONFIG_PACKAGE_cal)$(CONFIG_PACKAGE_cfdisk)$(CONFIG_PACKAGE_setterm),--with-ncurses,--without-ncurses)
 
-TARGET_CFLAGS += $(FPIC) -std=gnu99
+TARGET_CFLAGS += $(FPIC) -std=gnu99 -fpie
+TARGET_LDFLAGS += -pie
 
 define Build/InstallDev
 	$(MAKE) -C $(PKG_BUILD_DIR) \
