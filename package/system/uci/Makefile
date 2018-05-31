@@ -55,8 +55,8 @@ define Package/libuci-lua
   TITLE:=Lua plugin for UCI
 endef
 
-TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include
-TARGET_LDFLAGS += -L$(STAGING_DIR)/usr/lib
+TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include -fpie
+TARGET_LDFLAGS += -L$(STAGING_DIR)/usr/lib -pie
 
 CMAKE_OPTIONS = \
 	-DLUAPATH=/usr/lib/lua \
