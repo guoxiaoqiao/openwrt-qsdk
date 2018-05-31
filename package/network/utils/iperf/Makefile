@@ -24,6 +24,8 @@ PKG_CHECK_FORMAT_SECURITY:=0
 
 include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
 
 define Package/iperf/Default
   SECTION:=net
