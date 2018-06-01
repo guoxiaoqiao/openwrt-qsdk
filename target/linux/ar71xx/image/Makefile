@@ -867,7 +867,7 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP152_8M,ap152-8M,AP152,ttyS0,1152
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP152_16M,ap152-16M,AP152,ttyS0,115200,$$(ap152_mtdlayout_16M),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_128k),AP152DUAL,ap152-dual,AP152,ttyS0,115200,$$(ap152dual_mtdlayout),2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),APJET01,apjet01,APJET01,ttyS0,115200,$$(apjet01_mtdlayout),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
-$(eval $(call SingleProfile,AthLzma,$(fs_64k),APJET01,apjet01-32M,APJET01,ttyS0,115200,$$(apjet01_mtdlayout_32M),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),APJET01_32M,apjet01-32M,APJET01,ttyS0,115200,$$(apjet01_mtdlayout_32M),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_16M,cus531-16M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_32M,cus531-32M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_32M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_32M_DUAL,cus531-32M-dual,CUS531,ttyS0,115200,,1507328,14876672,RKuImage))
