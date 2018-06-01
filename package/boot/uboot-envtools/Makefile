@@ -48,13 +48,13 @@ define Build/Configure
 	touch $(PKG_BUILD_DIR)/include/config.h
 endef
 
-TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include
+TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include -fpie
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
 		TARGET_CFLAGS="$(TARGET_CFLAGS)" \
-		HOSTLDFLAGS="-znow -zrelro" \
+		HOSTLDFLAGS="$(TARGET_LDFLAGS) -pie" \
 		UBI="$(CONFIG_UBOOT_ENVTOOLS_UBI)" \
 		env
 endef
