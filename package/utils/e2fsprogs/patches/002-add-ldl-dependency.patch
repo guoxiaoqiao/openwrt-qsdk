@@ -1,7 +1,7 @@
 Index: e2fsprogs-1.42.12/lib/ss/ss.pc.in
 ===================================================================
---- e2fsprogs-1.42.12.orig/lib/ss/ss.pc.in	2017-04-17 17:19:36.791869636 +0530
-+++ e2fsprogs-1.42.12/lib/ss/ss.pc.in	2017-04-17 17:19:36.787869610 +0530
+--- e2fsprogs-1.42.12.orig/lib/ss/ss.pc.in	2018-06-04 13:49:35.209958496 +0530
++++ e2fsprogs-1.42.12/lib/ss/ss.pc.in	2018-06-04 13:49:35.205958502 +0530
 @@ -8,5 +8,5 @@
  Version: @E2FSPROGS_VERSION@
  Requires.private: com_err
@@ -11,8 +11,8 @@ Index: e2fsprogs-1.42.12/lib/ss/ss.pc.in
  Libs.private: @DLOPEN_LIB@
 Index: e2fsprogs-1.42.12/debugfs/Makefile.in
 ===================================================================
---- e2fsprogs-1.42.12.orig/debugfs/Makefile.in	2017-04-17 17:19:36.791869636 +0530
-+++ e2fsprogs-1.42.12/debugfs/Makefile.in	2017-04-17 17:19:36.787869610 +0530
+--- e2fsprogs-1.42.12.orig/debugfs/Makefile.in	2018-06-04 13:49:35.209958496 +0530
++++ e2fsprogs-1.42.12/debugfs/Makefile.in	2018-06-04 13:49:35.205958502 +0530
 @@ -52,7 +52,7 @@
  
  debugfs: $(DEBUG_OBJS) $(DEPLIBS)
@@ -24,8 +24,8 @@ Index: e2fsprogs-1.42.12/debugfs/Makefile.in
  	$(E) "	LD $@"
 Index: e2fsprogs-1.42.12/tests/progs/Makefile.in
 ===================================================================
---- e2fsprogs-1.42.12.orig/tests/progs/Makefile.in	2017-04-17 17:19:36.791869636 +0530
-+++ e2fsprogs-1.42.12/tests/progs/Makefile.in	2017-04-17 17:20:27.260206892 +0530
+--- e2fsprogs-1.42.12.orig/tests/progs/Makefile.in	2018-06-04 13:49:35.209958496 +0530
++++ e2fsprogs-1.42.12/tests/progs/Makefile.in	2018-06-04 13:49:35.205958502 +0530
 @@ -37,7 +37,7 @@
  
  crcsum: crcsum.o $(DEPLIBS)
@@ -44,3 +44,16 @@ Index: e2fsprogs-1.42.12/tests/progs/Makefile.in
  
  test_icount_cmds.c: test_icount_cmds.ct
  	$(E) "	MK_CMDS $@"
+Index: e2fsprogs-1.42.12/misc/Makefile.in
+===================================================================
+--- e2fsprogs-1.42.12.orig/misc/Makefile.in	2014-08-03 05:11:18.000000000 +0530
++++ e2fsprogs-1.42.12/misc/Makefile.in	2018-06-04 13:50:06.193914011 +0530
+@@ -240,7 +240,7 @@
+ mke2fs: $(MKE2FS_OBJS) $(DEPLIBS) $(LIBE2P) $(DEPLIBBLKID) $(DEPLIBUUID) \
+ 		$(DEPLIBQUOTA) $(LIBEXT2FS)
+ 	$(E) "	LD $@"
+-	$(Q) $(CC) $(ALL_LDFLAGS) -o mke2fs $(MKE2FS_OBJS) $(LIBS) $(LIBBLKID) \
++	$(Q) $(CC) $(ALL_LDFLAGS) -pie -o mke2fs $(MKE2FS_OBJS) $(LIBS) $(LIBBLKID) \
+ 		$(LIBUUID) $(LIBQUOTA) $(LIBEXT2FS) $(LIBE2P) $(LIBINTL) \
+ 		$(SYSLIBS)
+ 
