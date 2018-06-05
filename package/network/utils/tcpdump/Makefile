@@ -53,8 +53,8 @@ CONFIGURE_ARGS += \
 	--enable-ipv6
 endif
 
-TARGET_CFLAGS += -ffunction-sections -fdata-sections
-TARGET_LDFLAGS += -Wl,--gc-sections
+TARGET_CFLAGS += -ffunction-sections -fdata-sections -fpie
+TARGET_LDFLAGS += -Wl,--gc-sections -pie
 
 CONFIGURE_VARS += \
 	BUILD_CC="$(TARGET_CC)" \
