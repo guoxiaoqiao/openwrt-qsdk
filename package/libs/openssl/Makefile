@@ -214,6 +214,7 @@ define Package/openssl-util/install
 	chmod 0700 $(1)/etc/ssl/private
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/openssl $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/c_rehash $(1)/usr/bin/
 endef
 
 $(eval $(call BuildPackage,libopenssl))
