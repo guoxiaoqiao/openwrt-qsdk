@@ -876,7 +876,7 @@ config BUSYBOX_DEFAULT_PIPE_PROGRESS
 	default n
 config BUSYBOX_DEFAULT_RUN_PARTS
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_RUN_PARTS_LONG_OPTIONS
 	bool
 	default n
