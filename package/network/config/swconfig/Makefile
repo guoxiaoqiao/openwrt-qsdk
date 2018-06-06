@@ -30,6 +30,9 @@ TARGET_CPPFLAGS := \
 	$(TARGET_CPPFLAGS) \
 	-I$(LINUX_DIR)/user_headers/include
 
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
+
 define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 	$(CP) ./src/* $(PKG_BUILD_DIR)/
