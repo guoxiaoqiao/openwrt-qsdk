@@ -52,6 +52,8 @@ define Package/ca-certificates/install
 		done ; \
 		$(LN) "$$$$CERTFILE" "$(1)/etc/ssl/certs/$$$$HASH.$$$$SUFFIX" ; \
 	done
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/update-ca-certificates $(1)/usr/sbin/
 endef
 
 define Package/ca-bundle/install
