@@ -23,6 +23,9 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/cmake.mk
 
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
+
 define Package/usign
   SECTION:=base
   CATEGORY:=Base system
