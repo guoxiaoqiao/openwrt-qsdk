@@ -1,6 +1,6 @@
 --- a/nl80211.h
 +++ b/nl80211.h
-@@ -2660,6 +2660,7 @@ enum nl80211_sta_bss_param {
+@@ -2904,6 +2904,7 @@ enum nl80211_sta_bss_param {
   * @NL80211_STA_INFO_RX_DURATION: aggregate PPDU duration for all frames
   *	received from the station (u64, usec)
   * @NL80211_STA_INFO_PAD: attribute used for padding for 64-bit alignment
@@ -8,7 +8,7 @@
   * @__NL80211_STA_INFO_AFTER_LAST: internal
   * @NL80211_STA_INFO_MAX: highest possible station info attribute
   */
-@@ -2698,6 +2699,7 @@ enum nl80211_sta_info {
+@@ -2942,6 +2943,7 @@ enum nl80211_sta_info {
  	NL80211_STA_INFO_TID_STATS,
  	NL80211_STA_INFO_RX_DURATION,
  	NL80211_STA_INFO_PAD,
@@ -18,7 +18,7 @@
  	__NL80211_STA_INFO_AFTER_LAST,
 --- a/station.c
 +++ b/station.c
-@@ -237,6 +237,7 @@ static int print_sta_handler(struct nl_m
+@@ -239,6 +239,7 @@ static int print_sta_handler(struct nl_m
  		[NL80211_STA_INFO_TID_STATS] = { .type = NLA_NESTED },
  		[NL80211_STA_INFO_BSS_PARAM] = { .type = NLA_NESTED },
  		[NL80211_STA_INFO_RX_DURATION] = { .type = NLA_U64 },
@@ -26,7 +26,7 @@
  	};
  	char *chain;
  
-@@ -338,6 +339,9 @@ static int print_sta_handler(struct nl_m
+@@ -340,6 +341,9 @@ static int print_sta_handler(struct nl_m
  		printf("\n\trx duration:\t%lld us",
  		       (unsigned long long)nla_get_u64(sinfo[NL80211_STA_INFO_RX_DURATION]));
  
