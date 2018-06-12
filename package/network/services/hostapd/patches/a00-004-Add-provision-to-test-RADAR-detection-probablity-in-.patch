@@ -1,6 +1,6 @@
 --- a/hostapd/config_file.c
 +++ b/hostapd/config_file.c
-@@ -2256,6 +2256,8 @@ static int hostapd_config_fill(struct ho
+@@ -2422,6 +2422,8 @@ static int hostapd_config_fill(struct ho
  		conf->ieee80211d = atoi(pos);
  	} else if (os_strcmp(buf, "ieee80211h") == 0) {
  		conf->ieee80211h = atoi(pos);
@@ -11,7 +11,7 @@
  	} else if (os_strcmp(buf, "eapol_version") == 0) {
 --- a/src/ap/ap_config.h
 +++ b/src/ap/ap_config.h
-@@ -736,6 +736,7 @@ struct hostapd_config {
+@@ -751,6 +751,7 @@ struct hostapd_config {
  	int ieee80211d;
  
  	int ieee80211h; /* DFS */
@@ -143,7 +143,7 @@
  int hostapd_dfs_complete_cac(struct hostapd_iface *iface, int success, int freq,
 --- a/src/ap/hostapd.c
 +++ b/src/ap/hostapd.c
-@@ -2540,6 +2540,7 @@ int hostapd_disable_iface(struct hostapd
+@@ -2616,6 +2616,7 @@ int hostapd_disable_iface(struct hostapd
  		!!(hapd_iface->drv_flags &
  		   WPA_DRIVER_FLAGS_AP_TEARDOWN_SUPPORT);
  

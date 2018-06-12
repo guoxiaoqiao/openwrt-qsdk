@@ -1,6 +1,6 @@
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
-@@ -10711,6 +10711,7 @@ const struct wpa_driver_ops wpa_driver_n
+@@ -10738,6 +10738,7 @@ const struct wpa_driver_ops wpa_driver_n
  #endif /* CONFIG_DRIVER_NL80211_QCA */
  	.configure_data_frame_filters = nl80211_configure_data_frame_filters,
  	.get_ext_capab = nl80211_get_ext_capab,
@@ -169,7 +169,7 @@
  #endif /* CONFIG_TDLS */
  	void (*set_rekey_offload)(void *ctx, const u8 *kek, size_t kek_len,
  				  const u8 *kck, size_t kck_len,
-@@ -421,6 +423,7 @@ int wpa_tdls_enable_chan_switch(struct w
+@@ -430,6 +432,7 @@ int wpa_tdls_enable_chan_switch(struct w
  				u8 oper_class,
  				struct hostapd_freq_params *freq_params);
  int wpa_tdls_disable_chan_switch(struct wpa_sm *sm, const u8 *addr);
@@ -192,7 +192,7 @@
  #endif /* CONFIG_TDLS */
  
  #ifdef CONFIG_IEEE80211R
-@@ -301,11 +307,15 @@ static inline void wpa_sm_set_rekey_offl
+@@ -304,11 +310,15 @@ static inline void wpa_sm_set_rekey_offl
  static inline int wpa_sm_tdls_get_capa(struct wpa_sm *sm,
  				       int *tdls_supported,
  				       int *tdls_ext_setup,
@@ -210,7 +210,7 @@
  	return -1;
  }
  
-@@ -374,6 +384,14 @@ wpa_sm_tdls_disable_channel_switch(struc
+@@ -377,6 +387,14 @@ wpa_sm_tdls_disable_channel_switch(struc
  		return sm->ctx->tdls_disable_channel_switch(sm->ctx->ctx, addr);
  	return -1;
  }
@@ -227,7 +227,7 @@
  static inline int wpa_sm_key_mgmt_set_pmk(struct wpa_sm *sm,
 --- a/wpa_supplicant/config.c
 +++ b/wpa_supplicant/config.c
-@@ -4085,6 +4085,8 @@ struct wpa_config * wpa_config_alloc_emp
+@@ -4193,6 +4193,8 @@ struct wpa_config * wpa_config_alloc_emp
  		config->driver_param = os_strdup(driver_param);
  	config->gas_rand_addr_lifetime = DEFAULT_RAND_ADDR_LIFETIME;
  
@@ -236,7 +236,7 @@
  	return config;
  }
  
-@@ -4805,6 +4807,7 @@ static const struct global_parse_data gl
+@@ -4913,6 +4915,7 @@ static const struct global_parse_data gl
  	{ INT(gas_rand_addr_lifetime), 0 },
  	{ INT_RANGE(gas_rand_mac_addr, 0, 2), 0 },
  	{ INT_RANGE(dpp_config_processing, 0, 2), 0 },
@@ -254,7 +254,7 @@
  
  #include "config_ssid.h"
  #include "wps/wps.h"
-@@ -1433,6 +1434,15 @@ struct wpa_config {
+@@ -1469,6 +1470,15 @@ struct wpa_config {
  	 *	profile automatically
  	 */
  	int dpp_config_processing;
@@ -272,7 +272,7 @@
  
 --- a/wpa_supplicant/config_file.c
 +++ b/wpa_supplicant/config_file.c
-@@ -1494,6 +1494,9 @@ static void wpa_config_write_global(FILE
+@@ -1511,6 +1511,9 @@ static void wpa_config_write_global(FILE
  	if (config->dpp_config_processing)
  		fprintf(f, "dpp_config_processing=%d\n",
  			config->dpp_config_processing);
@@ -299,7 +299,7 @@
  #endif /* DRIVER_I_H */
 --- a/wpa_supplicant/wpa_supplicant.conf
 +++ b/wpa_supplicant/wpa_supplicant.conf
-@@ -1392,6 +1392,18 @@ fast_reauth=1
+@@ -1419,6 +1419,18 @@ fast_reauth=1
  # Transitioning between states).
  #fst_llt=100
  

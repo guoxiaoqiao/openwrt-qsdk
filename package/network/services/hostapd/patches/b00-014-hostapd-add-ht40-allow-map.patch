@@ -1,6 +1,6 @@
 --- a/hostapd/ctrl_iface.c
 +++ b/hostapd/ctrl_iface.c
-@@ -2702,6 +2702,92 @@ set:
+@@ -2715,6 +2715,92 @@ set:
  	return ret;
  }
  
@@ -93,7 +93,7 @@
  
  static int hostapd_ctrl_iface_remove_neighbor(struct hostapd_data *hapd,
  					      char *buf)
-@@ -3296,6 +3382,10 @@ static int hostapd_ctrl_iface_receive_pr
+@@ -3309,6 +3395,10 @@ static int hostapd_ctrl_iface_receive_pr
  	} else if (os_strncmp(buf, "SIGNAL_TXRATE", 13) == 0) {
  		if (hostapd_ctrl_iface_signal_txrate(hapd, buf + 13))
  			reply_len = -1;

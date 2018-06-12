@@ -36,7 +36,7 @@
  LIBS += $(DRV_AP_LIBS)
  
  ifdef CONFIG_L2_PACKET
-@@ -1270,6 +1276,12 @@ install: $(addprefix $(DESTDIR)$(BINDIR)
+@@ -1274,6 +1280,12 @@ install: $(addprefix $(DESTDIR)$(BINDIR)
  
  BCHECK=../src/drivers/build.hostapd
  
@@ -49,7 +49,7 @@
  hostapd: $(BCHECK) $(OBJS)
  	$(Q)$(CC) $(LDFLAGS) -o hostapd $(OBJS) $(LIBS)
  	@$(E) "  LD " $@
-@@ -1315,6 +1327,12 @@ ifeq ($(CONFIG_TLS), linux)
+@@ -1316,6 +1328,12 @@ ifeq ($(CONFIG_TLS), linux)
  HOBJS += ../src/crypto/crypto_linux.o
  endif
  
@@ -86,8 +86,8 @@
  #endif /* CONFIG_DPP */
 --- a/src/ap/drv_callbacks.c
 +++ b/src/ap/drv_callbacks.c
-@@ -1473,7 +1473,7 @@ static void hostapd_event_dfs_cac_starte
- #endif /* NEED_AP_MLME */
+@@ -1519,7 +1519,7 @@ static void hostapd_event_wds_sta_interf
+ }
  
  
 -void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
@@ -95,7 +95,7 @@
  			  union wpa_event_data *data)
  {
  	struct hostapd_data *hapd = ctx;
-@@ -1694,8 +1694,8 @@ void wpa_supplicant_event(void *ctx, enu
+@@ -1746,8 +1746,8 @@ void wpa_supplicant_event(void *ctx, enu
  }
  
  
@@ -108,7 +108,7 @@
  	struct hostapd_data *hapd;
 --- a/src/drivers/driver.h
 +++ b/src/drivers/driver.h
-@@ -5427,8 +5427,8 @@ union wpa_event_data {
+@@ -5446,8 +5446,8 @@ union wpa_event_data {
   * Driver wrapper code should call this function whenever an event is received
   * from the driver.
   */
@@ -119,7 +119,7 @@
  
  /**
   * wpa_supplicant_event_global - Report a driver event for wpa_supplicant
-@@ -5440,7 +5440,7 @@ void wpa_supplicant_event(void *ctx, enu
+@@ -5459,7 +5459,7 @@ void wpa_supplicant_event(void *ctx, enu
   * Same as wpa_supplicant_event(), but we search for the interface in
   * wpa_global.
   */
@@ -151,7 +151,7 @@
  
  ifndef CONFIG_NO_GITVER
  # Add VERSION_STR postfix for builds from a git repository
-@@ -866,6 +867,10 @@ ifdef CONFIG_DYNAMIC_EAP_METHODS
+@@ -862,6 +863,10 @@ ifdef CONFIG_DYNAMIC_EAP_METHODS
  CFLAGS += -DCONFIG_DYNAMIC_EAP_METHODS
  LIBS += -ldl -rdynamic
  endif
@@ -162,7 +162,7 @@
  endif
  
  ifdef CONFIG_AP
-@@ -873,9 +878,11 @@ NEED_EAP_COMMON=y
+@@ -869,9 +874,11 @@ NEED_EAP_COMMON=y
  NEED_RSN_AUTHENTICATOR=y
  CFLAGS += -DCONFIG_AP
  OBJS += ap.o
@@ -174,7 +174,7 @@
  OBJS += ../src/ap/hostapd.o
  OBJS += ../src/ap/wpa_auth_glue.o
  OBJS += ../src/ap/utils.o
-@@ -957,6 +964,12 @@ endif
+@@ -953,6 +960,12 @@ endif
  ifdef CONFIG_HS20
  OBJS += ../src/ap/hs20.o
  endif
@@ -187,7 +187,7 @@
  endif
  
  ifdef CONFIG_MBO
-@@ -965,7 +978,9 @@ CFLAGS += -DCONFIG_MBO
+@@ -961,7 +974,9 @@ CFLAGS += -DCONFIG_MBO
  endif
  
  ifdef NEED_RSN_AUTHENTICATOR
@@ -197,7 +197,7 @@
  NEED_AES_WRAP=y
  OBJS += ../src/ap/wpa_auth.o
  OBJS += ../src/ap/wpa_auth_ie.o
-@@ -1895,6 +1910,12 @@ wpa_priv: $(BCHECK) $(OBJS_priv)
+@@ -1888,6 +1903,12 @@ wpa_priv: $(BCHECK) $(OBJS_priv)
  
  $(OBJS_c) $(OBJS_t) $(OBJS_t2) $(OBJS) $(BCHECK) $(EXTRA_progs): .config
  
@@ -210,7 +210,7 @@
  wpa_supplicant: $(BCHECK) $(OBJS) $(EXTRA_progs)
  	$(Q)$(LDO) $(LDFLAGS) -o wpa_supplicant $(OBJS) $(LIBS) $(EXTRALIBS)
  	@$(E) "  LD " $@
-@@ -1997,6 +2018,12 @@ endif
+@@ -1990,6 +2011,12 @@ endif
  		-e 's|\@DBUS_INTERFACE\@|$(DBUS_INTERFACE)|g' $< >$@
  	@$(E) "  sed" $<
  
@@ -260,7 +260,7 @@
  	os_memset(&eapol_test, 0, sizeof(eapol_test));
 --- a/wpa_supplicant/events.c
 +++ b/wpa_supplicant/events.c
-@@ -3812,7 +3812,7 @@ static void wpa_supplicant_event_assoc_a
+@@ -3982,7 +3982,7 @@ static void wpas_event_assoc_reject(stru
  }
  
  
@@ -269,7 +269,7 @@
  			  union wpa_event_data *data)
  {
  	struct wpa_supplicant *wpa_s = ctx;
-@@ -4631,7 +4631,7 @@ void wpa_supplicant_event(void *ctx, enu
+@@ -4750,7 +4750,7 @@ void wpa_supplicant_event(void *ctx, enu
  }
  
  
@@ -311,7 +311,7 @@
  	os_memset(&global, 0, sizeof(global));
 --- a/wpa_supplicant/wpa_supplicant.c
 +++ b/wpa_supplicant/wpa_supplicant.c
-@@ -5083,6 +5083,10 @@ int radio_add_work(struct wpa_supplicant
+@@ -5202,6 +5202,10 @@ int radio_add_work(struct wpa_supplicant
  	return 0;
  }
  
@@ -322,7 +322,7 @@
  
  /**
   * radio_work_done - Indicate that a radio work item has been completed
-@@ -5972,6 +5976,9 @@ struct wpa_global * wpa_supplicant_init(
+@@ -6088,6 +6092,9 @@ struct wpa_global * wpa_supplicant_init(
  	wpa_msg_register_ifname_cb(wpa_supplicant_msg_ifname_cb);
  #endif /* CONFIG_NO_WPA_MSG */
  
