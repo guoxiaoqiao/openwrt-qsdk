@@ -30,6 +30,9 @@ CONFIGURE_PATH:=source3
 
 PKG_BUILD_BIN:=$(PKG_BUILD_DIR)/$(MAKE_PATH)/bin
 
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
+
 define Package/samba36-server
   SECTION:=net
   CATEGORY:=Network
