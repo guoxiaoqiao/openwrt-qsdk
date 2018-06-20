@@ -101,7 +101,7 @@
  /* Configure default/group WEP keys for static WEP */
  int wpa_set_wep_keys(struct wpa_supplicant *wpa_s, struct wpa_ssid *ssid)
  {
-@@ -897,8 +946,12 @@ void wpa_supplicant_set_state(struct wpa
+@@ -917,8 +966,12 @@ void wpa_supplicant_set_state(struct wpa
  		if (!fils_hlp_sent && ssid && ssid->eap.erp)
  			wpas_update_fils_connect_params(wpa_s);
  #endif /* CONFIG_FILS && IEEE8021X_EAPOL */
@@ -114,7 +114,7 @@
  		wpa_s->new_connection = 1;
  		wpa_drv_set_operstate(wpa_s, 0);
  #ifndef IEEE8021X_EAPOL
-@@ -5305,6 +5358,20 @@ static int wpa_supplicant_init_iface(str
+@@ -5424,6 +5477,20 @@ static int wpa_supplicant_init_iface(str
  			   sizeof(wpa_s->bridge_ifname));
  	}
  
@@ -135,7 +135,7 @@
  	/* RSNA Supplicant Key Management - INITIALIZE */
  	eapol_sm_notify_portEnabled(wpa_s->eapol, FALSE);
  	eapol_sm_notify_portValid(wpa_s->eapol, FALSE);
-@@ -5629,6 +5696,11 @@ static void wpa_supplicant_deinit_iface(
+@@ -5745,6 +5812,11 @@ static void wpa_supplicant_deinit_iface(
  	if (terminate)
  		wpa_msg(wpa_s, MSG_INFO, WPA_EVENT_TERMINATING);
  
@@ -157,7 +157,7 @@
  #include "drivers/driver.h"
  #include "eap_peer/eap.h"
  #include "wpa_supplicant_i.h"
-@@ -290,6 +291,10 @@ void calculate_update_time(const struct
+@@ -292,6 +293,10 @@ void calculate_update_time(const struct
  static void wpa_bss_copy_res(struct wpa_bss *dst, struct wpa_scan_res *src,
  			     struct os_reltime *fetch_time)
  {
@@ -168,7 +168,7 @@
  	dst->flags = src->flags;
  	os_memcpy(dst->bssid, src->bssid, ETH_ALEN);
  	dst->freq = src->freq;
-@@ -302,6 +307,15 @@ static void wpa_bss_copy_res(struct wpa_
+@@ -304,6 +309,15 @@ static void wpa_bss_copy_res(struct wpa_
  	dst->est_throughput = src->est_throughput;
  	dst->snr = src->snr;
  
@@ -224,7 +224,7 @@
  			break;
 --- a/wpa_supplicant/bss.h
 +++ b/wpa_supplicant/bss.h
-@@ -80,6 +80,10 @@ struct wpa_bss {
+@@ -81,6 +81,10 @@ struct wpa_bss {
  	u8 ssid[SSID_MAX_LEN];
  	/** Length of SSID */
  	size_t ssid_len;

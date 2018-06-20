@@ -13,7 +13,7 @@ Signed-off-by: bhagavathiperumal s <bperumal@codeaurora.org>
 
 --- a/src/ap/ctrl_iface_ap.c
 +++ b/src/ap/ctrl_iface_ap.c
-@@ -699,6 +699,7 @@ int hostapd_ctrl_iface_status(struct hos
+@@ -706,6 +706,7 @@ int hostapd_ctrl_iface_status(struct hos
  			  "secondary_channel=%d\n"
  			  "ieee80211n=%d\n"
  			  "ieee80211ac=%d\n"
@@ -21,7 +21,7 @@ Signed-off-by: bhagavathiperumal s <bperumal@codeaurora.org>
  			  "beacon_int=%u\n"
  			  "dtim_period=%d\n",
  			  iface->conf->channel,
-@@ -707,6 +708,7 @@ int hostapd_ctrl_iface_status(struct hos
+@@ -714,6 +715,7 @@ int hostapd_ctrl_iface_status(struct hos
  			  iface->conf->ieee80211n && !hapd->conf->disable_11n,
  			  iface->conf->ieee80211ac &&
  			  !hapd->conf->disable_11ac,

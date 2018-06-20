@@ -1,6 +1,6 @@
 --- a/hostapd/ctrl_iface.c
 +++ b/hostapd/ctrl_iface.c
-@@ -2745,6 +2745,25 @@ static int hostapd_ctrl_iface_signal_mon
+@@ -2758,6 +2758,25 @@ static int hostapd_ctrl_iface_signal_mon
  	return -1;
  }
  
@@ -26,7 +26,7 @@
  
  static int hostapd_ctrl_driver_flags(struct hostapd_iface *iface, char *buf,
  				     size_t buflen)
-@@ -3274,6 +3293,9 @@ static int hostapd_ctrl_iface_receive_pr
+@@ -3287,6 +3306,9 @@ static int hostapd_ctrl_iface_receive_pr
  	} else if (os_strncmp(buf, "SIGNAL_MONITOR", 14) == 0) {
  		if (hostapd_ctrl_iface_signal_monitor(hapd, buf + 14))
  			reply_len = -1;
@@ -86,7 +86,7 @@
  	 * @priv: Private driver interface data
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
-@@ -7537,6 +7537,29 @@ static int nl80211_signal_monitor(void *
+@@ -7554,6 +7554,29 @@ static int nl80211_signal_monitor(void *
  	return send_and_recv_msgs(drv, msg, NULL, NULL);
  }
  
@@ -116,7 +116,7 @@
  
  static int get_channel_width(struct nl_msg *msg, void *arg)
  {
-@@ -10643,6 +10666,7 @@ const struct wpa_driver_ops wpa_driver_n
+@@ -10670,6 +10693,7 @@ const struct wpa_driver_ops wpa_driver_n
  	.deinit_p2p_cli = wpa_driver_nl80211_deinit_p2p_cli,
  	.resume = wpa_driver_nl80211_resume,
  	.signal_monitor = nl80211_signal_monitor,
