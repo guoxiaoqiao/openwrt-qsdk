@@ -5,11 +5,9 @@ Add channel attribure support for nl80211 message
  nl80211.h | 1 +
  2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/info.c b/info.c
-index 1eba5c9..8cb5ef6 100644
 --- a/info.c
 +++ b/info.c
-@@ -161,13 +161,18 @@ static int print_phy_handler(struct nl_msg *msg, void *arg)
+@@ -161,13 +161,18 @@ static int print_phy_handler(struct nl_m
  					band_had_freq = true;
  				}
  				nla_for_each_nested(nl_freq, tb_band[NL80211_BAND_ATTR_FREQS], rem_freq) {
@@ -30,11 +28,9 @@ index 1eba5c9..8cb5ef6 100644
  
  					if (tb_freq[NL80211_FREQUENCY_ATTR_MAX_TX_POWER] &&
  					    !tb_freq[NL80211_FREQUENCY_ATTR_DISABLED])
-diff --git a/nl80211.h b/nl80211.h
-index 56368e9..31a3376 100644
 --- a/nl80211.h
 +++ b/nl80211.h
-@@ -2892,6 +2892,7 @@ enum nl80211_frequency_attr {
+@@ -3141,6 +3141,7 @@ enum nl80211_frequency_attr {
  	NL80211_FREQUENCY_ATTR_IR_CONCURRENT,
  	NL80211_FREQUENCY_ATTR_NO_20MHZ,
  	NL80211_FREQUENCY_ATTR_NO_10MHZ,
@@ -42,6 +38,3 @@ index 56368e9..31a3376 100644
  
  	/* keep last */
  	__NL80211_FREQUENCY_ATTR_AFTER_LAST,
--- 
-1.9.1
-
