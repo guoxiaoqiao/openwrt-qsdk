@@ -826,12 +826,6 @@ service_triggers()
 	config_foreach add_interface_trigger dhcp
 }
 
-boot()
-{
-	# Will be launched through hotplug
-	return 0
-}
-
 start_service() {
 	local instance="$1"
 	local instance_found=0
