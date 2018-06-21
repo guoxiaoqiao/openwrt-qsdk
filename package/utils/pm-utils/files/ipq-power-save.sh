@@ -600,7 +600,7 @@ case "$1" in
 			ipq8064_ac_power ;;
 		ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk05.1-c1)
 			ipq4019_ap_dk01_1_ac_power ;;
-		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3)
+		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3 | ap-dk07.1-c4)
 			ipq4019_ap_dk04_1_ac_power ;;
 		ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk02 | ap-hk05 | ap-hk06 | ap-hk07 | db-hk01 | db-hk02)
 			ipq8074_ac_power ;;
@@ -611,7 +611,7 @@ case "$1" in
 			ipq8064_battery_power ;;
 		ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk05.1-c1)
 			ipq4019_ap_dk01_1_battery_power ;;
-		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3)
+		ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3 | ap-dk07.1-c4)
 			ipq4019_ap_dk04_1_battery_power ;;
 		ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk02 | ap-hk05 | ap-hk06 | ap-hk07 | db-hk01 | db-hk02)
 			ipq8074_battery_power ;;
