@@ -1094,6 +1094,7 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
 	unsigned int size = ring->size;
 	unsigned int len;
 	dma_addr_t dma_addr;
+	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
 
 	/*
 	 * We shouldn't ever see our ring fully used and reach here but just in case!
@@ -1125,6 +1126,8 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
 
 	/* setup descriptor fields */
 	desc->data = (u32)dma_addr;
+	if (pdata->is_qca9561 && (ag71xx_gmac_num == 1))
+		pdata->ddr_flush();
 	desc->ctrl = len & ag71xx_frame_len_mask;
 
 	curr = curr->next;
