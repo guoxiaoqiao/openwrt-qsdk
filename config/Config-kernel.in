@@ -64,6 +64,9 @@ if KERNEL_KASAN
 	config KERNEL_KASAN_INLINE
 		bool "KASAN inline"
 		default n
+	config KERNEL_FRAME_WARN
+		int "Warn for stack frames larger than"
+		default 2048
 endif
 
 config KERNEL_FTRACE
