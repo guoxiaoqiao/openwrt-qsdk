@@ -402,7 +402,8 @@ ar71xx_board_detect() {
 	*"QCA AP151 Board")
 		name="ap151"
 		;;
-	*"AP152 reference board")
+	*"AP152 reference board"|\
+	*"QCA AP152 Dual Board")
 		name="ap152"
 		;;
 	*"QCA AP152 Board")
