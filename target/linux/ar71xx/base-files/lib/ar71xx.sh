@@ -378,7 +378,8 @@ ar71xx_board_detect() {
 	*"AP135-020 reference board")
 		name="ap135-020"
 		;;
-	*"APJET01 Board")
+	*"APJET01 Board"|\
+	*"Qualcomm Atheros APJET01 Dual Board")
 		name="apjet01"
 		;;
 	*"QCA AP135 Board")
