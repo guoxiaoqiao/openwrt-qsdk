@@ -20,6 +20,8 @@ define Package/resolveip
   MAINTAINER:=Jo-Philipp Wich <jow@openwrt.org>
 endef
 
+TARGET_CC +=-pie -fpie
+
 define Package/resolveip/description
  This package contains the small resolveip utility which
  can be used by scripts to turn host names into numeric
