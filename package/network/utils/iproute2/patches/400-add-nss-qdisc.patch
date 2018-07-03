@@ -1,7 +1,7 @@
 Index: iproute2-4.0.0/include/linux/pkt_sched.h
 ===================================================================
---- iproute2-4.0.0.orig/include/linux/pkt_sched.h	2018-01-31 10:37:12.065884237 -0800
-+++ iproute2-4.0.0/include/linux/pkt_sched.h	2018-01-31 10:39:35.267992891 -0800
+--- iproute2-4.0.0.orig/include/linux/pkt_sched.h	2018-06-22 16:26:27.026460232 -0700
++++ iproute2-4.0.0/include/linux/pkt_sched.h	2018-06-22 16:26:27.022460063 -0700
 @@ -1,3 +1,19 @@
 +/*
 + **************************************************************************
@@ -276,8 +276,8 @@ Index: iproute2-4.0.0/include/linux/pkt_sched.h
  struct tc_fifo_qopt {
 Index: iproute2-4.0.0/tc/Makefile
 ===================================================================
---- iproute2-4.0.0.orig/tc/Makefile	2018-01-31 10:37:12.065884237 -0800
-+++ iproute2-4.0.0/tc/Makefile	2018-01-31 10:37:12.061884066 -0800
+--- iproute2-4.0.0.orig/tc/Makefile	2018-06-22 16:26:27.026460232 -0700
++++ iproute2-4.0.0/tc/Makefile	2018-06-22 16:26:27.022460063 -0700
 @@ -64,6 +64,7 @@
  TCMODULES += q_fq.o
  TCMODULES += q_pie.o
@@ -289,8 +289,8 @@ Index: iproute2-4.0.0/tc/Makefile
 Index: iproute2-4.0.0/tc/q_nss.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ iproute2-4.0.0/tc/q_nss.c	2018-01-31 10:38:55.246286077 -0800
-@@ -0,0 +1,1826 @@
++++ iproute2-4.0.0/tc/q_nss.c	2018-06-22 16:28:11.650913251 -0700
+@@ -0,0 +1,1828 @@
 +/*
 + **************************************************************************
 + * Copyright (c) 2015, 2018 The Linux Foundation. All rights reserved.
@@ -727,7 +727,7 @@ Index: iproute2-4.0.0/tc/q_nss.c
 +static void nssfq_codel_explain(void)
 +{
 +	fprintf(stderr, "Usage: ... nssfq_codel target TIME interval TIME [ flows NUMBER ] [ quantum BYTES ]"
-+				"[ limit PACKETS ] [ ecn ] [ set_default ] [ accel_mode ]\n");
++				"[ limit PACKETS ] [ set_default ] [ accel_mode ]\n");
 +}
 +
 +static void nssfq_codel_explain_err1(void)
@@ -775,7 +775,9 @@ Index: iproute2-4.0.0/tc/q_nss.c
 +				return -1;
 +			}
 +		} else if (strcmp(*argv, "ecn") == 0) {
-+			opt.ecn = 1;
++			fprintf(stderr, "Illegal, ECN not supported\n");
++			nssfq_codel_explain();
++			return -1;
 +		} else if (strcmp(*argv, "set_default") == 0) {
 +			opt.set_default = 1;
 +		} else if (strcmp(*argv, "accel_mode") == 0) {
