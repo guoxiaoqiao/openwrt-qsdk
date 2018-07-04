@@ -21,7 +21,8 @@ PKG_LICENSE:=ISC
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
-TARGET_CFLAGS+=--std=c99
+TARGET_CFLAGS+=--std=c99 -fpie
+TARGET_LDFLAGS += -pie
 
 include $(INCLUDE_DIR)/package.mk
 
