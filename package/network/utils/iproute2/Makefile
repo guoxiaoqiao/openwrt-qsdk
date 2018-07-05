@@ -83,7 +83,8 @@ define Build/Configure
 endef
 
 TARGET_CFLAGS += -DHAVE_SETNS
-TARGET_CFLAGS += -ffunction-sections -fdata-sections
+TARGET_CFLAGS += -ffunction-sections -fdata-sections -fpie
+TARGET_LDFLAGS += -pie
 
 MAKE_FLAGS += \
 	EXTRA_CCOPTS="$(TARGET_CFLAGS) -I../include -I$(STAGING_DIR)/usr/include/libnl-tiny" \
