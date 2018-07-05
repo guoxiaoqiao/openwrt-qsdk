@@ -15,6 +15,9 @@ PKG_LICENSE:=GPL-2.0
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
+
 define Package/map
   SECTION:=net
   CATEGORY:=Network
