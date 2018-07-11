@@ -85,8 +85,8 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_DROPBEAR_ZLIB),,--disable-zlib) \
 	--enable-bundled-libtom
 
-TARGET_CFLAGS += -DDEFAULT_PATH=\\\"$(TARGET_INIT_PATH)\\\" -DARGTYPE=3 -ffunction-sections -fdata-sections -fpie
-TARGET_LDFLAGS += -Wl,--gc-sections -pie
+TARGET_CFLAGS += -DARGTYPE=3 -ffunction-sections -fdata-sections -flto
+TARGET_LDFLAGS += -Wl,--gc-sections -flto=jobserver
 
 define Build/Configure
 	$(Build/Configure/Default)
