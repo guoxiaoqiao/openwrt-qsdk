@@ -76,8 +76,9 @@ define Build/InstallDev
 	$(CP) -rf $(PKG_BUILD_DIR)/include/fal/fal_type.h $(1)/usr/include/qca-ssdk/fal
 	$(CP) -rf $(PKG_BUILD_DIR)/include/fal/fal_portvlan.h $(1)/usr/include/qca-ssdk/fal
 	$(CP) -rf $(PKG_BUILD_DIR)/include/ref/ref_port_ctrl.h $(1)/usr/include/qca-ssdk/ref
-	$(CP) -rf $(PKG_BUILD_DIR)/include/common $(1)/usr/include/qca-ssdk
-	$(CP) -rf $(PKG_BUILD_DIR)/include/sal/os $(1)/usr/include/qca-ssdk/sal
+	$(CP) -rf $(PKG_BUILD_DIR)/include/common/*.h $(1)/usr/include/qca-ssdk
+	$(CP) -rf $(PKG_BUILD_DIR)/include/sal/os/*.h $(1)/usr/include/qca-ssdk
+	$(CP) -rf $(PKG_BUILD_DIR)/include/sal/os/linux/*.h $(1)/usr/include/qca-ssdk
 endef
 
 define Build/Compile
