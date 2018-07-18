@@ -13,9 +13,11 @@ NAND_BLOCKSIZE=2048:128k
 AR71XX_16M_ROOTFS_SIZE=14090240 #14876672 - 786432(768KB)
 AR71XX_8M_ROOTFS_SIZE=5963776  #6488064 - 524288(512KB)
 AR71XX_DUAL_64M_ROOTFS_SIZE=62914560 #67108864 - 4194304(4M)
+AR71XX_32M_ROOTFS_SIZE=30605312     #31653888 -1048576(1024KB)
 #Do not modify AR71XX_*M_SYS_ROOTFS_SIZE. If size needs to be changed, modify AR71XX_*M_ROOTFS_SIZE
 AR71XX_16M_SYS_ROOTFS_SIZE=14876672 #AR71XX_16M_ROOTFS_SIZE + 786432(768KB)
 AR71XX_8M_SYS_ROOTFS_SIZE=6488064 #AR71XX_8M_ROOTFS_SIZE + 524288(768KB)
+AR71XX_32M_SYS_ROOTFS_SIZE=31653888
 
 define imgname
 $(BIN_DIR)/$(IMG_PREFIX)-$(2)-$(patsubst jffs2-%,jffs2,$(patsubst squashfs-%,squashfs,$(1)))
@@ -123,9 +125,11 @@ define CatFiles
 		exit 1; \
 	else if [ $(2) -eq $(AR71XX_16M_ROOTFS_SIZE) ]; then \
 		( dd if=$(1) bs=$(AR71XX_16M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
+	else if [ $(2) -eq $(AR71XX_32M_ROOTFS_SIZE) ]; then \
+		( dd if=$(1) bs=$(AR71XX_32M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
 	else \
 		( dd if=$(1) bs=$(AR71XX_8M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
-	fi; fi; fi
+	fi; fi; fi; fi
 endef
 
 define Sysupgrade/KR
@@ -868,7 +872,7 @@ $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP152_8M,ap152-8M,AP152,ttyS0,1152
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),AP152_16M,ap152-16M,AP152,ttyS0,115200,$$(ap152_mtdlayout_16M),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_128k),AP152DUAL,ap152-dual,AP152,ttyS0,115200,$$(ap152dual_mtdlayout),2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),APJET01,apjet01,APJET01,ttyS0,115200,$$(apjet01_mtdlayout),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
-$(eval $(call SingleProfile,AthLzma,$(fs_64k),APJET01_32M,apjet01-32M,APJET01,ttyS0,115200,$$(apjet01_mtdlayout_32M),1507328,$(AR71XX_16M_ROOTFS_SIZE),RKuImage))
+$(eval $(call SingleProfile,AthLzma,$(fs_64k),APJET01_32M,apjet01-32M,APJET01,ttyS0,115200,$$(apjet01_mtdlayout_32M),1507328,$(AR71XX_32M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_128k),APJET01DUAL,apjet01-dual,APJET01,ttyS0,115200,$$(apjet01dual_mtdlayout),2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_16M,cus531-16M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_16M),1507328,14876672,RKuImage))
 $(eval $(call SingleProfile,AthLzma,$(fs_64k),CUS531_32M,cus531-32M,CUS531,ttyS0,115200,$$(cus531_mtdlayout_32M),1507328,14876672,RKuImage))
