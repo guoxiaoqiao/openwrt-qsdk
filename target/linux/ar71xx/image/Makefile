@@ -15,11 +15,12 @@ IMAGE_PROFILE:=$(if $(PROFILE),$(PROFILE),Default)
 AR71XX_DUAL_64M_ROOTFS_SIZE=62914560 #67108864 - 4194304(4M)
 AR71XX_8M_ROOTFS_SIZE=5963776  #6488064 - 524288(512KB)
 AR71XX_16M_ROOTFS_SIZE=14090240 #14876672 - 786432(768KB)
+AR71XX_32M_ROOTFS_SIZE=30605312 #31653888 -1048576(1024KB)
 #Do not modify AR71XX_*M_SYS_ROOTFS_SIZE. If size needs to be changed, modify AR71XX_*M_ROOTFS_SIZE
 AR71XX_16M_SYS_ROOTFS_SIZE=14876672 #AR71XX_16M_ROOTFS_SIZE + 786432(768KB)
 AR71XX_8M_SYS_ROOTFS_SIZE=6488064 #AR71XX_8M_ROOTFS_SIZE + 524288(768KB)
 JFFS2_BLOCKSIZE = 64k 128k 256k
-
+AR71XX_32M_SYS_ROOTFS_SIZE=31653888 #AR71XX_32M_ROOTFS_SIZE +1048576(1024KB)
 KERNEL_LOADADDR = 0x80060000
 
 DEVICE_VARS += NETGEAR_KERNEL_MAGIC NETGEAR_BOARD NETGEAR_ID CMDLINE CONSOLE IMAGE_SIZE BOARDNAME LOADER_FLASH_OFFS
@@ -930,9 +931,11 @@ define CatFiles
 			echo "Error: $(3) is too big (> $(4) bytes)" >&2; exit 1; \
 		else if [ $(2) -eq $(AR71XX_16M_ROOTFS_SIZE) ]; then \
 			( dd if=$(1) bs=$(AR71XX_16M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
+		else if [ $(2) -eq $(AR71XX_32M_ROOTFS_SIZE) ]; then \
+			( dd if=$(1) bs=$(AR71XX_32M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
 		else \
 			( dd if=$(1) bs=$(AR71XX_8M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
-		fi; fi; fi \
+		fi; fi; fi; fi \
 	else \
 		( dd if=$(1) bs=$(2) conv=sync; dd if=$(3) ) > $(5); \
 		if [ `stat -c%s $(5)` -gt $(4) ]; then \
@@ -2059,7 +2062,7 @@ $(eval $(call SingleProfile,AthDTBLzma,64k,AP152_16M_DTB,ap152-16M,,,,,RKuImage,
 $(eval $(call SingleProfile,AthDTBLzma,128k,AP152DUAL_DTB,ap152-dual,,,,,RKuImage,2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),ath79_ap152_dual))
 $(eval $(call SingleProfile,AthDTBLzma,128k,APJET01DUAL_DTB,apjet01-dual,,,,,RKuImage,2097152,$(AR71XX_DUAL_64M_ROOTFS_SIZE),ath79_apjet01_dual))
 $(eval $(call SingleProfile,AthDTBLzma,64k,APJET01_DTB,apjet01,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_apjet01))
-$(eval $(call SingleProfile,AthDTBLzma,64k,APJET01_32M_DTB,apjet01-32M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_apjet01_32M))
+$(eval $(call SingleProfile,AthDTBLzma,64k,APJET01_32M_DTB,apjet01-32M,,,,,RKuImage,1507328,$(AR71XX_32M_ROOTFS_SIZE),ath79_apjet01_32M))
 $(eval $(call SingleProfile,AthDTBLzma,64k,DB120_8M_DTB,db120-8M,,,,,RKuImage,1507328,$(AR71XX_8M_ROOTFS_SIZE),ath79_db120_8M))
 $(eval $(call SingleProfile,AthDTBLzma,64k,DB120_16M_DTB,db120-16M,,,,,RKuImage,1507328,$(AR71XX_16M_ROOTFS_SIZE),ath79_db120))
 
