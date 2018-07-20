@@ -230,7 +230,6 @@ flash_section() {
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "0:SBL1";;
 		sbl2*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:SBL2";;
 		sbl3*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:SBL3";;
-		mibib*) switch_layout boot; do_flash_partition ${sec} "0:MIBIB";;
 		dtb-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DTB";;
 		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
 		ddr-$(to_upper $board)*) switch_layout boot; do_flash_ddr ${sec};;
