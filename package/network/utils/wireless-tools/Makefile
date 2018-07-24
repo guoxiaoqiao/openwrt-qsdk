@@ -23,6 +23,8 @@ PKG_LICENSE:=GPL-2.0
 PKG_BUILD_DIR:=$(BUILD_DIR)/wireless_tools.$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
 
 define Package/wireless-tools/Default
   URL:=http://hplabs.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html
@@ -58,6 +60,7 @@ define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -I." \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		BUILD_WE_ESSENTIAL=y \
 		LIBS="-lm -Wl,--gc-sections" \
 		libiw.so.$(PKG_VERSION) iwmulticall
