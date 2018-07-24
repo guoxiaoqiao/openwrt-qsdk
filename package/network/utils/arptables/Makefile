@@ -19,6 +19,9 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-v$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
+
 define Package/arptables
   SECTION:=net
   CATEGORY:=Network
@@ -32,6 +35,7 @@ define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		COPT_FLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		KERNEL_DIR="./include/linux"
 endef
 
