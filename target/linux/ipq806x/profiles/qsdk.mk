@@ -138,7 +138,7 @@ ifneq ($(LINUX_VERSION),3.18.21)
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
 	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) \
 	$(NSS_CRYPTO) $(NSS_CLIENTS) $(MAP_PKGS) $(AQ_PHY) $(FAILSAFE) \
-	$(SWITCH_OPEN_PKGS)
+	$(SWITCH_OPEN_PKGS) rdk-v-wifi-ath10k
 endif
 
 define Profile/QSDK_Open
