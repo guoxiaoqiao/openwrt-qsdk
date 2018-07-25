@@ -45,6 +45,18 @@ define Package/ubi-utils/description
   Utilities for manipulating memory technology devices.
 endef
 
+define Package/nand-utils
+  TITLE:=Utilities for nand read/write info/debug
+  SECTION:=utils
+  CATEGORY:=Utilities
+  URL:=http://www.linux-mtd.infradead.org/
+  DEPENDS:=@NAND_SUPPORT
+endef
+
+define Package/nand-utils/description
+  Utilities for manipulating memory technology devices.
+endef
+
 MAKE_FLAGS += \
 	DESTDIR="$(PKG_INSTALL_DIR)" \
 	BUILDDIR="$(PKG_BUILD_DIR)" \
@@ -60,5 +72,12 @@ define Package/ubi-utils/install
 		$(PKG_INSTALL_DIR)/usr/sbin/{ubinfo,ubinize,ubirename,ubirmvol,ubirsvol,ubiupdatevol} $(1)/usr/sbin/
 endef
 
+define Package/nand-utils/install
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN) \
+		$(PKG_INSTALL_DIR)/usr/sbin/{nandwrite,nanddump,nandtest} $(1)/usr/sbin/
+endef
+
 
 $(eval $(call BuildPackage,ubi-utils))
+$(eval $(call BuildPackage,nand-utils))
