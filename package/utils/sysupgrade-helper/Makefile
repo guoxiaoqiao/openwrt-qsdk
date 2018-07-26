@@ -25,7 +25,7 @@ endef
 
 HOSTLDFLAGS+= \
 	      -L$(STAGING_DIR)/usr/lib \
-	      -znow -zrelro
+	      -znow -zrelro -pie
 
 define Build/Compile
 	cp config $(PKG_BUILD_DIR)/.config
