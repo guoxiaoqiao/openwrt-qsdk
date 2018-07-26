@@ -749,6 +749,8 @@ dnsmasq_start()
 
 	config_get odhcpd_is_active odhcpd maindhcp
 	if [ "$odhcpd_is_active" != "1" ]; then
+		xappend "--dhcp-ignore-names"
+		echo >> $CONFIGFILE_TMP
 		config_foreach filter_dnsmasq dhcp dhcp_add "$cfg"
 	fi
 
