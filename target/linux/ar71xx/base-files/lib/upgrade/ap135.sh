@@ -43,7 +43,7 @@ platform_get_offset() {
 					return
 				fi
 			;;
-			"68737173"|"73717368")
+			"68737173"|"73717368"|"1985"*)
 				# SquashFS
 				if [ "$2" = "rootfs" ]; then
 					echo $offsetcount

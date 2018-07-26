@@ -18,6 +18,7 @@ AR71XX_32M_ROOTFS_SIZE=30605312     #31653888 -1048576(1024KB)
 AR71XX_16M_SYS_ROOTFS_SIZE=14876672 #AR71XX_16M_ROOTFS_SIZE + 786432(768KB)
 AR71XX_8M_SYS_ROOTFS_SIZE=6488064 #AR71XX_8M_ROOTFS_SIZE + 524288(768KB)
 AR71XX_32M_SYS_ROOTFS_SIZE=31653888
+AR71XX_DUAL_64M_SYS_ROOTFS_SIZE=67108864
 
 define imgname
 $(BIN_DIR)/$(IMG_PREFIX)-$(2)-$(patsubst jffs2-%,jffs2,$(patsubst squashfs-%,squashfs,$(1)))
@@ -127,9 +128,11 @@ define CatFiles
 		( dd if=$(1) bs=$(AR71XX_16M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
 	else if [ $(2) -eq $(AR71XX_32M_ROOTFS_SIZE) ]; then \
 		( dd if=$(1) bs=$(AR71XX_32M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
+	else if [ $(2) -eq $(AR71XX_DUAL_64M_ROOTFS_SIZE) ]; then \
+		( dd if=$(1) bs=$(AR71XX_DUAL_64M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
 	else \
 		( dd if=$(1) bs=$(AR71XX_8M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
-	fi; fi; fi; fi
+	fi; fi; fi; fi; fi
 endef
 
 define Sysupgrade/KR
