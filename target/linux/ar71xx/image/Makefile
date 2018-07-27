@@ -22,6 +22,7 @@ AR71XX_8M_SYS_ROOTFS_SIZE=6488064 #AR71XX_8M_ROOTFS_SIZE + 524288(768KB)
 JFFS2_BLOCKSIZE = 64k 128k 256k
 AR71XX_32M_SYS_ROOTFS_SIZE=31653888 #AR71XX_32M_ROOTFS_SIZE +1048576(1024KB)
 KERNEL_LOADADDR = 0x80060000
+AR71XX_DUAL_64M_SYS_ROOTFS_SIZE=67108864
 
 DEVICE_VARS += NETGEAR_KERNEL_MAGIC NETGEAR_BOARD NETGEAR_ID CMDLINE CONSOLE IMAGE_SIZE BOARDNAME LOADER_FLASH_OFFS
 
@@ -933,9 +934,11 @@ define CatFiles
 			( dd if=$(1) bs=$(AR71XX_16M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
 		else if [ $(2) -eq $(AR71XX_32M_ROOTFS_SIZE) ]; then \
 			( dd if=$(1) bs=$(AR71XX_32M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
+		else if [ $(2) -eq $(AR71XX_DUAL_64M_ROOTFS_SIZE) ]; then \
+			( dd if=$(1) bs=$(AR71XX_DUAL_64M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
 		else \
 			( dd if=$(1) bs=$(AR71XX_8M_SYS_ROOTFS_SIZE) conv=sync; dd if=$(3) ) > $(5); \
-		fi; fi; fi; fi \
+		fi; fi; fi; fi; fi \
 	else \
 		( dd if=$(1) bs=$(2) conv=sync; dd if=$(3) ) > $(5); \
 		if [ `stat -c%s $(5)` -gt $(4) ]; then \
