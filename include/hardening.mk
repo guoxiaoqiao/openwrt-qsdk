@@ -6,6 +6,7 @@
 #
 
 PKG_CHECK_FORMAT_SECURITY ?= 1
+PKG_ASLR_PIE ?= 1
 PKG_CC_STACKPROTECTOR_REGULAR ?= 1
 PKG_CC_STACKPROTECTOR_STRONG ?= 1
 PKG_FORTIFY_SOURCE_1 ?= 1
@@ -16,6 +17,12 @@ PKG_RELRO_FULL ?= 1
 ifdef CONFIG_PKG_CHECK_FORMAT_SECURITY
   ifeq ($(strip $(PKG_CHECK_FORMAT_SECURITY)),1)
     TARGET_CFLAGS += -Wformat -Werror=format-security
+  endif
+endif
+ifdef CONFIG_PKG_ASLR_PIE
+  ifeq ($(strip $(PKG_ASLR_PIE)),1)
+    TARGET_CFLAGS += -fPIC
+    TARGET_LDFLAGS += -specs=$(INCLUDE_DIR)/hardened-ld-pie.specs
   endif
 endif
 ifdef CONFIG_PKG_CC_STACKPROTECTOR_REGULAR
