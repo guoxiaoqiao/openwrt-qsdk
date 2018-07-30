@@ -58,6 +58,9 @@ wzr-450hp2)
 	;;
 
 ap147-010 |\
+ap147ioe |\
+ap147ioe-dual |\
+ap147ioe-nand |\
 ap143)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	ucidef_add_switch "eth1" "1" "1"

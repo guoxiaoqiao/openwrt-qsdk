@@ -1977,6 +1977,9 @@ $(eval $(call SingleProfile,AthLzma,64k,AP143_16M,ap143-16M,AP143,ttyS0,115200,$
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M_DUAL,ap143-32M-dual,AP143,ttyS0,115200,,RKuImage,1507328,14876672))
 $(eval $(call SingleProfile,AthLzma,64k,AP147_010,ap147-010,AP147-010,ttyS0,115200,$$(ap147_mtdlayout),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,AP147IOE_16M,ap147IOE-16M,AP147IOE,ttyS0,115200,$$(ap147_mtdlayout),RKuImage))
+$(eval $(call SingleProfile,IoENAND,64k,AP147IOENAND,ap147IOEnand,AP147IOE-NAND,ttyS0,115200,,KRuImage,AP147IOE-NAND,2097152))
+$(eval $(call SingleProfile,IoENAND,64k,AP147IOENAND_DUAL,ap147IOEnand-dual,AP147IOE-NAND,ttyS0,115200,,KRuImage,AP147IOE-NAND,2097152))
 $(eval $(call SingleProfile,AthLzma,64k,AP151_16M,ap151-16M,AP151,ttyS0,115200,$$(ap151_mtdlayout_16M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP152_16M,ap152-16M,AP152,ttyS0,115200,$$(ap152_mtdlayout_16M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,BXU2000N2,bxu2000n-2-a1,BXU2000n-2-A1,ttyS0,115200,$$(bxu2000n2_mtdlayout),RKuImage))
@@ -2175,6 +2178,7 @@ $(eval $(call MultiProfile,AP143,AP143_8M AP143_16M AP143_32M AP143_32M_DUAL))
 $(eval $(call MultiProfile,CUS531,CUS531_16M CUS531_32M CUS531DUAL CUS531NAND CUS531_32M_DUAL CUS531DUAL_DUAL CUS531NAND_DUAL))
 $(eval $(call MultiProfile,CUS531MP3,CUS531MP3_16M CUS531MP3_32M CUS531MP3DUAL CUS531MP3NAND CUS531MP3_32M_DUAL CUS531MP3DUAL_DUAL CUS531MP3NAND_DUAL))
 $(eval $(call MultiProfile,AP147,AP147_010))
+$(eval $(call MultiProfile,AP147-IOE,AP147IOE_16M AP147IOENAND AP147IOENAND_DUAL))
 $(eval $(call MultiProfile,AP151,AP151_16M))
 $(eval $(call MultiProfile,AP152,AP152_16M))
 $(eval $(call MultiProfile,EWDORIN, EWDORINAP EWDORINRT EWDORIN16M))
@@ -2260,6 +2264,7 @@ endef
 
 define Image/Build/Profile/QSDK_IOE_DBPAN
 	$(call Image/Build/Profile/CUS531MP3,$(1))
+	$(call Image/Build/Profile/AP147-IOE,$(1))
 endef
 
 define Image/Build/Profile/QSDK_IOE_PREMIUM

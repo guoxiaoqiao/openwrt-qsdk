@@ -466,6 +466,9 @@ platform_check_image() {
                 ;;
 
 	ap143 | \
+	ap147ioe | \
+	ap147ioe-nand | \
+	ap147ioe-dual | \
 	cus531 | \
 	cus531-dual | \
 	cus531-nand | \
@@ -548,6 +551,9 @@ platform_do_upgrade() {
 		default_do_upgrade "$ARGV"
 		;;
 	ap143 | \
+	ap147ioe | \
+	ap147ioe-nand | \
+	ap147ioe-dual | \
 	cus531 | \
 	cus531-dual | \
 	cus531-nand | \
