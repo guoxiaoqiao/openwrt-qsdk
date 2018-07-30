@@ -93,6 +93,9 @@ endef
 
 $(eval $(call Package/qca-legacy-uboot/nor,ap143-16M))
 $(eval $(call Package/qca-legacy-uboot/nor,ap143-32M))
+$(eval $(call Package/qca-legacy-uboot/nor,ap147ioe-16M))
+$(eval $(call Package/qca-legacy-uboot/nor,ap147ioe-dual))
+$(eval $(call Package/qca-legacy-uboot/nor,ap147ioe-nand))
 $(eval $(call Package/qca-legacy-uboot/nor,cus531-16M))
 $(eval $(call Package/qca-legacy-uboot/nor,cus531-32M))
 $(eval $(call Package/qca-legacy-uboot/nor,cus531-dual))
