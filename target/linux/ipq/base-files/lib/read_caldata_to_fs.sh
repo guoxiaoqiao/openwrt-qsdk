@@ -43,7 +43,7 @@ do_load_ipq4019_board_bin()
             ;;
             ap-hk*)
                     mkdir -p ${apdk}/IPQ8074
-                    dd if=${mtdblock} of=${apdk}/wifi1.caldata bs=1 count=12064 skip=139264
+                    dd if=${mtdblock} of=${apdk}/wifi1.caldata bs=1 count=12064 skip=208896
                     FILESIZE=$(stat -Lc%s "$HK_BD_FILENAME")
                     dd if=${mtdblock} of=${apdk}/IPQ8074/caldata.bin bs=1 count=$FILESIZE skip=4096
                     [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
