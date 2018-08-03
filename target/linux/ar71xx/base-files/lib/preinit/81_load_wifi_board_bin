@@ -34,7 +34,7 @@ do_load_ath10k_board_bin() {
                         dd if=${mtdblock} of=${cal_data_path}/wifi0.caldata bs=32 count=377 skip=128
                         dd if=${mtdblock} of=${cal_data_path}/wifi1.caldata bs=32 count=377 skip=640
 	        ;;
-                ap147 | ap151 | ap135 | ap137 | cus531mp3-nand)
+                ap147 | ap147ioe* | ap151 | ap135 | ap137 | cus531mp3-nand)
                         mkdir -p ${cal_data_path}
                         dd if=${mtdblock} of=${cal_data_path}/wifi0.caldata bs=32 count=377 skip=128
                         dd if=${mtdblock} of=${cal_data_path}/wifi1.caldata bs=32 count=377 skip=640
