@@ -29,7 +29,7 @@ NSS_ENTERPRISE:= \
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
-	qca-wpa-supplicant-10.4-macsec
+	qca-wpa-supplicant-macsec
 
 NSS_MACSEC_11:= \
 	kmod-qca-nss-macsec \
