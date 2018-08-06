@@ -43,7 +43,7 @@ platform_get_offset() {
 					return
 				fi
 			;;
-			"68737173"|"73717368")
+			"68737173"|"73717368"|"1985"*)
 				# SquashFS
 				if [ "$2" = "rootfs" ]; then
 					echo $offsetcount
@@ -138,6 +138,7 @@ platform_do_upgrade_ap135() {
 		local vmlinux_offset=$(( $vmlinux_blockoffset * $CI_BLKSZ ))
 		local vmlinux_addr=$(( $firmware_base_addr + $vmlinux_offset ))
 		local vmlinux_hexaddr=0x$( printf "%08x" "$vmlinux_addr" )
+		local bootcmd_old=$(fw_printenv -n bootcmd)
 
 		local curr_linux_addr=$(fw_printenv bootcmd | sed 's/.*0x/0x/g')
 		[ $(printf "0x%x\n" $curr_linux_addr) != $vmlinux_hexaddr ] && {
@@ -152,8 +153,8 @@ platform_do_upgrade_ap135() {
 				return 1
 			}
 
-			echo "Updating boot command to: bootm $vmlinux_hexaddr"
-			fw_setenv bootcmd "bootm $vmlinux_hexaddr" || {
+			echo "Updating boot command to: $bootcmd_old"
+			fw_setenv bootcmd "$bootcmd_old" || {
 				echo "failed to	update U-Boot environment, aborting!"
 				return 1
 			}
