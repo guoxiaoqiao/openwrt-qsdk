@@ -197,7 +197,7 @@ platform_check_image() {
 	wpj558 | \
 	zcn-1523h-2 | \
 	zcn-1523h-5)
-		[ "$magic_long" != "68737173" -a "$magic_long" != "19852003" ] && {
+		[ "$magic_long" != "68737173" -a "$magic_long" != "19852003" -a "$magic_long" != "1985e001" ] && {
 			echo "Invalid image type."
 			return 1
 		}

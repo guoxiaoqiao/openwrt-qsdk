@@ -35,6 +35,9 @@ define Build/Configure
 	chmod +x $(PKG_BUILD_DIR)/version.sh
 endef
 
+TARGET_CFLAGS += -fpie
+TARGET_LDFLAGS += -pie
+
 TARGET_CPPFLAGS:= \
 	-I$(STAGING_DIR)/usr/include/libnl-tiny \
 	$(TARGET_CPPFLAGS) \

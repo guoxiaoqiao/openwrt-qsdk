@@ -21,6 +21,9 @@ PKG_BUILD_DEPENDS:=BUSYBOX_USE_LIBRPC:librpc BUSYBOX_CONFIG_PAM:libpam opkg/host
 PKG_BUILD_PARALLEL:=1
 PKG_CHECK_FORMAT_SECURITY:=0
 
+#Busybox use it's own PIE config flag and LDFLAGS are used with ld, not gcc.
+PKG_ASLR_PIE:=0
+
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=LICENSE archival/libarchive/bz/LICENSE
 

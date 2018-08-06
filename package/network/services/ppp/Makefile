@@ -40,6 +40,9 @@ $(call Package/ppp/Default)
   VARIANT:=default
 endef
 
+TARGET_CFLAGS+=-fpie
+TARGET_LDFLAGS+=-pie
+
 define Package/ppp-multilink
 $(call Package/ppp/Default)
   DEPENDS:=+kmod-ppp
