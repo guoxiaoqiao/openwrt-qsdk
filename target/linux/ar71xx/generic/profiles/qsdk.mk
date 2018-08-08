@@ -57,6 +57,8 @@ define Profile/QSDK_IOE_DBPAN
 	PACKAGES:=$(IOE_BASE) $(TEST_TOOLS) $(WIFI_OPEN) $(BLUETOOTH) \
 		  qca-legacy-uboot-cus531mp3-16M qca-legacy-uboot-cus531mp3-32M \
 		  qca-legacy-uboot-cus531mp3-dual qca-legacy-uboot-cus531mp3-nand \
+		  qca-legacy-uboot-ap147ioe-16M qca-legacy-uboot-ap147ioe-nand \
+		  qca-legacy-uboot-ap147ioe-dual \
 		  kmod-usb-serial kmod-usb-serial-pl2303 kmod-ath10k \
 		  ath10k-firmware-qca9888
 endef
