@@ -20,8 +20,7 @@ define Package/wireless-regdb
 endef
 
 define Build/Compile
-	git clone https://source.codeaurora.org/quic/qsdk/oss/system/feeds/wlan-open -b coconut $(PKG_BUILD_DIR)/tmp
-	cp $(PKG_BUILD_DIR)/tmp/mac80211/files/regdb.txt $(PKG_BUILD_DIR)/
+	$(CP) ./files/regdb.txt $(PKG_BUILD_DIR)/
 	python $(PKG_BUILD_DIR)/db2fw.py $(PKG_BUILD_DIR)/regulatory.db $(PKG_BUILD_DIR)/regdb.txt
 endef
 
