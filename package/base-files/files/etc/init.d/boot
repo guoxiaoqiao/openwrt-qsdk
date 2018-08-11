@@ -58,4 +58,10 @@ boot() {
 		rootdev=$(awk 'BEGIN { RS=" "; FS="="; } $1 == "root" { print $2 }' < /proc/cmdline)
 		[ -n "$rootdev" ] && ln -s "$rootdev" /dev/root
 	}
+
+	# create /dev/mqueue
+	[ -d /proc/sys/fs/mqueue ] && {
+		mkdir -p /dev/mqueue
+		/bin/mount -t mqueue none /dev/mqueue
+	}
 }
