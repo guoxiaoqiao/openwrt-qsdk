@@ -11,3 +11,16 @@
  #define LINK_SSP_SPEC "%{fstack-protector:}"
  #else
  #define LINK_SSP_SPEC "%{fstack-protector|fstack-protector-all:-lssp_nonshared -lssp}"
+Index: gcc-linaro-4.8-2014.04/libssp/Makefile.in
+===================================================================
+--- gcc-linaro-4.8-2014.04.org/libssp/Makefile.in	2011-02-13 17:15:53.000000000 +0530
++++ gcc-linaro-4.8-2014.04/libssp/Makefile.in	2018-07-31 15:20:43.475456077 +0530
+@@ -257,7 +257,7 @@
+ @LIBSSP_USE_SYMVER_FALSE@version_dep = 
+ @LIBSSP_USE_SYMVER_GNU_TRUE@@LIBSSP_USE_SYMVER_TRUE@version_dep = $(srcdir)/ssp.map
+ @LIBSSP_USE_SYMVER_SUN_TRUE@@LIBSSP_USE_SYMVER_TRUE@version_dep = ssp.map-sun
+-AM_CFLAGS = -Wall
++AM_CFLAGS = -Wall -Wl,-z,now -Wl,-z,relro
+ toolexeclib_LTLIBRARIES = libssp.la libssp_nonshared.la
+ libsubincludedir = $(libdir)/gcc/$(target_noncanonical)/$(gcc_version)/include
+ nobase_libsubinclude_HEADERS = ssp/ssp.h ssp/string.h ssp/stdio.h ssp/unistd.h
