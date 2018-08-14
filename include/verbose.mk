@@ -27,6 +27,7 @@ endif
 ifeq ($(IS_TTY),1)
   ifneq ($(strip $(NO_COLOR)),1)
     _Y:=\\033[33m
+    _G:=\\033[32m
     _R:=\\033[31m
     _N:=\\033[m
   endif
@@ -54,8 +55,8 @@ ifeq ($(findstring s,$(OPENWRT_VERBOSE)),)
       SUBMAKE=$(MAKE)
     else
       SUBMAKE:=cmd() { $(MAKE) $$* && \
-		  printf "$(_Y) make $$* finished$(_N)\n" >&8 || \
-		  { printf "$(_Y) make $$* failed$(_N)\n" >&8; false; }; }; cmd
+		  printf "$(_G) make $$* finished$(_N)\n" >&8 || \
+		  { printf "$(_R) make $$* failed$(_N)\n" >&8; false; }; }; cmd
     endif
   else
     SILENT:=>/dev/null $(if $(findstring w,$(OPENWRT_VERBOSE)),,2>&1)
