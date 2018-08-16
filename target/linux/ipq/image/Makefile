@@ -17,6 +17,7 @@ IPQ40XX_KERNEL_LOADADDR = 0x80208000
 endif
 IPQ807X_KERNEL_LOADADDR = 0x41208000
 IPQ807X_64_KERNEL_LOADADDR = 0x41080000
+IPQ60XX_KERNEL_LOADADDR = 0x41208000
 
 ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
@@ -135,6 +136,14 @@ define Image/BuildKernel/ipq807x_64
 
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq807x-hkxx, \
 		$(call FindDeviceTrees, qcom-ipq807x-), $(IPQ807X_64_KERNEL_LOADADDR))
+endef
+
+define Image/BuildKernel/ipq60xx
+	$(foreach device, $(call FindDeviceTrees, qcom-ipq6018-), \
+		$(call Image/BuildKernel/$(1),$(device),$(IPQ60XX_KERNEL_LOADADDR));)
+
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq60xx-csxx, \
+		$(call FindDeviceTrees, qcom-ipq6018-), $(IPQ60XX_KERNEL_LOADADDR))
 endef
 
 define Image/BuildKernel
