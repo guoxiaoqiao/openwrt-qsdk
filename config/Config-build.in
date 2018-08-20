@@ -220,7 +220,7 @@ menu "Global build settings"
 		bool
 		prompt "User space ASLR PIE compilation"
 		select BUSYBOX_DEFAULT_PIE
-		default n
+		default y
 		help
 		  Add -fPIC to CFLAGS and -specs=hardened-build-ld to LDFLAGS.
 		  This enables package build as Position Independent Executables (PIE)
