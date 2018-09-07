@@ -550,7 +550,7 @@ ipq8074_battery_power()
 		echo "" > /config/usb_gadget/g1/UDC
 	fi
 
-	if [ -d sys/module/dwc3_of_simple ]
+	if [ -d /sys/module/dwc3_of_simple ]
 	then
 		rmmod dwc3
 		rmmod dwc3-of-simple
