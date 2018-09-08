@@ -55,8 +55,8 @@ hostapd_vht_oper_centr_freq_seg0_idx() {
 			case "$(( ($sta_channel / 4) % 4 ))" in
 				1) ap_vht_oper_centr_freq_seg0_idx=$(($sta_channel + 6));;
 				2) ap_vht_oper_centr_freq_seg0_idx=$(($sta_channel + 2));;
-				3) ap_vht_oper_centr_freq_seg0_idx=$(($sta_channel - 6));;
-				0) ap_vht_oper_centr_freq_seg0_idx=$(($sta_channel - 2));;
+				3) ap_vht_oper_centr_freq_seg0_idx=$(($sta_channel - 2));;
+				0) ap_vht_oper_centr_freq_seg0_idx=$(($sta_channel - 6));;
 			esac
 		;;
 		"2")
