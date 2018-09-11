@@ -1013,6 +1013,7 @@ ap143_mtdlayout_8M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs
 ap143_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
 ap143_mtdlayout_32M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),256k(reserve)ro,16128k(user),16000k@0x50000(firmware)
 ap147_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art),16000k@0x50000(firmware)
+ap147ioe_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14400k(rootfs),1600k(kernel),64k(art),16000k@0x50000(firmware)
 ap151_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 ap152_mtdlayout_16M=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,14528k(rootfs),1472k(kernel),64k(art)ro,16000k@0x50000(firmware)
 bxu2000n2_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,1408k(kernel),8448k(rootfs),6016k(user),64k(cfg),64k(oem),64k(art)ro
@@ -1977,7 +1978,7 @@ $(eval $(call SingleProfile,AthLzma,64k,AP143_16M,ap143-16M,AP143,ttyS0,115200,$
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M,ap143-32M,AP143,ttyS0,115200,$$(ap143_mtdlayout_32M),RKuImage))
 $(eval $(call SingleProfile,AthLzma,64k,AP143_32M_DUAL,ap143-32M-dual,AP143,ttyS0,115200,,RKuImage,1507328,14876672))
 $(eval $(call SingleProfile,AthLzma,64k,AP147_010,ap147-010,AP147-010,ttyS0,115200,$$(ap147_mtdlayout),RKuImage))
-$(eval $(call SingleProfile,AthLzma,64k,AP147IOE_16M,ap147IOE-16M,AP147IOE,ttyS0,115200,$$(ap147_mtdlayout),RKuImage))
+$(eval $(call SingleProfile,AthLzma,64k,AP147IOE_16M,ap147IOE-16M,AP147IOE,ttyS0,115200,$$(ap147ioe_mtdlayout),RKuImage))
 $(eval $(call SingleProfile,IoENAND,64k,AP147IOENAND,ap147IOEnand,AP147IOE-NAND,ttyS0,115200,,KRuImage,AP147IOE-NAND,2097152))
 $(eval $(call SingleProfile,IoENAND,64k,AP147IOENAND_DUAL,ap147IOEnand-dual,AP147IOE-NAND,ttyS0,115200,,KRuImage,AP147IOE-NAND,2097152))
 $(eval $(call SingleProfile,AthLzma,64k,AP151_16M,ap151-16M,AP151,ttyS0,115200,$$(ap151_mtdlayout_16M),RKuImage))
