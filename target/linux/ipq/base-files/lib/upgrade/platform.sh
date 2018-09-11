@@ -221,6 +221,10 @@ flash_section() {
 	local board=$(ipq806x_board_name)
 	local version=$(hexdump -n 1 -e '"%1d"' /sys/firmware/devicetree/base/soc_version_major)
 
+	if [ $version == ""]; then
+		version=1
+	fi
+
 	case "${sec}" in
 		hlos*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "0:HLOS";;
 		rootfs*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "rootfs";;
