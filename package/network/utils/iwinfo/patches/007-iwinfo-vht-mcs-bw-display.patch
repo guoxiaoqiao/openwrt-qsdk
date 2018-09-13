@@ -1,0 +1,114 @@
+From ba8cc63813019fb49442260098536b7e745e295d Mon Sep 17 00:00:00 2001
+From: Brandon Huang <yanghuan@codeaurora.org>
+Date: Thu, 27 May 2021 13:50:10 +0800
+Subject: [PATCH] winfo: fix incorrect display of VHT mcs and 80M bandwidth
+
+Change-Id: I6c8e9fc3e47b7982df32378c771aa4560faf2ebd
+Signed-off-by: Brandon Huang <yanghuan@codeaurora.org>
+---
+ include/iwinfo.h |  1 +
+ iwinfo_cli.c     |  2 +-
+ iwinfo_lua.c     |  6 ++++++
+ iwinfo_nl80211.c | 22 ++++++++++++++++++++--
+ 4 files changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/include/iwinfo.h b/include/iwinfo.h
+index 4dc2524..79185dc 100644
+--- a/include/iwinfo.h
++++ b/include/iwinfo.h
+@@ -87,6 +87,7 @@ struct iwinfo_rate_entry {
+ 	int8_t mcs;
+ 	uint8_t is_40mhz:1;
+ 	uint8_t is_short_gi:1;
++	uint8_t mhz;
+ };
+ 
+ struct iwinfo_assoclist_entry {
+diff --git a/iwinfo_cli.c b/iwinfo_cli.c
+index 0afb117..07b1177 100644
+--- a/iwinfo_cli.c
++++ b/iwinfo_cli.c
+@@ -296,7 +296,7 @@ static char * format_assocrate(struct iwinfo_rate_entry *r)
+ 
+ 		if (r->mcs >= 0)
+ 		{
+-			p += snprintf(p, l, ", MCS %d, %dMHz", r->mcs, 20 + r->is_40mhz*20);
++			p += snprintf(p, l, ", MCS %d, %dMHz", r->mcs, r->mhz);
+ 			l = sizeof(buf) - (p - buf);
+ 
+ 			if (r->is_short_gi)
+diff --git a/iwinfo_lua.c b/iwinfo_lua.c
+index 494a9f4..aa41ca3 100644
+--- a/iwinfo_lua.c
++++ b/iwinfo_lua.c
+@@ -301,6 +301,9 @@ static int iwinfo_L_assoclist(lua_State *L, int (*func)(const char *, char *, in
+ 				lua_pushboolean(L, e->rx_rate.is_40mhz);
+ 				lua_setfield(L, -2, "rx_40mhz");
+ 
++				lua_pushnumber(L, e->rx_rate.mhz);
++				lua_setfield(L, -2, "rx_mhz");
++
+ 				lua_pushboolean(L, e->rx_rate.is_short_gi);
+ 				lua_setfield(L, -2, "rx_short_gi");
+ 			}
+@@ -313,6 +316,9 @@ static int iwinfo_L_assoclist(lua_State *L, int (*func)(const char *, char *, in
+ 				lua_pushboolean(L, e->tx_rate.is_40mhz);
+ 				lua_setfield(L, -2, "tx_40mhz");
+ 
++				lua_pushnumber(L, e->tx_rate.mhz);
++				lua_setfield(L, -2, "tx_mhz");
++
+ 				lua_pushboolean(L, e->tx_rate.is_short_gi);
+ 				lua_setfield(L, -2, "tx_short_gi");
+ 			}
+diff --git a/iwinfo_nl80211.c b/iwinfo_nl80211.c
+index e1aa9e2..b70eca8 100644
+--- a/iwinfo_nl80211.c
++++ b/iwinfo_nl80211.c
+@@ -1674,11 +1674,20 @@ static int nl80211_get_assoclist_cb(struct nl_msg *msg, void *arg)
+ 				e->rx_rate.rate =
+ 					nla_get_u16(rinfo[NL80211_RATE_INFO_BITRATE]) * 100;
+ 
+-			if (rinfo[NL80211_RATE_INFO_MCS])
++			if (rinfo[NL80211_RATE_INFO_VHT_MCS])
++				e->rx_rate.mcs = nla_get_u8(rinfo[NL80211_RATE_INFO_VHT_MCS]);
++			else if (rinfo[NL80211_RATE_INFO_MCS])
+ 				e->rx_rate.mcs = nla_get_u8(rinfo[NL80211_RATE_INFO_MCS]);
+ 
+ 			if (rinfo[NL80211_RATE_INFO_40_MHZ_WIDTH])
++			{
+ 				e->rx_rate.is_40mhz = 1;
++				e->rx_rate.mhz = 40;
++			}
++			else if (rinfo[NL80211_RATE_INFO_80_MHZ_WIDTH])
++				e->rx_rate.mhz = 80;
++			else
++				e->rx_rate.mhz = 20;
+ 
+ 			if (rinfo[NL80211_RATE_INFO_SHORT_GI])
+ 				e->rx_rate.is_short_gi = 1;
+@@ -1692,11 +1701,20 @@ static int nl80211_get_assoclist_cb(struct nl_msg *msg, void *arg)
+ 				e->tx_rate.rate =
+ 					nla_get_u16(rinfo[NL80211_RATE_INFO_BITRATE]) * 100;
+ 
+-			if (rinfo[NL80211_RATE_INFO_MCS])
++			if (rinfo[NL80211_RATE_INFO_VHT_MCS])
++				e->tx_rate.mcs = nla_get_u8(rinfo[NL80211_RATE_INFO_VHT_MCS]);
++			else if (rinfo[NL80211_RATE_INFO_MCS])
+ 				e->tx_rate.mcs = nla_get_u8(rinfo[NL80211_RATE_INFO_MCS]);
+ 
+ 			if (rinfo[NL80211_RATE_INFO_40_MHZ_WIDTH])
++			{
+ 				e->tx_rate.is_40mhz = 1;
++				e->tx_rate.mhz = 40;
++			}
++			else if (rinfo[NL80211_RATE_INFO_80_MHZ_WIDTH])
++				e->tx_rate.mhz = 80;
++			else
++				e->tx_rate.mhz = 20;
+ 
+ 			if (rinfo[NL80211_RATE_INFO_SHORT_GI])
+ 				e->tx_rate.is_short_gi = 1;
+-- 
+2.7.4
+
