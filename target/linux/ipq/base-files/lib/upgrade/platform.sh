@@ -221,7 +221,7 @@ flash_section() {
 	local board=$(ipq806x_board_name)
 	local version=$(hexdump -n 1 -e '"%1d"' /sys/firmware/devicetree/base/soc_version_major)
 
-	if [ $version == ""]; then
+	if [ $version == "" ]; then
 		version=1
 	fi
 
