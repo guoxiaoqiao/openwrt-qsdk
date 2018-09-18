@@ -16,11 +16,31 @@ CONFIGFILE="/var/etc/dnsmasq.conf"
 HOSTFILE="/tmp/hosts/dhcp"
 TRUSTANCHORSFILE="/usr/share/dnsmasq/trust-anchors.conf"
 TIMESTAMPFILE="/etc/dnsmasq.time"
+TIMEVALIDFILE="/var/state/dnsmasqsec"
 
 xappend() {
 	local value="$1"
 
 	echo "${value#--}" >> $CONFIGFILE
+}
+
+hex_to_hostid() {
+        local var="$1"
+        local hex="${2#0x}"     # strip optional "0x" prefix
+
+        if [ -n "${hex//[0-9a-fA-F]/}" ]; then
+                # is invalid hex literal
+                return 1
+        fi
+
+        # convert into host id
+        export "$var=$(
+                printf "%0x:%0x"  \
+                        $(((0x$hex >> 16) % 65536)) \
+                        $(( 0x$hex        % 256))
+        )"
+
+        return 0
 }
 
 dhcp_calc() {
@@ -72,8 +92,9 @@ append_parm() {
 	local section="$1"
 	local option="$2"
 	local switch="$3"
+	local default="$4"
 	local _loctmp
-	config_get _loctmp "$section" "$option"
+	config_get _loctmp "$section" "$option" "$default"
 	[ -z "$_loctmp" ] && return 0
 	xappend "$switch=$_loctmp"
 }
@@ -148,6 +169,7 @@ dnsmasq() {
 	append_parm "$cfg" dhcpleasemax "--dhcp-lease-max"
 	append_parm "$cfg" "queryport" "--query-port"
 	append_parm "$cfg" "minport" "--min-port"
+	append_parm "$cfg" "maxport" "--max-port"
 	append_parm "$cfg" "domain" "--domain"
 	append_parm "$cfg" "local" "--server"
 	config_list_foreach "$cfg" "server" append_server
@@ -157,8 +179,8 @@ dnsmasq() {
 	config_list_foreach "$cfg" "notinterface" append_notinterface
 	config_list_foreach "$cfg" "addnhosts" append_addnhosts
 	config_list_foreach "$cfg" "bogusnxdomain" append_bogusnxdomain
-	append_parm "$cfg" "leasefile" "--dhcp-leasefile"
-	append_parm "$cfg" "resolvfile" "--resolv-file"
+	append_parm "$cfg" "leasefile" "--dhcp-leasefile" "/tmp/dhcp.leases"
+	append_parm "$cfg" "resolvfile" "--resolv-file" "/tmp/resolv.conf.auto"
 	append_parm "$cfg" "serversfile" "--servers-file"
 	append_parm "$cfg" "tftp_root" "--tftp-root"
 	append_parm "$cfg" "dhcp_boot" "--dhcp-boot"
@@ -173,9 +195,16 @@ dnsmasq() {
 	config_get_bool readethers "$cfg" readethers
 	[ "$readethers" = "1" -a \! -e "/etc/ethers" ] && touch /etc/ethers
 
-	config_get leasefile $cfg leasefile
+	config_get leasefile $cfg leasefile "/tmp/dhcp.leases"
 	[ -n "$leasefile" -a \! -e "$leasefile" ] && touch "$leasefile"
 	config_get_bool cachelocal "$cfg" cachelocal 1
+
+	config_get_bool noresolv "$cfg" noresolv 0
+	if [ "$noresolv" != "1" ]; then
+		config_get resolvfile "$cfg" resolvfile "/tmp/resolv.conf.auto"
+		# So jail doesn't complain if file missing
+		[ -n "$resolvfile" -a \! -e "$resolvfile" ] && touch "$resolvfile"
+	fi
 
 	config_get hostsfile "$cfg" dhcphostsfile
 	[ -e "$hostsfile" ] && xappend "--dhcp-hostsfile=$hostsfile"
@@ -207,7 +236,12 @@ dnsmasq() {
 	[ "$dnssec" -gt 0 ] && {
 		xappend "--conf-file=$TRUSTANCHORSFILE"
 		xappend "--dnssec"
-		xappend "--dnssec-timestamp=$TIMESTAMPFILE"
+		[ -x /etc/init.d/sysntpd ] && {
+			/etc/init.d/sysntpd enabled
+			[ "$?" -ne 0 -o "$(uci_get system.ntp.enabled)" = "1" ] && {
+				[ -f "$TIMEVALIDFILE" ] || xappend "--dnssec-no-timecheck"
+			}
+		}
 		append_bool "$cfg" dnsseccheckunsigned "--dnssec-check-unsigned"
 	}
 
@@ -218,6 +252,8 @@ dnsmasq() {
 	mkdir -p /tmp/hosts /tmp/dnsmasq.d
 	xappend "--addn-hosts=/tmp/hosts"
 	xappend "--conf-dir=/tmp/dnsmasq.d"
+	xappend "--user=dnsmasq"
+	xappend "--group=dnsmasq"
 
 	echo >> $CONFIGFILE
 
@@ -342,12 +378,19 @@ dhcp_host_add() {
 
 	config_get tag "$cfg" tag
 
+	if [ "$DHCPv6CAPABLE" -eq 1 ]; then
+		config_get hostid "$cfg" hostid
+		if [ -n "$hostid" ]; then
+			hex_to_hostid hostid "$hostid"
+		fi
+	fi
+
 	config_get_bool broadcast "$cfg" broadcast 0
 	[ "$broadcast" = "0" ] && broadcast=
 
 	config_get leasetime "$cfg" leasetime
 
-	xappend "--dhcp-host=$macs${networkid:+,net:$networkid}${broadcast:+,set:needs-broadcast}${tag:+,set:$tag}${ip:+,$ip}${name:+,$name}${leasetime:+,$leasetime}"
+	xappend "--dhcp-host=$macs${networkid:+,net:$networkid}${broadcast:+,set:needs-broadcast}${tag:+,set:$tag}${ip:+,$ip${hostid:+,[::$hostid]}}${name:+,$name}${leasetime:+,$leasetime}"
 }
 
 dhcp_tag_add() {
@@ -590,10 +633,7 @@ start_service() {
 	mkdir -p /var/lib/misc
 	touch /tmp/dhcp.leases
 
-	if [ ! -f "$TIMESTAMPFILE" ]; then
-		touch "$TIMESTAMPFILE"
-		chown nobody.nogroup "$TIMESTAMPFILE"
-	fi
+	[ -f "$TIMESTAMPFILE" ] && rm -f "$TIMESTAMPFILE"
 
 	echo "# auto-generated config file from /etc/config/dhcp" > $CONFIGFILE
 	echo "# auto-generated config file from /etc/config/dhcp" > $HOSTFILE
@@ -602,6 +642,8 @@ start_service() {
 	[ -f /etc/dnsmasq.conf ] && {
 		xappend "--conf-file=/etc/dnsmasq.conf"
 	}
+
+	$PROG --version | grep -osqE "^Compile time options:.* DHCPv6( |$)" && DHCPv6CAPABLE=1 || DHCPv6CAPABLE=0
 
 	args=""
 	config_foreach dnsmasq dnsmasq
@@ -671,7 +713,7 @@ start_service() {
 
 	procd_add_jail dnsmasq ubus log
 	procd_add_jail_mount $CONFIGFILE $TRUSTANCHORSFILE $HOSTFILE /etc/passwd /etc/group /etc/TZ /dev/null /dev/urandom /etc/dnsmasq.conf /tmp/dnsmasq.d /tmp/resolv.conf.auto /etc/hosts /etc/ethers $EXTRA_MOUNT
-	procd_add_jail_mount_rw /var/run/dnsmasq/ /tmp/dhcp.leases $TIMESTAMPFILE
+	procd_add_jail_mount_rw /var/run/dnsmasq/ /tmp/dhcp.leases
 
 	procd_close_instance
 }
