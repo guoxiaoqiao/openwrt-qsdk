@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015-2017 The Linux Foundation. All rights reserved.
+# Copyright (c) 2015-2018 The Linux Foundation. All rights reserved.
 #
 
 QCA_LITHIUM:=kmod-qvit-lithium
@@ -15,7 +15,8 @@ NSS_EIP197_FW:= \
 
 NSS_STANDARD:= \
 	qca-nss-fw2-retail \
-	qca-nss-fw-hk-retail
+	qca-nss-fw-hk-retail \
+	qca-nss-fw-cp-retail
 
 NSS_ENTERPRISE:= \
 	qca-nss-fw2-enterprise \
