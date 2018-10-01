@@ -223,27 +223,11 @@ if(!-f "$target/$filename") {
 	print ("The $target/$filename cannot be mirrored on CAF.\n");
 	$ok = 0;
     }
-    if (index($filename, "shadow-4.2.1") != -1) {
-	print ("The $target/$filename - CAF mirror pending.\n");
-	$ok = 0;
-    }
-    if (index($filename, "flac-1.3.1") != -1) {
-	print ("The $target/$filename - CAF mirror pending.\n");
-	$ok = 0;
-    }
     if (index($filename, "mbedtls-1.3.17-gpl.tgz") != -1) {
 	print ("The $target/$filename - CAF mirror pending.\n");
 	$ok = 0;
     }
     if (index($filename, "jpegsrc.v9a.tar.gz") != -1) {
-	print ("The $target/$filename - CAF mirror pending.\n");
-	$ok = 0;
-    }
-    if (index($filename, "gstreamer-1.10.5.tar.xz") != -1) {
-	print ("The $target/$filename - CAF mirror pending.\n");
-	$ok = 0;
-    }
-    if (index($filename, "ca-certificates") != -1) {
 	print ("The $target/$filename - CAF mirror pending.\n");
 	$ok = 0;
     }
