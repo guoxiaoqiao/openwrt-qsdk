@@ -51,6 +51,24 @@ config KERNEL_KALLSYMS_ALL
 	help
 	  This will give you more information in stack traces from kernel oopses.
 
+config KERNEL_KASAN
+	bool "KASAN"
+
+if KERNEL_KASAN
+	config KERNEL_TEST_KASAN
+		tristate "Test KASAN"
+		default n
+	config KERNEL_KASAN_OUTLINE
+		bool "KASAN Outline"
+		default y
+	config KERNEL_KASAN_INLINE
+		bool "KASAN inline"
+		default n
+	config KERNEL_FRAME_WARN
+		int "Warn for stack frames larger than"
+		default 2048
+endif
+
 config KERNEL_FTRACE
 	bool "Compile the kernel with tracing support"
 	depends on !TARGET_uml

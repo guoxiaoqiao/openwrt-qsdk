@@ -338,6 +338,8 @@ ipq4019_ap_dk04_1_battery_power()
 {
 	echo "Entering Battery Mode..."
 
+# Wifi Power-down Sequence
+	wifi unload
 
 # PCIe Power-Down Sequence
 
@@ -366,9 +368,6 @@ ipq4019_ap_dk04_1_battery_power()
 		echo 1 > /sys/devices/pci0000:00/pci_bus/0000:00/rcremove
 	}
 	sleep 1
-
-# Wifi Power-down Sequence
-	wifi unload
 
 # Find scsi devices and remove it
 
