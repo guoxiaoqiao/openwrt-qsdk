@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnsmasq
 PKG_VERSION:=2.80test8
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://thekelleys.org.uk/dnsmasq/test-releases
@@ -157,6 +157,13 @@ define Package/dnsmasq/install
 	$(INSTALL_DATA) ./files/dnsmasq.hotplug $(1)/etc/hotplug.d/iface/25-dnsmasq
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/ntp
 	$(INSTALL_DATA) ./files/dnsmasqsec.hotplug $(1)/etc/hotplug.d/ntp/25-dnsmasqsec
+	$(INSTALL_DIR) $(1)/usr/share/dnsmasq
+	$(INSTALL_DATA) ./files/dhcpbogushostname.conf $(1)/usr/share/dnsmasq/
+	$(INSTALL_DATA) ./files/rfc6761.conf $(1)/usr/share/dnsmasq/
+	$(INSTALL_DIR) $(1)/usr/lib/dnsmasq
+	$(INSTALL_BIN) ./files/dhcp-script.sh $(1)/usr/lib/dnsmasq/dhcp-script.sh
+	$(INSTALL_DIR) $(1)/usr/share/acl.d
+	$(INSTALL_DATA) ./files/dnsmasq_acl.json $(1)/usr/share/acl.d/
 endef
 
 Package/dnsmasq-dhcpv6/install = $(Package/dnsmasq/install)
