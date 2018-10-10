@@ -148,7 +148,8 @@ proto_map_setup() {
 	      json_add_string family inet
 	      json_add_string snat_ip $(eval "echo \$RULE_${k}_IPV4ADDR")
 	    json_close_object
-	   else
+	  else
+	    network_get_device ifname "lan"
 	    for portset in $(eval "echo \$RULE_${k}_PORTSETS"); do
               for proto in icmp tcp udp; do
 	        json_add_object ""
@@ -162,9 +163,25 @@ proto_map_setup() {
 	        json_close_object
               done
 	    done
-	   fi
+	    for portset in $(eval "echo \$RULE_${k}_PORTSETS"); do
+	      json_add_object ""
+	        json_add_string type rule
+		json_add_string family inet
+		json_add_string set_mark 0x100
+		json_add_string dest_ip $(eval "echo \$RULE_${k}_IPV4ADDR")
+		json_add_string proto tcpudp
+		json_add_string src "lan"
+		json_add_string device "$ifname"
+		json_add_string dest_port "$portset"
+		json_add_string target MARK
+              json_close_object
+	    done
+	    ip rule add to $(eval "echo \$RULE_${k}_IPV4ADDR") iif $ifname fwmark 0x100/0x100 table local
+	    ip rule add to $(eval "echo \$RULE_${k}_IPV4ADDR") iif $ifname table main
 	  fi
-	  if [ "$type" = "map-t" ]; then
+	fi
+       
+	if [ "$type" = "map-t" ]; then
 		[ -z "$zone" ] && zone=$(fw3 -q network $iface 2>/dev/null)
 
 		[ -n "$zone" ] && {
@@ -206,7 +223,6 @@ proto_map_teardown() {
 	[ -z "$type" ] && type="map-e"
 
 	case "$type" in
-		"map-e"|"lw4o6") ifdown "${cfg}_" ;;
 		"map-t") [ -f "/proc/net/nat46/control" ] && echo del $link > /proc/net/nat46/control ;;
 	esac
 
