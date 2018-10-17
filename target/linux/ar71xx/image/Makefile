@@ -1273,7 +1273,7 @@ Image/Build/dLANLzma/initramfs=$(call MkuImageLzma/initramfs,$(2),$(3) $(4))
 # $(6): Board name (upper caps)
 # $(7): kernel mtd partition size
 define Image/Build/IoENAND
-	$(CP) $(KDIR)/root.squashfs-raw $(KDIR_TMP)/root.squashfs
+	$(CP) $(KDIR)/root.$(1) $(KDIR_TMP)/root.squashfs
 	echo -ne '\xde\xad\xc0\xde' > $(KDIR_TMP)/jffs2.eof
 	if [ -e "$(TOPDIR)/tools/rsa/host/rsa_priv.txt" ]; then \
 		$(TOPDIR)/tools/rsa/host/rsa_sign $(KDIR_TMP)/vmlinux-$(2).uImage $(TOPDIR)/tools/rsa/host/rsa_priv.txt; \
