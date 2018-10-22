@@ -1,0 +1,33 @@
+diff --git a/tc/m_connmark.c b/tc/m_connmark.c
+index 98397f5..b0d96f2 100644
+--- a/tc/m_connmark.c
++++ b/tc/m_connmark.c
+@@ -23,6 +23,7 @@
+ #include <string.h>
+ #include "utils.h"
+ #include "tc_util.h"
++#include <linux/tc_act/tc_connmark.h>
+ 
+ static void
+ explain(void)
+@@ -43,6 +44,8 @@ parse_connmark(struct action_util *a, int *argc_p, char ***argv_p, int tca_id,
+ {
+ 	int argc = *argc_p;
+ 	char **argv = *argv_p;
++	struct rtattr *tail;
++	struct tc_connmark sel = {};
+ 
+ 	if (matches(*argv, "connmark") != 0)
+ 		return -1;
+@@ -52,6 +55,11 @@ parse_connmark(struct action_util *a, int *argc_p, char ***argv_p, int tca_id,
+ 	if (matches(*argv, "help") == 0)
+ 		usage();
+ 
++	sel.action = TC_ACT_PIPE;
++	tail = addattr_nest(n, MAX_MSG, tca_id);
++	addattr_l(n, MAX_MSG, TCA_CONNMARK_PARMS, &sel, sizeof(sel));
++	addattr_nest_end(n, tail);
++
+ 	*argc_p = argc;
+ 	*argv_p = argv;
+ 	return 0;
