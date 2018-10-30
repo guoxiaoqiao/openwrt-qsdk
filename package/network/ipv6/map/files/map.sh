@@ -31,8 +31,8 @@ proto_map_setup() {
 	local type mtu ttl tunlink zone
 	local rule ipaddr ip4prefixlen ip6prefix ip6prefixlen peeraddr ealen psidlen psid offset mode fmr
 	json_get_vars type mtu ttl tunlink zone fmr mode draft03
-	json_get_vars rule ipaddr ip4prefixlen ip6prefix ip6prefixlen peeraddr ealen psidlen psid offset
-
+	json_get_vars ipaddr ip4prefixlen ip6prefix ip6prefixlen peeraddr ealen psidlen psid offset
+	json_get_values rule rule
 	[ -z "$zone" ] && zone="wan"
 	[ -z "$type" ] && type="map-e"
 	[ -z "$ip4prefixlen" ] && ip4prefixlen=32
@@ -215,7 +215,7 @@ proto_map_init_config() {
 	no_device=1
 	available=1
 
-	proto_config_add_string "rule"
+	config_add_array 'rule'
 	proto_config_add_string "ipaddr"
 	proto_config_add_int "ip4prefixlen"
 	proto_config_add_string "ip6prefix"
