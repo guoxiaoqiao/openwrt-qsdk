@@ -26,7 +26,8 @@ NSS_ENTERPRISE:= \
 	qca-nss-fw-hk-enterprise \
 	qca-nss-fw-hk-enterprise_custA \
 	qca-nss-fw-hk-enterprise_custC \
-	qca-nss-fw-hk-enterprise_custR
+	qca-nss-fw-hk-enterprise_custR \
+	qca-nss-fw-cp-enterprise
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
