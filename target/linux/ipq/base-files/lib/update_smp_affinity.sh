@@ -5,6 +5,21 @@
 
 . /lib/ipq806x.sh
 
+enable_smp_affinity_wigig() {
+	# This function supports up to 2 wil6210 devices.
+	wil6210_tx0=`grep -E -m1 'wil6210_tx' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	wil6210_rx0=`grep -E -m1 'wil6210_rx' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	wil6210_tx1=`grep -E -m2 'wil6210_tx' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	wil6210_rx1=`grep -E -m2 'wil6210_rx' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+
+	# Enable smp_affinity for wil6210 devices
+	[ -n "$wil6210_tx0" ] && echo 8 > /proc/irq/$wil6210_tx0/smp_affinity
+	[ -n "$wil6210_rx0" ] && echo 4 > /proc/irq/$wil6210_rx0/smp_affinity
+	[ -n "$wil6210_tx1" ] && echo 8 > /proc/irq/$wil6210_tx1/smp_affinity
+	[ -n "$wil6210_rx1" ] && echo 4 > /proc/irq/$wil6210_rx1/smp_affinity
+
+}
+
 enable_smp_affinity_wifi() {
 	irq_wifi0=`grep -E -m1 'ath10k' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
 	irq_wifi1=`grep -E -m2 'ath10k' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
