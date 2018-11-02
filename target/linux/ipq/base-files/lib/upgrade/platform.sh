@@ -218,13 +218,20 @@ image_is_nand()
 }
 flash_section() {
 	local sec=$1
-
 	local board=$(ipq806x_board_name)
+	local version=$(hexdump -n 1 -e '"%1d"' /sys/firmware/devicetree/base/soc_version_major)
+
+	if [ $version == "" ]; then
+		version=1
+	fi
+
 	case "${sec}" in
 		hlos*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "0:HLOS";;
 		rootfs*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "rootfs";;
-		wififw*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
-		wififw_ubi*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
+		wififw-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
+		wififw_ubi-*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
+		wififw_v${version}-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
+		wififw_ubi_v${version}-*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
 		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; image_is_nand || return && do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "0:SBL1";;

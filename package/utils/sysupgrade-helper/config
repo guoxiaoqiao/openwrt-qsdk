@@ -100,6 +100,7 @@ CONFIG_ARM64=y
 # CONFIG_ARCH_IPQ40xx is not set
 # CONFIG_ARCH_IPQ806x is not set
 # CONFIG_ARCH_IPQ807x is not set
+# CONFIG_ARCH_IPQ6018 is not set
 # CONFIG_ARCH_S5PC1XX is not set
 # CONFIG_ARCH_HIGHBANK is not set
 # CONFIG_ARCH_INTEGRATOR is not set
