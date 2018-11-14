@@ -121,7 +121,7 @@ ZIGBEE:=zigbee_efr32
 QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
-MAP_PKGS:=map-t
+MAP_PKGS:=map-t 464xlat tayga
 
 HYFI:=hyfi hyfi-ui
 PLC:=qca-plc-serv qca-plc-fw
