@@ -11,7 +11,8 @@ NSS_COMMON:= \
 	$(QCA_EDMA)
 
 NSS_EIP197_FW:= \
-	qca-nss-fw-eip-hk
+	qca-nss-fw-eip-hk \
+	qca-nss-fw-eip-cp
 
 NSS_STANDARD:= \
 	qca-nss-fw2-retail \

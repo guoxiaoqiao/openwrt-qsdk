@@ -1035,3 +1035,17 @@ the FW authentication API and display the results.
 endef
 
 $(eval $(call KernelPackage,fw-auth-test))
+
+define KernelPackage/test-udelay
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Test module for Udelay
+  KCONFIG:=CONFIG_TEST_UDELAY
+  FILES:=$(LINUX_DIR)/kernel/time/test_udelay.ko
+endef
+
+define KernelPackage/test-udelay/description
+  This test module provides sysfs interface to test that udelay() is working
+properly.
+endef
+
+$(eval $(call KernelPackage,test-udelay))
