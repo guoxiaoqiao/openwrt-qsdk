@@ -35,11 +35,11 @@ enable_smp_affinity_wifi() {
 			case "$board" in
 				ap-dk0*)
 					if [ $device == "wifi2" ]; then
-						irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-					elif [ $device == "wifi1" ];then
 						irq_affinity_num=`grep -E -m3 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
-					else
+					elif [ $device == "wifi1" ];then
 						irq_affinity_num=`grep -E -m2 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+					else
+						irq_affinity_num=`grep -E -m1 'wlan' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
 					fi
 				;;
 				*)
@@ -58,17 +58,14 @@ enable_smp_affinity_wifi() {
 				smp_affinity=2
 			;;
 			*)
-				smp_affinity=1
+				smp_affinity=4
 		esac
 
 		case "$board" in
 			ap-dk0*)
 			if [ $device == "wifi2" ]; then
-				# Assign core 1 for wifi2. For ap-dkXX,wifi2 is always the third radio
-				smp_affinity=2
-			else
-				# Assign Core 3 (or) 4 for Dakota based on hwcaps
-				smp_affinity=$(($smp_affinity << 2))
+				# Assign core 3 for wifi2. For ap-dkXX,wifi2 is always the third radio
+				smp_affinity=8
 			fi
 			;;
 		esac
