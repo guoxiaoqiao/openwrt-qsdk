@@ -63,7 +63,10 @@ SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
 WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad-mesh hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
-		 athtestcmd
+		 athtestcmd ath10k-firmware-qca988x ath10k-firmware-qca9887 \
+		 ath10k-firmware-qca9888 ath10k-firmware-qca9984 \
+		 ath10k-firmware-qca4019 \
+		 -qca-whc-lbd -qca-whc-init -libhyficommon
 WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
     qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
     qca-wpa-cli-10.4 qca-spectral-10.4 qca-wpc-10.4 sigma-dut-10.4 \
@@ -151,12 +154,12 @@ ifneq ($(LINUX_VERSION),3.18.21)
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
 	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) \
 	$(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(MAP_PKGS) $(AQ_PHY) $(FAILSAFE) \
-	$(SWITCH_OPEN_PKGS)
+	$(SWITCH_OPEN_PKGS) rdk-v-wifi-ath10k
 endif
 
 define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_PKGS) $(QCA_EDMA) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) $(QCA_EDMA) \
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
 	$(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING)
 endef
