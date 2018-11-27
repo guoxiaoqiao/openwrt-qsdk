@@ -115,6 +115,12 @@ struct ar8216_priv {
 	struct delayed_work qm_dwork;
 	/*qm_err_check end*/
 
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	bool elink_stag_mode;
+	int elink_igmp_mode;
+	struct proc_dir_entry *elink_proc_dir;
+#endif
+
 	/* all fields below are cleared on reset */
 	bool vlan;
 	u16 vlan_id[AR8X16_MAX_VLANS];
@@ -239,6 +245,9 @@ static u32 ar8216_port_old_duplex[AR8327_NUM_PORTS] = {0, 0, 0, 0, 0, 0, 0};
 static u32 ar8216_port_old_phy_status[AR8327_NUM_PORTS] = {0, 0, 0, 0, 0, 0, 0};
 static u32 ar8216_port_qm_buf[AR8327_NUM_PORTS] = {0, 0, 0, 0, 0, 0, 0};
 
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+static int ar8216_apply_elink_igmp(struct ar8216_priv *priv);
+#endif
 
 #define to_ar8216(_dev) container_of(_dev, struct ar8216_priv, dev)
 
@@ -1395,6 +1404,14 @@ ar8327_init_globals(struct ar8216_priv *priv)
 	t = priv->read(priv, AR8327_REG_NAT_CTRL);
 	t &= ~(AR8327_HNAPT_EN | AR8327_HNAT_EN);
 	priv->write(priv, AR8327_REG_NAT_CTRL, t);
+
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	if (priv->elink_stag_mode) {
+		priv->write(priv, AR8327_REG_SERVICE_TAG, 0x288A8);
+	}
+	ar8216_reg_set(priv, AR8327_REG_MODULE_EN, AR8327_MODULE_EN_ACL);
+	ar8216_reg_set(priv, AR8327_REG_PKT_EDIT_CTRL, AR8327_CPU_VID_EN);
+#endif
 }
 
 static void
@@ -1646,7 +1663,13 @@ ar8327_setup_port(struct ar8216_priv *priv, int port, u32 egress, u32 ingress,
 	u32 mode;
 
 	t = pvid << AR8327_PORT_VLAN0_DEF_SVID_S;
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	if (!priv->elink_stag_mode) {
+		t |= pvid << AR8327_PORT_VLAN0_DEF_CVID_S;
+	}
+#else
 	t |= pvid << AR8327_PORT_VLAN0_DEF_CVID_S;
+#endif
 	priv->write(priv, AR8327_REG_PORT_VLAN0(port), t);
 
 	mode = AR8327_PORT_VLAN1_OUT_MODE_UNMOD;
@@ -1664,6 +1687,12 @@ ar8327_setup_port(struct ar8216_priv *priv, int port, u32 egress, u32 ingress,
 
 	t = AR8327_PORT_VLAN1_PORT_VLAN_PROP;
 	t |= mode << AR8327_PORT_VLAN1_OUT_MODE_S;
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	if (priv->elink_stag_mode) {
+		/* Enable Core Port */
+		t |= AR8327_PORT_VLAN1_CORE_PORT_EN;
+	}
+#endif
 	priv->write(priv, AR8327_REG_PORT_VLAN1(port), t);
 
 	t = members;
@@ -1969,6 +1998,9 @@ ar8216_sw_reset_switch(struct switch_dev *dev)
 		/* Disable AZ */
 		priv->write(priv, AR8327_REG_EEE_CTRL, AR8327_EEE_CTRL_DISABLE);
 	}
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	ar8216_apply_elink_igmp(priv);
+#endif
 	return rv;
 }
 
@@ -2716,6 +2748,383 @@ ar8xxx_mib_cleanup(struct ar8216_priv *priv)
 	kfree(priv->mib_stats);
 }
 
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+static int ar8216_apply_elink_igmp(struct ar8216_priv *priv)
+{
+	int i, acl_list_base = 80;
+	volatile u32 reg;
+
+	printk("Set IGMP mode to %d\n", priv->elink_igmp_mode);
+	/* Clear ACL rules */
+	for (i = 0; i < 5; i++) {
+		priv->write(priv, 0x404, 0xAAAAAAAA);
+		priv->write(priv, 0x408, 0xAAAAAAAA);
+		priv->write(priv, 0x40c, 0x0000AAAA);
+		priv->write(priv, 0x410, 0x00000000);
+		priv->write(priv, 0x414, 0x00000000);
+		priv->write(priv, 0x400, 0x80000200 | (acl_list_base+i));
+		priv->write(priv, 0x404, 0x00000000);
+		priv->write(priv, 0x408, 0x00000000);
+		priv->write(priv, 0x40c, 0x00000000);
+		priv->write(priv, 0x410, 0x00000000);
+		priv->write(priv, 0x414, 0x00000000);
+		priv->write(priv, 0x400, 0x80000000 | (acl_list_base+i));
+		priv->write(priv, 0x404, 0x00000000);
+		priv->write(priv, 0x408, 0x00000000);
+		priv->write(priv, 0x40c, 0x00000000);
+		priv->write(priv, 0x410, 0x00000000);
+		priv->write(priv, 0x414, 0x000000C2);
+		priv->write(priv, 0x400, 0x80000100 | (acl_list_base+i));
+	}
+	reg = priv->read(priv, AR8327_REG_PORT_LOOKUP(1));
+	reg &= (~AR8327_PORT_LOOKUP_IN_MODE);
+	reg |= (AR8216_IN_SECURE << AR8327_PORT_LOOKUP_IN_MODE_S);
+	priv->write(priv, AR8327_REG_PORT_LOOKUP(1), reg);
+	switch(priv->elink_igmp_mode) {
+	case 0:
+		/* Disable IGMP */
+		reg = priv->read(priv, AR8327_REG_FWD_CTRL0);
+		reg &= ~(AR8327_FWD_CTRL0_IGMP_LEAVE_DROP);
+		reg &= ~(AR8327_FWD_CTRL0_IGMP_COPY_EN);
+		priv->write(priv, AR8327_REG_FWD_CTRL0, reg);
+		reg = priv->read(priv, AR8327_REG_FWD_CTRL1);
+		reg &= ~(AR8327_FWD_CTRL1_IGMP);
+		priv->write(priv, AR8327_REG_FWD_CTRL1, reg);
+		reg = priv->read(priv, AR8327_REG_ARL_CTRL);
+		reg &= ~(AR8327_ARL_CTRL_IGMP_PRI_REMAP_EN);
+		reg &= ~(AR8327_ARL_CTRL_IGMP_PRI_REMAP);
+		reg &= ~(AR8327_ARL_CTRL_IGMP_ARL_AGING);
+		reg |= (0xE << AR8327_ARL_CTRL_IGMP_ARL_AGING_S);
+		priv->write(priv, AR8327_REG_ARL_CTRL, reg);
+		reg = priv->read(priv, AR8327_REG_PORT_PRIO(0));
+		reg &= ~(AR8327_PORT_PRIO_DA_EN);
+		priv->write(priv, AR8327_REG_PORT_PRIO(0), reg);
+		reg = priv->read(priv, AR8327_REG_FRAME_ACK_CTRL0);
+		reg &= 0xF8F8F8F8;
+		priv->write(priv, AR8327_REG_FRAME_ACK_CTRL0, reg);
+		reg = priv->read(priv, AR8327_REG_FRAME_ACK_CTRL1);
+		reg &= 0xFEF8F8F8;
+		priv->write(priv, AR8327_REG_FRAME_ACK_CTRL1, reg);
+		break;
+	case 1:
+	case 2:
+		/* Enable IGMP: */
+		/* Copy IGMP to CPU port */
+		reg = priv->read(priv, AR8327_REG_FWD_CTRL0);
+		reg &= ~(AR8327_FWD_CTRL0_IGMP_LEAVE_DROP);
+		reg |= AR8327_FWD_CTRL0_IGMP_COPY_EN;
+		priv->write(priv, AR8327_REG_FWD_CTRL0, reg);
+		/* Forward IGMP leave to all ports except WAN (P1) */
+		reg = priv->read(priv, AR8327_REG_FWD_CTRL1);
+		reg &= ~(AR8327_FWD_CTRL1_IGMP);
+		reg |= (0x3D << AR8327_FWD_CTRL1_IGMP_S);
+		priv->write(priv, AR8327_REG_FWD_CTRL1, reg);
+		/* Enable hardware add/remove group address to ARL table for IGMPv2
+		 * Remap group address priority to highest priority queue
+		 * Learn multicast to static entry
+		 */
+		reg = priv->read(priv, AR8327_REG_ARL_CTRL);
+		reg |= AR8327_ARL_CTRL_IGMP_JOIN_NEW_EN;
+		reg |= AR8327_ARL_CTRL_IGMP_PRI_REMAP_EN;
+		reg |= AR8327_ARL_CTRL_IGMP_PRI_REMAP;
+		reg |= AR8327_ARL_CTRL_IGMP_ARL_AGING;
+		priv->write(priv, AR8327_REG_ARL_CTRL, reg);
+		/* Enable DA QoS mapping on P0 */
+		reg = priv->read(priv, AR8327_REG_PORT_PRIO(0));
+		reg |= AR8327_PORT_PRIO_DA_EN;
+		priv->write(priv, AR8327_REG_PORT_PRIO(0), reg);
+		/* Enable IGMP on LAN ports */
+		reg = priv->read(priv, AR8327_REG_FRAME_ACK_CTRL0);
+		reg &= 0xF8F8F8F8;
+		reg |= 0x06060000;
+		priv->write(priv, AR8327_REG_FRAME_ACK_CTRL0, reg);
+		reg = priv->read(priv, AR8327_REG_FRAME_ACK_CTRL1);
+		reg &= 0xFEF8F8F8;
+		reg |= 0x01000606;
+		priv->write(priv, AR8327_REG_FRAME_ACK_CTRL1, reg);
+		/* Create ACL to match 239.255.255.250, and flooding in LAN domain */
+		priv->write(priv, 0x404, 0x00000000);
+		priv->write(priv, 0x408, 0xA0000000);
+		priv->write(priv, 0x40c, 0x00000017);
+		priv->write(priv, 0x410, 0x00000000);
+		priv->write(priv, 0x414, 0x00000000);
+		priv->write(priv, 0x400, 0x80000200 | acl_list_base);
+		priv->write(priv, 0x404, 0xEFFFFFFA);
+		priv->write(priv, 0x408, 0x00000000);
+		priv->write(priv, 0x40c, 0x00000000);
+		priv->write(priv, 0x410, 0x00000000);
+		priv->write(priv, 0x414, 0x0000003D);
+		priv->write(priv, 0x400, 0x80000000 | acl_list_base);
+		priv->write(priv, 0x404, 0xFFFFFFFF);
+		priv->write(priv, 0x408, 0x00000000);
+		priv->write(priv, 0x40c, 0x00000000);
+		priv->write(priv, 0x410, 0x00030000);
+		priv->write(priv, 0x414, 0x000000C2);
+		priv->write(priv, 0x400, 0x80000100 | acl_list_base);
+		/* Create ACL to match FF02::1:FF00:0000/104, and flooding in LAN domain */
+		priv->write(priv, 0x404, 0x00000000);
+		priv->write(priv, 0x408, 0xA0000000);
+		priv->write(priv, 0x40c, 0x00000017);
+		priv->write(priv, 0x410, 0x00000000);
+		priv->write(priv, 0x414, 0x00000000);
+		priv->write(priv, 0x400, 0x80000200 | (acl_list_base+1));
+		priv->write(priv, 0x404, 0xFF000000);
+		priv->write(priv, 0x408, 0x00000001);
+		priv->write(priv, 0x40c, 0x00000000);
+		priv->write(priv, 0x410, 0xFF020000);
+		priv->write(priv, 0x414, 0x0000003D);
+		priv->write(priv, 0x400, 0x80000000 | (acl_list_base+1));
+		priv->write(priv, 0x404, 0xFF000000);
+		priv->write(priv, 0x408, 0xFFFFFFFF);
+		priv->write(priv, 0x40c, 0xFFFFFFFF);
+		priv->write(priv, 0x410, 0xFFFFFFFF);
+		priv->write(priv, 0x414, 0x000000C3);
+		priv->write(priv, 0x400, 0x80000100 | (acl_list_base+1));
+		/* Create ACL to match FF02::/120, and flooding in LAN domain */
+		priv->write(priv, 0x404, 0x00000000);
+		priv->write(priv, 0x408, 0xA0000000);
+		priv->write(priv, 0x40c, 0x00000017);
+		priv->write(priv, 0x410, 0x00000000);
+		priv->write(priv, 0x414, 0x00000000);
+		priv->write(priv, 0x400, 0x80000200 | (acl_list_base+2));
+		priv->write(priv, 0x404, 0x00000000);
+		priv->write(priv, 0x408, 0x00000000);
+		priv->write(priv, 0x40c, 0x00000000);
+		priv->write(priv, 0x410, 0xFF020000);
+		priv->write(priv, 0x414, 0x0000003D);
+		priv->write(priv, 0x400, 0x80000000 | (acl_list_base+2));
+		priv->write(priv, 0x404, 0xFFFFFF00);
+		priv->write(priv, 0x408, 0xFFFFFFFF);
+		priv->write(priv, 0x40c, 0xFFFFFFFF);
+		priv->write(priv, 0x410, 0xFFFFFFFF);
+		priv->write(priv, 0x414, 0x000000C3);
+		priv->write(priv, 0x400, 0x80000100 | (acl_list_base+2));
+		/* Create ACL to match FF02:0:0:0:0:0:1::/125, and flooding in LAN domain */
+		priv->write(priv, 0x404, 0x00000000);
+		priv->write(priv, 0x408, 0xA0000000);
+		priv->write(priv, 0x40c, 0x00000017);
+		priv->write(priv, 0x410, 0x00000000);
+		priv->write(priv, 0x414, 0x00000000);
+		priv->write(priv, 0x400, 0x80000200 | (acl_list_base+3));
+		priv->write(priv, 0x404, 0x00010000);
+		priv->write(priv, 0x408, 0x00000000);
+		priv->write(priv, 0x40c, 0x00000000);
+		priv->write(priv, 0x410, 0xFF020000);
+		priv->write(priv, 0x414, 0x0000003D);
+		priv->write(priv, 0x400, 0x80000000 | (acl_list_base+3));
+		priv->write(priv, 0x404, 0xFFFFFFF8);
+		priv->write(priv, 0x408, 0xFFFFFFFF);
+		priv->write(priv, 0x40c, 0xFFFFFFFF);
+		priv->write(priv, 0x410, 0xFFFFFFFF);
+		priv->write(priv, 0x414, 0x000000C3);
+		priv->write(priv, 0x400, 0x80000100 | (acl_list_base+3));
+		if (priv->elink_igmp_mode == 2) {
+			/* forward multicast from WAN to LAN
+			 * Create ACL to change multicast traffic: stag or ctag from 2 to 1
+			 */
+			if (priv->elink_stag_mode) {
+				priv->write(priv, 0x404, 0x00000001);
+				priv->write(priv, 0x408, 0x00002800);
+			} else {
+				priv->write(priv, 0x404, 0x00010000);
+				priv->write(priv, 0x408, 0x00003000);
+			}
+			priv->write(priv, 0x40c, 0x00000000);
+			priv->write(priv, 0x410, 0x00000000);
+			priv->write(priv, 0x414, 0x00000000);
+			priv->write(priv, 0x400, 0x80000200 | (acl_list_base+4));
+			priv->write(priv, 0x404, 0xE0000000);
+			priv->write(priv, 0x408, 0x00000000);
+			priv->write(priv, 0x40c, 0x00000011);
+			priv->write(priv, 0x410, 0x00000000);
+			priv->write(priv, 0x414, 0x0000003D);
+			priv->write(priv, 0x400, 0x80000000 | (acl_list_base+4));
+			priv->write(priv, 0x404, 0xF0000000);
+			priv->write(priv, 0x408, 0x00000000);
+			priv->write(priv, 0x40c, 0x000000FF);
+			priv->write(priv, 0x410, 0x00030000);
+			priv->write(priv, 0x414, 0x000000C2);
+			priv->write(priv, 0x400, 0x80000100 | (acl_list_base+4));
+			reg = priv->read(priv, AR8327_REG_PORT_LOOKUP(1));
+			reg &= (~AR8327_PORT_LOOKUP_IN_MODE);
+			reg |= (AR8216_IN_VLAN_ONLY << AR8327_PORT_LOOKUP_IN_MODE_S);
+			priv->write(priv, AR8327_REG_PORT_LOOKUP(1), reg);
+		}
+		break;
+	}
+
+	return 0;
+}
+
+static ssize_t ar8216_elink_igmp_mode_get(struct file *filp,
+					  char __user *buf,
+					  size_t count, 
+					  loff_t *ppos)
+{
+	char tbuf[12];
+	size_t len;
+	struct ar8216_priv *priv = PDE(filp->f_path.dentry->d_inode)->data;
+
+	if (*ppos > 0) {
+		return 0;
+	}
+	snprintf(tbuf, 11, "%d\n", priv->elink_igmp_mode);
+	tbuf[11] = '\0';
+	len = strlen(tbuf);
+	if (copy_to_user(buf, tbuf, len)) {
+		return -EFAULT;
+	}
+	count -= len;
+	*ppos += len;
+
+	return len;
+}
+
+static ssize_t ar8216_elink_igmp_mode_set(struct file *filp,
+					  const char __user *buf,
+					  size_t count,
+					  loff_t *ppos)
+{
+	unsigned int igmp_mode;
+	char tbuf[12];
+	struct ar8216_priv *priv = PDE(filp->f_path.dentry->d_inode)->data;
+
+	if ((count > 11) || copy_from_user(tbuf, buf, count)) {
+		return -EFAULT;
+	}
+	if ((sscanf(tbuf, "%u\n", &igmp_mode) != 1) || (igmp_mode > 2)) {
+		return -EFAULT;
+	}
+	if (igmp_mode != priv->elink_igmp_mode) {
+		priv->elink_igmp_mode = igmp_mode;
+		ar8216_apply_elink_igmp(priv);
+	}
+
+	return count;
+}
+
+static ssize_t ar8216_elink_stag_mode_get(struct file *filp,
+					  char __user *buf,
+					  size_t count,
+					  loff_t *ppos)
+{
+	char tbuf[12];
+	size_t len;
+	struct ar8216_priv *priv = PDE(filp->f_path.dentry->d_inode)->data;
+
+	if (*ppos > 0) {
+		return 0;
+	}
+	snprintf(tbuf, 11, "%s\n", (priv->elink_stag_mode ? "enable" : "disable"));
+	tbuf[11] = '\0';
+	len = strlen(tbuf);
+	if (copy_to_user(buf, tbuf, len)) {
+		return -EFAULT;
+	}
+	count -= len;
+	*ppos += len;
+
+	return len;
+}
+
+static ssize_t ar8216_elink_stag_mode_set(struct file *filp,
+					  const char __user *buf,
+					  size_t count,
+					  loff_t *ppos)
+{
+	bool stag_mode = false;
+	char tbuf[12], value[12];
+	struct ar8216_priv *priv = PDE(filp->f_path.dentry->d_inode)->data;
+
+	if ((count > 11) || copy_from_user(tbuf, buf, count)) {
+		return -EFAULT;
+	}
+	sscanf(tbuf, "%11s\n", value);
+	value[11] = '\0';
+	if (!strcmp(value, "enable") || !strcmp(value, "yes") || !strcmp(value, "1")) {
+		stag_mode = true;
+	} else {
+		stag_mode = false;
+	}
+	printk("Set stag mode to %d\n", stag_mode);
+	if (stag_mode != priv->elink_stag_mode) {
+		priv->elink_stag_mode = stag_mode;
+		ar8216_sw_hw_apply(&priv->dev);
+		if (priv->elink_stag_mode) {
+			priv->write(priv, AR8327_REG_SERVICE_TAG, 0x288A8);
+		} else {
+			priv->write(priv, AR8327_REG_SERVICE_TAG, 0x88A8);
+		}
+	}
+
+	return count;
+}
+
+static struct file_operations ar8216_elink_igmp_mode_proc_fops = {
+	.owner       = THIS_MODULE,
+	.read        = ar8216_elink_igmp_mode_get,
+	.write       = ar8216_elink_igmp_mode_set,
+};
+
+static struct file_operations ar8216_elink_stag_mode_proc_fops = {
+	.owner       = THIS_MODULE,
+	.read        = ar8216_elink_stag_mode_get,
+	.write       = ar8216_elink_stag_mode_set,
+};
+
+static int ar8216_proc_exit(struct ar8216_priv *priv)
+{
+	if (!priv || !priv->elink_proc_dir) {
+		return 0;
+	}
+	remove_proc_entry("igmp_mode", priv->elink_proc_dir);
+	remove_proc_entry("stag_mode", priv->elink_proc_dir);
+	remove_proc_entry("elink_ar8216", NULL);
+	priv->elink_proc_dir = NULL;
+
+	return 0;
+}
+
+static int ar8216_proc_init(struct ar8216_priv *priv)
+{
+	if (!priv) {
+		return -1;
+	}
+
+	if (priv->elink_proc_dir) {
+		printk("Wrong: /proc/elink_ar8216 is not deleted before\n");
+		ar8216_proc_exit(priv);
+	}
+
+	if (!(priv->elink_proc_dir = proc_mkdir("elink_ar8216", NULL))) {
+		printk("create /proc/elink_ar8216 failed\n");
+		return -1;
+	}
+	if (!proc_create_data("stag_mode", S_IFREG|S_IRUSR|S_IWUSR,
+				priv->elink_proc_dir,
+				&ar8216_elink_stag_mode_proc_fops, priv)) {
+		printk("create /proc/elink_ar8216/stag_mode failed");
+		goto clean_dir;
+	}
+	if (!proc_create_data("igmp_mode", S_IFREG|S_IRUSR|S_IWUSR,
+				priv->elink_proc_dir,
+				&ar8216_elink_igmp_mode_proc_fops, priv)) {
+		printk("create /proc/elink_ar8216/igmp_mode failed");
+		goto clean_dir_stag;
+	}
+
+	return 0;
+
+clean_dir_stag:
+	remove_proc_entry("stag_mode", priv->elink_proc_dir);
+clean_dir:
+	remove_proc_entry("elink_ar8216", NULL);
+
+	return -1;
+}
+
+#endif
+
 static int
 ar8216_config_init(struct phy_device *pdev)
 {
@@ -2822,6 +3231,12 @@ ar8216_config_init(struct phy_device *pdev)
 		pdev->attached_dev->name, swdev->name);
 
 	priv->init = true;
+
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	if (chip_is_ar8337(priv)) {
+		ar8216_proc_init(priv);
+	}
+#endif
 
 	ar8xxx_phy_powerdown(priv);
 	msleep(1000);
@@ -3004,6 +3419,12 @@ ar8216_remove(struct phy_device *pdev)
 	dev->priv_flags &= ~IFF_NO_IP_ALIGN;
 	dev->eth_mangle_rx = NULL;
 	dev->eth_mangle_tx = NULL;
+
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	if (chip_is_ar8337(priv)) {
+		ar8216_proc_exit(priv);
+	}
+#endif
 
 	if (pdev->addr == 0)
 		unregister_switch(&priv->dev);
