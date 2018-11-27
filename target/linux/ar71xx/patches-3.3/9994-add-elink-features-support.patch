@@ -1,0 +1,26 @@
+diff -Nura kernel.old/include/linux/skbuff.h kernel.new/include/linux/skbuff.h
+--- kernel.old/include/linux/skbuff.h	2018-09-13 15:03:43.084860602 +0800
++++ kernel.new/include/linux/skbuff.h	2018-11-29 15:44:57.014495801 +0800
+@@ -473,6 +473,9 @@
+ 	};
+ 
+ 	__u16			vlan_tci;
++#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
++	__u16			elink_vlan;
++#endif
+ 
+ 	sk_buff_data_t		transport_header;
+ 	sk_buff_data_t		network_header;
+diff -Nura kernel.old/net/core/skbuff.c kernel.new/net/core/skbuff.c
+--- kernel.old/net/core/skbuff.c	2018-09-13 15:03:43.280860608 +0800
++++ kernel.new/net/core/skbuff.c	2018-11-29 15:40:43.062488718 +0800
+@@ -695,6 +695,9 @@
+ #endif
+ #endif
+ 	new->vlan_tci		= old->vlan_tci;
++#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
++	new->elink_vlan		= old->elink_vlan;
++#endif
+ 
+ 	skb_copy_secmark(new, old);
+ }
