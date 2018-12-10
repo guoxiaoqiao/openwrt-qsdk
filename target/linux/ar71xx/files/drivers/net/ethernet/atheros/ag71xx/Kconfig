@@ -45,4 +45,10 @@ config AG71XX_AR8216_SUPPORT
 	  Say 'y' here if you want to enable special support for the
 	  Atheros AR8216 switch found on some boards.
 
+config AG71XX_AR8216_ELINK_FEATURES
+	bool "VLAN pass throught in GMAC driver"
+	default n
+	help
+	  Say 'y' here if you want to enable VLAN pass through for the
+	  CTC E-link.
 endif

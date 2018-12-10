@@ -226,6 +226,10 @@ struct ag71xx {
 #ifdef CONFIG_AG71XX_DEBUG_FS
 	struct ag71xx_debug	debug;
 #endif
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	bool elink_stag_mode;
+	struct proc_dir_entry *elink_proc_dir;
+#endif
 };
 
 extern struct ethtool_ops ag71xx_ethtool_ops;

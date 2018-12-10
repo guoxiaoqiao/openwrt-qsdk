@@ -1093,6 +1093,10 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
 	unsigned int used = ring->used;
 	unsigned int size = ring->size;
 	unsigned int len;
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	int i, offset = (ETH_ALEN<<1);
+	uint16_t *p;
+#endif
 	dma_addr_t dma_addr;
 	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
 
@@ -1106,6 +1110,31 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
 		goto err_drop;
 	}
 
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	if (unlikely(ag->elink_stag_mode)) {
+		p = (uint16_t*)&skb->data[offset];
+		if (*p != cpu_to_be16(ETH_P_8021Q)) {
+			goto out_stag;
+		}
+		*p = cpu_to_be16(ETH_P_8021AD);
+		if (!(skb->elink_vlan & VLAN_TAG_PRESENT)) {
+			goto out_stag;
+		}
+		if (skb_cow_head(skb, VLAN_HLEN) < 0) {
+			goto err_drop;
+		}
+		skb_push(skb, VLAN_HLEN);
+		offset += VLAN_HLEN;
+		for (i = 0; i < offset; i ++) {
+			skb->data[i] = skb->data[i + VLAN_HLEN];
+		}
+		p = (uint16_t*)&skb->data[offset];
+		*p = cpu_to_be16(ETH_P_8021Q);
+		*(p+1) = htons(skb->elink_vlan & (~VLAN_TAG_PRESENT));
+out_stag:
+		skb->elink_vlan = 0;
+	}
+#endif
 	if (unlikely(ag71xx_has_ar8216(ag))) {
 		ag71xx_add_ar8216_header(ag, skb);
 	}
@@ -1450,6 +1479,10 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
 	unsigned int rx_buf_offset = ag->rx_buf_offset;
 #endif
 	int received = 0;
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	int i, base = (ETH_ALEN<<1), offset = 0;
+	uint16_t *p;
+#endif
 	struct sk_buff *skb;
 	bool has_ar8216;
 	struct ag71xx_platform_data *pdata = ag71xx_get_pdata(ag);
@@ -1604,7 +1637,42 @@ static int ag71xx_rx_packets(struct ag71xx *ag, struct net_device *dev, int limi
 				goto next;
 			}
 		}
-
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+		/* Double Tag mode */
+		if (unlikely(ag->elink_stag_mode)) {
+			p = (uint16_t *)&skb->data[base];
+			if (*p != cpu_to_be16(ETH_P_8021AD)) {
+				goto out_stag;
+			}
+			if (!pskb_may_pull(skb, VLAN_HLEN)) {
+				offset = -1;
+				goto out_stag;
+			}
+			offset = VLAN_HLEN;
+			__vlan_hwaccel_put_tag(skb, ntohs(*(p+1)));
+			p = (uint16_t *)&skb->data[base+offset];
+			if (*p != cpu_to_be16(ETH_P_8021Q)) {
+				goto out_stag;
+			}
+			if (!pskb_may_pull(skb, offset+VLAN_HLEN)) {
+				offset = -1;
+				goto out_stag;
+			}
+			offset += VLAN_HLEN;
+			skb->elink_vlan = VLAN_TAG_PRESENT | ntohs(*(p+1));
+out_stag:
+			if (offset < 0) {
+				dev->stats.rx_dropped++;
+				dev_kfree_skb(skb);
+				goto next;
+			} else if (offset > 0) {
+				for (i = base-1; i >= 0; i --) {
+					skb->data[i+offset] = skb->data[i];
+				}
+				skb_pull(skb, offset);
+			}
+		}
+#endif
 		skb->protocol = eth_type_trans(skb, dev);
 		skb_checksum_none_assert(skb);
 		netif_receive_skb(skb);
@@ -1852,6 +1920,58 @@ static int ag71xx_of_pdata_update(struct platform_device *pdev)
 }
 #endif
 
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+static ssize_t ag71xx_elink_stag_mode_get(
+	struct file *filp, char __user *buf, size_t count, loff_t *ppos)
+{
+	char tbuf[12];
+	size_t len;
+	struct ag71xx *ag = PDE(filp->f_path.dentry->d_inode)->data;
+
+	if (*ppos > 0) {
+		return 0;
+	}
+	snprintf(tbuf, 11, "%s\n", (ag->elink_stag_mode ? "enable" : "disable"));
+	tbuf[11] = '\0';
+	len = strlen(tbuf);
+	if (copy_to_user(buf, tbuf, len)) {
+		return -EFAULT;
+	}
+	count -= len;
+	*ppos += len;
+
+	return len;
+}
+
+static ssize_t ag71xx_elink_stag_mode_set(
+	struct file *filp, const char __user *buf, size_t count, loff_t *ppos)
+{
+	char tbuf[12], value[12];
+	struct ag71xx *ag = PDE(filp->f_path.dentry->d_inode)->data;
+
+	if ((count > 11) || copy_from_user(tbuf, buf, count)) {
+		return -EFAULT;
+	}
+	sscanf(tbuf, "%11s\n", value);
+	value[11] = '\0';
+	if (!strcmp(value, "enable") || !strcmp(value, "yes") || !strcmp(value, "1")) {
+		ag->elink_stag_mode = true;
+	} else {
+		ag->elink_stag_mode = false;
+	}
+	printk("Set stag mode to %d\n", ag->elink_stag_mode);
+
+	return count;
+}
+
+static struct file_operations ag71xx_elink_stag_mode_proc_fops = {
+	.owner	= THIS_MODULE,
+	.read	= ag71xx_elink_stag_mode_get,
+	.write  = ag71xx_elink_stag_mode_set,
+};
+
+#endif
+
 static int __devinit ag71xx_probe(struct platform_device *pdev)
 {
 	struct net_device *dev;
@@ -1976,8 +2096,22 @@ static int __devinit ag71xx_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, dev);
 
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+	if (!(ag->elink_proc_dir = proc_mkdir("elink_ag71xx", NULL))) {
+		goto err_phy_disconnect;
+	}
+	if (!proc_create_data("stag_mode", S_IFREG|S_IRUSR|S_IWUSR,
+		ag->elink_proc_dir, &ag71xx_elink_stag_mode_proc_fops, ag)) {
+		goto err_elink_proc;
+	}
+#endif
+
 	return 0;
 
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+err_elink_proc:
+	remove_proc_entry("elink_ag71xx", NULL);
+#endif
 err_phy_disconnect:
 	ag71xx_phy_disconnect(ag);
 err_unregister_netdev:
@@ -2003,6 +2137,10 @@ static int __devexit ag71xx_remove(struct platform_device *pdev)
 	if (dev) {
 		struct ag71xx *ag = netdev_priv(dev);
 
+#ifdef CONFIG_AG71XX_AR8216_ELINK_FEATURES
+		remove_proc_entry("stag_mode", ag->elink_proc_dir);
+		remove_proc_entry("elink_ag71xx", NULL);
+#endif
 		ag71xx_debugfs_exit(ag);
 		ag71xx_phy_disconnect(ag);
 		unregister_netdev(dev);
