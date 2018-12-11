@@ -566,6 +566,9 @@ if KERNEL_CGROUPS
 
 endif
 
+config KERNEL_NET_IPGRE_BROADCAST
+	bool "IP: broadcast GRE over IP"
+	default y
 #
 # Namespace support symbols
 #
