@@ -69,7 +69,9 @@ $(call Package/iproute2/Default)
 endef
 
 ifeq ($(BUILD_VARIANT),tiny)
+ifeq ($(CONFIG_PACKAGE_ip-full),)
   IP_CONFIG_TINY:=y
+endif
 endif
 
 define Build/Configure
