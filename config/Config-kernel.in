@@ -69,6 +69,14 @@ if KERNEL_KASAN
 		default 2048
 endif
 
+config KERNEL_IPQ_MEM_PROFILE
+	int "Diifernt memory profile"
+	range 0 1024
+	default 0
+	help
+	  This option select memory profile to be used,which defines
+	  the reserved memory configuration used in device tree.
+
 config KERNEL_FTRACE
 	bool "Compile the kernel with tracing support"
 	depends on !TARGET_uml
