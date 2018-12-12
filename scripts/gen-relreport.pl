@@ -12,6 +12,7 @@ use FindBin;
 use lib "$FindBin::Bin";
 use metadata;
 
+no warnings "uninitialized";
 # %OPTS
 # Hash of all the options provided through command line
 my %OPTS;
@@ -24,6 +25,39 @@ my @CONFIGS;
 # Each element is a package from metadata enabled at least in one of the
 # config files specified as an argument
 my %QSDKPKGS;
+my %Subsystem = (
+	"art2" => "HalPhy",
+	"ath10k_firmware" => "Wi-Fi FW",
+	"athdiag" => "Wi-Fi host",
+	"athtestcmd" => "HalPhy",
+	"base" => "OpenWrt",
+	"bootloader" => "BOOT",
+	"hyfi" => "SON",
+	"ieee1905_security" => "SON",
+	"luci" => "OpenWrt",
+	"packages" => "OpenWrt",
+	"nss" => "NSS",
+	"nss_host" => "NSS",
+	"nss_cust" => "NSS",
+	"networking" => "NSS",
+	"qca_platform_utils" => "BOOT",
+	"qca_lib" => "SON",
+	"platform_utils" => "BOOT",
+	"qca_IOT" => "OpenWrt",
+	"qca_mcs" => "NSS",
+	"qca" => "Wi-Fi Host",
+	"qcom_utils_internal" => "BOOT",
+	"qca_lit" => "Wi-Fi FW",
+	"qca_hk" => "Wi-Fi FW",
+	"qca_np" => "Wi-Fi FW",
+	"routing" => "OpenWrt",
+	"shortcut_fe" => "NSS",
+	"sigma_dut" => "Wi-Fi Host",
+	"ssdk" => "SSDK",
+	"wlan_open" => "Ath10K",
+	"wapid" => "Wi-Fi Host",
+	"whc" => "SON"
+);
 
 sub load_config($) {
     my $defconfig = shift;
@@ -134,7 +168,7 @@ sub write_output_xlsx($) {
 
     # Fill-in the titles
     my @col = (
-        "SRC",     "PACKAGE", "VARIANT", "FEED",
+        "SRC", "PACKAGE", "VARIANT", "FEED", "Subsystem",
         "TARBALL", "VERSION", "DESCRIPTION"
     );
     my $colid = 0;
@@ -151,6 +185,7 @@ sub write_output_xlsx($) {
     # Now we're ready. Let's start adding the data
     my $row = 1;
     my $prevpkg, my $start_merge = 0;
+    my ($curFeed, $prevFeed, $prevSubsystem);
     foreach my $cur (
         sort { $QSDKPKGS{$a}->{src} cmp $QSDKPKGS{$b}->{src} }
         keys %QSDKPKGS
@@ -158,12 +193,22 @@ sub write_output_xlsx($) {
     {
         my $col    = 0;
         my $curpkg = $QSDKPKGS{$cur};
+        my $pwd = `pwd`;
+        chomp($pwd);
 
         $worksheet->write( $row, $col++, $curpkg->{src},     $f_data );
         $worksheet->write( $row, $col++, $curpkg->{name},    $f_data );
         $worksheet->write( $row, $col++, $curpkg->{variant}, $f_data );
-        $worksheet->write( $row, $col++, length( $curpkg->{subdir} )
-                ? basename( $curpkg->{subdir} ) : "openwrt", $f_data );
+        $curFeed = length( $curpkg->{subdir} ) ? basename( $curpkg->{subdir} ) : "openwrt";
+        my $cmd = "find $pwd/package/feeds/ -name $curpkg->{src}";
+        my @isFeed = `$cmd`;
+        $curFeed = (scalar @isFeed == 0) ? 'base' : $curFeed;
+        $worksheet->write( $row, $col++, $curFeed, $f_data );
+        if(exists $Subsystem{lc $curFeed}) {
+            $worksheet->write( $row, $col++, $Subsystem{lc $curFeed}, $f_data );
+        } else {
+            $worksheet->write_blank($row, $col++, $f_data);
+        }
         $worksheet->write( $row, $col++, $curpkg->{source},  $f_data );
         $worksheet->write_string( $row, $col++, $curpkg->{version}, $f_data )
           unless !exists( $curpkg->{version} );
@@ -172,34 +217,54 @@ sub write_output_xlsx($) {
 
         my %pkgconfigs = map { $_ => 1 } @{ $curpkg->{configs} };
         foreach my $conf ( sort { $a->{name} cmp $b->{name} } @CONFIGS ) {
-            $worksheet->write( $row, $col++, "x", $f_green_data )
-              if exists( $pkgconfigs{ $conf->{name} } );
-            $worksheet->write_blank( $row, $col++, $f_red_data )
-              if !exists( $pkgconfigs{ $conf->{name} } );
+            if (exists $pkgconfigs{$conf->{name}}) {
+                my $fileSize;
+                $cmd = "find $pwd/bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls";
+                my @findFile = `$cmd`;
+                @findFile = grep /\S/, @findFile;
+
+                if($#findFile == -1) {
+                    #print "Excel Write Warning: $curpkg->{name} file not found in packages\n";
+                    $fileSize = "FILE NOT FOUND";
+                    $worksheet->write( $row, $col++, $fileSize, $f_red_data );
+                }
+                elsif($#findFile > 0) {
+                    #print "Excel Write Warning: More than one file matched for $curpkg->{name}. Please check correct filesize and write manually to Report !!!\n";
+                    $worksheet->write( $row, $col++, 'x', $f_title );
+                }
+                else {
+                    $fileSize = (split(/\s+/, $findFile[0]))[6];
+                    $worksheet->write( $row, $col++, $fileSize, $f_green_data );
+                }
+            } else {
+                $worksheet->write_blank($row, $col++, $f_red_data);
+            }
         }
 
         # If the same package defines multiple BuildPackage/KernelPackage,
         # we want to merge the src cells over multiple rows.
-        if (    $start_merge == 0
+        if ( $start_merge == 0
             and exists( $prevpkg->{src} )
             and $curpkg->{src} eq $prevpkg->{src} )
         {
             $start_merge = $row - 1;
         }
         if ( $start_merge != 0 and $curpkg->{src} ne $prevpkg->{src} ) {
-
             # We want to merge the src, version and feeds columns
             $worksheet->merge_range( $start_merge, 0, $row - 1, 0,
                 $prevpkg->{src}, $f_data );
             $worksheet->merge_range( $start_merge, 3, $row - 1, 3,
-                length( $curpkg->{subdir} ) ? basename( $curpkg->{subdir} )
-                : "openwrt", $f_data );
+                $prevFeed, $f_data );
             $worksheet->merge_range( $start_merge, 4, $row - 1, 4,
-                $prevpkg->{source}, $f_data );
+                 $prevSubsystem, $f_data );
             $worksheet->merge_range( $start_merge, 5, $row - 1, 5,
+                $prevpkg->{source}, $f_data );
+            $worksheet->merge_range( $start_merge, 6, $row - 1, 6,
                 $prevpkg->{version}, $f_data );
             $start_merge = 0;
         }
+        $prevFeed = $curFeed;
+        $prevSubsystem = $Subsystem{lc $curFeed};
         $prevpkg = $curpkg;
         $row++;
     }
