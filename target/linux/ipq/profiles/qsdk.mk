@@ -90,6 +90,8 @@ WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo qca-fst-manager
 OPENWRT_STANDARD:= \
 	luci openssl-util
 
+OPENWRT_256MB:=luci pm-utils qca-thermald-10.4 qca-wlanfw-upgrade
+
 STORAGE:=kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-iso8859-1  \
 	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs
 
@@ -243,12 +245,11 @@ $(eval $(call Profile,QSDK_Deluxe))
 
 define Profile/QSDK_256
 	NAME:=Qualcomm-Atheros SDK 256MB Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
-		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
-		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
-		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
+	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_PKGS) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER) $(NETWORKING) $(UTILS) \
+		$(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) $(IGMPSNOOING_RSTP) \
+		$(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) $(NSS_CRYPTO) \
+		$(NSS_CLIENTS_STANDARD) $(MAP_PKGS) $(HYFI) -lacpd \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
 endef
 
