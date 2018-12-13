@@ -1,8 +1,8 @@
 --- a/hostapd/config_file.c
 +++ b/hostapd/config_file.c
-@@ -4092,6 +4092,8 @@ static int hostapd_config_fill(struct ho
- 			return 1;
- 		}
+@@ -4127,6 +4127,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
+ 	} else if (os_strcmp(buf, "coloc_intf_reporting") == 0) {
+ 		bss->coloc_intf_reporting = atoi(pos);
  #endif /* CONFIG_OWE */
 +	} else if (os_strcmp(buf, "map_enabled") == 0) {
 +		bss->map_enabled = atoi(pos);
@@ -24,17 +24,17 @@
  # The key number to use when transmitting.
 --- a/src/ap/ap_config.h
 +++ b/src/ap/ap_config.h
-@@ -682,6 +682,7 @@ struct hostapd_bss_config {
- 	char owe_transition_ifname[IFNAMSIZ + 1];
- 	int *owe_groups;
- #endif /* CONFIG_OWE */
+@@ -689,6 +689,7 @@ struct hostapd_bss_config {
+ 	int coloc_intf_reporting;
+ 
+ 	u8 send_probe_response;
 +	int map_enabled;
  };
  
  /**
 --- a/src/ap/ieee802_11.c
 +++ b/src/ap/ieee802_11.c
-@@ -62,6 +62,27 @@ prepare_auth_resp_fils(struct hostapd_da
+@@ -62,6 +62,27 @@ prepare_auth_resp_fils(struct hostapd_data *hapd,
  		       int *is_pub);
  #endif /* CONFIG_FILS */
  
@@ -62,7 +62,7 @@
  u8 * hostapd_eid_supp_rates(struct hostapd_data *hapd, u8 *eid)
  {
  	u8 *pos = eid;
-@@ -2207,6 +2228,22 @@ static u16 check_wmm(struct hostapd_data
+@@ -2224,6 +2245,22 @@ static u16 check_wmm(struct hostapd_data *hapd, struct sta_info *sta,
  	return WLAN_STATUS_SUCCESS;
  }
  
@@ -85,7 +85,7 @@
  
  static u16 copy_supp_rates(struct hostapd_data *hapd, struct sta_info *sta,
  			   struct ieee802_11_elems *elems)
-@@ -2463,6 +2500,12 @@ static u16 check_assoc_ies(struct hostap
+@@ -2480,6 +2517,12 @@ static u16 check_assoc_ies(struct hostapd_data *hapd, struct sta_info *sta,
  	resp = copy_supp_rates(hapd, sta, &elems);
  	if (resp != WLAN_STATUS_SUCCESS)
  		return resp;
@@ -98,7 +98,7 @@
  #ifdef CONFIG_IEEE80211N
  	resp = copy_sta_ht_capab(hapd, sta, elems.ht_capabilities);
  	if (resp != WLAN_STATUS_SUCCESS)
-@@ -2988,6 +3031,9 @@ static u16 send_assoc_resp(struct hostap
+@@ -3020,6 +3063,9 @@ static u16 send_assoc_resp(struct hostapd_data *hapd, struct sta_info *sta,
  	}
  #endif /* CONFIG_WPS */
  
@@ -108,7 +108,7 @@
  #ifdef CONFIG_P2P
  	if (sta && sta->p2p_ie && hapd->p2p_group) {
  		struct wpabuf *p2p_resp_ie;
-@@ -3347,7 +3393,7 @@ static void handle_assoc(struct hostapd_
+@@ -3379,7 +3425,7 @@ static void handle_assoc(struct hostapd_data *hapd,
  			hostapd_logger(hapd, mgmt->sa,
  				       HOSTAPD_MODULE_IEEE80211,
  				       HOSTAPD_LEVEL_INFO,
@@ -117,7 +117,7 @@
  				       sta ? sta->aid : -1,
  				       sta ? sta->flags : 0);
  			send_deauth(hapd, mgmt->sa,
-@@ -4231,7 +4277,7 @@ static void handle_assoc_cb(struct hosta
+@@ -4285,7 +4331,7 @@ static void handle_assoc_cb(struct hostapd_data *hapd,
  		sta->flags |= WLAN_STA_WDS;
  	}
  
@@ -128,7 +128,7 @@
  
 --- a/src/ap/sta_info.c
 +++ b/src/ap/sta_info.c
-@@ -166,7 +166,7 @@ void ap_free_sta(struct hostapd_data *ha
+@@ -166,7 +166,7 @@ void ap_free_sta(struct hostapd_data *hapd, struct sta_info *sta)
  	/* just in case */
  	ap_sta_set_authorized(hapd, sta, 0);
  
@@ -137,7 +137,7 @@
  		hostapd_set_wds_sta(hapd, NULL, sta->addr, sta->aid, 0);
  
  	if (sta->ipaddr)
-@@ -407,7 +407,7 @@ void ap_handle_timer(void *eloop_ctx, vo
+@@ -408,7 +408,7 @@ void ap_handle_timer(void *eloop_ctx, void *timeout_ctx)
  	unsigned long next_time = 0;
  	int reason;
  
@@ -213,7 +213,7 @@
  	u8 supported_rates[WLAN_SUPP_RATES_MAX];
 --- a/src/common/ieee802_11_common.c
 +++ b/src/common/ieee802_11_common.c
-@@ -126,6 +126,10 @@ static int ieee802_11_parse_vendor_speci
+@@ -126,6 +126,10 @@ static int ieee802_11_parse_vendor_specific(const u8 *pos, size_t elen,
  			elems->roaming_cons_sel = pos;
  			elems->roaming_cons_sel_len = elen;
  			break;
@@ -244,7 +244,7 @@
  };
 --- a/src/common/ieee802_11_defs.h
 +++ b/src/common/ieee802_11_defs.h
-@@ -1201,6 +1201,29 @@ struct ieee80211_ampe_ie {
+@@ -1211,6 +1211,29 @@ struct ieee80211_ampe_ie {
  #define OWE_IE_VENDOR_TYPE 0x506f9a1c
  #define OWE_OUI_TYPE 28
  
