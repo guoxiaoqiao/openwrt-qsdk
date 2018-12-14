@@ -1176,7 +1176,7 @@ define KernelPackage/usb-net
   DEPENDS:=+kmod-mii
   KCONFIG:=CONFIG_USB_USBNET \
 	CONFIG_USB_NET_DRIVERS
-  AUTOLOAD:=$(call AutoProbe,usbnet)
+  AUTOLOAD:=$(call AutoProbe,usbnet,1)
   FILES:=$(LINUX_DIR)/drivers/$(USBNET_DIR)/usbnet.ko
   $(call AddDepends/usb)
 endef
@@ -1192,6 +1192,24 @@ define AddDepends/usb-net
   SUBMENU:=$(USB_MENU)
   DEPENDS+=kmod-usb-net $(1)
 endef
+
+
+define KernelPackage/usb-rmnet
+  TITLE:=Kernel modules for USB RMNET driver
+  DEPENDS:=+kmod-usb-net
+  KCONFIG:=CONFIG_MSM_RMNET_USB
+  FILES:=$(LINUX_DIR)/drivers/$(USBNET_DIR)/rmnet_usb_data.ko \
+	 $(LINUX_DIR)/drivers/$(USBNET_DIR)/rmnet_usb_ctrl.ko
+  AUTOLOAD:=$(call AutoProbe,rmnet_usb_data,rmnet_usb_ctrl,1)
+
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-rmnet/description
+ Kernel modules for USB RMNET driver
+endef
+
+$(eval $(call KernelPackage,usb-rmnet))
 
 
 define KernelPackage/usb-net-asix
