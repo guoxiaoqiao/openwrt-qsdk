@@ -95,6 +95,8 @@ STORAGE:=kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-is
 
 USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
 
+USB_RMNET:= kmod-usb-net kmod-usb-rmnet
+
 TEST_TOOLS:=sysstat ethtool i2c-tools tcpdump
 
 UTILS:=file luci-app-samba iperf-mt rng-tools profilerd
@@ -180,7 +182,7 @@ define Profile/QSDK_Premium
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
-		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
+		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(USB_RMNET)
 endef
 
 define Profile/QSDK_Premium/Description
