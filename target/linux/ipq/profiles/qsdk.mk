@@ -47,6 +47,8 @@ NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-tun6rd \
 	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe
 
+NSS_CLIENTS_256MB:= kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-pppoe
+
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile \
 	kmod- kmod-qca-nss-drv-bridge-mgr
 
@@ -117,11 +119,23 @@ NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 	luci-app-upnp luci-app-ddns luci-proto-ipv6 \
 	luci-app-multiwan
 
+NETWORKING_256MB:=-dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
+	rp-pppoe-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
+	kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp \
+	luci-app-upnp luci-app-ddns luci-proto-ipv6 \
+	luci-app-multiwan
+
 CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
 	isc-dhcp-relay-ipv6 rp-pppoe-server ppp-mod-pptp
+
+CD_ROUTER_256MB:=kmod-ipt-ipopt kmod-nat-sctp lacpd \
+	arptables ddns-scripts \
+	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
+	kmod-ipv6 ip6tables iptables-mod-filter \
+	isc-dhcp-relay-ipv6 rp-pppoe-server
 
 BLUETOOTH:=kmod-bluetooth bluez-libs bluez-utils kmod-ath3k
 
@@ -251,11 +265,11 @@ $(eval $(call Profile,QSDK_Deluxe))
 define Profile/QSDK_256
 	NAME:=Qualcomm-Atheros SDK 256MB Profile
 	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_PKGS) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER) $(NETWORKING) $(UTILS) \
-		$(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) $(IGMPSNOOING_RSTP) \
-		$(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) $(NSS_CRYPTO) \
-		$(NSS_CLIENTS_STANDARD) $(MAP_PKGS) $(HYFI) -lacpd \
-		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
+		$(WIFI_PKGS) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) $(UTILS) \
+		$(QCA_RFS) $(IGMPSNOOING_RSTP) \
+		$(QCA_ECM) $(NSS_MACSEC) \
+		$(NSS_CLIENTS_256MB) $(HYFI) -lacpd \
+		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
 endef
 
 define Profile/QSDK_256/Description
