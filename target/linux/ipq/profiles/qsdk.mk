@@ -61,7 +61,7 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat kmod-qca-ssdk-nohnat qca-ssdk-shell swconf
 SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
 SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
-WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad-mesh hostapd-utils \
+WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k kmod-ath11k wpad-mesh hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
 		 athtestcmd ath10k-firmware-qca988x ath10k-firmware-qca9887 \
 		 ath10k-firmware-qca9888 ath10k-firmware-qca9984 \
@@ -89,6 +89,13 @@ WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo qca-fst-manager
 
 OPENWRT_STANDARD:= \
 	luci openssl-util
+
+OPENWRT_256MB:=luci pm-utils qca-thermald-10.4 qca-wlanfw-upgrade -file \
+		-kmod-ata-core -kmod-ata-ahci -kmod-ata-ahci-platform \
+		-kmod-usb2 -kmod-usb3 -kmod-usb-dwc3-qcom \
+		-kmod-usb-phy-qcom-dwc3 -kmod-usb-dwc3-of-simple \
+		-kmod-usb-phy-ipq807x
+
 
 STORAGE:=kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-iso8859-1  \
 	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs
@@ -240,3 +247,38 @@ define Profile/QSDK_Deluxe/Description
 endef
 
 $(eval $(call Profile,QSDK_Deluxe))
+
+define Profile/QSDK_256
+	NAME:=Qualcomm-Atheros SDK 256MB Profile
+	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_PKGS) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER) $(NETWORKING) $(UTILS) \
+		$(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) $(IGMPSNOOING_RSTP) \
+		$(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) $(NSS_CRYPTO) \
+		$(NSS_CLIENTS_STANDARD) $(MAP_PKGS) $(HYFI) -lacpd \
+		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
+endef
+
+define Profile/QSDK_256/Description
+	QSDK Premium package set configuration.
+	Enables qca-wifi 11.0 packages
+endef
+
+$(eval $(call Profile,QSDK_256))
+
+define Profile/QSDK_512
+	NAME:=Qualcomm-Atheros SDK 512MB Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
+		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
+		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
+		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
+		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
+endef
+
+define Profile/QSDK_512/Description
+	QSDK Premium package set configuration.
+	Enables qca-wifi 11.0 packages
+endef
+
+$(eval $(call Profile,QSDK_512))

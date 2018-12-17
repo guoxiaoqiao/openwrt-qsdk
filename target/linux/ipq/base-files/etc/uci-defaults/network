@@ -105,8 +105,12 @@ ap-hk05|\
 ap-hk06|\
 ap-hk07|\
 ap-hk08|\
+ap-hk09|\
+ap-ac01.1|\
+ap-ac01.2|\
 ap-oak01|\
 ap-oak02|\
+ap-oak03|\
 db-hk01|\
 db-hk02)
 	ucidef_add_switch "switch0"
@@ -120,15 +124,6 @@ ap-hk02)
 	ucidef_add_switch_ext_hkxx "switch0" "CtrlpktAppProfile" "0x7e" "0x0" "0x1" "no" "no" "no" "no" "no" "no" "no" "no" "no" "no" "rdtcpu" "no" "no" "yes" "no"
 	ucidef_set_interfaces_lan_wan "eth1 eth2" "eth0"
 	;;
-ap-ac01|\
-ap-ac02|\
-ap-oak03|\
-ap-hk09)
-        ucidef_add_switch "switch0"
-        ucidef_add_switch_ext_profile  "switch0" "CtrlpktRfdb" "0" "01-80-c2-00-00-00"
-        ucidef_add_switch_ext_hkxx "switch0" "CtrlpktAppProfile" "0x7e" "0x0" "0x1" "no" "no" "no" "no" "no" "no" "no" "no" "no" "no" "rdtcpu" "no" "no" "yes" "no"
-        ucidef_set_interfaces_lan_wan "eth0 eth1 eth2 eth3 eth5" "eth4"
-        ;;
 *)
 	echo "Unsupported hardware. Network interfaces not intialized"
 	;;
