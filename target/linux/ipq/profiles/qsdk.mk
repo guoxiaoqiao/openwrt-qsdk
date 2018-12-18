@@ -38,7 +38,7 @@ NSS_MACSEC_11:= \
 	kmod-qca-nss-macsec \
 	qca-wpa-supplicant-macsec
 
-QCA_ECM:= kmod-qca-nss-ecm
+QCA_ECM_STANDARD:= kmod-qca-nss-ecm-standard
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
 QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
@@ -268,7 +268,7 @@ define Profile/QSDK_256
 	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) $(UTILS) \
 		$(QCA_RFS) $(IGMPSNOOING_RSTP) \
-		$(QCA_ECM) $(NSS_MACSEC) \
+		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
 		$(NSS_CLIENTS_256MB) $(HYFI) -lacpd \
 		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
 endef
