@@ -97,7 +97,7 @@ USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
 
 USB_RMNET:= kmod-usb-net kmod-usb-rmnet
 
-LTE_MGR:=dsi_netctrl_test netmgrd qmuxd
+LTE_MGR:=dsi_netctrl_test netmgrd qmuxd ip-passthru
 
 TEST_TOOLS:=sysstat ethtool i2c-tools tcpdump
 
