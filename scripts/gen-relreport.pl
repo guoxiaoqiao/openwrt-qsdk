@@ -172,7 +172,7 @@ sub write_output_xlsx($) {
     # Fill-in the titles
     my @col = (
         "SRC", "PACKAGE", "VARIANT", "FEED", "Subsystem",
-        "TARBALL", "VERSION", "DESCRIPTION"
+        "TARBALL", "VERSION", "DESCRIPTION", "FlashSize"
     );
     my $colid = 0;
     foreach (@col) {
@@ -218,31 +218,33 @@ sub write_output_xlsx($) {
 
         $worksheet->write( $row, $col++, $curpkg->{description}, $f_desc );
 
-        my %pkgconfigs = map { $_ => 1 } @{ $curpkg->{configs} };
-        foreach my $conf ( sort { $a->{name} cmp $b->{name} } @CONFIGS ) {
-            if (exists $pkgconfigs{$conf->{name}}) {
-                my $fileSize;
-                $cmd = "find ./bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls";
-                my @findFile = `$cmd`;
-                @findFile = grep /\S/, @findFile;
+	my $fileSize;
+	$cmd = "find ./bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls";
+	my @findFile = `$cmd`;
+	@findFile = grep /\S/, @findFile;
 
-                if($#findFile == -1) {
-                    #print "Excel Write Warning: $curpkg->{name} file not found in packages\n";
-                    $fileSize = "FILE NOT FOUND";
-                    $worksheet->write( $row, $col++, $fileSize, $f_red_data );
-                }
-                elsif($#findFile > 0) {
-                    #print "Excel Write Warning: More than one file matched for $curpkg->{name}. Please check correct filesize and write manually to Report !!!\n";
-                    $worksheet->write( $row, $col++, 'x', $f_title );
-                }
-                else {
-                    $fileSize = (split(/\s+/, $findFile[0]))[6];
-                    $worksheet->write( $row, $col++, $fileSize, $f_green_data );
-                }
-            } else {
-                $worksheet->write_blank($row, $col++, $f_red_data);
-            }
-        }
+	if($#findFile == -1) {
+	    #print "Excel Write Warning: $curpkg->{name} file not found in packages\n";
+	    $fileSize = "FILESIZE_NOTFOUND";
+	    $worksheet->write( $row, $col++, $fileSize, $f_data );
+	}
+	elsif($#findFile > 0) {
+	    #print "Excel Write Warning: More than one file matched for $curpkg->{name}. Please check correct filesize and write manually to Report !!!\n";
+	    $worksheet->write( $row, $col++, 'MORE_THAN_ONE_FILE', $f_data );
+	}
+	else {
+	    $fileSize =~ s/^\s+|\s+$//g;
+	    $fileSize = (split(/\s+/, $findFile[0]))[6];
+	    $worksheet->write( $row, $col++, $fileSize, $f_green_data );
+	}
+
+        my %pkgconfigs = map { $_ => 1 } @{ $curpkg->{configs} };
+	foreach my $conf ( sort { $a->{name} cmp $b->{name} } @CONFIGS ) {
+	    $worksheet->write( $row, $col++, "x", $f_green_data )
+	      if exists( $pkgconfigs{ $conf->{name} } );
+	    $worksheet->write_blank( $row, $col++, $f_red_data )
+	      if !exists( $pkgconfigs{ $conf->{name} } );
+	}
 
         # If the same package defines multiple BuildPackage/KernelPackage,
         # we want to merge the src cells over multiple rows.
