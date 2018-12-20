@@ -63,6 +63,9 @@ sub load_config($) {
     my $defconfig = shift;
     my $dotconfig = tmpnam();
 
+    return if($defconfig =~ m/.*_debug/ or $defconfig =~ m/.*_ioe_.*/ or $defconfig =~ m/.*ar71xx_open\..*/
+      or $defconfig =~ m/.*ar71xx_premium\..*/ or $defconfig =~ m/.*_upstream\..*/ or $defconfig =~ m/.*ar71xx_wireless\..*/ or $defconfig =~ m/.*_caf.*/);
+
     # Create a temporary file and extrapolate it with default values
     copy( $defconfig, $dotconfig ) or die "Error when copying $defconfig: $!";
     system( "./scripts/config/conf "
@@ -200,7 +203,7 @@ sub write_output_xlsx($) {
         $worksheet->write( $row, $col++, $curpkg->{name},    $f_data );
         $worksheet->write( $row, $col++, $curpkg->{variant}, $f_data );
         $curFeed = length( $curpkg->{subdir} ) ? basename( $curpkg->{subdir} ) : "openwrt";
-        my $cmd = "find $pwd/package/feeds/ -name $curpkg->{src}";
+        my $cmd = "find ./package/feeds/ -name $curpkg->{src}";
         my @isFeed = `$cmd`;
         $curFeed = (scalar @isFeed == 0) ? 'base' : $curFeed;
         $worksheet->write( $row, $col++, $curFeed, $f_data );
@@ -219,7 +222,7 @@ sub write_output_xlsx($) {
         foreach my $conf ( sort { $a->{name} cmp $b->{name} } @CONFIGS ) {
             if (exists $pkgconfigs{$conf->{name}}) {
                 my $fileSize;
-                $cmd = "find $pwd/bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls";
+                $cmd = "find ./bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls";
                 my @findFile = `$cmd`;
                 @findFile = grep /\S/, @findFile;
 
