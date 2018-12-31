@@ -116,9 +116,11 @@ sub xref_packages() {
             $QSDKPKGS{$pkg}->{version} =~ s/^<LINUX_VERSION>-$/KERNEL/;
             $QSDKPKGS{$pkg}->{version} =~ s/<LINUX_VERSION>[\+-](.+)/$1/;
 
-            push( @{ $QSDKPKGS{$pkg}->{configs} },    $config->{name} );
-            push( @{ $QSDKPKGS{$pkg}->{defconfigs} }, $config->{name} )
-              if ( exists( $config->{$pkg}->{default} ) );
+            if ( exists( $config->{$pkg}->{default} ) ) {
+                push( @{ $QSDKPKGS{$pkg}->{defconfigs} }, $config->{name} );
+            } else {
+                push( @{ $QSDKPKGS{$pkg}->{configs} },    $config->{name} );
+            }
         }
     }
 }
@@ -137,6 +139,7 @@ sub write_output_xlsx($) {
     $worksheet->set_column( 4, 4, 28 );    # Column E width set to 28
     $worksheet->set_column( 5, 5, 14 );    # Column E width set to 14
     $worksheet->set_column( 6, 6, 12 );    # Column F width set to 12
+    my $c_yellow = $workbook->set_custom_color( 36, 255, 255, 153 );
     my $c_orange = $workbook->set_custom_color( 40, 247, 150, 70 );
     my $c_green  = $workbook->set_custom_color( 41, 196, 215, 155 );
     my $c_red    = $workbook->set_custom_color( 42, 218, 150, 148 );
@@ -164,6 +167,12 @@ sub write_output_xlsx($) {
         border   => 1,
         bg_color => $c_red,
     );
+    my $f_yellow_data = $workbook->add_format(
+        align    => 'center',
+        valign   => 'vcenter',
+        border   => 1,
+        bg_color => $c_yellow,
+    );
     my $f_desc = $workbook->add_format(
         align  => 'fill',
         border => 1,
@@ -171,8 +180,8 @@ sub write_output_xlsx($) {
 
     # Fill-in the titles
     my @col = (
-        "SRC", "PACKAGE", "VARIANT", "FEED", "Subsystem",
-        "TARBALL", "VERSION", "DESCRIPTION", "FlashSize"
+        "SRC", "PACKAGE", "VARIANT", "FEED", "SUBSYSTEM",
+        "TARBALL", "VERSION", "DESCRIPTION", "FLASHSIZE"
     );
     my $colid = 0;
     foreach (@col) {
@@ -218,24 +227,37 @@ sub write_output_xlsx($) {
 
         $worksheet->write( $row, $col++, $curpkg->{description}, $f_desc );
 
-	my $fileSize;
-	$cmd = "find ./bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls";
-	my @findFile = `$cmd`;
+	my ($fileSize, @findFile, $fcolor);
+	my $SOC = lc((split(/\_/, $filename))[-1]);
+	$SOC =~ s/\.xlsx//g;
+	$curpkg->{name} = 'kmod-fs-configfs' if($curpkg->{name} eq 'kmod-usb-configfs');
+	$cmd = "find ../out/ipq_$SOC/packages/ -name $curpkg->{name}_*.ipk -ls";
+	@findFile = `$cmd`;
 	@findFile = grep /\S/, @findFile;
+	if($#findFile != -1) {
+	    $fcolor = $f_green_data;
+	    goto FLASHSIZE;
+	}
 
-	if($#findFile == -1) {
-	    #print "Excel Write Warning: $curpkg->{name} file not found in packages\n";
-	    $fileSize = "FILESIZE_NOTFOUND";
-	    $worksheet->write( $row, $col++, $fileSize, $f_data );
+	$cmd = "find ./bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls";
+	@findFile = `$cmd`;
+	@findFile = grep /\S/, @findFile;
+	$fcolor = $f_yellow_data;
+
+FLASHSIZE:
+	if($#findFile == 0) {
+	    $fileSize =~ s/^\s+|\s+$//g;
+	    $fileSize = (split(/\s+/, $findFile[0]))[6];
+	    $worksheet->write( $row, $col++, $fileSize, $fcolor );
 	}
 	elsif($#findFile > 0) {
 	    #print "Excel Write Warning: More than one file matched for $curpkg->{name}. Please check correct filesize and write manually to Report !!!\n";
 	    $worksheet->write( $row, $col++, 'MORE_THAN_ONE_FILE', $f_data );
 	}
 	else {
-	    $fileSize =~ s/^\s+|\s+$//g;
-	    $fileSize = (split(/\s+/, $findFile[0]))[6];
-	    $worksheet->write( $row, $col++, $fileSize, $f_green_data );
+	    #print "Excel Write Warning: $curpkg->{name} file not found in packages\n";
+	    $fileSize = "FILESIZE_NOTFOUND";
+	    $worksheet->write( $row, $col++, $fileSize, $f_data );
 	}
 
         my %pkgconfigs = map { $_ => 1 } @{ $curpkg->{configs} };
