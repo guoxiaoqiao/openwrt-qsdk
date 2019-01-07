@@ -69,6 +69,14 @@ if KERNEL_KASAN
 		default 2048
 endif
 
+config KERNEL_IPQ_MEM_PROFILE
+	int "Diifernt memory profile"
+	range 0 1024
+	default 0
+	help
+	  This option select memory profile to be used,which defines
+	  the reserved memory configuration used in device tree.
+
 config KERNEL_FTRACE
 	bool "Compile the kernel with tracing support"
 	depends on !TARGET_uml
@@ -566,6 +574,13 @@ if KERNEL_CGROUPS
 
 endif
 
+config KERNEL_NET_IPGRE_BROADCAST
+	bool "IP: broadcast GRE over IP"
+	default y
+
+config KERNEL_CNSS2
+	bool "CNSS2 Platform Driver for Wi-Fi Module"
+	default y
 #
 # Namespace support symbols
 #

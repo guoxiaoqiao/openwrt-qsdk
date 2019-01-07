@@ -1,8 +1,6 @@
-Index: hostapd-2018-06-06/src/ap/ieee802_11_auth.c
-===================================================================
---- hostapd-2018-06-06.orig/src/ap/ieee802_11_auth.c
-+++ hostapd-2018-06-06/src/ap/ieee802_11_auth.c
-@@ -215,6 +215,15 @@ static int hostapd_radius_acl_query(stru
+--- a/src/ap/ieee802_11_auth.c
++++ b/src/ap/ieee802_11_auth.c
+@@ -215,6 +215,15 @@ static int hostapd_radius_acl_query(struct hostapd_data *hapd, const u8 *addr,
  int hostapd_check_acl(struct hostapd_data *hapd, const u8 *addr,
  		      struct vlan_description *vlan_id)
  {

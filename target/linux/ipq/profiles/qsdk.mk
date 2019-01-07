@@ -38,7 +38,7 @@ NSS_MACSEC_11:= \
 	kmod-qca-nss-macsec \
 	qca-wpa-supplicant-macsec
 
-QCA_ECM:= kmod-qca-nss-ecm
+QCA_ECM_STANDARD:= kmod-qca-nss-ecm-standard
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
 QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
@@ -46,6 +46,8 @@ NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-tun6rd \
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
 	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe
+
+NSS_CLIENTS_256MB:= kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-pppoe
 
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile \
 	kmod- kmod-qca-nss-drv-bridge-mgr
@@ -61,7 +63,7 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat kmod-qca-ssdk-nohnat qca-ssdk-shell swconf
 SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
 SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
-WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k wpad-mesh hostapd-utils \
+WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k kmod-ath11k wpad-mesh hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
 		 athtestcmd ath10k-firmware-qca988x ath10k-firmware-qca9887 \
 		 ath10k-firmware-qca9888 ath10k-firmware-qca9984 \
@@ -90,6 +92,13 @@ WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo qca-fst-manager
 OPENWRT_STANDARD:= \
 	luci openssl-util
 
+OPENWRT_256MB:=luci pm-utils qca-thermald-10.4 qca-wlanfw-upgrade -file \
+		-kmod-ata-core -kmod-ata-ahci -kmod-ata-ahci-platform \
+		-kmod-usb2 -kmod-usb3 -kmod-usb-dwc3-qcom \
+		-kmod-usb-phy-qcom-dwc3 -kmod-usb-dwc3-of-simple \
+		-kmod-usb-phy-ipq807x
+
+
 STORAGE:=kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-iso8859-1  \
 	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs
 
@@ -110,11 +119,23 @@ NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 	luci-app-upnp luci-app-ddns luci-proto-ipv6 \
 	luci-app-multiwan
 
+NETWORKING_256MB:=-dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
+	rp-pppoe-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
+	kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp \
+	luci-app-upnp luci-app-ddns luci-proto-ipv6 \
+	luci-app-multiwan
+
 CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
 	isc-dhcp-relay-ipv6 rp-pppoe-server ppp-mod-pptp
+
+CD_ROUTER_256MB:=kmod-ipt-ipopt kmod-nat-sctp lacpd \
+	arptables ddns-scripts \
+	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
+	kmod-ipv6 ip6tables iptables-mod-filter \
+	isc-dhcp-relay-ipv6 rp-pppoe-server
 
 BLUETOOTH:=kmod-bluetooth bluez-libs bluez-utils kmod-ath3k
 
@@ -162,7 +183,8 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) $(QCA_EDMA) \
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
-	$(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING)
+	$(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING) \
+	$(USB_DIAG) $(FTM) $(CNSS_DIAG) qca-cnss-daemon qca-wifi-hk-fw-hw1-10.4-asic
 endef
 
 define Profile/QSDK_Open/Description
@@ -243,13 +265,12 @@ $(eval $(call Profile,QSDK_Deluxe))
 
 define Profile/QSDK_256
 	NAME:=Qualcomm-Atheros SDK 256MB Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
-		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
-		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
-		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
-		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
+	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_PKGS) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) $(UTILS) \
+		$(QCA_RFS) $(IGMPSNOOING_RSTP) \
+		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
+		$(NSS_CLIENTS_256MB) $(HYFI) -lacpd \
+		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
 endef
 
 define Profile/QSDK_256/Description
