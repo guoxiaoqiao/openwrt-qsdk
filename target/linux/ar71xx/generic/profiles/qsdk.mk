@@ -50,7 +50,8 @@ UBOOT_PKGS:= qca-legacy-uboot-ap135 qca-legacy-uboot-ap152-16M \
 	     qca-legacy-uboot-ap147-16M qca-legacy-uboot-ap151-16M \
 	     qca-legacy-uboot-db12x-16M qca-legacy-uboot-ap152-dual \
 	     qca-legacy-uboot-ap135-nand qca-legacy-uboot-apjet01 \
-	     qca-legacy-uboot-apjet01-32M qca-legacy-uboot-apjet01-dual
+	     qca-legacy-uboot-apjet01-32M qca-legacy-uboot-apjet01-dual \
+	     qca-legacy-uboot-apjet01-dual-nor
 
 HYFI:=hyfi hyfi-ui
 
