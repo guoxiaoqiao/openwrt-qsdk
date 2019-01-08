@@ -118,9 +118,9 @@ sub xref_packages() {
 
             if ( exists( $config->{$pkg}->{default} ) ) {
                 push( @{ $QSDKPKGS{$pkg}->{defconfigs} }, $config->{name} );
-            } else {
+	    } else {
                 push( @{ $QSDKPKGS{$pkg}->{configs} },    $config->{name} );
-            }
+	    }
         }
     }
 }
@@ -181,7 +181,7 @@ sub write_output_xlsx($) {
     # Fill-in the titles
     my @col = (
         "SRC", "PACKAGE", "VARIANT", "FEED", "SUBSYSTEM",
-        "TARBALL", "VERSION", "DESCRIPTION", "FLASHSIZE"
+        "TARBALL", "VERSION", "DESCRIPTION", "FLASHSIZE", "DDRSIZE"
     );
     my $colid = 0;
     foreach (@col) {
@@ -256,8 +256,76 @@ FLASHSIZE:
 	}
 	else {
 	    #print "Excel Write Warning: $curpkg->{name} file not found in packages\n";
-	    $fileSize = "FILESIZE_NOTFOUND";
+	    $fileSize = "NOTFOUND";
 	    $worksheet->write( $row, $col++, $fileSize, $f_data );
+	}
+
+DDRSIZE:
+	my ($ddrSize, @paths, $status, $srcName, $pkgName);
+	$pkgName = $curpkg->{name};
+	$srcName = $curpkg->{src};
+	($status, @paths) = &getDDRSize($srcName, $pkgName, $curpkg->{version});
+	if($status eq "FAIL") {
+	    # special exceptions for Package Name
+	    if($srcName =~ m/libreadline/) { $srcName = "readline"; }
+	    elsif($srcName =~ m/libevent2/) { $srcName = "libevent"; }
+	    elsif($srcName =~ m/libjson-c/) { $srcName = "json-c"; }
+	    elsif($srcName =~ m/simulated-driver/) { $srcName = "shortcut-fe-simulated-driver"; }
+	    elsif($srcName =~ m/iwinfo/) { $srcName = "libiwinfo"; }
+	    elsif($srcName =~ m/wireless-tools/) { $srcName = "wireless_tools"; }
+	    elsif($srcName =~ m/uboot-envtools/ or $srcName =~ m/uboot-qca/) { $srcName = "u-boot";}
+	    else { $srcName = $pkgName; }
+	    ($status, @paths) = &getDDRSize($srcName, $pkgName, $curpkg->{version});
+	    if($status eq 'FAIL') {
+		undef @paths;
+	    }
+	}
+
+	if($#paths == 0)
+	{
+	    $cmd = "find $paths[0] -type f -executable | xargs size -t 2> /dev/null | grep '(TOTALS)'";
+	    $cmd = "find $paths[0] -type f -name '*.ko' | xargs size -t 2> /dev/null | grep '(TOTALS)'" if($curpkg->{src} =~ m/^linux/i);
+	    $ddrSize = `$cmd`;
+	    $ddrSize =~ s/^\s+|\s+$//g;
+	    $ddrSize = (split(/\s+/, $ddrSize))[3];
+	}
+	elsif($#paths > 0) {
+	    my ($iproutePaths, $data, @data, @out);
+	    if(lc $curpkg->{src} =~ m/iproute2/ and lc $curpkg->{name} =~ m/tc/) {
+		$iproutePaths = join(' ', @paths);
+		$cmd = "find $iproutePaths -type f -executable | xargs size 2> /dev/null";
+		@out = `$cmd`;
+		shift(@out);
+		foreach $data (@out) {
+		    $data =~ s/^\s+|\s+$//g;
+		    push (@data, (split(/\s+/, $data))[3]);
+		}
+		@data = reverse sort @data;
+		$ddrSize = ($data[0] ne '') ? $data[0] : 0;
+	    }
+	    elsif(lc $curpkg->{src} =~ m/qca-hostap/ and lc $curpkg->{name} =~ m/qca-wpa-cli/) {
+		foreach my $path (@paths) {
+		    if($path =~ m/default/) {
+			$cmd = "find $path -type f -executable | xargs size 2> /dev/null";
+			@out = `$cmd`;
+			shift @out;
+			$out[0] =~ s/^\s+|\s+$//g;
+			$ddrSize = (split(/\s+/, $out[0]))[3];
+			last;
+		    }
+		}
+	    }
+	    else {
+		$ddrSize = 'MANUAL';
+	    }
+	}
+
+	if($ddrSize ne '') {
+	    $worksheet->write( $row, $col++, $ddrSize, $f_green_data );
+	} elsif($ddrSize eq 'MANUAL') {
+	    $worksheet->write( $row, $col++, "MORE THAN ONE PACKAGE MATCHED", $f_yellow_data );
+	} else {
+	    $worksheet->write( $row, $col++, "NOTFOUND", $f_data );
 	}
 
         my %pkgconfigs = map { $_ => 1 } @{ $curpkg->{configs} };
@@ -295,6 +363,44 @@ FLASHSIZE:
         $prevpkg = $curpkg;
         $row++;
     }
+}
+
+sub getDDRSize {
+	my ($srcName, $pkgName, $version) = @_;
+	my ($cmd, @paths, @findFile);
+	$cmd = "find build_dir/target*/ -name \'$pkgName\' -type d | grep \"ipkg*\"";
+	@findFile = `$cmd`;
+	@findFile = grep /\S/, @findFile;
+	chomp @findFile;
+
+	@paths = grep (m/^build_dir\/target.*\/$srcName\b[-|\d|\.]*.*\/ipkg-(ipq|install|all)\/$pkgName\s*$/i, @findFile);
+	@paths = @findFile if($srcName =~ m/^linux/i or $srcName =~ /art2/i or $srcName =~ m/qca-iface-mgr/i or $srcName =~ m/qca-mcs-lkm/i);
+
+	if($srcName =~ m/qca-iface-mgr/ or $srcName =~ m/qca-mcs-lkm/) {
+	    my @temp = split('-', $srcName);
+	    pop @temp;
+	    $srcName = join('-', @temp);
+	    @temp = split('-', $version);
+	    pop @temp;
+	    $version = join('-', @temp);
+	    foreach my $path (@paths) {
+	        if($path =~ m/$version/ and $path =~ m/$srcName/) {
+		    return ("SUCCESS", $path);
+	        }
+	    }
+	    return ("FAIL", @paths);
+	}
+
+	if(grep(m/ipkg-ipq/, @paths)) {
+	    @paths = grep(m/ipkg-ipq/, @paths);
+	} elsif(grep(m/ipkg-install/, @paths)) {
+	    @paths = grep(m/ipkg-install/, @paths);
+	} elsif(grep(m/ipkg-all/, @paths)) {
+	    @paths = grep(m/ipkg-all/, @paths);
+	} else {
+	    return ("FAIL", @paths);
+	}
+	return ("SUCCESS", @paths);
 }
 
 sub write_output_xml($) {
