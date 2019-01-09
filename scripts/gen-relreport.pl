@@ -128,10 +128,39 @@ sub xref_packages() {
 sub write_output_xlsx($) {
 
     my $filename = shift;
+    my $SOC;
 
     # Create a new workbook and add a worksheet
     my $workbook  = Excel::Writer::XLSX->new($filename);
-    my $worksheet = $workbook->add_worksheet();
+
+    my @out = `ls -d ../out/*/ | cut -d'/' -f3`;
+    chomp @out;
+
+    # Print to check the folders exists while build. (Remove this part once clarified - PREM - START)
+    my $worksheet = $workbook->add_worksheet('OUT - FOLDERS');
+    my $tempRow = 0;
+    foreach my $list (@out) {
+	chomp $list;
+	$worksheet->write( $tempRow++, 0, $list );
+    }
+    # PREM : END
+
+    if($filename =~ m/^.*_ipq_(ipq.*)_QSDK_.*/i) {
+        $SOC = $1;
+	foreach my $file (@out) {
+	    if($file eq $SOC) {
+		$SOC = $file;
+		last;
+	    }
+	}
+    }
+    else {
+        $SOC = lc((split(/\_/, $filename))[-1]);
+        $SOC =~ s/\.xlsx//g;
+	$SOC = "ipq_$SOC";
+    }
+
+    $worksheet = $workbook->add_worksheet();
 
     # Init the worksheet (set columns width, create colors & formats)
     $worksheet->set_column( 0, 1, 28 );    # Column A,B width set to 28
@@ -228,10 +257,8 @@ sub write_output_xlsx($) {
         $worksheet->write( $row, $col++, $curpkg->{description}, $f_desc );
 
 	my ($fileSize, @findFile, $fcolor);
-	my $SOC = lc((split(/\_/, $filename))[-1]);
-	$SOC =~ s/\.xlsx//g;
 	$curpkg->{name} = 'kmod-fs-configfs' if($curpkg->{name} eq 'kmod-usb-configfs');
-	$cmd = "find ../out/ipq_$SOC/packages/ -name $curpkg->{name}_*.ipk -ls";
+	$cmd = "find ../out/$SOC/packages/ -name $curpkg->{name}_*.ipk -ls 2> /dev/null";
 	@findFile = `$cmd`;
 	@findFile = grep /\S/, @findFile;
 	if($#findFile != -1) {
@@ -239,7 +266,7 @@ sub write_output_xlsx($) {
 	    goto FLASHSIZE;
 	}
 
-	$cmd = "find ./bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls";
+	$cmd = "find ./bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls 2> /dev/null";
 	@findFile = `$cmd`;
 	@findFile = grep /\S/, @findFile;
 	$fcolor = $f_yellow_data;
