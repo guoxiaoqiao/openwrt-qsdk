@@ -145,8 +145,8 @@ sub write_output_xlsx($) {
     }
     # PREM : END
 
-    if($filename =~ m/^.*_ipq_(ipq.*)_QSDK_.*/i) {
-        $SOC = $1;
+    if($filename =~ m/^.*_ipq_(ipq.*)_QSDK_(.*)\.xlsx/i) {
+        $SOC = lc $1 . '_' . lc $2;
 	foreach my $file (@out) {
 	    if($file eq $SOC) {
 		$SOC = $file;
@@ -160,7 +160,7 @@ sub write_output_xlsx($) {
 	$SOC = "ipq_$SOC";
     }
 
-    $worksheet = $workbook->add_worksheet();
+    $worksheet = $workbook->add_worksheet($SOC);
 
     # Init the worksheet (set columns width, create colors & formats)
     $worksheet->set_column( 0, 1, 28 );    # Column A,B width set to 28
@@ -273,15 +273,17 @@ sub write_output_xlsx($) {
 
 FLASHSIZE:
 	if($#findFile == 0) {
-	    $fileSize =~ s/^\s+|\s+$//g;
+	    $findFile[0] =~ s/^\s+|\s+$//g;
 	    $fileSize = (split(/\s+/, $findFile[0]))[6];
-	    $worksheet->write( $row, $col++, $fileSize, $fcolor );
 	}
-	elsif($#findFile > 0) {
+
+	if($#findFile > 0) {
 	    #print "Excel Write Warning: More than one file matched for $curpkg->{name}. Please check correct filesize and write manually to Report !!!\n";
 	    $worksheet->write( $row, $col++, 'MORE_THAN_ONE_FILE', $f_data );
 	}
-	else {
+	elsif($fileSize ne '' and $fileSize =~ m/\d+/) {
+	    $worksheet->write( $row, $col++, $fileSize, $fcolor );
+	} else {
 	    #print "Excel Write Warning: $curpkg->{name} file not found in packages\n";
 	    $fileSize = "NOTFOUND";
 	    $worksheet->write( $row, $col++, $fileSize, $f_data );
@@ -311,7 +313,7 @@ DDRSIZE:
 	if($#paths == 0)
 	{
 	    $cmd = "find $paths[0] -type f -executable | xargs size -t 2> /dev/null | grep '(TOTALS)'";
-	    $cmd = "find $paths[0] -type f -name '*.ko' | xargs size -t 2> /dev/null | grep '(TOTALS)'" if($curpkg->{src} =~ m/^linux/i);
+	    $cmd = "find $paths[0] -type f -name '*.ko' | xargs size -t 2> /dev/null | grep '(TOTALS)'" if($curpkg->{name} =~ m/^kmod-/i);
 	    $ddrSize = `$cmd`;
 	    $ddrSize =~ s/^\s+|\s+$//g;
 	    $ddrSize = (split(/\s+/, $ddrSize))[3];
