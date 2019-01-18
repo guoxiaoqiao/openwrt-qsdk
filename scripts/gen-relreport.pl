@@ -118,9 +118,9 @@ sub xref_packages() {
 
             if ( exists( $config->{$pkg}->{default} ) ) {
                 push( @{ $QSDKPKGS{$pkg}->{defconfigs} }, $config->{name} );
-            } else {
+	    } else {
                 push( @{ $QSDKPKGS{$pkg}->{configs} },    $config->{name} );
-            }
+	    }
         }
     }
 }
@@ -128,10 +128,39 @@ sub xref_packages() {
 sub write_output_xlsx($) {
 
     my $filename = shift;
+    my $SOC;
 
     # Create a new workbook and add a worksheet
     my $workbook  = Excel::Writer::XLSX->new($filename);
-    my $worksheet = $workbook->add_worksheet();
+
+    my @out = `ls -d ../out/*/ | cut -d'/' -f3`;
+    chomp @out;
+
+    # Print to check the folders exists while build. (Remove this part once clarified - PREM - START)
+    my $worksheet = $workbook->add_worksheet('OUT - FOLDERS');
+    my $tempRow = 0;
+    foreach my $list (@out) {
+	chomp $list;
+	$worksheet->write( $tempRow++, 0, $list );
+    }
+    # PREM : END
+
+    if($filename =~ m/^.*_ipq_(ipq.*)_QSDK_(.*)\.xlsx/i) {
+        $SOC = lc $1 . '_' . lc $2;
+	foreach my $file (@out) {
+	    if($file eq $SOC) {
+		$SOC = $file;
+		last;
+	    }
+	}
+    }
+    else {
+        $SOC = lc((split(/\_/, $filename))[-1]);
+        $SOC =~ s/\.xlsx//g;
+	$SOC = "ipq_$SOC";
+    }
+
+    $worksheet = $workbook->add_worksheet($SOC);
 
     # Init the worksheet (set columns width, create colors & formats)
     $worksheet->set_column( 0, 1, 28 );    # Column A,B width set to 28
@@ -181,7 +210,7 @@ sub write_output_xlsx($) {
     # Fill-in the titles
     my @col = (
         "SRC", "PACKAGE", "VARIANT", "FEED", "SUBSYSTEM",
-        "TARBALL", "VERSION", "DESCRIPTION", "FLASHSIZE"
+        "TARBALL", "VERSION", "DESCRIPTION", "FLASHSIZE", "DDRSIZE"
     );
     my $colid = 0;
     foreach (@col) {
@@ -228,10 +257,8 @@ sub write_output_xlsx($) {
         $worksheet->write( $row, $col++, $curpkg->{description}, $f_desc );
 
 	my ($fileSize, @findFile, $fcolor);
-	my $SOC = lc((split(/\_/, $filename))[-1]);
-	$SOC =~ s/\.xlsx//g;
 	$curpkg->{name} = 'kmod-fs-configfs' if($curpkg->{name} eq 'kmod-usb-configfs');
-	$cmd = "find ../out/ipq_$SOC/packages/ -name $curpkg->{name}_*.ipk -ls";
+	$cmd = "find ../out/$SOC/packages/ -name $curpkg->{name}_*.ipk -ls 2> /dev/null";
 	@findFile = `$cmd`;
 	@findFile = grep /\S/, @findFile;
 	if($#findFile != -1) {
@@ -239,25 +266,95 @@ sub write_output_xlsx($) {
 	    goto FLASHSIZE;
 	}
 
-	$cmd = "find ./bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls";
+	$cmd = "find ./bin/ipq*/packages/ -name $curpkg->{name}_*.ipk -ls 2> /dev/null";
 	@findFile = `$cmd`;
 	@findFile = grep /\S/, @findFile;
 	$fcolor = $f_yellow_data;
 
 FLASHSIZE:
 	if($#findFile == 0) {
-	    $fileSize =~ s/^\s+|\s+$//g;
+	    $findFile[0] =~ s/^\s+|\s+$//g;
 	    $fileSize = (split(/\s+/, $findFile[0]))[6];
-	    $worksheet->write( $row, $col++, $fileSize, $fcolor );
 	}
-	elsif($#findFile > 0) {
+
+	if($#findFile > 0) {
 	    #print "Excel Write Warning: More than one file matched for $curpkg->{name}. Please check correct filesize and write manually to Report !!!\n";
 	    $worksheet->write( $row, $col++, 'MORE_THAN_ONE_FILE', $f_data );
 	}
-	else {
+	elsif($fileSize ne '' and $fileSize =~ m/\d+/) {
+	    $worksheet->write( $row, $col++, $fileSize, $fcolor );
+	} else {
 	    #print "Excel Write Warning: $curpkg->{name} file not found in packages\n";
-	    $fileSize = "FILESIZE_NOTFOUND";
+	    $fileSize = "NOTFOUND";
 	    $worksheet->write( $row, $col++, $fileSize, $f_data );
+	}
+
+DDRSIZE:
+	my ($ddrSize, @paths, $status, $srcName, $pkgName);
+	$pkgName = $curpkg->{name};
+	$srcName = $curpkg->{src};
+	($status, @paths) = &getDDRSize($srcName, $pkgName, $curpkg->{version});
+	if($status eq "FAIL") {
+	    # special exceptions for Package Name
+	    if($srcName =~ m/libreadline/) { $srcName = "readline"; }
+	    elsif($srcName =~ m/libevent2/) { $srcName = "libevent"; }
+	    elsif($srcName =~ m/libjson-c/) { $srcName = "json-c"; }
+	    elsif($srcName =~ m/simulated-driver/) { $srcName = "shortcut-fe-simulated-driver"; }
+	    elsif($srcName =~ m/iwinfo/) { $srcName = "libiwinfo"; }
+	    elsif($srcName =~ m/wireless-tools/) { $srcName = "wireless_tools"; }
+	    elsif($srcName =~ m/uboot-envtools/ or $srcName =~ m/uboot-qca/) { $srcName = "u-boot";}
+	    else { $srcName = $pkgName; }
+	    ($status, @paths) = &getDDRSize($srcName, $pkgName, $curpkg->{version});
+	    if($status eq 'FAIL') {
+		undef @paths;
+	    }
+	}
+
+	if($#paths == 0)
+	{
+	    $cmd = "find $paths[0] -type f -executable | xargs size -t 2> /dev/null | grep '(TOTALS)'";
+	    $cmd = "find $paths[0] -type f -name '*.ko' | xargs size -t 2> /dev/null | grep '(TOTALS)'" if($curpkg->{name} =~ m/^kmod-/i);
+	    $ddrSize = `$cmd`;
+	    $ddrSize =~ s/^\s+|\s+$//g;
+	    $ddrSize = (split(/\s+/, $ddrSize))[3];
+	}
+	elsif($#paths > 0) {
+	    my ($iproutePaths, $data, @data, @out);
+	    if(lc $curpkg->{src} =~ m/iproute2/ and lc $curpkg->{name} =~ m/tc/) {
+		$iproutePaths = join(' ', @paths);
+		$cmd = "find $iproutePaths -type f -executable | xargs size 2> /dev/null";
+		@out = `$cmd`;
+		shift(@out);
+		foreach $data (@out) {
+		    $data =~ s/^\s+|\s+$//g;
+		    push (@data, (split(/\s+/, $data))[3]);
+		}
+		@data = reverse sort @data;
+		$ddrSize = ($data[0] ne '') ? $data[0] : 0;
+	    }
+	    elsif(lc $curpkg->{src} =~ m/qca-hostap/ and lc $curpkg->{name} =~ m/qca-wpa-cli/) {
+		foreach my $path (@paths) {
+		    if($path =~ m/default/) {
+			$cmd = "find $path -type f -executable | xargs size 2> /dev/null";
+			@out = `$cmd`;
+			shift @out;
+			$out[0] =~ s/^\s+|\s+$//g;
+			$ddrSize = (split(/\s+/, $out[0]))[3];
+			last;
+		    }
+		}
+	    }
+	    else {
+		$ddrSize = 'MANUAL';
+	    }
+	}
+
+	if($ddrSize ne '') {
+	    $worksheet->write( $row, $col++, $ddrSize, $f_green_data );
+	} elsif($ddrSize eq 'MANUAL') {
+	    $worksheet->write( $row, $col++, "MORE THAN ONE PACKAGE MATCHED", $f_yellow_data );
+	} else {
+	    $worksheet->write( $row, $col++, "NOTFOUND", $f_data );
 	}
 
         my %pkgconfigs = map { $_ => 1 } @{ $curpkg->{configs} };
@@ -295,6 +392,44 @@ FLASHSIZE:
         $prevpkg = $curpkg;
         $row++;
     }
+}
+
+sub getDDRSize {
+	my ($srcName, $pkgName, $version) = @_;
+	my ($cmd, @paths, @findFile);
+	$cmd = "find build_dir/target*/ -name \'$pkgName\' -type d | grep \"ipkg*\"";
+	@findFile = `$cmd`;
+	@findFile = grep /\S/, @findFile;
+	chomp @findFile;
+
+	@paths = grep (m/^build_dir\/target.*\/$srcName\b[-|\d|\.]*.*\/ipkg-(ipq|install|all)\/$pkgName\s*$/i, @findFile);
+	@paths = @findFile if($srcName =~ m/^linux/i or $srcName =~ /art2/i or $srcName =~ m/qca-iface-mgr/i or $srcName =~ m/qca-mcs-lkm/i);
+
+	if($srcName =~ m/qca-iface-mgr/ or $srcName =~ m/qca-mcs-lkm/) {
+	    my @temp = split('-', $srcName);
+	    pop @temp;
+	    $srcName = join('-', @temp);
+	    @temp = split('-', $version);
+	    pop @temp;
+	    $version = join('-', @temp);
+	    foreach my $path (@paths) {
+	        if($path =~ m/$version/ and $path =~ m/$srcName/) {
+		    return ("SUCCESS", $path);
+	        }
+	    }
+	    return ("FAIL", @paths);
+	}
+
+	if(grep(m/ipkg-ipq/, @paths)) {
+	    @paths = grep(m/ipkg-ipq/, @paths);
+	} elsif(grep(m/ipkg-install/, @paths)) {
+	    @paths = grep(m/ipkg-install/, @paths);
+	} elsif(grep(m/ipkg-all/, @paths)) {
+	    @paths = grep(m/ipkg-all/, @paths);
+	} else {
+	    return ("FAIL", @paths);
+	}
+	return ("SUCCESS", @paths);
 }
 
 sub write_output_xml($) {
