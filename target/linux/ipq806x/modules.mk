@@ -18,8 +18,9 @@ define KernelPackage/usb-dwc3-of-simple
   TITLE:=DWC3 USB simple OF driver
   DEPENDS:=+kmod-usb-dwc3
   KCONFIG:= CONFIG_USB_DWC3_OF_SIMPLE
-  FILES:= $(LINUX_DIR)/drivers/usb/dwc3/dwc3-of-simple.ko
-  AUTOLOAD:=$(call AutoLoad,53,dwc3-of-simple,1)
+  FILES:= $(LINUX_DIR)/drivers/usb/dwc3/dwc3-of-simple.ko \
+	$(LINUX_DIR)/drivers/usb/dwc3/dbm.ko
+  AUTOLOAD:=$(call AutoLoad,53,dwc3-of-simple dbm,1)
   $(call AddDepends/usb)
 endef
 

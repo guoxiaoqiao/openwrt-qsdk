@@ -317,6 +317,22 @@ endef
 
 $(eval $(call KernelPackage,usb-f-diag))
 
+define KernelPackage/usb-f-qdss
+  TITLE:=USB QDSS
+  KCONFIG:=CONFIG_USB_F_QDSS \
+	CONFIG_USB_CONFIGFS_F_QDSS=y
+  DEPENDS:=+kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt +kmod-usb-dwc3 +kmod-usb-dwc3-of-simple
+  FILES:=$(LINUX_DIR)/drivers/usb/gadget/function/usb_f_qdss.ko \
+	$(LINUX_DIR)/drivers/usb/gadget/function/u_qdss.ko
+  AUTOLOAD:=$(call AutoLoad,52,usb_f_qdss)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-f-qdss/description
+ USB QDSS
+endef
+
+$(eval $(call KernelPackage,usb-f-qdss))
 
 define KernelPackage/usb-eth-gadget
   TITLE:=USB Ethernet Gadget support
