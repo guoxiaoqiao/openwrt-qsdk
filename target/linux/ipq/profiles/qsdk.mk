@@ -109,7 +109,7 @@ TEST_TOOLS:=sysstat ethtool i2c-tools tcpdump
 
 UTILS:=file luci-app-samba iperf-mt rng-tools profilerd
 
-COREBSP_UTILS:=pm-utils qca-thermald-10.4 qca-qmi-framework qca-time-services gpio-debug \
+COREBSP_UTILS:=pm-utils qca-thermald-10.4 qca-qmi-framework qca-time-services \
 	qca-wlanfw-upgrade
 
 FAILSAFE:= kmod-bootconfig
