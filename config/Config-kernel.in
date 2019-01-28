@@ -348,6 +348,14 @@ config KERNEL_SKB_RECYCLE_MAX_PREALLOC_SKBS
 	depends on KERNEL_SKB_RECYCLER_PREALLOC
 	default 16384
 
+config KERNEL_SKB_RECYCLER
+	bool "Generic skb recycling"
+	default y
+
+config KERNEL_SKB_RECYCLER_MULTI_CPU
+	bool "Cross-CPU recycling for CPU-locked workloads"
+	default y
+
 #
 # CGROUP support symbols
 #
