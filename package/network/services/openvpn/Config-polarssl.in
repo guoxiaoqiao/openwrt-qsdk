@@ -65,6 +65,7 @@ config OPENVPN_polarssl_ENABLE_SMALL
 
 config OPENVPN_polarssl_ENABLE_DCA
 	bool "Enable Data Channel Acceleration"
+	depends on TARGET_ipq_ipq807x_64_QSDK_Premium || TARGET_ipq_ipq807x_QSDK_Premium
 	default y
 	help
 	  enable support for data channel acceleration (Dependent on
