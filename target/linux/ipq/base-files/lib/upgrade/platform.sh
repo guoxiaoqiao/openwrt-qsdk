@@ -359,7 +359,7 @@ platform_do_upgrade() {
 	done
 
 	case "$board" in
-	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3 | ap-dk07.1-c4 | ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk01-c4 | ap-hk02 | ap-hk05 | ap-hk06 | ap-hk07 | ap-hk08 | ap-hk09 | ap-ac01 | ap-ac02 | ap-oak01 | ap-oak02 | ap-oak03 | db-hk01 | db-hk02)
+	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3 | ap-dk07.1-c4 | ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk01-c4 | ap-hk02 | ap-hk05 | ap-hk06 | ap-hk07 | ap-hk08 | ap-hk09 | ap-hk10 | ap-ac01 | ap-ac02 | ap-oak01 | ap-oak02 | ap-oak03 | db-hk01 | db-hk02)
 		for sec in $(print_sections $1); do
 			flash_section ${sec}
 		done
