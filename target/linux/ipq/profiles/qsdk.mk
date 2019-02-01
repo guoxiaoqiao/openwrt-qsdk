@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015-2018 The Linux Foundation. All rights reserved.
+# Copyright (c) 2015-2019 The Linux Foundation. All rights reserved.
 #
 
 QCA_LITHIUM:=kmod-qvit-lithium
@@ -95,7 +95,7 @@ STORAGE:=kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-is
 
 USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
 
-USB_RMNET_HOST:= kmod-usb-net kmod-usb-rmnet
+USB_RMNET_HOST:= kmod-usb-net kmod-usb-rmnet kmod-rmnet-nss
 
 USB_RNDIS_HOST:= kmod-usb-net kmod-usb-net-rndis
 
