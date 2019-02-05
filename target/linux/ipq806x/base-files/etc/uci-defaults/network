@@ -63,6 +63,7 @@ ak01_1xx)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	;;
 ap-dk01.1-c1|\
+db-dk01.1-c1|\
 ap-dk01.1-c2|\
 ap-dk04.1-c1|\
 ap-dk04.1-c2|\
