@@ -272,6 +272,14 @@ CONFIG_CMD_NFS=y
 # CONFIG_CMD_LINK_LOCAL is not set
 
 #
+# Network PHY
+#
+# CONFIG_QCA8075_PHY is not set
+# CONFIG_QCA_AQUANTIA_PHY is not set
+# CONFIG_QCA8033_PHY is not set
+# CONFIG_QCA8081_PHY is not set
+
+#
 # Misc commands
 #
 # CONFIG_CMD_TIME is not set
@@ -358,6 +366,7 @@ CONFIG_DM_SEQ_ALIAS=y
 #
 # CONFIG_DM_I2C_COMPAT is not set
 # CONFIG_CROS_EC_KEYB is not set
+# CONFIG_IPQ807x_I2C is not set
 
 #
 # LED Support
@@ -408,6 +417,7 @@ CONFIG_DM_SEQ_ALIAS=y
 # PCI
 #
 # CONFIG_DM_PCI is not set
+# CONFIG_PCI_IPQ is not set
 
 #
 # Pin controllers
@@ -460,6 +470,8 @@ CONFIG_REQUIRE_SERIAL_CONSOLE=y
 # TPM support
 #
 # CONFIG_USB is not set
+# CONFIG_DM_USB is not set
+# CONFIG_USB_XHCI_IPQ is not set
 
 #
 # Graphics support
