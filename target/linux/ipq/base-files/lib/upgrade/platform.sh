@@ -239,6 +239,7 @@ flash_section() {
 		sbl3*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:SBL3";;
 		dtb-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DTB";;
 		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
+		lkboot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
 		ddr-$(to_upper $board)*) switch_layout boot; do_flash_ddr ${sec};;
 		ddr-${board}-*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:DDRCONFIG";;
 		ssd*) switch_layout boot; do_flash_partition ${sec} "0:SSD";;
@@ -273,7 +274,7 @@ platform_check_image() {
 	local mandatory_nor="hlos"
 	local mandatory_section_found=0
 	local ddr_section="ddr"
-	local optional="sb11 sbl2 u-boot ddr-${board} ssd tz rpm"
+	local optional="sb11 sbl2 u-boot lkboot ddr-${board} ssd tz rpm"
 	local ignored="mibib bootconfig"
 
 	image_is_FIT $1 || return 1
