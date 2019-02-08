@@ -83,6 +83,13 @@ WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
 	athtestcmd-lith
 
+WIFI_PKGS_256MB:=kmod-qca-wifi-lowmem-profile \
+	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
+	qca-wpa-cli qca-wpc sigma-dut \
+	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
+	qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
+	athtestcmd-lith
+
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
 	qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic \
@@ -269,7 +276,7 @@ $(eval $(call Profile,QSDK_Deluxe))
 define Profile/QSDK_256
 	NAME:=Qualcomm-Atheros SDK 256MB Profile
 	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_PKGS) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) \
+		$(WIFI_PKGS_256MB) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) \
 		$(UTILS) $(QCA_RFS) $(IGMPSNOOING_RSTP) qca-diag \
 		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
 		$(NSS_CLIENTS_256MB) $(HYFI) -lacpd \
