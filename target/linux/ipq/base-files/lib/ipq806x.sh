@@ -137,6 +137,12 @@ ipq806x_board_detect() {
 	*"AP-AC02")
 		name="ap-ac02"
 		;;
+	*"AP-AC03")
+		name="ap-ac03"
+		;;
+	*"AP-AC04")
+		name="ap-ac04"
+		;;
 	*"AP-OAK01")
 		name="ap-oak01"
 		;;
