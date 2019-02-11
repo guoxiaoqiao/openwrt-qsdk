@@ -203,7 +203,7 @@ hostapd_set_bss_options() {
 		bss_load_update_period rrm wnm wnm_sleep chan_util_avg_period
 
 	set_default isolate 0
-	set_default maxassoc 0
+	set_default maxassoc 64
 	set_default max_inactivity 0
 	set_default short_preamble 1
 	set_default disassoc_low_ack 0
