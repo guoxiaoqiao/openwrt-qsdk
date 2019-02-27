@@ -8,7 +8,7 @@ config BUSYBOX_CONFIG_HAVE_DOT_CONFIG
 	bool
 	default BUSYBOX_DEFAULT_HAVE_DOT_CONFIG
 
-menu "Busybox Settings"
+menu "Settings"
 
 config BUSYBOX_CONFIG_DESKTOP
 	bool "Enable compatibility for full-blown desktop systems"
@@ -700,9 +700,9 @@ config BUSYBOX_CONFIG_EFENCE
 
 endchoice
 
-endmenu
-
 source libbb/Config.in
+
+endmenu
 
 comment "Applets"
 
@@ -710,6 +710,7 @@ source archival/Config.in
 source coreutils/Config.in
 source console-tools/Config.in
 source debianutils/Config.in
+source klibc-utils/Config.in
 source editors/Config.in
 source findutils/Config.in
 source init/Config.in
