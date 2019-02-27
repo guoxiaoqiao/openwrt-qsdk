@@ -11,6 +11,7 @@ use XML::Simple;
 use FindBin;
 use lib "$FindBin::Bin";
 use metadata;
+use Data::Dumper;
 
 no warnings "uninitialized";
 # %OPTS
@@ -78,6 +79,7 @@ sub load_config($) {
     open FILE, "<$dotconfig" or return;
     while (<FILE>) {
         /^CONFIG_DEFAULT_(.+?)=y$/ and $config{$1} = { default => 1 };
+        /^CONFIG_PACKAGE_(.+?)=m$/ and $config{$1} = { loadable => 1};
         /^CONFIG_PACKAGE_(.+?)=y$/ and $config{$1} = {};
     }
     close FILE;
@@ -108,8 +110,8 @@ sub xref_packages() {
                 version     => $package{$pkg}->{version},
                 description => $package{$pkg}->{description},
                 source      => $package{$pkg}->{source},
-              }
-              unless exists( $QSDKPKGS{$pkg} );
+            }
+            unless exists( $QSDKPKGS{$pkg} );
 
             # Linux & kmods version starts with the string <LINUX_VERSION>
             # We remove this prefix here for better readability
@@ -118,7 +120,11 @@ sub xref_packages() {
 
             if ( exists( $config->{$pkg}->{default} ) ) {
                 push( @{ $QSDKPKGS{$pkg}->{defconfigs} }, $config->{name} );
-	    } else {
+	    }
+	    elsif( exists( $config->{$pkg}->{loadable} ) ) {
+		push( @{ $QSDKPKGS{$pkg}->{loadconfigs} }, $config->{name} );
+	    }
+	    else {
                 push( @{ $QSDKPKGS{$pkg}->{configs} },    $config->{name} );
 	    }
         }
@@ -160,7 +166,17 @@ sub write_output_xlsx($) {
 	$SOC = "ipq_$SOC";
     }
 
-    $worksheet = $workbook->add_worksheet($SOC);
+    &WriteDataToExcel($workbook, $SOC, 0);
+    &WriteDataToExcel($workbook, 'LoadConfigs', 1);
+
+}
+
+sub WriteDataToExcel
+{
+    my($workbook, $SOC, $loadConfigMode) = @_;
+    my $configMode = ($loadConfigMode == 1) ? 'loadconfigs' : 'configs';
+
+    my $worksheet = $workbook->add_worksheet($SOC);
 
     # Init the worksheet (set columns width, create colors & formats)
     $worksheet->set_column( 0, 1, 28 );    # Column A,B width set to 28
@@ -230,8 +246,9 @@ sub write_output_xlsx($) {
     foreach my $cur (
         sort { $QSDKPKGS{$a}->{src} cmp $QSDKPKGS{$b}->{src} }
         keys %QSDKPKGS
-      )
+    )
     {
+	if(exists $QSDKPKGS{$cur}->{$configMode}) {
         my $col    = 0;
         my $curpkg = $QSDKPKGS{$cur};
         my $pwd = `pwd`;
@@ -357,7 +374,7 @@ DDRSIZE:
 	    $worksheet->write( $row, $col++, "NOTFOUND", $f_data );
 	}
 
-        my %pkgconfigs = map { $_ => 1 } @{ $curpkg->{configs} };
+        my %pkgconfigs = map { $_ => 1 } @{ $curpkg->{$configMode} };
 	foreach my $conf ( sort { $a->{name} cmp $b->{name} } @CONFIGS ) {
 	    $worksheet->write( $row, $col++, "x", $f_green_data )
 	      if exists( $pkgconfigs{ $conf->{name} } );
@@ -391,6 +408,7 @@ DDRSIZE:
         $prevSubsystem = $Subsystem{lc $curFeed};
         $prevpkg = $curpkg;
         $row++;
+    }
     }
 }
 
