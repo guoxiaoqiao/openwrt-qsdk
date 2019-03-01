@@ -307,18 +307,43 @@
    msg (D_MULTI_MEDIUM, "MULTI: multi_create_instance called");
  
    ALLOC_OBJ_CLEAR (mi, struct multi_instance);
-@@ -970,7 +985,9 @@ multi_learn_addr (struct multi_context *
+@@ -970,12 +985,11 @@ multi_learn_addr (struct multi_context *
  	      owner = mi;
  	      multi_instance_inc_refcount (mi);
  	      route_quota_inc (mi);
 -
-+#ifdef ENABLE_DCA
-+	      dca_route_add(newroute);
-+#endif
  	      /* add new route */
  	      hash_add_fast (m->vhash, bucket, &newroute->addr, hv, newroute);
  	    }
-@@ -1880,7 +1897,10 @@ multi_connection_established (struct mul
+ 	}
+-      
++
+       msg (D_MULTI_LOW, "MULTI: Learn%s: %s -> %s",
+ 	   learn_succeeded ? "" : " FAILED",
+ 	   mroute_addr_print (&newroute->addr, &gc),
+@@ -986,7 +1000,6 @@ multi_learn_addr (struct multi_context *
+ 
+       gc_free (&gc);
+     }
+-
+   return owner;
+ }
+ 
+@@ -1041,7 +1054,12 @@ multi_get_instance_by_virtual_addr (stru
+ 	    }
+ 	}
+     }
+-  
++
++#ifdef ENABLE_DCA
++  if (ret)
++    dca_route_add(route);
++#endif
++
+ #ifdef ENABLE_DEBUG
+   if (check_debug_level (D_MULTI_DEBUG))
+     {
+@@ -1880,7 +1898,10 @@ multi_connection_established (struct mul
  
        /* set flag so we don't get called again */
        mi->connection_established_flag = true;
@@ -330,7 +355,7 @@
        /* increment number of current authenticated clients */
        ++m->n_clients;
        update_mstat_n_clients(m->n_clients);
-@@ -2568,6 +2588,13 @@ stale_route_check_trigger (struct multi_
+@@ -2568,6 +2589,13 @@ stale_route_check_trigger (struct multi_
  void
  multi_process_per_second_timers_dowork (struct multi_context *m)
  {
@@ -570,7 +595,7 @@
  #define D_SHOW_OCC           LOGLEV(4, 51, 0)        /* show options compatibility string */
 --- /dev/null
 +++ b/src/openvpn/dca.c
-@@ -0,0 +1,956 @@
+@@ -0,0 +1,962 @@
 +/*
 + **************************************************************************
 + * Copyright (c) 2019, The Linux Foundation. All rights reserved.
@@ -1003,6 +1028,9 @@
 +  if (c->c2.context_auth != CAS_SUCCEEDED)
 +    return;
 +
++  if (tun->state == DCA_TUN_STATE_DOWN)
++    return;
++
 +  stats.tunnel_id = tun->tun.ovpn.tunnel_id;
 +  if (__dca_tun_stats_get_msg(&stats))
 +    return;
@@ -1147,12 +1175,15 @@
 +          return DCA_PKT_OFFLOAD_RETURN_CTRL_PKT;
 +        }
 +
-+        if (tun->state == DCA_TUN_STATE_DOWN)
++      if (tun->state == DCA_TUN_STATE_DOWN)
 +        {
 +          msg(D_DCA_INFO, "DCA: Client re-established tunnel successfully, adding tunnel in DCA layer: %p", tun);
 +          dca_tun_up(tun->c);
 +        }
 +    }
++
++  if (tun->state == DCA_TUN_STATE_DOWN)
++    return DCA_PKT_OFFLOAD_RETURN_FAILURE;
 +
 +  memset(pkt_info_buf,0, sizeof(pkt_info_buf));
 +  memset(&mesg, 0, sizeof(mesg));
@@ -1343,7 +1374,7 @@
 +      /* Add ipv4 route */
 +      struct nss_ovpn_sk_route_info route_info;
 +
-+      msg(D_DCA_INFO, "Remote IPv4 Addr : %s",
++      msg(D_DCA_INFO, "DCA: Remote IPv4 Addr : %s",
 +           print_in_addr_t( c->c2.push_ifconfig_local, IA_NET_ORDER, &gc));
 +      route_info.tunnel_id = tun->tun.ovpn.tunnel_id;
 +      route_info.ip_version = 4;
@@ -1980,7 +2011,7 @@
 +#endif /* ENABLE_DCA */
 --- /dev/null
 +++ b/src/openvpn/dca_route.c
-@@ -0,0 +1,247 @@
+@@ -0,0 +1,256 @@
 +/*
 + **************************************************************************
 + * Copyright (c) 2019, The Linux Foundation. All rights reserved.
@@ -2076,6 +2107,7 @@
 +        {
 +          int port;
 +          bool status;
++
 +          if ((addr->type & MR_WITH_NETBITS) && (addr->netbits != 32))
 +            return -1;
 +
@@ -2087,11 +2119,8 @@
 +
 +      case MR_ADDR_IPV6:
 +        {
-+          if (!(addr->type & MR_WITH_NETBITS) || (addr->netbits != 128))
-+            {
-+              msg(D_DCA_INFO, "DCA: Network based IPv6 routes are not supported.");
-+              return -1;
-+            }
++          if ((addr->type & MR_WITH_NETBITS) && (addr->netbits != 128))
++            return -1;
 +
 +          memcpy(&route_info->ip_network[0], &addr->addr, sizeof(struct in6_addr));
 +          route_info->ip_version = 6;
@@ -2144,6 +2173,9 @@
 +      if (!tun)
 +        continue;
 +
++      if (tun->state == DCA_TUN_STATE_DOWN)
++        return;
++
 +      /*
 +       * Update routes which are dynamically added (ageable).
 +       */
@@ -2193,8 +2225,12 @@
 +  if (__dca_route_info_fill(addr, &route_info))
 +    return;
 +
-+  if (dca_route_add_msg(&route_info))
-+    msg(D_DCA_ERRORS, "DCA: Add route failed: %p", tun);
++  if (!dca_route_add_msg(&route_info))
++    {
++      struct gc_arena gc = gc_new();
++      msg (D_DCA_INFO, "DCA: route added %s", mroute_addr_print_ex (addr, MAPF_IA_EMPTY_IF_UNDEF, &gc));
++      gc_free(&gc);
++    }
 +}
 +
 +/*
@@ -2219,8 +2255,12 @@
 +  if (__dca_route_info_fill(addr, &route_info))
 +    return;
 +
-+  if (__dca_route_del_msg(&route_info))
-+    msg(D_DCA_ERRORS, "DCA: Delete route failed: %p", tun);
++  if (!__dca_route_del_msg(&route_info))
++    {
++      struct gc_arena gc = gc_new();
++      msg (D_DCA_INFO, "DCA: route deleted %s", mroute_addr_print_ex (addr, MAPF_IA_EMPTY_IF_UNDEF, &gc));
++      gc_free(&gc);
++    }
 +}
 +#else /* ifdef ENABLE_DCA */
 +static void
