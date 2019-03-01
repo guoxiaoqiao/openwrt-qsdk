@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=busybox
 PKG_VERSION:=1.30.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_FLAGS:=essential
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
@@ -123,6 +123,7 @@ endef
 
 define Package/busybox/install
 	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/usr/sbin
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
 	$(INSTALL_BIN) ./files/telnet $(1)/etc/init.d/telnet
 	$(INSTALL_BIN) ./files/inetd $(1)/etc/init.d/inetd
