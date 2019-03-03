@@ -71,6 +71,20 @@ ipq807x_power_auto() {
 	echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
 }
 
+ipq6018_power_auto() {
+	# change scaling governor as ondemand to enable clock scaling based on system load
+	echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+	# Change sampling rate for frequency scaling decisions to 1s, from 10 ms
+	echo "1000000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+
+	# Change sampling rate for frequency down scaling decision to 10s
+	echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+
+	# Change the CPU load threshold above which frequency is up-scaled to
+	# turbo frequency,to 50%
+	echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+}
 
 start() {
 	. /lib/ipq806x.sh
@@ -83,5 +97,7 @@ start() {
 		ipq40xx_power_auto ;;
 	ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk01-c4 | ap-hk02 | ap-hk05 | ap-hk06 | ap-hk07 | ap-hk08 | ap-hk09 | ap-hk10 | ap-ac01 | ap-ac02 | ap-ac03 | ap-ac04 | ap-oak01 | ap-oak02 | ap-oak03 | db-hk01 | db-hk02)
 		ipq807x_power_auto ;;
+	ap-cp01-c1 | ap-cp02-c1 | ap-cp03-c1)
+		ipq6018_power_auto ;;
 	esac
 }
