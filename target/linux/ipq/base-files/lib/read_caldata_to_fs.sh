@@ -36,7 +36,11 @@ do_load_ipq4019_board_bin()
             ;;
             ap-hk01-*)
                     mkdir -p ${apdk}/IPQ8074
-                    FILESIZE=$(stat -Lc%s "$HK_BD_FILENAME")
+                    if [ -f "$HK_BD_FILENAME" ]; then
+                        FILESIZE=$(stat -Lc%s "$HK_BD_FILENAME")
+                    else
+                        FILESIZE=131072
+                    fi
                     dd if=${mtdblock} of=${apdk}/IPQ8074/caldata.bin bs=1 count=$FILESIZE skip=4096
                     [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
                     ln -s ${apdk}/IPQ8074/caldata.bin /lib/firmware/IPQ8074/caldata.bin
@@ -44,7 +48,11 @@ do_load_ipq4019_board_bin()
             ap-hk* | ap-ac* | ap-oa*)
                     mkdir -p ${apdk}/IPQ8074
                     dd if=${mtdblock} of=${apdk}/wifi1.caldata bs=1 count=12064 skip=208896
-                    FILESIZE=$(stat -Lc%s "$HK_BD_FILENAME")
+                    if [ -f "$HK_BD_FILENAME" ]; then
+                        FILESIZE=$(stat -Lc%s "$HK_BD_FILENAME")
+                    else
+                        FILESIZE=131072
+                    fi
                     dd if=${mtdblock} of=${apdk}/IPQ8074/caldata.bin bs=1 count=$FILESIZE skip=4096
                     [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
                     ln -s ${apdk}/IPQ8074/caldata.bin /lib/firmware/IPQ8074/caldata.bin
