@@ -93,6 +93,10 @@ endef
 OPENSSL_NO_CIPHERS:= no-idea no-md2 no-mdc2 no-rc5 no-sha0 no-camellia no-krb5
 OPENSSL_OPTIONS:= shared no-err zlib-dynamic no-sse2 no-ssl2
 
+ifeq ($(CONFIG_TARGET_ipq806x)$(CONFIG_TARGET_ipq_ipq40xx),)
+  OPENSSL_OPTIONS += no-hw
+endif
+
 ifdef CONFIG_OPENSSL_ENGINE_CRYPTO
   OPENSSL_OPTIONS += -DHAVE_CRYPTODEV
   ifdef CONFIG_OPENSSL_ENGINE_DIGEST
