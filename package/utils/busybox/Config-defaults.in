@@ -93,7 +93,7 @@ config BUSYBOX_DEFAULT_STATIC
 	default n
 config BUSYBOX_DEFAULT_PIE
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_NOMMU
 	bool
 	default n
