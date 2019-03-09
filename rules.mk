@@ -52,12 +52,7 @@ export SHELL:=/usr/bin/env bash
 
 OPTIMIZE_FOR_CPU=$(subst i386,i486,$(ARCH))
 
-ifeq ($(ARCH),powerpc)
-  FPIC:=-fPIC
-else
-  FPIC:=-fpic
-endif
-
+FPIC:=-fPIC
 HOST_FPIC:=-fPIC
 
 ARCH_SUFFIX:=$(call qstrip,$(CONFIG_CPU_TYPE))
