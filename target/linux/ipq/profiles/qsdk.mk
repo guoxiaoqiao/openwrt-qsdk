@@ -93,7 +93,7 @@ WIFI_PKGS_256MB:=kmod-qca-wifi-lowmem-profile \
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
 	qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic \
-	qca-wifi-hk-fw-hw1-10.4-asic
+	qca-wifi-hk-fw-hw1-10.4-asic qca-wifi-cyp-fw-hw1-11.0-asic
 
 WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo qca-fst-manager
 
