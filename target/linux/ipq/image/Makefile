@@ -143,14 +143,14 @@ define Image/BuildKernel/ipq60xx
 	$(foreach device, $(call FindDeviceTrees, qcom-ipq6018-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ60XX_KERNEL_LOADADDR));)
 
-	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq60xx-csxx, \
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq60xx-cpxx, \
 		$(call FindDeviceTrees, qcom-ipq6018-), $(IPQ60XX_KERNEL_LOADADDR))
 endef
 
 define Image/BuildKernel/ipq60xx_64
 	$(foreach device, $(call FindDeviceTrees, qcom-ipq6018-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ60XX_64_KERNEL_LOADADDR));)
-	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq60xx-csxx, \
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq60xx-cpxx, \
 		$(call FindDeviceTrees, qcom-ipq6018-), $(IPQ60XX_64_KERNEL_LOADADDR))
 endef
 
