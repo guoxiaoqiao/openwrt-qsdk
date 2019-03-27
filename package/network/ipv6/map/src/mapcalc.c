@@ -410,6 +410,7 @@ int main(int argc, char *argv[])
 
 
 		if (psidlen > 0 && psid >= 0) {
+			printf("RULE_%d_PSID=%d\n", rulecnt, (psid >> (16- psidlen)));
 			printf("RULE_%d_PORTSETS='", rulecnt);
 			for (int k = (offset) ? 1 : 0; k < (1 << offset); ++k) {
 				int start = (k << (16 - offset)) | (psid >> offset);
