@@ -136,3 +136,59 @@ define KernelPackage/usb-phy-ipq807x/description
 endef
 
 $(eval $(call KernelPackage,usb-phy-ipq807x))
+
+define KernelPackage/qrtr_mproc
+  TITLE:= Ath11k Specific kernel configs for IPQ807x
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64
+  KCONFIG:= \
+	  CONFIG_QRTR=y \
+	  CONFIG_QCOM_APCS_IPC=y \
+	  CONFIG_QCOM_GLINK_SSR=y \
+	  CONFIG_QCOM_Q6V5_WCSS=y \
+	  CONFIG_QCOM_SYSMON=y \
+	  CONFIG_RPMSG=y \
+	  CONFIG_RPMSG_CHAR=y \
+	  CONFIG_RPMSG_QCOM_GLINK_SMEM=y \
+	  CONFIG_RPMSG_QCOM_SMD=y \
+	  CONFIG_QRTR_SMD=y \
+	  CONFIG_QCOM_QMI_HELPERS=y \
+	  CONFIG_SAMPLES=y \
+	  CONFIG_SAMPLE_QMI_CLIENT=m \
+	  CONFIG_SAMPLE_KOBJECT=n \
+	  CONFIG_SAMPLE_HW_BREAKPOINT=n \
+	  CONFIG_SAMPLE_KFIFO=n \
+	  CONFIG_SAMPLE_CONFIGFS=n \
+	  CONFIG_SAMPLE_RPMSG_CLIENT=n \
+	  CONFIG_USB_GADGET=m \
+	  CONFIG_USB_CONFIGFS=m \
+	  CONFIG_USB_CONFIGFS_F_FS=y
+endef
+
+define KernelPackage/qrtr_mproc/description
+Kernel configs for ath11k support specific to ipq807x.
+endef
+
+$(eval $(call KernelPackage,qrtr_mproc))
+
+define KernelPackage/msm-mproc
+  TITLE:= Default kernel configs
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
+  KCONFIG:= \
+	  CONFIG_IPC_ROUTER=y \
+	  CONFIG_MSM_GLINK=y \
+	  CONFIG_MSM_GLINK_SMEM_NATIVE_XPRT=y \
+	  CONFIG_MSM_GLINK_PKT=y \
+	  CONFIG_MSM_IPC_ROUTER_GLINK_XPRT=y \
+	  CONFIG_MSM_QMI_INTERFACE=y \
+	  CONFIG_IPQ_SUBSYSTEM_RESTART=y \
+	  CONFIG_IPQ807X_REMOTEPROC=y \
+	  CONFIG_REGULATOR_RPM_GLINK=y \
+	  CONFIG_MSM_IPC_ROUTER_MHI_XPRT=y \
+	  CONFIG_MSM_RPM_GLINK=y
+endef
+
+define KernelPackage/msm-mproc/description
+Default kernel configs.
+endef
+
+$(eval $(call KernelPackage,msm-mproc))
