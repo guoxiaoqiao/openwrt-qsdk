@@ -161,7 +161,8 @@ define KernelPackage/qrtr_mproc
 	  CONFIG_SAMPLE_RPMSG_CLIENT=n \
 	  CONFIG_USB_GADGET=m \
 	  CONFIG_USB_CONFIGFS=m \
-	  CONFIG_USB_CONFIGFS_F_FS=y
+	  CONFIG_USB_CONFIGFS_F_FS=y \
+	  CONFIG_MAILBOX=y
 endef
 
 define KernelPackage/qrtr_mproc/description
@@ -184,7 +185,8 @@ define KernelPackage/msm-mproc
 	  CONFIG_IPQ807X_REMOTEPROC=y \
 	  CONFIG_REGULATOR_RPM_GLINK=y \
 	  CONFIG_MSM_IPC_ROUTER_MHI_XPRT=y \
-	  CONFIG_MSM_RPM_GLINK=y
+	  CONFIG_MSM_RPM_GLINK=y \
+	  CONFIG_MAILBOX=y
 endef
 
 define KernelPackage/msm-mproc/description
