@@ -1,0 +1,13 @@
+diff -Nur a/system-linux.c netifd-2013-05-13/system-linux.c
+--- a/system-linux.c	2019-04-05 01:02:45.162887009 +0530
++++ netifd-2013-05-13/system-linux.c	2019-04-05 01:03:00.770669774 +0530
+@@ -239,9 +239,6 @@
+ 	if (dev->type != &simple_device_type)
+ 		return;
+ 
+-	if (add && system_if_force_external(dev->ifname))
+-		return;
+-
+ 	device_set_present(dev, add);
+ }
+ 
