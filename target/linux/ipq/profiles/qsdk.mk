@@ -68,7 +68,7 @@ WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k kmod-ath11k wpad-mesh hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
 		 athtestcmd ath10k-firmware-qca988x ath10k-firmware-qca9887 \
 		 ath10k-firmware-qca9888 ath10k-firmware-qca9984 \
-		 ath10k-firmware-qca4019 \
+		 ath10k-firmware-qca4019 kmod-msm-mproc \
 		 -qca-whc-lbd -qca-whc-init -libhyficommon
 WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
     qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
@@ -81,19 +81,19 @@ WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-wpa-cli qca-spectral qca-wpc sigma-dut \
 	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
 	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
-	athtestcmd-lith
+	athtestcmd-lith kmod-msm-mproc
 
 WIFI_PKGS_256MB:=kmod-qca-wifi-lowmem-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
 	qca-wpa-cli qca-wpc sigma-dut \
 	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
 	qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
-	athtestcmd-lith
+	athtestcmd-lith kmod-msm-mproc
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
 	qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic \
-	qca-wifi-hk-fw-hw1-10.4-asic
+	qca-wifi-hk-fw-hw1-10.4-asic qca-wifi-cyp-fw-hw1-11.0-asic
 
 WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo qca-fst-manager
 
@@ -277,7 +277,7 @@ define Profile/QSDK_256
 	NAME:=Qualcomm-Atheros SDK 256MB Profile
 	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS_256MB) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) \
-		$(UTILS) $(QCA_RFS) $(IGMPSNOOING_RSTP) qca-diag \
+		$(UTILS) $(QCA_RFS) $(IGMPSNOOING_RSTP) $(USB_DIAG) \
 		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
 		$(NSS_CLIENTS_256MB) $(HYFI) -lacpd \
 		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
