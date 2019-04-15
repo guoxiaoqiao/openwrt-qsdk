@@ -14,25 +14,24 @@ PKG_LICENSE_FILES:=COPYING
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-CMAKE_OPTIONS += -DJSONCPP_WITH_TESTS=OFF -DCMAKE_BUILD_TYPE=debug \
-		-DBUILD_STATIC_LIBS=ON  -DCMAKE_INSTALL_INCLUDEDIR=include/jsoncpp \
-		-DBUILD_SHARED_LIBS=ON -G "Unix Makefiles" 
+CMAKE_OPTIONS += -DJSONCPP_WITH_TESTS=OFF -DBUILD_STATIC_LIBS=ON \
+		-DBUILD_SHARED_LIBS=ON
 
 define Package/libjsoncpp
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=javascript object notation cpp
-  DEPENDS:=+libstdcpp +libgcc +libc
+  DEPENDS:=+libstdcpp
 endef
 
 define Package/libjsoncpp/description
- This package contains a library for javascript object notation for C++. 
+ This package contains a library for javascript object notation for C++.
  This provides library for reading and writing JSON for C++
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/json $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/usr/include/jsoncpp
+	$(CP) $(PKG_INSTALL_DIR)/usr/include/json $(1)/usr/include/jsoncpp/
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libjsoncpp.{a,so*} $(1)/usr/lib/
 	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
