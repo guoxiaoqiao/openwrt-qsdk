@@ -34,10 +34,6 @@ NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
 	qca-wpa-supplicant-macsec
 
-NSS_MACSEC_11:= \
-	kmod-qca-nss-macsec \
-	qca-wpa-supplicant-macsec
-
 QCA_ECM_STANDARD:= kmod-qca-nss-ecm-standard
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
 QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
@@ -184,7 +180,7 @@ OPENVPN:= openvpn-easy-rsa openvpn-openssl luci-app-openvpn
 ifneq ($(LINUX_VERSION),3.18.21)
 	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
-	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) $(NSS_MACSEC) \
+	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) kmod-qca-nss-macsec \
 	$(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(MAP_PKGS) $(AQ_PHY) $(FAILSAFE) \
 	$(SWITCH_OPEN_PKGS) rdk-v-wifi-ath10k
 endif
