@@ -12,8 +12,6 @@ do_load_ipq4019_board_bin()
 
     local apdk="/tmp"
 
-    HK_BD_FILENAME=/lib/firmware/IPQ8074/bdwlan.bin
-
     if [ -z "$mtdblock" ]; then
         # read from mmc
         mtdblock=$(find_mmc_part 0:ART)
@@ -35,6 +33,7 @@ do_load_ipq4019_board_bin()
                     dd if=${mtdblock} of=${apdk}/wifi2.caldata bs=32 count=377 skip=1152
             ;;
             ap-hk01-*)
+                    HK_BD_FILENAME=/lib/firmware/IPQ8074/bdwlan.bin
                     mkdir -p ${apdk}/IPQ8074
                     if [ -f "$HK_BD_FILENAME" ]; then
                         FILESIZE=$(stat -Lc%s "$HK_BD_FILENAME")
@@ -46,6 +45,7 @@ do_load_ipq4019_board_bin()
                     ln -s ${apdk}/IPQ8074/caldata.bin /lib/firmware/IPQ8074/caldata.bin
             ;;
             ap-hk* | ap-ac* | ap-oa*)
+                    HK_BD_FILENAME=/lib/firmware/IPQ8074/bdwlan.bin
                     mkdir -p ${apdk}/IPQ8074
                     dd if=${mtdblock} of=${apdk}/wifi1.caldata bs=1 count=12064 skip=208896
                     if [ -f "$HK_BD_FILENAME" ]; then
@@ -56,6 +56,18 @@ do_load_ipq4019_board_bin()
                     dd if=${mtdblock} of=${apdk}/IPQ8074/caldata.bin bs=1 count=$FILESIZE skip=4096
                     [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
                     ln -s ${apdk}/IPQ8074/caldata.bin /lib/firmware/IPQ8074/caldata.bin
+            ;;
+            ap-cp*)
+                    CP_BD_FILENAME=/lib/firmware/IPQ6018/bdwlan.bin
+                    mkdir -p ${apdk}/IPQ6018
+                    if [ -f "$CP_BD_FILENAME" ]; then
+                        FILESIZE=$(stat -Lc%s "$CP_BD_FILENAME")
+                    else
+                        FILESIZE=65536
+                    fi
+                    dd if=${mtdblock} of=${apdk}/IPQ6018/caldata.bin bs=1 count=$FILESIZE skip=4096
+                    [ -L /lib/firmware/IPQ6018/caldata.bin ] || \
+                    ln -s ${apdk}/IPQ6018/caldata.bin /lib/firmware/IPQ6018/caldata.bin
             ;;
    esac
 }
