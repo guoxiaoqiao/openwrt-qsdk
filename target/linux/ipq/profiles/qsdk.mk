@@ -179,6 +179,8 @@ OPENVPN:= openvpn-easy-rsa openvpn-openssl luci-app-openvpn
 
 QRTR:=qca-qrtr
 
+QMI_SAMPLE_APP:=kmod-qmi_sample_client
+
 ifneq ($(LINUX_VERSION),3.18.21)
 	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
@@ -193,7 +195,7 @@ define Profile/QSDK_Open
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
 	$(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING) \
 	$(USB_DIAG) $(FTM) $(CNSS_DIAG) qca-cnss-daemon qca-wifi-hk-fw-hw1-10.4-asic \
-	$(QRTR)
+	$(QRTR) $(QMI_SAMPLE_APP)
 endef
 
 define Profile/QSDK_Open/Description
