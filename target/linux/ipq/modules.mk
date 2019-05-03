@@ -165,7 +165,8 @@ define KernelPackage/qrtr_mproc
 	  CONFIG_USB_GADGET=m \
 	  CONFIG_USB_CONFIGFS=m \
 	  CONFIG_USB_CONFIGFS_F_FS=y \
-	  CONFIG_MAILBOX=y
+	  CONFIG_MAILBOX=y \
+	  CONFIG_DIAG_OVER_QRTR=y
 endef
 
 define KernelPackage/qrtr_mproc/description
@@ -197,6 +198,25 @@ Default kernel configs.
 endef
 
 $(eval $(call KernelPackage,msm-mproc))
+
+define KernelPackage/mhi-qrtr-mproc
+  TITLE:= Default kernel configs for QCCI to work with QRTR.
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64
+  KCONFIG:= \
+	  CONFIG_QRTR=y \
+	  CONFIG_QRTR_MHI=y \
+	  CONFIG_MHI_BUS=y \
+	  CONFIG_MHI_QTI=y \
+	  CONFIG_MHI_NETDEV=y \
+	  CONFIG_MHI_DEBUG=y \
+	  CONFIG_MHI_UCI=y
+endef
+
+define KernelPackage/mhi-qrtr-mproc/description
+Default kernel configs for QCCI to work with QRTR.
+endef
+
+$(eval $(call KernelPackage,mhi-qrtr-mproc))
 
 define KernelPackage/qmi_sample_client
   TITLE:= Sample qmi test application.
