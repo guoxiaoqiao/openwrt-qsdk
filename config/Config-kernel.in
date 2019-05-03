@@ -339,6 +339,10 @@ if KERNEL_SKB_DEBUG
 		default y
 endif
 
+config KERNEL_ALLOC_SKB_PAGE_FRAG_DISABLE
+	bool "Disable alloc skb page frag"
+	default n
+
 config KERNEL_SKB_RECYCLER_PREALLOC
 	bool "Enable preallocation of SKBs"
 	default n
