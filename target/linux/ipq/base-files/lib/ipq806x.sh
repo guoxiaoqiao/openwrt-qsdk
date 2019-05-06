@@ -107,6 +107,12 @@ ipq806x_board_detect() {
 	*"AP-CP03-C1")
 		nam="ap-cp03-c1"
 		;;
+	*"DB-CP01")
+		name="db-cp01"
+		;;
+	*"DB-CP02")
+		name="db-cp02"
+		;;
 	*"AP-HK01-C1")
 		name="ap-hk01-c1"
 		;;
