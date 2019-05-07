@@ -133,7 +133,7 @@ else
   endif
 endif
 
-STAMP_CONFIGURED := $(STAMP_CONFIGURED)_$(subst $(space),_,$(OPENSSL_OPTIONS))
+STAMP_CONFIGURED := $(STAMP_CONFIGURED)_$(shell echo $(OPENSSL_OPTIONS) | md5sum)
 
 define Build/Configure
 	[ -f $(STAMP_CONFIGURED) ] || { \
