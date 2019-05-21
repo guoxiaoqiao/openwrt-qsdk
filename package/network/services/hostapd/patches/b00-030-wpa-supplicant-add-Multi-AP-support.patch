@@ -1,9 +1,9 @@
 --- a/src/drivers/driver.h
 +++ b/src/drivers/driver.h
-@@ -4123,6 +4123,14 @@ struct wpa_driver_ops {
+@@ -4218,6 +4218,14 @@ struct wpa_driver_ops {
+ 	 * Returns: 0 on success, < 0 on failure
  	 */
- 	int (*send_external_auth_status)(void *priv,
- 					 struct external_auth *params);
+ 	int (*set_4addr_mode)(void *priv, const char *bridge_ifname, int val);
 +
 +	/**
 +	 * enable_map - Enable Multi-AP functionality
@@ -17,7 +17,7 @@
  /**
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
-@@ -10738,6 +10738,27 @@ fail:
+@@ -11003,6 +11003,27 @@ fail:
  	return ret;
  }
  
@@ -45,15 +45,15 @@
  
  const struct wpa_driver_ops wpa_driver_nl80211_ops = {
  	.name = "nl80211",
-@@ -10869,4 +10890,5 @@ const struct wpa_driver_ops wpa_driver_nl80211_ops = {
- 	.get_peer_inactive_time = i802_get_inact_sec,
+@@ -11137,4 +11158,5 @@ const struct wpa_driver_ops wpa_driver_n
  	.update_connect_params = nl80211_update_connection_params,
  	.send_external_auth_status = nl80211_send_external_auth_status,
+ 	.set_4addr_mode = nl80211_set_4addr_mode,
 +	.enable_map = nl80211_enable_map,
  };
 --- a/src/drivers/nl80211_copy.h
 +++ b/src/drivers/nl80211_copy.h
-@@ -2672,6 +2672,7 @@ enum nl80211_attrs {
+@@ -2739,6 +2739,7 @@ enum nl80211_attrs {
  
  	NL80211_ATTR_NSS,
  	NL80211_ATTR_ACK_SIGNAL,
@@ -63,7 +63,7 @@
  
 --- a/wpa_supplicant/config.c
 +++ b/wpa_supplicant/config.c
-@@ -4919,6 +4919,7 @@ static const struct global_parse_data global_fields[] = {
+@@ -5032,6 +5032,7 @@ static const struct global_parse_data gl
  	{ INT_RANGE(dpp_config_processing, 0, 2), 0 },
  	{ INT_RANGE(coloc_intf_reporting, 0, 1), 0 },
  	{ INT(tdls_peer_max_inactivity), 0 },
@@ -73,10 +73,10 @@
  #undef FUNC
 --- a/wpa_supplicant/config.h
 +++ b/wpa_supplicant/config.h
-@@ -1488,6 +1488,11 @@ struct wpa_config {
- 	 * Default Value: 300 seconds.
+@@ -1537,6 +1537,11 @@ struct wpa_config {
+ 	 * By default, permanent MAC address is used.
  	 */
- 	int tdls_peer_max_inactivity;
+ 	int p2p_interface_random_mac_addr;
 +
 +	/**
 +	 * map_enabled - Enable Multi-AP functionality
@@ -87,7 +87,7 @@
  
 --- a/wpa_supplicant/driver_i.h
 +++ b/wpa_supplicant/driver_i.h
-@@ -30,6 +30,13 @@ static inline void wpa_drv_deinit(struct wpa_supplicant *wpa_s)
+@@ -30,6 +30,13 @@ static inline void wpa_drv_deinit(struct
  		wpa_s->driver->deinit(wpa_s->drv_priv);
  }
  
@@ -103,7 +103,7 @@
  {
 --- a/wpa_supplicant/wpa_supplicant.c
 +++ b/wpa_supplicant/wpa_supplicant.c
-@@ -5971,6 +5971,12 @@ struct wpa_supplicant * wpa_supplicant_add_iface(struct wpa_global *global,
+@@ -6211,6 +6211,12 @@ struct wpa_supplicant * wpa_supplicant_a
  	}
  #endif /* CONFIG_P2P */
  
@@ -118,7 +118,7 @@
  
 --- a/wpa_supplicant/wpa_supplicant.conf
 +++ b/wpa_supplicant/wpa_supplicant.conf
-@@ -1434,6 +1434,13 @@ fast_reauth=1
+@@ -1528,6 +1528,13 @@ fast_reauth=1
  # default: 300 seconds
  #tdls_peer_max_inactivity=300
  
