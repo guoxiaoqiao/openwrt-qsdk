@@ -106,14 +106,17 @@ db-cp01|\
 db-cp02|\
 ap-ac01|\
 ap-ac02|\
-ap-ac03|\
-ap-ac04|\
 ap-oak02|\
 ap-oak03|\
 db-hk01|\
 db-hk02)
 	ucidef_add_switch "switch0"
 	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3 eth4 eth5" "eth0"
+	;;
+ap-ac03|\
+ap-ac04)
+	ucidef_add_switch "switch0"
+	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3 eth4" "eth0"
 	;;
 ap-hk02)
 	ucidef_add_switch "switch0"
