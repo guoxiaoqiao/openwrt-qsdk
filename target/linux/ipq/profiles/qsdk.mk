@@ -108,9 +108,9 @@ STORAGE:=kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-is
 
 USB_ETHERNET:= kmod-usb-net-rtl8152 kmod-usb-net
 
-TEST_TOOLS:=sysstat ethtool i2c-tools tcpdump
+TEST_TOOLS:=ethtool i2c-tools tcpdump
 
-UTILS:=file luci-app-samba iperf-mt rng-tools profilerd
+UTILS:=file luci-app-samba rng-tools profilerd
 
 COREBSP_UTILS:=pm-utils qca-thermald-10.4 qca-qmi-framework qca-time-services \
 	qca-wlanfw-upgrade
@@ -195,7 +195,7 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) $(QCA_EDMA) \
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
-	$(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING) \
+	$(TEST_TOOLS) $(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING) \
 	$(USB_DIAG) $(FTM) $(CNSS_DIAG) qca-cnss-daemon qca-wifi-hk-fw-hw1-10.4-asic \
 	$(QRTR) $(QMI_SAMPLE_APP)
 endef
@@ -216,7 +216,7 @@ define Profile/QSDK_Premium
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
-		$(MHI_QRTR)
+		$(MHI_QRTR) $(KPI)
 endef
 
 define Profile/QSDK_Premium/Description
@@ -231,7 +231,7 @@ define Profile/QSDK_Standard
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
-		qca-wifi-fw-hw5-10.4-asic $(FAIL_SAFE)
+		qca-wifi-fw-hw5-10.4-asic $(FAIL_SAFE) $(KPI)
 endef
 
 define Profile/QSDK_Standard/Description
@@ -248,7 +248,7 @@ define Profile/QSDK_Enterprise
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
 		$(IPSEC) $(NSS_EIP197_FW) $(CD_ROUTER) $(AQ_PHY) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) -lacpd \
-		$(USB_DIAG) $(MHI_QRTR)
+		$(USB_DIAG) $(MHI_QRTR) $(KPI)
 endef
 
 define Profile/QSDK_Enterprise/Description
@@ -267,7 +267,7 @@ define Profile/QSDK_Deluxe
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
-		qca-wifi-npr-fw-hw1-10.4-asic
+		qca-wifi-npr-fw-hw1-10.4-asic $(KPI)
 endef
 
 define Profile/QSDK_Deluxe/Description
@@ -281,7 +281,7 @@ define Profile/QSDK_256
 	NAME:=Qualcomm-Atheros SDK 256MB Profile
 	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS_256MB) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) \
-		$(UTILS) $(QCA_RFS) $(IGMPSNOOING_RSTP) $(USB_DIAG) \
+		iperf-mt rng-tools $(QCA_RFS) $(IGMPSNOOING_RSTP) $(USB_DIAG) \
 		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
 		$(NSS_CLIENTS_256MB) $(HYFI) $(FAILSAFE) -lacpd \
 		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
@@ -302,7 +302,7 @@ define Profile/QSDK_512
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
-		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
+		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI)
 endef
 
 define Profile/QSDK_512/Description
