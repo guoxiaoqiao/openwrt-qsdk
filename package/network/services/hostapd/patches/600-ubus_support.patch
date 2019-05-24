@@ -30,7 +30,7 @@
  	int interface_added; /* virtual interface added for this BSS */
  	unsigned int started:1;
  	unsigned int disabled:1;
-@@ -409,6 +411,8 @@ struct hostapd_iface {
+@@ -413,6 +415,8 @@ struct hostapd_iface {
  	struct hostapd_config *conf;
  	char phy[16]; /* Name of the PHY (radio) */
  
@@ -636,7 +636,7 @@
 +#endif
 --- a/src/ap/hostapd.c
 +++ b/src/ap/hostapd.c
-@@ -356,6 +356,7 @@ static void hostapd_free_hapd_data(struc
+@@ -360,6 +360,7 @@ static void hostapd_free_hapd_data(struc
  	hapd->beacon_set_done = 0;
  
  	wpa_printf(MSG_DEBUG, "%s(%s)", __func__, hapd->conf->iface);
@@ -644,7 +644,7 @@
  	iapp_deinit(hapd->iapp);
  	hapd->iapp = NULL;
  	accounting_deinit(hapd);
-@@ -1295,6 +1296,8 @@ static int hostapd_setup_bss(struct host
+@@ -1300,6 +1301,8 @@ static int hostapd_setup_bss(struct host
  	if (hapd->driver && hapd->driver->set_operstate)
  		hapd->driver->set_operstate(hapd->drv_priv, 1);
  
@@ -653,7 +653,7 @@
  	return 0;
  }
  
-@@ -1809,6 +1812,7 @@ static int hostapd_setup_interface_compl
+@@ -1814,6 +1817,7 @@ static int hostapd_setup_interface_compl
  	if (err)
  		goto fail;
  
@@ -661,7 +661,7 @@
  	wpa_printf(MSG_DEBUG, "Completing interface initialization");
  	if (iface->conf->channel) {
  #ifdef NEED_AP_MLME
-@@ -1995,6 +1999,7 @@ dfs_offload:
+@@ -2003,6 +2007,7 @@ dfs_offload:
  
  fail:
  	wpa_printf(MSG_ERROR, "Interface initialization failed");
@@ -669,7 +669,7 @@
  	hostapd_set_state(iface, HAPD_IFACE_DISABLED);
  	wpa_msg(hapd->msg_ctx, MSG_INFO, AP_EVENT_DISABLED);
  #ifdef CONFIG_FST
-@@ -2464,6 +2469,7 @@ void hostapd_interface_deinit_free(struc
+@@ -2472,6 +2477,7 @@ void hostapd_interface_deinit_free(struc
  		   (unsigned int) iface->conf->num_bss);
  	driver = iface->bss[0]->driver;
  	drv_priv = iface->bss[0]->drv_priv;
@@ -679,7 +679,7 @@
  		   __func__, driver, drv_priv);
 --- a/src/ap/ieee802_11.c
 +++ b/src/ap/ieee802_11.c
-@@ -65,7 +65,8 @@ prepare_auth_resp_fils(struct hostapd_da
+@@ -66,7 +66,8 @@ prepare_auth_resp_fils(struct hostapd_da
  #endif /* CONFIG_FILS */
  static void handle_auth(struct hostapd_data *hapd,
  			const struct ieee80211_mgmt *mgmt, size_t len,
@@ -689,7 +689,7 @@
  
  
  u8 * hostapd_eid_multi_ap(struct hostapd_data *hapd, u8 *eid)
-@@ -1307,7 +1308,7 @@ void auth_sae_process_commit(void *eloop
+@@ -1309,7 +1310,7 @@ void auth_sae_process_commit(void *eloop
  		   "SAE: Process next available message from queue");
  	dl_list_del(&q->list);
  	handle_auth(hapd, (const struct ieee80211_mgmt *) q->msg, q->len,
@@ -698,7 +698,7 @@
  	os_free(q);
  
  	if (eloop_is_timeout_registered(auth_sae_process_commit, hapd, NULL))
-@@ -2025,7 +2026,8 @@ ieee802_11_set_radius_info(struct hostap
+@@ -2027,7 +2028,8 @@ ieee802_11_set_radius_info(struct hostap
  
  static void handle_auth(struct hostapd_data *hapd,
  			const struct ieee80211_mgmt *mgmt, size_t len,
@@ -708,7 +708,7 @@
  {
  	u16 auth_alg, auth_transaction, status_code;
  	u16 resp = WLAN_STATUS_SUCCESS;
-@@ -2041,6 +2043,11 @@ static void handle_auth(struct hostapd_d
+@@ -2043,6 +2045,11 @@ static void handle_auth(struct hostapd_d
  	char *identity = NULL;
  	char *radius_cui = NULL;
  	u16 seq_ctrl;
@@ -720,7 +720,7 @@
  
  	if (len < IEEE80211_HDRLEN + sizeof(mgmt->u.auth)) {
  		wpa_printf(MSG_INFO, "handle_auth - too short payload (len=%lu)",
-@@ -2202,6 +2209,14 @@ static void handle_auth(struct hostapd_d
+@@ -2204,6 +2211,14 @@ static void handle_auth(struct hostapd_d
  		resp = WLAN_STATUS_UNSPECIFIED_FAILURE;
  		goto fail;
  	}
@@ -735,7 +735,7 @@
  	if (res == HOSTAPD_ACL_PENDING)
  		return;
  
-@@ -3695,7 +3710,7 @@ void fils_hlp_timeout(void *eloop_ctx, v
+@@ -3857,7 +3872,7 @@ void fils_hlp_timeout(void *eloop_ctx, v
  
  static void handle_assoc(struct hostapd_data *hapd,
  			 const struct ieee80211_mgmt *mgmt, size_t len,
@@ -744,7 +744,7 @@
  {
  	u16 capab_info, listen_interval, seq_ctrl, fc;
  	u16 resp = WLAN_STATUS_SUCCESS, reply_res;
-@@ -3709,6 +3724,11 @@ static void handle_assoc(struct hostapd_
+@@ -3871,6 +3886,11 @@ static void handle_assoc(struct hostapd_
  #ifdef CONFIG_FILS
  	int delay_assoc = 0;
  #endif /* CONFIG_FILS */
@@ -756,7 +756,7 @@
  
  	if (len < IEEE80211_HDRLEN + (reassoc ? sizeof(mgmt->u.reassoc_req) :
  				      sizeof(mgmt->u.assoc_req))) {
-@@ -3888,6 +3908,13 @@ static void handle_assoc(struct hostapd_
+@@ -4050,6 +4070,13 @@ static void handle_assoc(struct hostapd_
  	}
  #endif /* CONFIG_MBO */
  
@@ -770,7 +770,7 @@
  	/*
  	 * sta->capability is used in check_assoc_ies() for RRM enabled
  	 * capability element.
-@@ -4486,7 +4513,7 @@ int ieee802_11_mgmt(struct hostapd_data
+@@ -4648,7 +4675,7 @@ int ieee802_11_mgmt(struct hostapd_data
  
  
  	if (stype == WLAN_FC_STYPE_PROBE_REQ) {
@@ -779,7 +779,7 @@
  		return 1;
  	}
  
-@@ -4506,17 +4533,17 @@ int ieee802_11_mgmt(struct hostapd_data
+@@ -4668,17 +4695,17 @@ int ieee802_11_mgmt(struct hostapd_data
  	switch (stype) {
  	case WLAN_FC_STYPE_AUTH:
  		wpa_printf(MSG_DEBUG, "mgmt::auth");

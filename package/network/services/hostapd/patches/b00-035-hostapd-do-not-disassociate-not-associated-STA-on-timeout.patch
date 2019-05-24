@@ -1,6 +1,6 @@
 --- a/src/ap/sta_info.c
 +++ b/src/ap/sta_info.c
-@@ -514,6 +514,13 @@ skip_poll:
+@@ -515,6 +515,13 @@ skip_poll:
  			deauth = 1;
  		}
  
