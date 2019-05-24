@@ -203,6 +203,8 @@ define KernelPackage/mhi-qrtr-mproc
   TITLE:= Default kernel configs for QCCI to work with QRTR.
   DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64
   KCONFIG:= \
+	  CONFIG_QRTR=y \
+	  CONFIG_QRTR_MHI=y \
 	  CONFIG_MHI_BUS=y \
 	  CONFIG_MHI_QTI=y \
 	  CONFIG_MHI_NETDEV=y \

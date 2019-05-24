@@ -216,7 +216,7 @@ define Profile/QSDK_Premium
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
-		$(MHI_QRTR) $(KPI)
+		$(MHI_QRTR) $(KPI) $(QRTR)
 endef
 
 define Profile/QSDK_Premium/Description
@@ -248,7 +248,7 @@ define Profile/QSDK_Enterprise
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
 		$(IPSEC) $(NSS_EIP197_FW) $(CD_ROUTER) $(AQ_PHY) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) -lacpd \
-		$(USB_DIAG) $(MHI_QRTR) $(KPI)
+		$(USB_DIAG) $(MHI_QRTR) $(KPI) $(QRTR)
 endef
 
 define Profile/QSDK_Enterprise/Description
