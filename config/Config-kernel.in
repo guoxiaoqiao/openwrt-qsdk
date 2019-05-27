@@ -77,6 +77,13 @@ config KERNEL_IPQ_MEM_PROFILE
 	  This option select memory profile to be used,which defines
 	  the reserved memory configuration used in device tree.
 
+config KERNEL_ARCH_IPQ256M
+	bool "Compile kernel for 256M profile"
+	default n
+	help
+	   Compile kernel for 256M profile, this option enables kernel
+	   to add 8MB of DDR to kernel lowmem in 256M profile.
+
 config KERNEL_FTRACE
 	bool "Compile the kernel with tracing support"
 	depends on !TARGET_uml
