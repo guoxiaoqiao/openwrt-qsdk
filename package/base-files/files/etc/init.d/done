@@ -5,15 +5,21 @@ START=95
 boot() {
 	mount_root done
 	rm -f /sysupgrade.tgz
-	local hk_board=$(grep -w  "IPQ807x" /proc/device-tree/model | awk -F: '{print $1}')
+	local soc_model=$(cat /proc/device-tree/model)
 
-        [ -n "$hk_board" ] && {
-		local mount_check=$(ls /lib/firmware/IPQ8074/WIFI_FW/ | grep "bdwlan.bin")
-		if [ -z "$mount_check" ];then
-			. /etc/init.d/wifi_fw_mount
-			mount_wifi_fw
-		fi
-	}
+	case "$soc_model" in
+	*"IPQ6018"*)
+		mount_check=$(ls /lib/firmware/IPQ6018/WIFI_FW/ | grep "bdwlan.bin")
+		;;
+	*"IPQ807x"*)
+		mount_check=$(ls /lib/firmware/IPQ8074/WIFI_FW/ | grep "bdwlan.bin")
+		;;
+	esac
+
+	if [ -z "$mount_check" ];then
+		. /etc/init.d/wifi_fw_mount
+		mount_wifi_fw
+	fi
 
 	# process user commands
 	[ -f /etc/rc.local ] && {
