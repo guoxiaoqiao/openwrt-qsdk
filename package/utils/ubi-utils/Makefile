@@ -50,7 +50,7 @@ define Package/nand-utils
   SECTION:=utils
   CATEGORY:=Utilities
   URL:=http://www.linux-mtd.infradead.org/
-  DEPENDS:=@NAND_SUPPORT
+  DEPENDS:=@NAND_SUPPORT +zlib
 endef
 
 define Package/nand-utils/description
@@ -76,6 +76,8 @@ define Package/nand-utils/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) \
 		$(PKG_INSTALL_DIR)/usr/sbin/{nandwrite,nanddump,nandtest} $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/mkfs.jffs2 $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/flash_eraseall $(1)/usr/sbin/
 endef
 
 

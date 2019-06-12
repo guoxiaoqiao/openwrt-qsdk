@@ -218,13 +218,20 @@ image_is_nand()
 }
 flash_section() {
 	local sec=$1
-
 	local board=$(ipq806x_board_name)
+	local version=$(hexdump -n 1 -e '"%1d"' /sys/firmware/devicetree/base/soc_version_major)
+
+	if [ $version == "" ]; then
+		version=1
+	fi
+
 	case "${sec}" in
 		hlos*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "0:HLOS";;
 		rootfs*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "rootfs";;
-		wififw*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
-		wififw_ubi*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
+		wififw-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
+		wififw_ubi-*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
+		wififw_v${version}-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
+		wififw_ubi_v${version}-*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
 		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; image_is_nand || return && do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "0:SBL1";;
@@ -232,6 +239,7 @@ flash_section() {
 		sbl3*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:SBL3";;
 		dtb-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DTB";;
 		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
+		lkboot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
 		ddr-$(to_upper $board)*) switch_layout boot; do_flash_ddr ${sec};;
 		ddr-${board}-*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:DDRCONFIG";;
 		ssd*) switch_layout boot; do_flash_partition ${sec} "0:SSD";;
@@ -266,7 +274,7 @@ platform_check_image() {
 	local mandatory_nor="hlos"
 	local mandatory_section_found=0
 	local ddr_section="ddr"
-	local optional="sb11 sbl2 u-boot ddr-${board} ssd tz rpm"
+	local optional="sb11 sbl2 u-boot lkboot ddr-${board} ssd tz rpm"
 	local ignored="mibib bootconfig"
 
 	image_is_FIT $1 || return 1
@@ -352,7 +360,7 @@ platform_do_upgrade() {
 	done
 
 	case "$board" in
-	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3 | ap-dk07.1-c4 | ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk01-c4 | ap-hk02 | ap-hk05 | ap-hk06 | ap-hk07 | ap-hk08 | ap-hk09 | ap-ac01.1 | ap-ac01.2 | db-hk01 | db-hk02)
+	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3 | ap-dk07.1-c4 | ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk01-c4 | ap-hk01-c5 | ap-hk02 | ap-hk05 | ap-hk06 | ap-hk07 | ap-hk08 | ap-hk09 | ap-hk10 | ap-ac01 | ap-ac02 | ap-ac03 | ap-ac04 | ap-oak02 | ap-oak03 | db-hk01 | db-hk02 | ap-cp01-c1 | ap-cp01-c2 | ap-cp02-c1 | ap-cp03-c1 | db-cp01 | db-cp02)
 		for sec in $(print_sections $1); do
 			flash_section ${sec}
 		done

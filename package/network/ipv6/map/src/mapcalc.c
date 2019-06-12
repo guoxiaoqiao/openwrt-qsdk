@@ -201,6 +201,8 @@ int main(int argc, char *argv[])
 	}
 
 	int rulecnt = 0;
+	int bmr_cnt = 0;
+	int bmr_prefix6len = 0;
 	for (int i = 2; i < argc; ++i) {
 		bool lw4o6 = false;
 		bool fmr = false;
@@ -370,7 +372,10 @@ int main(int argc, char *argv[])
 			printf("RULE_%d_PD6LEN=%d\n", rulecnt, pdlen);
 			printf("RULE_%d_PD6IFACE=%s\n", rulecnt, iface);
 			printf("RULE_%d_IPV6ADDR=%s\n", rulecnt, ipv6addrbuf);
-			printf("RULE_BMR=%d\n", rulecnt);
+			if (prefix6len > bmr_prefix6len) {
+				bmr_prefix6len = prefix6len;
+				bmr_cnt = rulecnt;
+			}
 		}
 
 		if (ipv4addr.s_addr) {
@@ -380,6 +385,7 @@ int main(int argc, char *argv[])
 
 
 		if (psidlen > 0 && psid >= 0) {
+			printf("RULE_%d_PSID=%d\n", rulecnt, (psid >> (16- psidlen)));
 			printf("RULE_%d_PORTSETS='", rulecnt);
 			for (int k = (offset) ? 1 : 0; k < (1 << offset); ++k) {
 				int start = (k << (16 - offset)) | (psid >> offset);
@@ -400,6 +406,8 @@ int main(int argc, char *argv[])
 		if (br)
 			printf("RULE_%d_BR=%s\n", rulecnt, br);
 	}
+	if (bmr_cnt > 0)
+		printf("RULE_BMR=%d\n", bmr_cnt);
 
 	printf("RULE_COUNT=%d\n", rulecnt);
 	return status;

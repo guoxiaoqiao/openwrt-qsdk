@@ -56,6 +56,9 @@ ipq806x_board_detect() {
 	*"AP-DK01.1-C1")
 		name="ap-dk01.1-c1"
 		;;
+	*"DB-DK01.1-C1")
+		name="db-dk01.1-c1"
+		;;
 	*"AP-DK01.1-C2")
 		name="ap-dk01.1-c2"
 		;;
@@ -95,6 +98,24 @@ ipq806x_board_detect() {
 	*"AP-DK07.1-C4")
 		name="ap-dk07.1-c4"
 		;;
+	*"AP-CP01-C1")
+		name="ap-cp01-c1"
+		;;
+	*"AP-CP01-C2")
+		name="ap-cp01-c2"
+		;;
+	*"AP-CP02-C1")
+		name="ap-cp02-c1"
+		;;
+	*"AP-CP03-C1")
+		name="ap-cp03-c1"
+		;;
+	*"DB-CP01")
+		name="db-cp01"
+		;;
+	*"DB-CP02")
+		name="db-cp02"
+		;;
 	*"AP-HK01-C1")
 		name="ap-hk01-c1"
 		;;
@@ -106,6 +127,9 @@ ipq806x_board_detect() {
 		;;
 	*"AP-HK01-C4")
 		name="ap-hk01-c4"
+		;;
+	*"AP-HK01-C5")
+		name="ap-hk01-c5"
 		;;
 	*"AP-HK02")
 		name="ap-hk02"
@@ -125,11 +149,26 @@ ipq806x_board_detect() {
 	*"AP-HK09")
 		name="ap-hk09"
 		;;
-	*"AP-AC01.1")
-		name="ap-ac01.1"
+	*"AP-HK10")
+		name="ap-hk10"
 		;;
-	*"AP-AC01.2")
-		name="ap-ac01.2"
+	*"AP-AC01")
+		name="ap-ac01"
+		;;
+	*"AP-AC02")
+		name="ap-ac02"
+		;;
+	*"AP-AC03")
+		name="ap-ac03"
+		;;
+	*"AP-AC04")
+		name="ap-ac04"
+		;;
+	*"AP-OAK02")
+		name="ap-oak02"
+		;;
+	*"AP-OAK03")
+		name="ap-oak03"
 		;;
 	*"DB.HK01")
 		name="db-hk01"

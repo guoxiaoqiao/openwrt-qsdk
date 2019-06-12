@@ -4,7 +4,8 @@ comment "SSL support"
 
 choice
 	prompt "Selected SSL library"
-	default LIBCURL_MBEDTLS
+	default LIBCURL_MBEDTLS if PACKAGE_avs-device-sdk
+	default LIBCURL_OPENSSL
 
 	config LIBCURL_MBEDTLS
 		bool "mbed TLS"

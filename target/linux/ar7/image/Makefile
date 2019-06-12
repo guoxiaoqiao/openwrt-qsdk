@@ -24,7 +24,7 @@ LOADER_MAKEOPTS= \
 	RAMSTART=$(RAMSTART) \
 	RAMSIZE=$(RAMSIZE)
 
-CFLAGS := -D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -Os \
+CFLAGS := -D__KERNEL__ -Wall -Wstrict-prototypes -Os \
 	-fno-strict-aliasing -fno-common -fomit-frame-pointer -G 0 -mno-abicalls -fno-pic \
 	-pipe -mlong-calls -fno-common \
 	-mabi=32 -march=mips32 -Wa,-32 -Wa,-march=mips32 -Wa,-mips32 -Wa,--trap \

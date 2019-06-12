@@ -69,6 +69,21 @@ if KERNEL_KASAN
 		default 2048
 endif
 
+config KERNEL_IPQ_MEM_PROFILE
+	int "Diifernt memory profile"
+	range 0 1024
+	default 0
+	help
+	  This option select memory profile to be used,which defines
+	  the reserved memory configuration used in device tree.
+
+config KERNEL_ARCH_IPQ256M
+	bool "Compile kernel for 256M profile"
+	default n
+	help
+	   Compile kernel for 256M profile, this option enables kernel
+	   to add 8MB of DDR to kernel lowmem in 256M profile.
+
 config KERNEL_FTRACE
 	bool "Compile the kernel with tracing support"
 	depends on !TARGET_uml
@@ -331,6 +346,10 @@ if KERNEL_SKB_DEBUG
 		default y
 endif
 
+config KERNEL_ALLOC_SKB_PAGE_FRAG_DISABLE
+	bool "Disable alloc skb page frag"
+	default n
+
 config KERNEL_SKB_RECYCLER_PREALLOC
 	bool "Enable preallocation of SKBs"
 	default n
@@ -339,6 +358,14 @@ config KERNEL_SKB_RECYCLE_MAX_PREALLOC_SKBS
 	int "Number of SKBs to be preallocated"
 	depends on KERNEL_SKB_RECYCLER_PREALLOC
 	default 16384
+
+config KERNEL_SKB_RECYCLER
+	bool "Generic skb recycling"
+	default y
+
+config KERNEL_SKB_RECYCLER_MULTI_CPU
+	bool "Cross-CPU recycling for CPU-locked workloads"
+	default y
 
 #
 # CGROUP support symbols
@@ -566,6 +593,13 @@ if KERNEL_CGROUPS
 
 endif
 
+config KERNEL_NET_IPGRE_BROADCAST
+	bool "IP: broadcast GRE over IP"
+	default y
+
+config KERNEL_CNSS2
+	bool "CNSS2 Platform Driver for Wi-Fi Module"
+	default y
 #
 # Namespace support symbols
 #
@@ -634,21 +668,21 @@ if KERNEL_LXC_MISC
 		  filesystem with the '-o newinstance' option will create an
 		  independent PTY namespace.
 
-	config KERNEL_POSIX_MQUEUE
-		bool "POSIX Message Queues"
-		default y
-		help
-		  POSIX variant of message queues is a part of IPC. In POSIX message
-		  queues every message has a priority which decides about succession
-		  of receiving it by a process. If you want to compile and run
-		  programs written e.g. for Solaris with use of its POSIX message
-		  queues (functions mq_*) say Y here.
-
-		  POSIX message queues are visible as a filesystem called 'mqueue'
-		  and can be mounted somewhere if you want to do filesystem
-		  operations on message queues.
-
 endif
+
+config KERNEL_POSIX_MQUEUE
+        bool "POSIX Message Queues"
+        default n
+        help
+          POSIX variant of message queues is a part of IPC. In POSIX message
+          queues every message has a priority which decides about succession
+          of receiving it by a process. If you want to compile and run
+          programs written e.g. for Solaris with use of its POSIX message
+          queues (functions mq_*) say Y here.
+
+          POSIX message queues are visible as a filesystem called 'mqueue'
+          and can be mounted somewhere if you want to do filesystem
+          operations on message queues.
 
 config KERNEL_MSM_GLINK_LOOPBACK_SERVER
 	bool "Enable Generic Link (G-Link) Loopback Server"
