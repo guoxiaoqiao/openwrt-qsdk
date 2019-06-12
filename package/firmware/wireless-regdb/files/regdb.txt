@@ -240,8 +240,8 @@ country BZ: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5250 @ 80), (23)
 	(5250 - 5330 @ 80), (23)
-	(5490 - 5710 @ 80), (30)
-	(5735 - 5835 @ 80), (30)
+	(5490 - 5725 @ 80), (30)
+	(5725 - 5850 @ 80), (30)
 
 country CA: DFS-FCC
 	(2402 - 2472 @ 40), (30)
@@ -926,12 +926,13 @@ country MT: DFS-ETSI
 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
 	(57000 - 66000 @ 2160), (40)
 
-country MU: DFS-FCC
+country MU: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
-	(5170 - 5250 @ 80), (24), AUTO-BW
-	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
-	(5490 - 5730 @ 160), (24), DFS
-	(5735 - 5835 @ 80), (30)
+	(5150 - 5250 @ 80), (23), AUTO-BW
+	(5250 - 5350 @ 80), (23), DFS, AUTO-BW
+	(5470 - 5590 @ 80), (30), DFS, AUTO-BW
+	(5590 - 5650 @ 40), (30), (600), DFS, AUTO-BW
+	(5650 - 5725 @ 40), (30), DFS, AUTO-BW
 
 country MV: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -996,22 +997,13 @@ country NL: DFS-ETSI
 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
 	(57000 - 66000 @ 2160), (40)
 
-# Data from http://www.lovdata.no/dokument/SF/forskrift/2012-01-19-77
-# Power at 5250 - 5350 MHz, 5470 - 5725 MHz and 5815 – 5850 MHz can
-# be doubled if TPC is implemented.
-# Up to 2W (or 4W with TPC) is allowed in the 5725 – 5795 MHz band
-# which has been merged with 5470 - 5725 MHz to allow wide channels
 country NO: DFS-ETSI
-	(2400 - 2483.5 @ 40), (100 mW)
-	(5150 - 5250 @ 80), (200 mW), AUTO-BW
-	(5250 - 5350 @ 80), (100 mW), DFS, AUTO-BW
-	(5470 - 5590 @ 80), (500 mW), DFS, AUTO-BW
-	(5590 - 5650 @ 40), (500 mW), (600), DFS, AUTO-BW
-	(5650 - 5795 @ 80), (500 mW), DFS, AUTO-BW
-	(5815 - 5850 @ 35), (2000 mW), DFS
-	(17100 - 17300 @ 200), (100 mW)
-	# 60 gHz band channels 1-4, ref: Etsi En 302 567
-	(57000 - 66000 @ 2160), (40)
+	(2402 - 2482 @ 40), (20)
+	(5150 - 5250 @ 80), (23), AUTO-BW
+	(5250 - 5350 @ 80), (23), DFS, AUTO-BW
+	(5470 - 5590 @ 80), (30), DFS, AUTO-BW
+	(5590 - 5650 @ 40), (30), (600), DFS, AUTO-BW
+	(5650 - 5725 @ 40), (30), DFS, AUTO-BW
 
 country NP: DFS-JP
 	(2402 - 2482 @ 40), (20)
