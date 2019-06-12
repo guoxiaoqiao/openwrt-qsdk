@@ -32,7 +32,8 @@ NSS_ENTERPRISE:= \
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
-	qca-wpa-supplicant-macsec
+	qca-wpa-supplicant-macsec \
+	qca-hostap-macsec
 
 QCA_ECM_STANDARD:= kmod-qca-nss-ecm-standard
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
