@@ -72,18 +72,11 @@ ipq807x_power_auto() {
 }
 
 ipq6018_power_auto() {
-	# change scaling governor as ondemand to enable clock scaling based on system load
-	echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+	# change scaling governor as userspace
+	echo "userspace" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
-	# Change sampling rate for frequency scaling decisions to 1s, from 10 ms
-	echo "1000000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
-
-	# Change sampling rate for frequency down scaling decision to 10s
-	echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
-
-	# Change the CPU load threshold above which frequency is up-scaled to
-	# turbo frequency,to 50%
-	echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+	# Change frequency to the lowest possible
+	echo "864000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed
 }
 
 start() {
