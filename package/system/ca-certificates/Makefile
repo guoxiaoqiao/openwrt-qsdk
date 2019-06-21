@@ -12,7 +12,7 @@ PKG_MAINTAINER:=Christian Schoenebeck <christian.schoenebeck@gmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://ftp.debian.org/debian/pool/main/c/ca-certificates
-PKG_MD5SUM:=a09e8b63126188fd0ed77f6fbaf5d35f
+PKG_HASH:=77f9aca431e3122bf04aa0ffd989b723d906db4d1c106e3290e463d73c177f0e
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-20161130
 
 PKG_INSTALL:=1
