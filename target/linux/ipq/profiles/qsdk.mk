@@ -100,7 +100,7 @@ WIL6210_PKGS:=kmod-wil6210 wigig-firmware iwinfo qca-fst-manager
 OPENWRT_STANDARD:= \
 	luci openssl-util
 
-OPENWRT_256MB:=luci pm-utils qca-thermald-10.4 qca-wlanfw-upgrade -file \
+OPENWRT_256MB:=luci pm-utils wififw_mount_script qca-thermald-10.4 qca-wlanfw-upgrade -file \
 		-kmod-ata-core -kmod-ata-ahci -kmod-ata-ahci-platform \
 		-kmod-usb2 -kmod-usb3 -kmod-usb-dwc3-qcom \
 		-kmod-usb-phy-qcom-dwc3 -kmod-usb-dwc3-of-simple \
@@ -116,7 +116,7 @@ TEST_TOOLS:=ethtool i2c-tools tcpdump
 
 UTILS:=file luci-app-samba rng-tools profilerd
 
-COREBSP_UTILS:=pm-utils qca-thermald-10.4 qca-qmi-framework qca-time-services \
+COREBSP_UTILS:=pm-utils wififw_mount_script qca-thermald-10.4 qca-qmi-framework qca-time-services \
 	qca-wlanfw-upgrade
 
 FAILSAFE:= kmod-bootconfig
