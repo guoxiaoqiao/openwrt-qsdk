@@ -40,6 +40,7 @@ tools-$(BUILD_PPL_CLOOG) += ppl cloog
 tools-$(CONFIG_USE_SPARSE) += sparse
 tools-y += coccinelle
 tools-y += bazel
+tools-y += openjdk
 
 # builddir dependencies
 $(curdir)/bison/compile := $(curdir)/flex/install

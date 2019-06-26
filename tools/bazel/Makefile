@@ -12,6 +12,7 @@ HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/bazel-$(PKG_VERSION)-dist/bazel-0.23.2
 include $(INCLUDE_DIR)/host-build.mk
 
 
+export JAVA_HOME=$(STAGING_DIR_HOST)/bin/openjdk-1.8-native
 define Host/Compile
 	$(HOST_BUILD_DIR)/../compile.sh
 endef
