@@ -41,6 +41,11 @@ endef
 define Package/map/install
 	$(INSTALL_DIR) $(1)/lib/netifd/proto
 	$(INSTALL_BIN) ./files/map.sh $(1)/lib/netifd/proto/map.sh
+	$(INSTALL_DIR) $(1)/etc/firewall.d/
+	$(INSTALL_DATA) ./files/map_firewall $(1)/etc/firewall.d/map_firewall
+	$(INSTALL_DIR) $(1)/etc/uci-defaults/
+	$(INSTALL_DATA) ./files/map.default $(1)/etc/uci-defaults/99-map
+	$(INSTALL_BIN) ./files/map.sh $(1)/lib/netifd/proto/map.sh
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mapcalc $(1)/usr/sbin/
 endef

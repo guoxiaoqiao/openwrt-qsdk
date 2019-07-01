@@ -99,6 +99,10 @@ static struct bh_map button_map[] = {
 	BH_MAP(KEY_RFKILL,	"rfkill"),
 	BH_MAP(KEY_WPS_BUTTON,	"wps"),
 	BH_MAP(KEY_WIMAX,	"wwan"),
+	BH_MAP(KEY_MUTE,	"mute"),
+	BH_MAP(KEY_VOLUMEUP,	"volume_up"),
+	BH_MAP(KEY_VOLUMEDOWN,	"volume_down"),
+	BH_MAP(KEY_HOME,	"home"),
 };
 
 /* -------------------------------------------------------------------------*/
