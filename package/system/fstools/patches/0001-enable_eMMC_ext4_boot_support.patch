@@ -238,7 +238,28 @@ index 0000000..3dcd658
  		ULOG_ERR("failed to mkdir /tmp/overlay: %s\n", strerror(errno));
  		return -1;
  	}
-@@ -196,6 +196,7 @@
+@@ -119,14 +119,19 @@
+ {
+	struct stat s;
+	int ret;
++	char fs_type[6] = "jffs2";
+
+	if (!stat(SWITCH_JFFS2, &s)) {
+		ULOG_ERR("jffs2 switch already running\n");
+		return -1;
+	}
+
++	if (!strcmp((char *)(v->drv->name), "ext4")) {
++		strncpy(fs_type, "ext4", sizeof(fs_type));
++	}
++
+	creat("/tmp/.switch_jffs2", 0600);
+-	ret = mount(v->blk, "/rom/overlay", "jffs2", MS_NOATIME, NULL);
++	ret = mount(v->blk, "/rom/overlay", fs_type, MS_NOATIME, NULL);
+	unlink("/tmp/.switch_jffs2");
+	if (ret) {
+		ULOG_ERR("failed - mount -t jffs2 %s /rom/overlay: %s\n", v->blk, strerror(errno));
+@@ -196,6 +201,7 @@
  jffs2_switch(struct volume *v)
  {
  	char *mp;
@@ -246,19 +267,18 @@ index 0000000..3dcd658
  	int ret = -1;
 
  	if (find_overlay_mount("overlayfs:/tmp/root"))
-@@ -212,6 +213,11 @@
- 		return -1;
- 	}
+@@ -218,6 +224,10 @@
+		/* fall through */
 
-+	if(!strcmp((char *)(v->drv->name),"ext4")) {
-+		snprintf(buf,sizeof(buf),"mkfs.ext4 %s",v->blk);
-+		system(buf);
-+	}
-+
- 	switch (volume_identify(v)) {
- 	case FS_NONE:
- 		ULOG_ERR("no jffs2 marker found\n");
-@@ -245,6 +251,15 @@
+	case FS_DEADCODE:
++		if (!strcmp((char *)(v->drv->name),"ext4")) {
++			snprintf(buf,sizeof(buf),"mkfs.ext4 %s",v->blk);
++			system(buf);
++		}
+		ret = switch2jffs(v);
+		if (!ret) {
+			ULOG_INFO("performing overlay whiteout\n");
+@@ -245,6 +255,15 @@
  			ret = -1;
  		}
  		break;
@@ -274,7 +294,7 @@ index 0000000..3dcd658
  	}
 
  	if (ret)
-@@ -270,6 +285,9 @@
+@@ -270,6 +289,9 @@
  	case FS_UBIFS:
  		fstype = "ubifs";
  		break;
