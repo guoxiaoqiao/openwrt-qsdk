@@ -1,8 +1,6 @@
-Index: iw-4.14/station.c
-===================================================================
---- iw-4.14.orig/station.c	2019-06-25 10:46:53.207711446 +0530
-+++ iw-4.14/station.c	2019-06-25 10:46:53.211711446 +0530
-@@ -589,6 +589,7 @@
+--- a/station.c
++++ b/station.c
+@@ -659,6 +659,7 @@ static const struct cmd *station_set_pli
  static const struct cmd *station_set_vlan;
  static const struct cmd *station_set_airtime;
  static const struct cmd *station_set_mesh_power_mode;
@@ -10,7 +8,7 @@ Index: iw-4.14/station.c
  
  static const struct cmd *select_station_cmd(int argc, char **argv)
  {
-@@ -602,6 +603,8 @@
+@@ -672,6 +673,8 @@ static const struct cmd *select_station_
  		return station_set_airtime;
  	if (strcmp(argv[1], "mesh_power_mode") == 0)
  		return station_set_mesh_power_mode;
@@ -19,7 +17,7 @@ Index: iw-4.14/station.c
  	return NULL;
  }
  
-@@ -800,6 +803,72 @@
+@@ -870,6 +873,72 @@ COMMAND_ALIAS(station, set, "<MAC addres
  	"Set link-specific mesh power mode for this station",
  	select_station_cmd, station_set_mesh_power_mode);
  
@@ -92,28 +90,33 @@ Index: iw-4.14/station.c
  static int handle_station_dump(struct nl80211_state *state,
  			       struct nl_msg *msg,
  			       int argc, char **argv,
-Index: iw-4.14/nl80211.h
-===================================================================
---- iw-4.14.orig/nl80211.h	2019-06-25 10:46:53.203711446 +0530
-+++ iw-4.14/nl80211.h	2019-06-25 10:47:12.839711404 +0530
-@@ -2291,8 +2291,14 @@
-  * @NL80211_ATTR_AIRTIME_WEIGHT: Station's weight when scheduled by the airtime
-  *	scheduler.
+--- a/nl80211.h
++++ b/nl80211.h
+@@ -2305,11 +2305,21 @@ enum nl80211_commands {
+  *	This is also used for capability advertisement in the wiphy information,
+  *	with the appropriate sub-attributes.
   *
-- * @NL80211_ATTR_MAP: Station's Multi-AP capability notified using this
-- * 	attribute. This is used with %NL80211_CMD_SET_INTERFACE.
+- * @NL80211_ATTR_WIPHY_ANTENNA_GAIN: Configured antenna gain. Used to reduce
+- *	transmit power to stay within regulatory limits. u32, dBi.
 + * @NL80211_ATTR_STA_TX_POWER_SETTING: Transmit power setting type (u8) for
-+ *	station associated with the AP. See &enum nl80211_tx_power_setting for
-+ *	possible values.
++ *     station associated with the AP. See &enum nl80211_tx_power_setting for
++ *     possible values.
 + * @NL80211_ATTR_STA_TX_POWER: Transmit power level (s16) in dBm units. This
-+ *	allows to set Tx power for a station. If this attribute is not included,
-+ *	the default per-interface tx power setting will be overriding. Driver
-+ *	should be picking up the lowest tx power, either tx power per-interface
-+ *	or per-station.
++ *     allows to set Tx power for a station. If this attribute is not included,
++ *     the default per-interface tx power setting will be overriding. Driver
++ *     should be picking up the lowest tx power, either tx power per-interface
++ *     or per-station.
   *
   * @NL80211_ATTR_TID_CONFIG: TID specific configuration in a
   *	nested attribute with %NL80211_ATTR_TID_* sub-attributes.
-@@ -2730,7 +2736,6 @@
++ *
++ * @NL80211_ATTR_WIPHY_ANTENNA_GAIN: Configured antenna gain. Used to reduce
++ *	transmit power to stay within regulatory limits. u32, dBi.
++ *
+  * @NL80211_ATTR_MAX_RETRY_COUNT: The upper limit for the retry count
+  *	configuration that the driver can accept.
+  *
+@@ -2744,7 +2754,6 @@ enum nl80211_attrs {
  
  	NL80211_ATTR_NSS,
  	NL80211_ATTR_ACK_SIGNAL,
@@ -121,18 +124,19 @@ Index: iw-4.14/nl80211.h
  
  	NL80211_ATTR_CONTROL_PORT_OVER_NL80211,
  
-@@ -2750,6 +2755,8 @@
+@@ -2763,6 +2772,9 @@ enum nl80211_attrs {
+ 
  	NL80211_ATTR_PEER_MEASUREMENTS,
  
- 	NL80211_ATTR_AIRTIME_WEIGHT,
 +	NL80211_ATTR_STA_TX_POWER_SETTING,
 +	NL80211_ATTR_STA_TX_POWER,
- 
++
  	NL80211_ATTR_TID_CONFIG,
  	NL80211_ATTR_MAX_RETRY_COUNT,
-@@ -5207,6 +5214,43 @@
-  * @NL80211_EXT_FEATURE_MFP_OPTIONAL: Driver supports the %NL80211_MFP_OPTIONAL
-  *	value in %NL80211_ATTR_USE_MFP.
+ 
+@@ -5403,6 +5415,43 @@ enum nl80211_feature_flags {
+  *      if this flag is not set. Ignoring this can leak clear text packets and/or
+  *      freeze the connection.
   *
 + * @NL80211_EXT_FEATURE_LOW_SPAN_SCAN: Driver supports low span scan.
 + * @NL80211_EXT_FEATURE_LOW_POWER_SCAN: Driver supports low power scan.
@@ -174,23 +178,10 @@ Index: iw-4.14/nl80211.h
   * @NUM_NL80211_EXT_FEATURES: number of extended features.
   * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
   */
-@@ -5233,6 +5277,22 @@
- 	NL80211_EXT_FEATURE_OCE_PROBE_REQ_HIGH_TX_RATE,
- 	NL80211_EXT_FEATURE_OCE_PROBE_REQ_DEFERRAL_SUPPRESSION,
- 	NL80211_EXT_FEATURE_MFP_OPTIONAL,
-+	NL80211_EXT_FEATURE_LOW_SPAN_SCAN,
-+	NL80211_EXT_FEATURE_LOW_POWER_SCAN,
-+	NL80211_EXT_FEATURE_HIGH_ACCURACY_SCAN,
-+	NL80211_EXT_FEATURE_DFS_OFFLOAD,
-+	NL80211_EXT_FEATURE_CONTROL_PORT_OVER_NL80211,
-+	NL80211_EXT_FEATURE_ACK_SIGNAL_SUPPORT,
-+	/* we renamed this - stay compatible */
-+	NL80211_EXT_FEATURE_DATA_ACK_SIGNAL_SUPPORT = NL80211_EXT_FEATURE_ACK_SIGNAL_SUPPORT,
-+	NL80211_EXT_FEATURE_TXQS,
-+	NL80211_EXT_FEATURE_SCAN_RANDOM_SN,
-+	NL80211_EXT_FEATURE_SCAN_MIN_PREQ_CONTENT,
-+	NL80211_EXT_FEATURE_CAN_REPLACE_PTK0,
-+	NL80211_EXT_FEATURE_ENABLE_FTM_RESPONDER,
+@@ -5442,6 +5491,9 @@ enum nl80211_ext_feature_index {
+ 	NL80211_EXT_FEATURE_SCAN_MIN_PREQ_CONTENT,
+ 	NL80211_EXT_FEATURE_CAN_REPLACE_PTK0,
+ 	NL80211_EXT_FEATURE_ENABLE_FTM_RESPONDER,
 +	NL80211_EXT_FEATURE_AIRTIME_FAIRNESS,
 +	NL80211_EXT_FEATURE_AP_PMKSA_CACHING,
 +	NL80211_EXT_FEATURE_STA_TX_PWR,
