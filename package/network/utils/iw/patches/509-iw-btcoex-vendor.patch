@@ -37,7 +37,7 @@ Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
  	if (file) {
  		count = read_file(file, buf, sizeof(buf));
  		fclose(file);
-@@ -117,6 +126,81 @@ static int handle_vendor(struct nl80211_
+@@ -117,6 +126,83 @@ static int handle_vendor(struct nl80211_
  	if (count > 0)
  		NLA_PUT(msg, NL80211_ATTR_VENDOR_DATA, count, buf);
  
@@ -91,8 +91,10 @@ Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 +			wlan_prio_config = true;
 +			argc--;
 +			argv++;
-+			if (!argc)
++			if (!argc) {
++				nla_nest_end(prio_msg, wlan_prio);
 +				goto out;
++			}
 +
 +			weight = strtol(argv[0], &end, 10);
 +			if (*end)
