@@ -1,0 +1,21 @@
+commit 31959d175669878dbebe8b889edacc2a2779ac09
+Author: Helmut Schaa <helmut.schaa@googlemail.com>
+Date:   Wed Jan 15 15:09:19 2014 +0000
+
+    libubox: runqueue: Cancel task timeout when completeing task
+    
+    Signed-off-by: Helmut Schaa <helmut.schaa@googlemail.com>
+
+diff --git a/runqueue.c b/runqueue.c
+index 189a005..a2ed553 100644
+--- a/runqueue.c
++++ b/runqueue.c
+@@ -211,6 +211,8 @@ void runqueue_task_complete(struct runqueue_task *t)
+ 	if (t->running)
+ 		t->q->running_tasks--;
+ 
++	uloop_timeout_cancel(&t->timeout);
++
+ 	safe_list_del(&t->list);
+ 	t->queued = false;
+ 	t->running = false;

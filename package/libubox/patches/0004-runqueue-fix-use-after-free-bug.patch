@@ -1,0 +1,37 @@
+commit 09d53c19e51bd412f24db5e15e97b85ac813b420
+Author: Felix Fietkau <nbd@nbd.name>
+Date:   Wed Jun 14 12:08:42 2017 +0200
+
+    runqueue: fix use-after-free bug
+    
+    Calling t->complete in runqueue_task_complete can free the memory
+    associated with t. Change the runqueue_start_next accordingly.
+    
+    Fixes https://github.com/openwrt/openwrt/issues/493
+    
+    Signed-off-by: Felix Fietkau <nbd@nbd.name>
+
+diff --git a/runqueue.c b/runqueue.c
+index a2ed553..e1be5d7 100644
+--- a/runqueue.c
++++ b/runqueue.c
+@@ -183,9 +183,9 @@ void runqueue_task_kill(struct runqueue_task *t)
+ 	if (!t->queued)
+ 		return;
+ 
+-	runqueue_task_complete(t);
+ 	if (running && t->type->kill)
+ 		t->type->kill(q, t);
++	runqueue_task_complete(t);
+ 
+ 	runqueue_start_next(q);
+ }
+@@ -219,7 +219,7 @@ void runqueue_task_complete(struct runqueue_task *t)
+ 	t->cancelled = false;
+ 	if (t->complete)
+ 		t->complete(q, t);
+-	runqueue_start_next(t->q);
++	runqueue_start_next(q);
+ }
+ 
+ static void
