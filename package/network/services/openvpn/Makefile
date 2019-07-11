@@ -23,7 +23,7 @@ PKG_FIXUP:=autoreconf
 PKG_BUILD_PARALLEL:=1
 PKG_LICENSE:=GPL-2.0
 
-PKG_BUILD_DEPENDS:=TARGET_ipq_ipq807x_QSDK_Premium:kmod-qca-nss-drv-ovpn-mgr TARGET_ipq_ipq807x_64_QSDK_Premium:kmod-qca-nss-drv-ovpn-mgr TARGET_ipq_ipq807x_64_QSDK_512:kmod-qca-nss-drv-ovpn-mgr
+PKG_BUILD_DEPENDS:=TARGET_ipq_ipq807x_QSDK_Premium:kmod-qca-nss-drv-ovpn-mgr TARGET_ipq_ipq807x_64_QSDK_Premium:kmod-qca-nss-drv-ovpn-mgr TARGET_ipq_ipq807x_64_QSDK_512:kmod-qca-nss-drv-ovpn-mgr TARGET_ipq_ipq60xx_QSDK_Premium:kmod-qca-nss-drv-ovpn-mgr TARGET_ipq_ipq60xx_64_QSDK_Premium:kmod-qca-nss-drv-ovpn-mgr
 
 include $(INCLUDE_DIR)/package.mk
 

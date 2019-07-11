@@ -32,7 +32,8 @@ NSS_ENTERPRISE:= \
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
-	qca-wpa-supplicant-macsec
+	qca-wpa-supplicant-macsec \
+	qca-hostap-macsec
 
 QCA_ECM_STANDARD:= kmod-qca-nss-ecm-standard
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
@@ -284,7 +285,7 @@ define Profile/QSDK_256
 		iperf-mt rng-tools $(QCA_RFS) $(IGMPSNOOING_RSTP) $(USB_DIAG) \
 		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
 		$(NSS_CLIENTS_256MB) $(HYFI) $(FAILSAFE) -lacpd \
-		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
+		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) qca-wifi-cyp-fw-hw1-11.0-asic
 endef
 
 define Profile/QSDK_256/Description

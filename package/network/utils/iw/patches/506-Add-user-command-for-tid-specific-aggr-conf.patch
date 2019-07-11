@@ -1,8 +1,6 @@
-diff --git a/interface.c b/interface.c
-index 438fcbe..297a98c 100644
 --- a/interface.c
 +++ b/interface.c
-@@ -791,3 +791,68 @@ nla_put_failure:
+@@ -797,3 +797,68 @@ nla_put_failure:
  COMMAND(set, tid_retry_count, "tid <tid> <[peer <MAC address>] short <limit> long <limit>]>",
  		NL80211_CMD_SET_TID_CONFIG, 0, CIB_NETDEV, handle_retry_count,
  		"Set the retry count for the TIDs ");
@@ -71,11 +69,9 @@ index 438fcbe..297a98c 100644
 +COMMAND(set, tid_aggr_conf, "tid <tid> <[peer <MAC address>] aggr on|off>",
 +	NL80211_CMD_SET_TID_CONFIG, 0, CIB_NETDEV, handle_aggr_conf,
 +	"Enable/disable aggregation for the TIDs ");
-diff --git a/nl80211.h b/nl80211.h
-index 17d948d..ef1e43b 100644
 --- a/nl80211.h
 +++ b/nl80211.h
-@@ -4173,6 +4173,20 @@ enum nl80211_ps_state {
+@@ -4502,6 +4502,20 @@ enum nl80211_ps_state {
   *	the max value should be advertised by the driver through
   *	max_data_retry_count. when this attribute is not present, the driver
   *	would use the default configuration.
@@ -96,7 +92,7 @@ index 17d948d..ef1e43b 100644
   */
  enum nl80211_attr_tid_config {
          __NL80211_ATTR_TID_INVALID,
-@@ -4180,6 +4194,7 @@ enum nl80211_attr_tid_config {
+@@ -4509,6 +4523,7 @@ enum nl80211_attr_tid_config {
          NL80211_ATTR_TID_RETRY_CONFIG,
          NL80211_ATTR_TID_RETRY_SHORT,
          NL80211_ATTR_TID_RETRY_LONG,
