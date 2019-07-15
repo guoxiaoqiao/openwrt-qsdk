@@ -6,7 +6,7 @@ BOARDNAME:=QCA IPQ807x(64bit) based boards
 KERNELNAME:=Image dtbs
 
 DEFAULT_PACKAGES += \
-	sysupgrade-helper kmod-usb-phy-ipq807x
+	sysupgrade-helper kmod-usb-phy-ipq807x kmod-usb-dwc3-of-simple
 
 define Target/Description
         Build images for IPQ807x 64 bit system.
