@@ -237,6 +237,22 @@ endef
 
 $(eval $(call KernelPackage,usb-gzero))
 
+define KernelPackage/usb-gdiag
+  TITLE:=USB GDIAG support
+  KCONFIG:=CONFIG_USB_G_DIAG
+  FILES:=\
+       $(LINUX_DIR)/drivers/usb/gadget/legacy/g_diag.ko
+  AUTOLOAD:=$(call AutoLoad,52,g_diag)
+  DEPENDS:=@TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64 +kmod-usb-gadget +kmod-usb-lib-composite
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-gdiag/description
+ Kernel support for USB gdiag mode
+endef
+
+$(eval $(call KernelPackage,usb-gdiag))
+
 define KernelPackage/usb-f_ss_lb
   TITLE:=USB F_SS_LB support
   KCONFIG:=CONFIG_USB_F_SS_LB

@@ -172,7 +172,7 @@ VIDEO:=kmod-qpic_panel_ertft
 
 KPI:=iperf-mt sysstat
 
-USB_DIAG:=kmod-diag-char kmod-usb-f-diag qca-diag
+USB_DIAG:=kmod-diag-char kmod-usb-f-diag qca-diag kmod-usb-gdiag
 
 CHAR_DIAG:=kmod-diag-char qca-diag
 
