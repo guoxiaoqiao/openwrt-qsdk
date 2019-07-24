@@ -19,7 +19,6 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 PKG_RELEASE:=1
 
 include $(INCLUDE_DIR)/local-development.mk
-include $(INCLUDE_DIR)/package-version-override.mk
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/kernel.mk
