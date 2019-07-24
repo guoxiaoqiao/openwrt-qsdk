@@ -69,6 +69,10 @@ if KERNEL_KASAN
 		default 2048
 endif
 
+config KERNEL_PAGE_OWNER
+	bool "Page Onwer Tracking"
+	default n
+
 config KERNEL_IPQ_MEM_PROFILE
 	int "Diifernt memory profile"
 	range 0 1024
