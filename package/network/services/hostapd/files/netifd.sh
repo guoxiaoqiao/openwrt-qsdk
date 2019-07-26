@@ -196,7 +196,7 @@ hostapd_common_add_bss_config() {
 
 	config_add_int airtime_bss_weight
 	config_add_boolean airtime_bss_limit
-	config_add_string airtime_sta_weight
+	config_add_array airtime_sta_weight
 }
 
 hostapd_set_bss_options() {
@@ -220,7 +220,8 @@ hostapd_set_bss_options() {
 		iapp_interface obss_interval vendor_elements \
 		bss_load_update_period rrm wnm wnm_sleep chan_util_avg_period
 
-	json_get_vars airtime_bss_weight airtime_sta_weight airtime_bss_limit
+	json_get_vars airtime_bss_weight airtime_bss_limit
+	json_get_values airtime_sta_weight_list airtime_sta_weight
 
 	set_default isolate 0
 	set_default maxassoc 64
@@ -500,7 +501,13 @@ hostapd_set_bss_options() {
 
 	case "$airtime_mode" in
 		static)
-			[ -n "$airtime_sta_weight" ] && append bss_conf "airtime_sta_weight=$airtime_sta_weight" "$N"
+			[ -n "$airtime_sta_weight_list" ] && {
+				for _airtime_sta_weight in $airtime_sta_weight_list
+				do
+					# replace "-" to space between mac addr and airtime weight
+					append bss_conf "airtime_sta_weight=${_airtime_sta_weight/-/ }" "$N"
+				done
+			}
 		;;
 		dynamic)
 			if [ $airtime_bss_weight -gt 0 ]; then
