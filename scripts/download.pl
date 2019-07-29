@@ -215,7 +215,7 @@ push @mirrors, 'http://mirror2.openwrt.org/sources';
 push @mirrors, 'http://downloads.openwrt.org/sources';
 
 #first check in CAF server
-my $caf = 'https://portland.source.codeaurora.org/mirrored_source/quic/qsdk';
+my $caf = 'https://source.codeaurora.org/mirrored_source/quic/qsdk';
 download($caf);
 if(!-f "$target/$filename") {
     my $ok = 1;
@@ -242,7 +242,7 @@ if(!-f "$target/$filename") {
     if($ok != 0)
     {
 	print ("The $target/$filename is not present\n");
-	exit -1;
+	#exit -1;
     }
 }
 
