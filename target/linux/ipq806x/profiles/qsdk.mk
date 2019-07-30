@@ -145,7 +145,7 @@ define Profile/QSDK_Open
 	NAME:=Qualcomm-Atheros SDK Open Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) $(QCA_EDMA) \
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
-	$(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING)
+	$(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING) $(FAILSAFE)
 endef
 
 define Profile/QSDK_Open/Description
@@ -177,8 +177,7 @@ define Profile/QSDK_Standard
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
-		qca-wifi-fw-hw5-10.4-asic \
-		$(FAIL_SAFE)
+		qca-wifi-fw-hw5-10.4-asic
 endef
 
 define Profile/QSDK_Standard/Description
@@ -194,7 +193,7 @@ define Profile/QSDK_Enterprise
 		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
-		$(IPSEC) $(CD_ROUTER) $(AQ_PHY)
+		$(IPSEC) $(CD_ROUTER) $(AQ_PHY) $(FAILSAFE)
 endef
 
 define Profile/QSDK_Enterprise/Description
