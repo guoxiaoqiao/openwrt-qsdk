@@ -201,7 +201,7 @@ define Profile/QSDK_Open
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
 	$(TEST_TOOLS) $(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING) \
 	$(USB_DIAG) $(FTM) $(CNSS_DIAG) qca-cnss-daemon qca-wifi-hk-fw-hw1-10.4-asic \
-	$(QRTR) $(QMI_SAMPLE_APP) ath11k-fwtest
+	$(QRTR) $(QMI_SAMPLE_APP) $(FAILSAFE) ath11k-fwtest
 endef
 
 define Profile/QSDK_Open/Description
@@ -235,7 +235,7 @@ define Profile/QSDK_Standard
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
-		qca-wifi-fw-hw5-10.4-asic $(FAIL_SAFE) $(KPI)
+		qca-wifi-fw-hw5-10.4-asic $(KPI)
 endef
 
 define Profile/QSDK_Standard/Description
@@ -252,7 +252,7 @@ define Profile/QSDK_Enterprise
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
 		$(IPSEC) $(NSS_EIP197_FW) $(CD_ROUTER) $(AQ_PHY) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) -lacpd \
-		$(USB_DIAG) $(MHI_QRTR) $(KPI) $(QRTR)
+		$(USB_DIAG) $(MHI_QRTR) $(KPI) $(QRTR) $(FAILSAFE)
 endef
 
 define Profile/QSDK_Enterprise/Description
