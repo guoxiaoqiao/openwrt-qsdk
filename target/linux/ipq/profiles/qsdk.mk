@@ -171,7 +171,9 @@ VIDEO:=kmod-qpic_panel_ertft
 
 KPI:=iperf-mt sysstat
 
-USB_DIAG:=kmod-usb-f-diag qca-diag
+USB_DIAG:=kmod-diag-char kmod-usb-f-diag qca-diag
+
+CHAR_DIAG:=kmod-diag-char qca-diag
 
 CNSS_DIAG:=cnssdiag
 
@@ -285,7 +287,7 @@ define Profile/QSDK_256
 	NAME:=Qualcomm-Atheros SDK 256MB Profile
 	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS_256MB) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) \
-		iperf-mt rng-tools $(QCA_RFS) $(IGMPSNOOING_RSTP) $(USB_DIAG) \
+		iperf-mt rng-tools $(QCA_RFS) $(IGMPSNOOING_RSTP) $(CHAR_DIAG) \
 		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
 		$(NSS_CLIENTS_256MB) $(HYFI) $(FAILSAFE) -lacpd \
 		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) qca-wifi-cyp-fw-hw1-11.0-asic
