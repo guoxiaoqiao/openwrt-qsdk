@@ -334,7 +334,7 @@ define KernelPackage/usb-f-qdss
   TITLE:=USB QDSS
   KCONFIG:=CONFIG_USB_F_QDSS \
 	CONFIG_USB_CONFIGFS_F_QDSS=y
-  DEPENDS:=@TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64 +kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt +kmod-usb-dwc3 +kmod-usb-dwc3-of-simple
+  DEPENDS:=@TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64 +kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt +kmod-usb-dwc3 +TARGET_ipq_ipq60xx:kmod-usb-dwc3-qcom +TARGET_ipq_ipq60xx_64:kmod-usb-dwc3-qcom +TARGET_ipq_ipq807x:kmod-usb-dwc3-of-simple +TARGET_ipq_ipq807x_64:kmod-usb-dwc3-of-simple
   FILES:=$(LINUX_DIR)/drivers/usb/gadget/function/usb_f_qdss.ko \
 	$(LINUX_DIR)/drivers/usb/gadget/function/u_qdss.ko
   AUTOLOAD:=$(call AutoLoad,52,usb_f_qdss)
