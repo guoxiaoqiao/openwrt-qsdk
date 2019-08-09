@@ -318,10 +318,9 @@ define KernelPackage/diag-char
   TITLE:=CHAR DIAG
   KCONFIG:=CONFIG_DIAGFWD_BRIDGE_CODE=y \
 	  CONFIG_DIAG_CHAR
-  DEPENDS:=+kmod-lib-crc-ccitt +USB_CONFIGFS_F_DIAG:kmod-usb-f-diag
+  DEPENDS:=+kmod-lib-crc-ccitt +USB_CONFIGFS_F_DIAG:kmod-usb-f-diag +USB_CONFIGFS_F_DIAG:kmod-usb-core
   FILES:=$(LINUX_DIR)/drivers/char/diag/diagchar.ko
   AUTOLOAD:=$(call AutoLoad,52,diagchar)
-  $(call AddDepends/usb)
 endef
 
 define KernelPackage/diag-char/description

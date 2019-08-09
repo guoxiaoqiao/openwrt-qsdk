@@ -104,8 +104,7 @@ OPENWRT_256MB:=luci pm-utils qca-thermald-10.4 qca-wlanfw-upgrade -file \
 		-kmod-ata-core -kmod-ata-ahci -kmod-ata-ahci-platform \
 		-kmod-usb2 -kmod-usb3 -kmod-usb-dwc3-qcom \
 		-kmod-usb-phy-qcom-dwc3 -kmod-usb-dwc3-of-simple \
-		-kmod-usb-phy-ipq807x
-
+		-kmod-usb-phy-ipq807x -kmod-usb-f-qdss
 
 STORAGE:=kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-iso8859-1  \
 	kmod-fs-msdos kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs
