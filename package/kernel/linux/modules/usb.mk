@@ -301,13 +301,10 @@ define KernelPackage/usb-f-diag
   TITLE:=USB DIAG
   KCONFIG:=CONFIG_USB_F_DIAG \
 	CONFIG_USB_CONFIGFS_F_DIAG=y \
-	CONFIG_DIAGFWD_BRIDGE_CODE=y \
-	CONFIG_DIAG_CHAR \
 	CONFIG_DIAG_OVER_USB=y
-  DEPENDS:=+kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt
-  FILES:=$(LINUX_DIR)/drivers/usb/gadget/function/usb_f_diag.ko \
-	$(LINUX_DIR)/drivers/char/diag/diagchar.ko
-  AUTOLOAD:=$(call AutoLoad,52,usb_f_diag diagchar)
+  DEPENDS:=+kmod-usb-lib-composite +kmod-usb-configfs
+  FILES:=$(LINUX_DIR)/drivers/usb/gadget/function/usb_f_diag.ko
+  AUTOLOAD:=$(call AutoLoad,52,usb_f_diag)
   $(call AddDepends/usb)
 endef
 
@@ -317,11 +314,27 @@ endef
 
 $(eval $(call KernelPackage,usb-f-diag))
 
+define KernelPackage/diag-char
+  TITLE:=CHAR DIAG
+  KCONFIG:=CONFIG_DIAGFWD_BRIDGE_CODE=y \
+	  CONFIG_DIAG_CHAR
+  DEPENDS:=+kmod-lib-crc-ccitt +USB_CONFIGFS_F_DIAG:kmod-usb-f-diag
+  FILES:=$(LINUX_DIR)/drivers/char/diag/diagchar.ko
+  AUTOLOAD:=$(call AutoLoad,52,diagchar)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/diag-char/description
+ CHAR DIAG
+endef
+
+$(eval $(call KernelPackage,diag-char))
+
 define KernelPackage/usb-f-qdss
   TITLE:=USB QDSS
   KCONFIG:=CONFIG_USB_F_QDSS \
 	CONFIG_USB_CONFIGFS_F_QDSS=y
-  DEPENDS:=@TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64 +kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt +kmod-usb-dwc3 +kmod-usb-dwc3-of-simple
+  DEPENDS:=@TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64 +kmod-usb-lib-composite +kmod-usb-configfs +kmod-lib-crc-ccitt +kmod-usb-dwc3 +TARGET_ipq_ipq60xx:kmod-usb-dwc3-qcom +TARGET_ipq_ipq60xx_64:kmod-usb-dwc3-qcom +TARGET_ipq_ipq807x:kmod-usb-dwc3-of-simple +TARGET_ipq_ipq807x_64:kmod-usb-dwc3-of-simple
   FILES:=$(LINUX_DIR)/drivers/usb/gadget/function/usb_f_qdss.ko \
 	$(LINUX_DIR)/drivers/usb/gadget/function/u_qdss.ko
   AUTOLOAD:=$(call AutoLoad,52,usb_f_qdss)

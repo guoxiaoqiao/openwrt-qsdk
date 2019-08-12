@@ -36,6 +36,6 @@ include $(INCLUDE_DIR)/target.mk
 DEFAULT_PACKAGES += \
 	uboot-envtools kmod-leds-gpio kmod-gpio-button-hotplug kmod-button-hotplug \
 	kmod-ata-core kmod-ata-ahci kmod-ata-ahci-platform kmod-usb2 kmod-usb3 \
-	kmod-usb-phy-qcom-dwc3 kmod-usb-dwc3-of-simple kmod-usb-f-qdss swconfig
+	kmod-usb-f-qdss swconfig
 
 $(eval $(call BuildTarget))
