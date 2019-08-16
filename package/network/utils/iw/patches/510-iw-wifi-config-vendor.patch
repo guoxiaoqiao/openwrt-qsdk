@@ -1,8 +1,8 @@
-diff --git a/iw.h b/iw.h
-index 36c8afa..fc8918a 100644
---- a/iw.h
-+++ b/iw.h
-@@ -100,6 +100,19 @@ enum qca_wlan_vendor_attr_btcoex_config {
+Index: iw-5.0.1/iw.h
+===================================================================
+--- iw-5.0.1.orig/iw.h
++++ iw-5.0.1/iw.h
+@@ -100,6 +100,19 @@ enum qca_wlan_vendor_attr_btcoex_config
  		QCA_WLAN_VENDOR_ATTR_BTCOEX_CONFIG_LAST - 1
  };
  
@@ -22,11 +22,11 @@ index 36c8afa..fc8918a 100644
  #define HANDLER_RET_USAGE 1
  #define HANDLER_RET_DONE 3
  
-diff --git a/vendor.c b/vendor.c
-index bf52de0..a3ed8b2 100644
---- a/vendor.c
-+++ b/vendor.c
-@@ -83,7 +83,7 @@ static int handle_vendor(struct nl80211_state *state,
+Index: iw-5.0.1/vendor.c
+===================================================================
+--- iw-5.0.1.orig/vendor.c
++++ iw-5.0.1/vendor.c
+@@ -83,7 +83,7 @@ static int handle_vendor(struct nl80211_
  	int res, count = 0, i = 0;
  	FILE *file = NULL;
  	char *end;
@@ -35,7 +35,7 @@ index bf52de0..a3ed8b2 100644
  	bool wlan_prio_config = false;
  	struct nlattr *wlan_prio;
  	struct nl_msg *prio_msg;
-@@ -114,6 +114,30 @@ static int handle_vendor(struct nl80211_state *state,
+@@ -114,6 +114,33 @@ static int handle_vendor(struct nl80211_
  	if (subcmd == 0xb6)
  		goto coex_config;
  
@@ -54,6 +54,9 @@ index bf52de0..a3ed8b2 100644
 +			ap_ps = strtol(argv[1], &end, 10);
 +			if (*end)
 +				return 2;
++
++			if (ap_ps > 1)
++				return -EINVAL;
 +
 +			if (ap_ps)
 +				NLA_PUT_FLAG(msg, QCA_WLAN_VENDOR_ATTR_CONFIG_GTX);

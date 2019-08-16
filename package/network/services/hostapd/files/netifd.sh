@@ -71,11 +71,15 @@ hostapd_prepare_device_config() {
 	json_get_vars country country_ie beacon_int doth require_mode \
 		pwr_constraint spectrum_mgmt
 
+	airtime_mode=
+	json_get_vars airtime_mode airtime_update_interval
+
 	hostapd_set_log_options base_cfg
 
 	set_default country_ie 1
 	set_default doth 1
 
+	set_default airtime_update_interval 200
 	[ -n "$country" ] && {
 		append base_cfg "country_code=$country" "$N"
 
@@ -106,6 +110,16 @@ hostapd_prepare_device_config() {
 	[ -n "$rlist" ] && append base_cfg "supported_rates=$rlist" "$N"
 	[ -n "$brlist" ] && append base_cfg "basic_rates=$brlist" "$N"
 	[ -n "$beacon_int" ] && append base_cfg "beacon_int=$beacon_int" "$N"
+
+	case "$airtime_mode" in
+		static)  append base_cfg "airtime_mode=1" "$N" ;;
+		dynamic) append base_cfg "airtime_mode=2" "$N" ;;
+		limited) append base_cfg "airtime_mode=3" "$N" ;;
+	esac
+
+	if [ -n "$airtime_mode" ]; then
+		append base_cfg "airtime_update_interval=$airtime_update_interval" "$N"
+	fi
 
 	cat > "$config" <<EOF
 driver=$driver
@@ -179,6 +193,10 @@ hostapd_common_add_bss_config() {
 	config_add_int bss_load_update_period
 	config_add_boolean rrm wnm wnm_sleep
 	config_add_int chan_util_avg_period
+
+	config_add_int airtime_bss_weight
+	config_add_boolean airtime_bss_limit
+	config_add_array airtime_sta_weight
 }
 
 hostapd_set_bss_options() {
@@ -202,6 +220,9 @@ hostapd_set_bss_options() {
 		iapp_interface obss_interval vendor_elements \
 		bss_load_update_period rrm wnm wnm_sleep chan_util_avg_period
 
+	json_get_vars airtime_bss_weight airtime_bss_limit
+	json_get_values airtime_sta_weight_list airtime_sta_weight
+
 	set_default isolate 0
 	set_default maxassoc 64
 	set_default max_inactivity 0
@@ -211,6 +232,8 @@ hostapd_set_bss_options() {
 	set_default wmm 1
 	set_default uapsd 1
 	set_default obss_interval 0
+	set_default airtime_bss_weight 0
+	set_default airtime_bss_limit 0
 
 	append bss_conf "ctrl_interface=/var/run/hostapd"
 	if [ "$isolate" -gt 0 ]; then
@@ -475,6 +498,31 @@ hostapd_set_bss_options() {
 		append bss_conf "rrm_beacon_report=1" "$N"
 		append bss_conf "rrm_neighbor_report=1" "$N"
 	}
+
+	case "$airtime_mode" in
+		static)
+			[ -n "$airtime_sta_weight_list" ] && {
+				for _airtime_sta_weight in $airtime_sta_weight_list
+				do
+					# replace "-" to space between mac addr and airtime weight
+					append bss_conf "airtime_sta_weight=${_airtime_sta_weight/-/ }" "$N"
+				done
+			}
+		;;
+		dynamic)
+			if [ $airtime_bss_weight -gt 0 ]; then
+				append bss_conf "airtime_bss_weight=$airtime_bss_weight" "$N"
+			fi
+		;;
+		limited)
+			if [ $airtime_bss_weight -gt 0 ]; then
+				append bss_conf "airtime_bss_weight=$airtime_bss_weight" "$N"
+			fi
+			if [ $airtime_bss_limit -ge 0 ]; then
+				append bss_conf "airtime_bss_limit=$airtime_bss_limit" "$N"
+			fi
+		;;
+	esac
 
 	append "$var" "$bss_conf" "$N"
 	return 0

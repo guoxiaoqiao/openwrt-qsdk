@@ -1,6 +1,6 @@
 --- a/src/drivers/driver.h
 +++ b/src/drivers/driver.h
-@@ -1632,6 +1632,7 @@ struct wpa_driver_capa {
+@@ -1658,6 +1658,7 @@ struct wpa_driver_capa {
  /** Driver support 4-way handshake offload for WPA-Personal */
  #define WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_PSK	0x0200000000000000ULL
  	u64 flags;
@@ -8,7 +8,7 @@
  
  #define FULL_AP_CLIENT_STATE_SUPP(drv_flags) \
  	(drv_flags & WPA_DRIVER_FLAGS_FULL_AP_CLIENT_STATE)
-@@ -4159,6 +4160,16 @@ struct wpa_driver_ops {
+@@ -4199,6 +4200,16 @@ struct wpa_driver_ops {
  				   const u8 *bssid);
  
  	/**
@@ -27,7 +27,7 @@
  	 * @params: Association parameters
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
-@@ -11109,6 +11109,7 @@ const struct wpa_driver_ops wpa_driver_n
+@@ -11179,6 +11179,7 @@ const struct wpa_driver_ops wpa_driver_n
  #endif /* CONFIG_DRIVER_NL80211_QCA */
  	.configure_data_frame_filters = nl80211_configure_data_frame_filters,
  	.get_ext_capab = nl80211_get_ext_capab,
@@ -268,9 +268,9 @@
  	{ INT_RANGE(dpp_config_processing, 0, 2), 0 },
  	{ INT_RANGE(coloc_intf_reporting, 0, 1), 0 },
 +	{ INT(tdls_peer_max_inactivity), 0 },
- };
- 
- #undef FUNC
+ #ifdef CONFIG_WNM
+ 	{ INT_RANGE(disable_btm, 0, 1), CFG_CHANGED_DISABLE_BTM },
+ #endif /* CONFIG_WNM */
 --- a/wpa_supplicant/config.h
 +++ b/wpa_supplicant/config.h
 @@ -44,6 +44,7 @@
@@ -281,7 +281,7 @@
  
  #include "config_ssid.h"
  #include "wps/wps.h"
-@@ -1500,6 +1501,15 @@ struct wpa_config {
+@@ -1501,6 +1502,15 @@ struct wpa_config {
  	int coloc_intf_reporting;
  
  	/**
@@ -311,7 +311,7 @@
  			config->p2p_device_random_mac_addr);
 --- a/wpa_supplicant/driver_i.h
 +++ b/wpa_supplicant/driver_i.h
-@@ -1070,4 +1070,12 @@ static inline int wpa_drv_set_4addr_mode
+@@ -1080,4 +1080,12 @@ static inline int wpa_drv_set_4addr_mode
  					     wpa_s->bridge_ifname, val);
  }
  
@@ -326,9 +326,9 @@
  #endif /* DRIVER_I_H */
 --- a/wpa_supplicant/wpa_supplicant.conf
 +++ b/wpa_supplicant/wpa_supplicant.conf
-@@ -1516,6 +1516,18 @@ fast_reauth=1
- # Transitioning between states).
- #fst_llt=100
+@@ -1522,6 +1522,18 @@ fast_reauth=1
+ # Set to 1 to disable BSS transition management
+ #disable_btm=0
  
 +# Inactivity limit for TDLS peers
 +#
@@ -392,7 +392,7 @@
  #endif /* CONFIG_TDLS */
  
  #endif /* CONFIG_NO_WPA */
-@@ -1238,6 +1254,7 @@ int wpa_supplicant_init_wpa(struct wpa_s
+@@ -1235,6 +1251,7 @@ int wpa_supplicant_init_wpa(struct wpa_s
  		wpa_supplicant_tdls_enable_channel_switch;
  	ctx->tdls_disable_channel_switch =
  		wpa_supplicant_tdls_disable_channel_switch;

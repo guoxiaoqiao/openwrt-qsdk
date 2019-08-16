@@ -39,7 +39,7 @@ QCA_ECM_STANDARD:= kmod-qca-nss-ecm-standard
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
 QCA_ECM_ENTERPRISE:= kmod-qca-nss-ecm-noload
 
-NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-tun6rd \
+NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-igs kmod-qca-nss-drv-tun6rd \
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
 	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe \
@@ -285,7 +285,7 @@ define Profile/QSDK_256
 		iperf-mt rng-tools $(QCA_RFS) $(IGMPSNOOING_RSTP) $(USB_DIAG) \
 		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
 		$(NSS_CLIENTS_256MB) $(HYFI) $(FAILSAFE) -lacpd \
-		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT)
+		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) qca-wifi-cyp-fw-hw1-11.0-asic
 endef
 
 define Profile/QSDK_256/Description
