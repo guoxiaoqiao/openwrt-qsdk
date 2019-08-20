@@ -74,7 +74,7 @@ config KERNEL_PAGE_OWNER
 	default n
 
 config KERNEL_IPQ_MEM_PROFILE
-	int "Diifernt memory profile"
+	int "Different memory profile"
 	range 0 1024
 	default 0
 	help
@@ -87,6 +87,12 @@ config KERNEL_ARCH_IPQ256M
 	help
 	   Compile kernel for 256M profile, this option enables kernel
 	   to add 8MB of DDR to kernel lowmem in 256M profile.
+
+config KERNEL_SKB_FIXED_SIZE_2K
+	bool "SKB size fixed at 2K"
+	default n
+	help
+	   SKB size fixed at 2K.
 
 config KERNEL_FTRACE
 	bool "Compile the kernel with tracing support"
