@@ -116,7 +116,7 @@ TEST_TOOLS:=ethtool i2c-tools tcpdump
 UTILS:=file luci-app-samba rng-tools profilerd
 
 COREBSP_UTILS:=pm-utils wififw_mount_script qca-thermald-10.4 qca-qmi-framework qca-time-services \
-	qca-wlanfw-upgrade
+	qca-wlanfw-upgrade dashboard
 
 FAILSAFE:= kmod-bootconfig
 
