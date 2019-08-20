@@ -6,19 +6,22 @@ boot() {
 	mount_root done
 	rm -f /sysupgrade.tgz
 	local soc_model=$(cat /proc/device-tree/model)
+	local soc_type
 
 	case "$soc_model" in
 	*"IPQ6018"*)
 		mount_check=$(ls /lib/firmware/IPQ6018/WIFI_FW/ | grep "bdwlan.bin")
+		soc_type="IPQ6018"
 		;;
 	*"IPQ807x"*)
 		mount_check=$(ls /lib/firmware/IPQ8074/WIFI_FW/ | grep "bdwlan.bin")
+		soc_type="IPQ8074"
 		;;
 	esac
 
 	if [ -z "$mount_check" ];then
 		. /etc/init.d/wifi_fw_mount
-		mount_wifi_fw
+		mount_wifi_fw $soc_type
 	fi
 
 	# process user commands
