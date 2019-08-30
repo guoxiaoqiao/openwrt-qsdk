@@ -1,21 +1,14 @@
 --- a/nl80211.h
 +++ b/nl80211.h
-@@ -2744,6 +2744,7 @@ enum nl80211_attrs {
+@@ -2762,6 +2762,8 @@ enum nl80211_attrs {
  
- 	NL80211_ATTR_NSS,
- 	NL80211_ATTR_ACK_SIGNAL,
-+	NL80211_ATTR_MAP,
+ 	NL80211_ATTR_PEER_MEASUREMENTS,
  
- 	NL80211_ATTR_CONTROL_PORT_OVER_NL80211,
- 
-@@ -2765,6 +2766,7 @@ enum nl80211_attrs {
++	NL80211_ATTR_AIRTIME_WEIGHT,
++
  	NL80211_ATTR_TID_CONFIG,
  	NL80211_ATTR_MAX_RETRY_COUNT,
  
-+	NL80211_ATTR_AIRTIME_WEIGHT,
- 	NL80211_ATTR_WIPHY_ANTENNA_GAIN,
- 
- 	/* add attributes here, update the policy in nl80211.c */
 @@ -3187,6 +3189,8 @@ enum nl80211_sta_info {
  	NL80211_STA_INFO_RX_MPDUS,
  	NL80211_STA_INFO_FCS_ERROR_COUNT,
@@ -27,7 +20,7 @@
  	__NL80211_STA_INFO_AFTER_LAST,
 --- a/station.c
 +++ b/station.c
-@@ -311,6 +311,8 @@ static int print_sta_handler(struct nl_m
+@@ -311,6 +311,8 @@ static int print_sta_handler(struct nl_msg *msg, void *arg)
  		[NL80211_STA_INFO_RX_DURATION] = { .type = NLA_U64 },
  		[NL80211_STA_INFO_ACK_SIGNAL] = {.type = NLA_U8 },
  		[NL80211_STA_INFO_ACK_SIGNAL_AVG] = { .type = NLA_U8 },
@@ -36,7 +29,7 @@
  	};
  	char *chain;
  
-@@ -419,7 +421,12 @@ static int print_sta_handler(struct nl_m
+@@ -419,7 +421,12 @@ static int print_sta_handler(struct nl_msg *msg, void *arg)
  	if (sinfo[NL80211_STA_INFO_ACK_SIGNAL_AVG])
  		printf("\n\tavg ack signal:\t%d dBm",
  			(int8_t)nla_get_u8(sinfo[NL80211_STA_INFO_ACK_SIGNAL_AVG]));
@@ -50,7 +43,7 @@
  	if (sinfo[NL80211_STA_INFO_EXPECTED_THROUGHPUT]) {
  		uint32_t thr;
  
-@@ -650,6 +657,7 @@ COMMAND(station, del, "<MAC address> [su
+@@ -650,6 +657,7 @@ COMMAND(station, del, "<MAC address> [subtype <subtype>] [reason-code <code>]",
  
  static const struct cmd *station_set_plink;
  static const struct cmd *station_set_vlan;
@@ -58,7 +51,7 @@
  static const struct cmd *station_set_mesh_power_mode;
  
  static const struct cmd *select_station_cmd(int argc, char **argv)
-@@ -660,6 +668,8 @@ static const struct cmd *select_station_
+@@ -660,6 +668,8 @@ static const struct cmd *select_station_cmd(int argc, char **argv)
  		return station_set_plink;
  	if (strcmp(argv[1], "vlan") == 0)
  		return station_set_vlan;
@@ -67,7 +60,7 @@
  	if (strcmp(argv[1], "mesh_power_mode") == 0)
  		return station_set_mesh_power_mode;
  	return NULL;
-@@ -761,6 +771,53 @@ COMMAND_ALIAS(station, set, "<MAC addres
+@@ -761,6 +771,53 @@ COMMAND_ALIAS(station, set, "<MAC address> vlan <ifindex>",
  	"Set an AP VLAN for this station.",
  	select_station_cmd, station_set_vlan);
  
