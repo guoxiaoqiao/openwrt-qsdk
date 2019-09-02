@@ -19,7 +19,7 @@ boot() {
 		;;
 	esac
 
-	if [ -z "$mount_check" ];then
+	if [ -n "$mount_check" ];then
 		. /etc/init.d/wifi_fw_mount
 		mount_wifi_fw $soc_type
 	fi
