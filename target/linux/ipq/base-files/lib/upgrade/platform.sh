@@ -324,9 +324,11 @@ platform_check_image() {
 	dumpimage -c $1
 	if [[ "$?" == 0 ]];then
 		return $?
+	else
+		echo "Rebooting the system"
+		reboot
+		return 1
 	fi
-	echo "Rebooting the system"
-	reboot
 }
 
 platform_version_upgrade() {
