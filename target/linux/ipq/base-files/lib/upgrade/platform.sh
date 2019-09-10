@@ -383,6 +383,7 @@ platform_do_upgrade() {
 platform_copy_config() {
 	local nand_part="$(find_mtd_part "ubi_rootfs")"
 	local emmcblock="$(find_mmc_part "rootfs_data")"
+	mkdir -p /tmp/overlay
 
 	if [ -e "$nand_part" ]; then
 		local mtdname=rootfs
