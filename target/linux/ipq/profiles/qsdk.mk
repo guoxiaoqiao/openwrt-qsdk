@@ -55,6 +55,8 @@ NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile \
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi-cryptoapi kmod-qca-nss-cfi-ocf kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf
 
+NSS_RMNET:= kmod-rmnet-nss
+
 HW_CRYPTO:= kmod-crypto-qcrypto
 
 SHORTCUT_FE:= kmod-shortcut-fe kmod-shortcut-fe-cm kmod-shortcut-fe-drv
@@ -221,7 +223,8 @@ define Profile/QSDK_Premium
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
-		$(MHI_QRTR) $(KPI) $(QRTR)
+		$(MHI_QRTR) $(KPI) $(QRTR) \
+		$(NSS_RMNET)
 endef
 
 define Profile/QSDK_Premium/Description
