@@ -202,7 +202,7 @@ define Profile/QSDK_Open
 	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
 	$(TEST_TOOLS) $(COREBSP_UTILS) $(KPI) $(SHORTCUT_FE) $(EXTRA_NETWORKING) \
 	$(USB_DIAG) $(FTM) $(CNSS_DIAG) qca-cnss-daemon qca-wifi-hk-fw-hw1-10.4-asic \
-	$(QRTR) $(QMI_SAMPLE_APP) $(FAILSAFE) ath11k-fwtest ath11k-qdss
+	qrtr $(QMI_SAMPLE_APP) $(FAILSAFE) ath11k-fwtest ath11k-qdss
 endef
 
 define Profile/QSDK_Open/Description
