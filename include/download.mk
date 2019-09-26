@@ -13,6 +13,10 @@ PKG_SOURCE_SUBDIR ?= $(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE ?= $(PKG_SOURCE_SUBDIR).tar.xz
 endif
 
+ifndef SKIP_MIRROR_DOWNLOAD
+SKIP_MIRROR_DOWNLOAD = false
+endif
+
 DOWNLOAD_RDEP=$(STAMP_PREPARED) $(HOST_STAMP_PREPARED)
 
 # Try to guess the download method from the URL
@@ -103,7 +107,7 @@ define DownloadMethod/git
 		cd $(TMP_DIR)/dl && \
 		rm -rf $(SUBDIR) && \
 		[ \! -d $(SUBDIR) ] && \
-		$(call git_mirror_download) || \
+		(if $(SKIP_MIRROR_DOWNLOAD) ; then 0; else $(call git_mirror_download); fi ) || \
 		(rm -rf $(SUBDIR) &&  git clone $(URL) $(SUBDIR) --recursive && \
 		(cd $(SUBDIR) && git remote -v && git checkout $(VERSION) || \
 			(git fetch origin $(VERSION) && git checkout FETCH_HEAD && git submodule update))) && \
