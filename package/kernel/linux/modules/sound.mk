@@ -243,7 +243,7 @@ $(eval $(call KernelPackage,pcspkr))
 
 define KernelPackage/sound-soc-ipq
   TITLE:=Qualcomm-Atheros IPQ board soundcard support
-  DEPENDS:=@TARGET_ipq806x||TARGET_ipq807x||TARGET_ipq +kmod-sound-soc-core
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq807x||TARGET_ipq @!TARGET_ipq_ipq60xx @!TARGET_ipq_ipq60xx_64 +kmod-sound-soc-core
   KCONFIG:= \
 	CONFIG_SND_QCA_SOC \
 	CONFIG_SND_QCA_SOC_IPQ40XX \
