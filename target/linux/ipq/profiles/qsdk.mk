@@ -45,12 +45,12 @@ NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-igs kmod-qca-nss-
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
 	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe \
-	kmod-qca-nss-drv-ovpn-mgr kmod-qca-nss-drv-ovpn-link kmod-qca-nss-drv-vxlanmgr
+	kmod-qca-nss-drv-ovpn-mgr kmod-qca-nss-drv-ovpn-link kmod-qca-nss-drv-vxlanmgr kmod-qca-nss-drv-netlink
 
 NSS_CLIENTS_256MB:= kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-pppoe
 
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile \
-	kmod- kmod-qca-nss-drv-bridge-mgr
+	kmod- kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-netlink
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi-cryptoapi kmod-qca-nss-cfi-ocf kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf
 
@@ -169,6 +169,8 @@ AUDIO:=kmod-sound-soc-ipq alsa
 
 VIDEO:=kmod-qpic_panel_ertft
 
+NSS_USERSPACE:=nlcfg
+
 KPI:=iperf-mt sysstat
 
 USB_DIAG:=kmod-diag-char kmod-usb-f-diag qca-diag kmod-usb-gdiag
@@ -222,7 +224,7 @@ define Profile/QSDK_Premium
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
-		$(MHI_QRTR) $(KPI) $(QRTR) \
+		$(MHI_QRTR) $(KPI) $(QRTR) $(NSS_USERSPACE) \
 		$(NSS_RMNET)
 endef
 
@@ -269,7 +271,7 @@ define Profile/QSDK_Enterprise
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
 		$(IPSEC) $(NSS_EIP197_FW) $(CD_ROUTER) $(AQ_PHY) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) -lacpd \
-		$(USB_DIAG) $(MHI_QRTR) $(KPI) $(QRTR) $(FAILSAFE)
+		$(USB_DIAG) $(MHI_QRTR) $(KPI) $(QRTR) $(FAILSAFE) $(NSS_USERSPACE)
 endef
 
 define Profile/QSDK_Enterprise/Description
@@ -323,7 +325,7 @@ define Profile/QSDK_512
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
-		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI)
+		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_USERSPACE)
 endef
 
 define Profile/QSDK_512/Description
