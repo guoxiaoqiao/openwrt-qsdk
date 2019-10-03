@@ -19,6 +19,8 @@ IPQ807X_KERNEL_LOADADDR = 0x41208000
 IPQ807X_64_KERNEL_LOADADDR = 0x41080000
 IPQ60XX_KERNEL_LOADADDR = 0x41208000
 IPQ60XX_64_KERNEL_LOADADDR = 0x41080000
+IPQ50XX_KERNEL_LOADADDR = 0x41208000
+IPQ50XX_64_KERNEL_LOADADDR = 0x41080000
 
 ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
@@ -152,6 +154,22 @@ define Image/BuildKernel/ipq60xx_64
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ60XX_64_KERNEL_LOADADDR));)
 	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq60xx-cpxx, \
 		$(call FindDeviceTrees, qcom-ipq6018-), $(IPQ60XX_64_KERNEL_LOADADDR))
+endef
+
+define Image/BuildKernel/ipq50xx
+	$(foreach device, $(call FindDeviceTrees, qcom-ipq5018-), \
+		$(call Image/BuildKernel/$(1),$(device),$(IPQ50XX_KERNEL_LOADADDR));)
+
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq50xx-mpxx, \
+		$(call FindDeviceTrees, qcom-ipq5018-), $(IPQ50XX_KERNEL_LOADADDR))
+endef
+
+define Image/BuildKernel/ipq50xx_64
+	$(foreach device, $(call FindDeviceTrees, qcom-ipq5018-), \
+		$(call Image/BuildKernel/$(1),$(device),$(IPQ50XX_64_KERNEL_LOADADDR));)
+
+	$(call Image/BuildKernel/MultiDTBFIT,qcom-ipq50xx-mpxx, \
+		$(call FindDeviceTrees, qcom-ipq5018-), $(IPQ50XX_64_KERNEL_LOADADDR))
 endef
 
 define Image/BuildKernel
