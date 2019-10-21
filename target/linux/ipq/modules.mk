@@ -139,8 +139,8 @@ endef
 $(eval $(call KernelPackage,usb-phy-ipq807x))
 
 define KernelPackage/qrtr_mproc
-  TITLE:= Ath11k Specific kernel configs for IPQ807x
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64
+  TITLE:= Ath11k Specific kernel configs for IPQ807x and IPQ60xx
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QCOM_APCS_IPC=y \
@@ -171,7 +171,7 @@ define KernelPackage/qrtr_mproc
 endef
 
 define KernelPackage/qrtr_mproc/description
-Kernel configs for ath11k support specific to ipq807x.
+Kernel configs for ath11k support specific to ipq807x and IPQ60xx
 endef
 
 $(eval $(call KernelPackage,qrtr_mproc))
@@ -222,7 +222,7 @@ $(eval $(call KernelPackage,mhi-qrtr-mproc))
 
 define KernelPackage/qmi_sample_client
   TITLE:= Sample qmi test application.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
   KCONFIG:= \
 	  CONFIG_SAMPLE_QMI_CLIENT
   FILES:= \
