@@ -104,6 +104,8 @@ endef
 define Package/busybox/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
+	$(INSTALL_BIN) ./files/telnet $(1)/etc/init.d/telnet
+	$(INSTALL_BIN) ./files/inetd $(1)/etc/init.d/inetd
 ifneq ($(CONFIG_BUSYBOX_$(BUSYBOX_SYM)_CROND),)
 	$(INSTALL_BIN) ./files/cron $(1)/etc/init.d/cron
 endif
