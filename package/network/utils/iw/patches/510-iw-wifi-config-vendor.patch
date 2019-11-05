@@ -1,7 +1,5 @@
-Index: iw-5.0.1/iw.h
-===================================================================
---- iw-5.0.1.orig/iw.h
-+++ iw-5.0.1/iw.h
+--- a/iw.h
++++ b/iw.h
 @@ -100,6 +100,19 @@ enum qca_wlan_vendor_attr_btcoex_config
  		QCA_WLAN_VENDOR_ATTR_BTCOEX_CONFIG_LAST - 1
  };
@@ -22,10 +20,8 @@ Index: iw-5.0.1/iw.h
  #define HANDLER_RET_USAGE 1
  #define HANDLER_RET_DONE 3
  
-Index: iw-5.0.1/vendor.c
-===================================================================
---- iw-5.0.1.orig/vendor.c
-+++ iw-5.0.1/vendor.c
+--- a/vendor.c
++++ b/vendor.c
 @@ -83,7 +83,7 @@ static int handle_vendor(struct nl80211_
  	int res, count = 0, i = 0;
  	FILE *file = NULL;
@@ -68,4 +64,4 @@ Index: iw-5.0.1/vendor.c
 +
  	if (file) {
  		count = read_file(file, buf, sizeof(buf));
- 		fclose(file);
+ 		if (file != stdin)

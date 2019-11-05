@@ -1,6 +1,6 @@
 --- a/interface.c
 +++ b/interface.c
-@@ -573,23 +573,43 @@ static int handle_interface_noack_map(st
+@@ -579,23 +579,43 @@ static int handle_interface_noack_map(st
  				      enum id_input id)
  {
  	uint16_t noack_map;
