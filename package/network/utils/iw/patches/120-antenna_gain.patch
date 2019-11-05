@@ -1,6 +1,6 @@
 --- a/phy.c
 +++ b/phy.c
-@@ -728,6 +728,33 @@ COMMAND(set, antenna, "<bitmap> | all |
+@@ -740,6 +740,33 @@ COMMAND(set, antenna, "<bitmap> | all |
  	"Set a bitmap of allowed antennas to use for TX and RX.\n"
  	"The driver may reject antenna configurations it cannot support.");
  

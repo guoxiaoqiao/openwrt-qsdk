@@ -36,8 +36,8 @@ Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 +
  	if (file) {
  		count = read_file(file, buf, sizeof(buf));
- 		fclose(file);
-@@ -117,6 +126,83 @@ static int handle_vendor(struct nl80211_
+ 		if (file != stdin)
+@@ -118,6 +127,83 @@ static int handle_vendor(struct nl80211_
  	if (count > 0)
  		NLA_PUT(msg, NL80211_ATTR_VENDOR_DATA, count, buf);
  
