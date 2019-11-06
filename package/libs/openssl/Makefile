@@ -34,7 +34,14 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_OPENSSL_WITH_EC \
 	CONFIG_OPENSSL_WITH_EC2M \
 	CONFIG_OPENSSL_WITH_SSL3 \
-	CONFIG_OPENSSL_HARDWARE_SUPPORT
+	CONFIG_OPENSSL_HARDWARE_SUPPORT \
+	CONFIG_OPENSSL_NO_DEPRECATED \
+	CONFIG_OPENSSL_WITH_DTLS \
+	CONFIG_OPENSSL_WITH_COMPRESSION \
+	CONFIG_OPENSSL_WITH_NPN \
+	CONFIG_OPENSSL_WITH_PSK \
+	CONFIG_OPENSSL_WITH_SRP \
+	CONFIG_OPENSSL_OPTIMIZE_SPEED
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -64,9 +71,9 @@ $(call Package/openssl/Default)
   SECTION:=libs
   SUBMENU:=SSL
   CATEGORY:=Libraries
-  DEPENDS:=+zlib
+  DEPENDS:=+OPENSSL_WITH_COMPRESSION:zlib
   TITLE+= (libraries)
-  ABI_VERSION:=$(PKG_VERSION)
+  ABI_VERSION:=1.0.0
   MENU:=1
 endef
 
@@ -94,7 +101,7 @@ endef
 
 
 OPENSSL_NO_CIPHERS:= no-idea no-md2 no-mdc2 no-rc5 no-sha0 no-camellia no-krb5
-OPENSSL_OPTIONS:= shared no-err zlib-dynamic no-sse2 no-ssl2
+OPENSSL_OPTIONS:= shared no-err no-sse2 no-ssl2
 
 ifeq ($(CONFIG_TARGET_ipq806x)$(CONFIG_TARGET_ipq_ipq40xx),)
   OPENSSL_OPTIONS += no-hw
@@ -125,6 +132,36 @@ ifndef CONFIG_OPENSSL_HARDWARE_SUPPORT
   OPENSSL_OPTIONS += no-hw
 endif
 
+ifdef CONFIG_OPENSSL_NO_DEPRECATED
+  OPENSSL_OPTIONS += no-deprecated
+endif
+
+ifndef CONFIG_OPENSSL_WITH_DTLS
+  OPENSSL_OPTIONS += no-dtls
+endif
+
+ifdef CONFIG_OPENSSL_WITH_COMPRESSION
+  OPENSSL_OPTIONS += zlib-dynamic
+else
+  OPENSSL_OPTIONS += no-comp
+endif
+
+ifndef CONFIG_OPENSSL_WITH_NPN
+  OPENSSL_OPTIONS += no-nextprotoneg
+endif
+
+ifndef CONFIG_OPENSSL_WITH_PSK
+  OPENSSL_OPTIONS += no-psk
+endif
+
+ifndef CONFIG_OPENSSL_WITH_SRP
+  OPENSSL_OPTIONS += no-srp
+endif
+
+ifeq ($(CONFIG_OPENSSL_OPTIMIZE_SPEED),y)
+  TARGET_CFLAGS := $(filter-out -Os,$(TARGET_CFLAGS)) -O3
+endif
+
 ifeq ($(CONFIG_x86_64),y)
   OPENSSL_TARGET:=linux-x86_64-openwrt
   OPENSSL_MAKEFLAGS += LIBDIR=lib
@@ -153,7 +190,7 @@ define Build/Configure
 			--openssldir=/etc/ssl \
 			$(TARGET_CPPFLAGS) \
 			$(TARGET_LDFLAGS) -ldl \
-			-DOPENSSL_SMALL_FOOTPRINT \
+			$(if $(CONFIG_OPENSSL_OPTIMIZE_SPEED),,-DOPENSSL_SMALL_FOOTPRINT) \
 			$(OPENSSL_NO_CIPHERS) \
 			$(OPENSSL_OPTIONS) \
 	)
