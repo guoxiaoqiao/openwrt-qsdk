@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015-2019 The Linux Foundation. All rights reserved.
+# Copyright (c) 2015-2020 The Linux Foundation. All rights reserved.
 #
 
 QCA_LITHIUM:=kmod-qvit-lithium
@@ -48,12 +48,13 @@ NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-igs kmod-qca-nss-
 	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe \
 	kmod-qca-nss-drv-ovpn-mgr kmod-qca-nss-drv-ovpn-link kmod-qca-nss-drv-vxlanmgr kmod-qca-nss-drv-netlink \
-	kmod-qca-ovsmgr
+	kmod-qca-ovsmgr kmod-qca-nss-drv-match
 
 NSS_CLIENTS_256MB:= kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-pppoe
 
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile \
-	kmod- kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-netlink kmod-qca-nss-drv-tlsmgr
+	kmod- kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-netlink kmod-qca-nss-drv-tlsmgr \
+	kmod-qca-nss-drv-match
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi-cryptoapi kmod-qca-nss-cfi-ocf kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf
 
