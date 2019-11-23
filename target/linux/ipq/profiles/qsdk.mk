@@ -7,8 +7,7 @@ QCA_EDMA:=kmod-qca-edma
 NSS_COMMON:= \
 	kmod-qca-nss-dp \
 	kmod-qca-nss-drv \
-	kmod-qca-nss-gmac \
-	$(QCA_EDMA)
+	kmod-qca-nss-gmac
 
 NSS_EIP197_FW:= \
 	qca-nss-fw-eip-hk \
@@ -191,7 +190,7 @@ QMI_SAMPLE_APP:=kmod-qmi_sample_client
 MHI_QRTR:=kmod-mhi-qrtr-mproc
 
 ifneq ($(LINUX_VERSION),3.18.21)
-	EXTRA_NETWORKING:=$(NSS_COMMON) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
+	EXTRA_NETWORKING:=$(NSS_COMMON) $(QCA_EDMA) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
 	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) kmod-qca-nss-macsec \
 	$(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(MAP_PKGS) $(AQ_PHY) $(FAILSAFE) \
@@ -216,7 +215,7 @@ $(eval $(call Profile,QSDK_Open))
 
 define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(QCA_EDMA) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(OPENVPN) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
@@ -236,7 +235,7 @@ $(eval $(call Profile,QSDK_Premium))
 
 define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(QCA_EDMA) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		qca-wifi-fw-hw5-10.4-asic $(KPI)
@@ -249,9 +248,23 @@ endef
 
 $(eval $(call Profile,QSDK_Standard))
 
+define Profile/QSDK_QBuilder
+	NAME:=Qualcomm-Atheros SDK QBuilder Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) qca-nss-fw-hk-retail $(SWITCH_SSDK_NOHNAT_PKGS) \
+		$(WIFI_PKGS) $(STORAGE) $(SHORTCUT_FE) $(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) \
+		$(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) qca-wifi-fw-hw5-10.4-asic $(KPI)
+endef
+
+define Profile/QSDK_QBuilder/Description
+	QSDK QBuilder package set configuration.
+	Enables qca-wifi 10.4 packages
+endef
+
+$(eval $(call Profile,QSDK_QBuilder))
+
 define Profile/QSDK_Enterprise
 	NAME:=Qualcomm-Atheros SDK Enterprise Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_ENTERPRISE) $(SWITCH_SSDK_NOHNAT_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(QCA_EDMA) $(NSS_ENTERPRISE) $(SWITCH_SSDK_NOHNAT_PKGS) \
 		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
@@ -268,7 +281,7 @@ $(eval $(call Profile,QSDK_Enterprise))
 
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(QCA_EDMA) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
@@ -287,7 +300,7 @@ $(eval $(call Profile,QSDK_Deluxe))
 
 define Profile/QSDK_256
 	NAME:=Qualcomm-Atheros SDK 256MB Profile
-	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(QCA_EDMA) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS_256MB) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) \
 		iperf-mt rng-tools $(QCA_RFS) $(IGMPSNOOING_RSTP) $(CHAR_DIAG) \
 		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
@@ -304,7 +317,7 @@ $(eval $(call Profile,QSDK_256))
 
 define Profile/QSDK_512
 	NAME:=Qualcomm-Atheros SDK 512MB Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(QCA_EDMA) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(CD_ROUTER) \
 		$(NETWORKING) $(OPENVPN) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
