@@ -207,7 +207,7 @@ config BUSYBOX_DEFAULT_FEATURE_EDITING
 	default y
 config BUSYBOX_DEFAULT_FEATURE_EDITING_MAX_LEN
 	int
-	default 512
+	default 1024
 config BUSYBOX_DEFAULT_FEATURE_EDITING_VI
 	bool
 	default n
