@@ -215,7 +215,7 @@ push @mirrors, 'http://mirror2.openwrt.org/sources';
 push @mirrors, 'http://downloads.openwrt.org/sources';
 
 #first check in CAF server
-my $caf = 'https://www.codeaurora.org/mirrored_source/quic/qsdk';
+my $caf = 'https://source.codeaurora.org/mirrored_source/quic/qsdk';
 download($caf);
 if(!-f "$target/$filename") {
     my $ok = 1;
