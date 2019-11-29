@@ -252,9 +252,10 @@ $(eval $(call Profile,QSDK_Standard))
 
 define Profile/QSDK_QBuilder
 	NAME:=Qualcomm-Atheros SDK QBuilder Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) qca-nss-fw-hk-retail $(SWITCH_SSDK_NOHNAT_PKGS) \
-		$(WIFI_PKGS) $(STORAGE) $(SHORTCUT_FE) $(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) \
-		$(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) qca-wifi-fw-hw5-10.4-asic $(KPI)
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) \
+		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(SHORTCUT_FE) $(IGMPSNOOING_RSTP) \
+		$(AQ_PHY) $(NETWORKING) $(QOS) $(NSS_EIP197_FW) $(UTILS) $(TEST_TOOLS) \
+		$(COREBSP_UTILS) qca-wifi-fw-hw5-10.4-asic $(KPI) $(NSS_USERSPACE)
 endef
 
 define Profile/QSDK_QBuilder/Description
