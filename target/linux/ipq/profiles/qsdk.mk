@@ -16,7 +16,8 @@ NSS_EIP197_FW:= \
 NSS_STANDARD:= \
 	qca-nss-fw2-retail \
 	qca-nss-fw-hk-retail \
-	qca-nss-fw-cp-retail
+	qca-nss-fw-cp-retail \
+	qca-nss-fw-mp-retail
 
 NSS_ENTERPRISE:= \
 	qca-nss-fw2-enterprise \
@@ -28,6 +29,7 @@ NSS_ENTERPRISE:= \
 	qca-nss-fw-hk-enterprise_custC \
 	qca-nss-fw-hk-enterprise_custR \
 	qca-nss-fw-cp-enterprise \
+	qca-nss-fw-mp-enterprise \
 	qca-nss-fw-cp-enterprise_custA \
 	qca-nss-fw-cp-enterprise_custC \
 	qca-nss-fw-cp-enterprise_custR
