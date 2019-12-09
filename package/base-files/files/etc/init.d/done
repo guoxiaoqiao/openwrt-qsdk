@@ -13,5 +13,8 @@ boot() {
 
 	# set leds to normal state
 	. /etc/diag.sh
+
+	# Clean up file cache
+	echo 3 > /proc/sys/vm/drop_caches
 	set_state done
 }
