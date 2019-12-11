@@ -1,0 +1,156 @@
+--- a/src/ap/dfs.c
++++ b/src/ap/dfs.c
+@@ -827,6 +827,39 @@ int hostapd_dfs_pre_cac_expired(struct h
+ }
+ 
+ 
++static struct hostapd_channel_data *
++dfs_downgrade_bandwidth(struct hostapd_iface *iface, int *secondary_channel, u8 *vht_oper_centr_freq_seg0_idx, u8 *vht_oper_centr_freq_seg1_idx, int *skip_radar)
++{
++	struct hostapd_channel_data *channel;
++	while (iface->conf->vht_oper_chwidth >= VHT_CHANWIDTH_USE_HT) {
++		channel = dfs_get_valid_channel(iface, secondary_channel,
++						vht_oper_centr_freq_seg0_idx,
++						vht_oper_centr_freq_seg1_idx,
++						*skip_radar);
++		if(!channel) {
++			if(iface->conf->vht_oper_chwidth) {
++				if (!(*skip_radar)) {
++					*skip_radar = 1;
++					iface->conf->vht_oper_chwidth--;
++				} else {
++					*skip_radar = 0;
++				}
++			}
++			else {
++				wpa_printf(MSG_ERROR,
++				   "%s: no DFS channels left, waiting for NOP to finish",
++				   __func__);
++				return NULL;
++			}
++		}
++		else {
++			wpa_printf(MSG_INFO, "Selected channel : %d\n", channel->chan);
++			return channel;
++		}
++	}
++
++}
++
+ static int hostapd_dfs_start_channel_switch_cac(struct hostapd_iface *iface)
+ {
+ 	struct hostapd_channel_data *channel;
+@@ -844,8 +877,11 @@ static int hostapd_dfs_start_channel_swi
+ 					skip_radar);
+ 
+ 	if (!channel) {
+-		wpa_printf(MSG_ERROR, "No valid channel available");
+-		return err;
++		channel = dfs_downgrade_bandwidth(iface, &secondary_channel, &vht_oper_centr_freq_seg0_idx, &vht_oper_centr_freq_seg1_idx, &skip_radar);
++		if(!channel) {
++			wpa_printf(MSG_ERROR, "No valid channel available");
++			return err;
++		}
+ 	}
+ 
+ 	wpa_printf(MSG_DEBUG, "DFS will switch to a new channel %d",
+@@ -941,8 +977,10 @@ static int hostapd_dfs_start_channel_swi
+ 	int secondary_channel;
+ 	u8 vht_oper_centr_freq_seg0_idx;
+ 	u8 vht_oper_centr_freq_seg1_idx;
++	u8 new_vht_oper_chwidth;
+ 	int skip_radar = 1;
+ 	struct csa_settings csa_settings;
++	u8 current_vht_oper_chwidth = iface->conf->vht_oper_chwidth;
+ 	unsigned int i;
+ 	int err = 1;
+ 
+@@ -981,28 +1019,22 @@ static int hostapd_dfs_start_channel_swi
+ 		 * requires to perform a CAC first.
+ 		 */
+ 		skip_radar = 0;
+-		channel = dfs_get_valid_channel(iface, &secondary_channel,
+-						&vht_oper_centr_freq_seg0_idx,
+-						&vht_oper_centr_freq_seg1_idx,
+-						skip_radar);
+-		if (!channel) {
+-			wpa_printf(MSG_INFO,
+-				   "%s: no DFS channels left, waiting for NOP to finish",
+-				   __func__);
++		channel = dfs_downgrade_bandwidth(iface, &secondary_channel, &vht_oper_centr_freq_seg0_idx, &vht_oper_centr_freq_seg1_idx, &skip_radar);
++		if(!channel)
+ 			return err;
++		if(!skip_radar) {
++			iface->freq = channel->freq;
++			iface->conf->channel = channel->chan;
++			iface->conf->secondary_channel = secondary_channel;
++			iface->conf->vht_oper_centr_freq_seg0_idx =
++				vht_oper_centr_freq_seg0_idx;
++			iface->conf->vht_oper_centr_freq_seg1_idx =
++				vht_oper_centr_freq_seg1_idx;
++
++			hostapd_disable_iface(iface);
++			hostapd_enable_iface(iface);
++			return 0;
+ 		}
+-
+-		iface->freq = channel->freq;
+-		iface->conf->channel = channel->chan;
+-		iface->conf->secondary_channel = secondary_channel;
+-		iface->conf->vht_oper_centr_freq_seg0_idx =
+-			vht_oper_centr_freq_seg0_idx;
+-		iface->conf->vht_oper_centr_freq_seg1_idx =
+-			vht_oper_centr_freq_seg1_idx;
+-
+-		hostapd_disable_iface(iface);
+-		hostapd_enable_iface(iface);
+-		return 0;
+ 	}
+ 
+ 	wpa_printf(MSG_DEBUG, "DFS will switch to a new channel %d",
+@@ -1011,6 +1043,8 @@ static int hostapd_dfs_start_channel_swi
+ 		"freq=%d chan=%d sec_chan=%d", channel->freq,
+ 		channel->chan, secondary_channel);
+ 
++	new_vht_oper_chwidth = iface->conf->vht_oper_chwidth;
++	iface->conf->vht_oper_chwidth = current_vht_oper_chwidth;
+ 	/* Setup CSA request */
+ 	os_memset(&csa_settings, 0, sizeof(csa_settings));
+ 	csa_settings.cs_count = 5;
+@@ -1022,7 +1056,7 @@ static int hostapd_dfs_start_channel_swi
+ 				      iface->conf->ieee80211n,
+ 				      iface->conf->ieee80211ac,
+ 				      secondary_channel,
+-				      iface->conf->vht_oper_chwidth,
++				      new_vht_oper_chwidth,
+ 				      vht_oper_centr_freq_seg0_idx,
+ 				      vht_oper_centr_freq_seg1_idx,
+ 				      iface->current_mode->vht_capab);
+@@ -1045,6 +1079,7 @@ static int hostapd_dfs_start_channel_swi
+ 		iface->freq = channel->freq;
+ 		iface->conf->channel = channel->chan;
+ 		iface->conf->secondary_channel = secondary_channel;
++		iface->conf->vht_oper_chwidth = new_vht_oper_chwidth;
+ 		iface->conf->vht_oper_centr_freq_seg0_idx =
+ 			vht_oper_centr_freq_seg0_idx;
+ 		iface->conf->vht_oper_centr_freq_seg1_idx =
+@@ -1081,13 +1116,17 @@ int hostapd_dfs_radar_detected(struct ho
+ 		return 0;
+ 
+ 	/* mark radar frequency as invalid */
+-	set_dfs_state(iface, freq, ht_enabled, chan_offset, chan_width,
++	res = set_dfs_state(iface, freq, ht_enabled, chan_offset, chan_width,
+ 		      cf1, cf2, HOSTAPD_CHAN_DFS_UNAVAILABLE);
++	if(!res)
++		return 0;
+ 
+ 	if (iface->conf->dfs_test_mode) {
+-		set_dfs_state(iface, freq, ht_enabled, chan_offset,
++		res = set_dfs_state(iface, freq, ht_enabled, chan_offset,
+ 			      chan_width, cf1, cf2,
+ 			      HOSTAPD_CHAN_DFS_AVAILABLE);
++		if(!res)
++			return 0;
+ 	}
+ 
+ 	/* Skip if reported radar event not overlapped our channels */
