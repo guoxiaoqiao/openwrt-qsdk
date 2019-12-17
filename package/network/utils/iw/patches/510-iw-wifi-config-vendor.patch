@@ -42,7 +42,7 @@
 +		if (!argc)
 +			return 1;
 +
-+		params = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA);
++		params = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA | NLA_F_NESTED);
 +
 +		if (!strcmp(argv[0], "ap-ps")) {
 +			if (argc < 2)
