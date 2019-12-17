@@ -48,7 +48,7 @@ Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 +	if (!argc)
 +		return 1;
 +
-+	params = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA);
++	params = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA | NLA_F_NESTED);
 +
 +	if (!strcmp(argv[0], "coex")) {
 +		if (argc < 2)
@@ -77,7 +77,7 @@ Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 +		argv++;
 +
 +		while(argc) {
-+			wlan_prio = nla_nest_start(prio_msg, i);
++			wlan_prio = nla_nest_start(prio_msg, i | NLA_F_NESTED);
 +			if (!wlan_prio)
 +				goto nla_put_failure;
 +
@@ -114,7 +114,7 @@ Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 +
 +out:
 +	if (wlan_prio_config)
-+		nla_put_nested(msg, QCA_WLAN_VENDOR_ATTR_BTCOEX_CONFIG_WLAN_PRIORITY,
++		nla_put_nested(msg, QCA_WLAN_VENDOR_ATTR_BTCOEX_CONFIG_WLAN_PRIORITY | NLA_F_NESTED,
 +			       prio_msg);
 +	nla_nest_end(msg, params);
 +
