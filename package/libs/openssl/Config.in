@@ -1,5 +1,4 @@
-menu "Configuration"
-	depends on PACKAGE_libopenssl
+if PACKAGE_libopenssl
 
 comment "Build Options"
 
