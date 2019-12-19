@@ -268,7 +268,7 @@ hostapd_set_bss_options() {
 			# with WPS enabled, we got to be in unconfigured state.
 			wps_not_configured=1
 		;;
-		psk)
+		psk|sae*)
 			json_get_vars key wpa_psk_file
 			if [ ${#key} -lt 8 ]; then
 				wireless_setup_vif_failed INVALID_WPA_PSK
@@ -344,6 +344,18 @@ hostapd_set_bss_options() {
 			hostapd_append_wep_key bss_conf
 			append bss_conf "wep_default_key=$wep_keyidx" "$N"
 			[ -n "$wep_rekey" ] && append bss_conf "wep_rekey_period=$wep_rekey" "$N"
+		;;
+	esac
+
+	case "$auth_type" in
+		sae)
+			append bss_conf "ieee80211w=2" "$N"
+			 wpa_key_mgmt="SAE"
+		;;
+		sae-mixed)
+			append bss_conf "ieee80211w=1" "$N"
+			append bss_conf "sae_require_mfp=1" "$N"
+			append wpa_key_mgmt "SAE"
 		;;
 	esac
 
