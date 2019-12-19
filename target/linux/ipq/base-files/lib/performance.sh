@@ -31,18 +31,15 @@ perf_setup(){
 		[ -d "/sys/devices/system/cpu/cpu2" ] && echo "performance" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
 		[ -d "/sys/devices/system/cpu/cpu3" ] && echo "performance" > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
 
-		#check for number of ethernet available
-		[ -d "/sys/class/net/eth0" ] && echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
-		[ -d "/sys/class/net/eth1" ] && echo f > /sys/class/net/eth1/queues/rx-0/rps_cpus
-		[ -d "/sys/class/net/eth2" ] && echo f > /sys/class/net/eth2/queues/rx-0/rps_cpus
-		[ -d "/sys/class/net/eth3" ] && echo f > /sys/class/net/eth3/queues/rx-0/rps_cpus
-		[ -d "/sys/class/net/eth4" ] && echo f > /sys/class/net/eth4/queues/rx-0/rps_cpus
-		[ -d "/sys/class/net/eth5" ] && echo f > /sys/class/net/eth5/queues/rx-0/rps_cpus
-
 		#check for number of radio available
 		[ -d "/sys/class/net/wlan0" ] && echo e > /sys/class/net/wlan0/queues/rx-0/rps_cpus
 		[ -d "/sys/class/net/wlan1" ] && echo e > /sys/class/net/wlan1/queues/rx-0/rps_cpus
 		[ -d "/sys/class/net/wlan2" ] && echo e > /sys/class/net/wlan2/queues/rx-0/rps_cpus
+
+		[ -d "/proc/sys/dev/nss/n2hcfg/" ] && echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core0
+		[ -d "/proc/sys/dev/nss/n2hcfg/" ] && echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core1
+
+		[ -d "/proc/sys/dev/nss/rps/" ] && echo 14 > /proc/sys/dev/nss/rps/hash_bitmap
 	fi
 }
 
