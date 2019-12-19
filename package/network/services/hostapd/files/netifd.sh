@@ -270,6 +270,7 @@ hostapd_set_bss_options() {
 		;;
 		psk)
 			json_get_vars key wpa_psk_file
+			json_get_var ieee80211w ieee80211w
 			if [ ${#key} -lt 8 ]; then
 				wireless_setup_vif_failed INVALID_WPA_PSK
 				return 1
@@ -283,7 +284,13 @@ hostapd_set_bss_options() {
 				append bss_conf "wpa_psk_file=$wpa_psk_file" "$N"
 			}
 			wps_possible=1
-			append wpa_key_mgmt "WPA-PSK"
+			if [ $ieee80211w -eq 2 ]; then
+				append wpa_key_mgmt "WPA-PSK-SHA256"
+			elif [ $ieee80211w -eq 1 ]; then
+				append wpa_key_mgmt "WPA-PSK WPA-PSK-SHA256"
+			else
+				append wpa_key_mgmt "WPA-PSK"
+			fi
 		;;
 		eap)
 			json_get_vars \
@@ -295,6 +302,7 @@ hostapd_set_bss_options() {
 				vlan_naming vlan_tagged_interface \
 				vlan_bridge
 
+			json_get_var ieee80211w ieee80211w
 			# legacy compatibility
 			[ -n "$auth_server" ] || json_get_var auth_server server
 			[ -n "$auth_port" ] || json_get_var auth_port port
@@ -327,7 +335,13 @@ hostapd_set_bss_options() {
 			[ -n "$ownip" ] && append bss_conf "own_ip_addr=$ownip" "$N"
 			append bss_conf "eapol_key_index_workaround=1" "$N"
 			append bss_conf "ieee8021x=1" "$N"
-			append wpa_key_mgmt "WPA-EAP"
+			if [ $ieee80211w -eq 2 ]; then
+				append wpa_key_mgmt "WPA-EAP-SHA256"
+			elif [ $ieee80211w -eq 1 ]; then
+				append wpa_key_mgmt "WPA-EAP WPA-EAP-SHA256"
+			else
+				append wpa_key_mgmt "WPA-EAP"
+			fi
 
 			[ -n "$dynamic_vlan" ] && {
 				append bss_conf "dynamic_vlan=$dynamic_vlan" "$N"
