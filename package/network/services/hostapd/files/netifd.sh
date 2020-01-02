@@ -224,7 +224,7 @@ hostapd_set_bss_options() {
 	json_get_values airtime_sta_weight_list airtime_sta_weight
 
 	set_default isolate 0
-	set_default maxassoc 64
+	set_default maxassoc 128
 	set_default max_inactivity 0
 	set_default short_preamble 1
 	set_default disassoc_low_ack 0
