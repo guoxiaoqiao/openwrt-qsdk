@@ -230,7 +230,7 @@ endef
 
 define Profile/QSDK_Premium/Description
 	QSDK Premium package set configuration.
-	Enables qca-wifi 10.4 packages
+	Enables qca-wifi 11.0 packages
 endef
 
 $(eval $(call Profile,QSDK_Premium))
@@ -245,7 +245,7 @@ endef
 
 define Profile/QSDK_Standard/Description
 	QSDK Standard package set configuration.
-	Enables qca-wifi 10.4 packages
+	Enables qca-wifi 11.0 packages
 endef
 
 $(eval $(call Profile,QSDK_Standard))
@@ -260,7 +260,7 @@ endef
 
 define Profile/QSDK_QBuilder/Description
 	QSDK QBuilder package set configuration.
-	Enables qca-wifi 10.4 packages
+	Enables qca-wifi 11.0 packages
 endef
 
 $(eval $(call Profile,QSDK_QBuilder))
@@ -277,7 +277,7 @@ endef
 
 define Profile/QSDK_Enterprise/Description
 	QSDK Enterprise package set configuration.
-	Enables qca-wifi 10.4 packages
+	Enables qca-wifi 11.0 packages
 endef
 
 $(eval $(call Profile,QSDK_Enterprise))
