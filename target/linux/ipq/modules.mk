@@ -191,6 +191,7 @@ define KernelPackage/msm-mproc
 	  CONFIG_MSM_RPM_RPMSG=y \
 	  CONFIG_RPMSG_QCOM_GLINK_RPM=y \
 	  CONFIG_REGULATOR_RPM_GLINK=y \
+	  CONFIG_IPQ_SUBSYSTEM_RESTART=y \
 	  CONFIG_QCOM_SYSMON=y \
 	  CONFIG_RPMSG=y \
 	  CONFIG_RPMSG_CHAR=y \
@@ -210,7 +211,7 @@ $(eval $(call KernelPackage,msm-mproc))
 
 define KernelPackage/mhi-qrtr-mproc
   TITLE:= Default kernel configs for QCCI to work with QRTR.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QRTR_MHI=y \
