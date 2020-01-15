@@ -1,60 +1,30 @@
-From 4df5dc79b2b205fae2d5a279428fb4ad78f7eac5 Mon Sep 17 00:00:00 2001
-From: Aloka Dixit <alokad@codeaurora.org>
-Date: Fri, 3 Jan 2020 10:47:12 -0800
-Subject: [PATCH] AP: Allow downgrading to 20MHz based on OBSS results
-
-Before operating on 40MHz in 2.4GHz, AP looks for overlapping
-BSS in neighboring channels. Upon OBSS detection, AP should
-downgrade to 20MHz bandwidth. This decistion is broken now
-for HE40. As of now ieee80211n_check_scan skips the rollback
-step for 20MHz as allowed_ht40_channel_pair returns true
-when primary and secondary channels are same. Fix that.
-
-Change-Id: I3d3813ca4ee7fbafec9e03b071047e2d2e398a9b
-Signed-off-by: Aloka Dixit <alokad@codeaurora.org>
----
- .../patches/c00-012-ACS-rollback-to-20MHz-2G.patch | 32 ++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 package/network/services/hostapd/patches/c00-012-ACS-rollback-to-20MHz-2G.patch
-
-diff --git a/package/network/services/hostapd/patches/c00-012-ACS-rollback-to-20MHz-2G.patch b/package/network/services/hostapd/patches/c00-012-ACS-rollback-to-20MHz-2G.patch
-new file mode 100644
-index 000000000000..f2b8febeb232
---- /dev/null
-+++ b/package/network/services/hostapd/patches/c00-012-ACS-rollback-to-20MHz-2G.patch
-@@ -0,0 +1,32 @@
-+From 6653fa0a65d0829492b0f5c3107f4984df092571 Mon Sep 17 00:00:00 2001
-+From: Aloka Dixit <alokad@codeaurora.org>
-+Date: Fri, 3 Jan 2020 10:45:11 -0800
-+Subject: [PATCH] Hostapd: Roll back from 40MHz to 20MHz for 2.4GHz in case of
-+ overlapping BSS after ACS.
+--- a/src/ap/hw_features.c
++++ b/src/ap/hw_features.c
+@@ -290,7 +290,7 @@ static void ieee80211n_check_scan(struct
+ {
+ 	struct wpa_scan_results *scan_res;
+ 	int oper40;
+-	int res;
++	int res = 0;
+ 
+ 	/* Check list of neighboring BSSes (from scan) to see whether 40 MHz is
+ 	 * allowed per IEEE Std 802.11-2012, 10.15.3.2 */
+@@ -326,8 +326,16 @@ static void ieee80211n_check_scan(struct
+ 		}
+ 	}
+ 
+-	res = ieee80211n_allowed_ht40_channel_pair(iface);
+-	if (!res) {
++	/*
++	 * Secondary channel is set to 0 if OBSS failed.
++	 * The function ieee80211n_allowed_ht40_channel_pair() sets primary
++	 * and secondary channel to same value in this case.
++	 */
++	if(iface->conf->secondary_channel)
++		res = ieee80211n_allowed_ht40_channel_pair(iface);
 +
-+Signed-off-by: Aloka Dixit <alokad@codeaurora.org>
-+---
-+ src/common/hw_features_common.c | 7 ++++++-
-+ 1 file changed, 6 insertions(+), 1 deletion(-)
-+
-+diff --git a/src/common/hw_features_common.c b/src/common/hw_features_common.c
-+index 0e2225f1ea24..b621fafeb21b 100644
-+--- a/src/common/hw_features_common.c
-++++ b/src/common/hw_features_common.c
-+@@ -98,7 +98,12 @@ int allowed_ht40_channel_pair(struct hostapd_hw_modes *mode, int pri_chan,
-+ 	if (!p_chan)
-+ 		return 0;
-+ 
-+-	if (pri_chan == sec_chan || !sec_chan) {
-++	/* If primary and secondary channels are set to same value,
-++	 * operating width should be changed to 20MHz. */
-++	if (pri_chan == sec_chan)
-++		return 0;
-++
-++	if (!sec_chan) {
-+ 		if (chan_pri_allowed(p_chan))
-+ 			return 1; /* HT40 not used */
-+ 
-+-- 
-+2.7.4
-+
--- 
-2.7.4
-
++	if (!res) {
++		/* Downgrade to 20MHz. */
+ 		iface->conf->secondary_channel = 0;
+ 		hostapd_set_oper_centr_freq_seg0_idx(iface->conf, 0);
+ 		hostapd_set_oper_centr_freq_seg1_idx(iface->conf, 0);
