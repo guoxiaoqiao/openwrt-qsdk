@@ -183,19 +183,24 @@ define KernelPackage/msm-mproc
   TITLE:= Default kernel configs
   DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
   KCONFIG:= \
-	  CONFIG_IPC_ROUTER=y \
-	  CONFIG_MSM_GLINK=y \
-	  CONFIG_MSM_GLINK_SMEM_NATIVE_XPRT=y \
-	  CONFIG_MSM_GLINK_PKT=y \
-	  CONFIG_MSM_IPC_ROUTER_GLINK_XPRT=y \
-	  CONFIG_MSM_QMI_INTERFACE=y \
-	  CONFIG_IPQ_SUBSYSTEM_RESTART=y \
-	  CONFIG_IPQ807X_REMOTEPROC=y \
-	  CONFIG_IPQ_REMOTEPROC_ADSP=y \
+	  CONFIG_QRTR=y \
+	  CONFIG_QCOM_APCS_IPC=y \
+	  CONFIG_QCOM_GLINK_SSR=y \
+	  CONFIG_QCOM_Q6V5_WCSS=y \
+	  CONFIG_QCOM_Q6V5_ADSP=y \
+	  CONFIG_MSM_RPM_RPMSG=y \
+	  CONFIG_RPMSG_QCOM_GLINK_RPM=y \
 	  CONFIG_REGULATOR_RPM_GLINK=y \
-	  CONFIG_MSM_IPC_ROUTER_MHI_XPRT=y \
-	  CONFIG_MSM_RPM_GLINK=y \
-	  CONFIG_MAILBOX=y
+	  CONFIG_IPQ_SUBSYSTEM_RESTART=y \
+	  CONFIG_QCOM_SYSMON=y \
+	  CONFIG_RPMSG=y \
+	  CONFIG_RPMSG_CHAR=y \
+	  CONFIG_RPMSG_QCOM_GLINK_SMEM=y \
+	  CONFIG_RPMSG_QCOM_SMD=y \
+	  CONFIG_QRTR_SMD=y \
+	  CONFIG_QCOM_Q6V5_SSR=y \
+	  CONFIG_MAILBOX=y \
+	  CONFIG_DIAG_OVER_QRTR=y
 endef
 
 define KernelPackage/msm-mproc/description
@@ -206,7 +211,7 @@ $(eval $(call KernelPackage,msm-mproc))
 
 define KernelPackage/mhi-qrtr-mproc
   TITLE:= Default kernel configs for QCCI to work with QRTR.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QRTR_MHI=y \
