@@ -258,7 +258,7 @@ define Profile/QSDK_QBuilder
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) \
 		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(SHORTCUT_FE) $(IGMPSNOOING_RSTP) \
 		$(AQ_PHY) $(NETWORKING) $(QOS) $(NSS_EIP197_FW) $(UTILS) $(TEST_TOOLS) \
-		$(COREBSP_UTILS) qca-wifi-fw-hw5-10.4-asic $(KPI) $(NSS_USERSPACE) $(FAILSAFE)
+		$(COREBSP_UTILS) qca-wifi-fw-hw5-10.4-asic $(KPI) $(NSS_USERSPACE) $(FAILSAFE) -qca-nss-fw-mp-retail
 endef
 
 define Profile/QSDK_QBuilder/Description
