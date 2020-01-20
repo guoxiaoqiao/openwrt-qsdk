@@ -255,10 +255,21 @@ $(eval $(call Profile,QSDK_Standard))
 
 define Profile/QSDK_QBuilder
 	NAME:=Qualcomm-Atheros SDK QBuilder Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) \
-		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(SHORTCUT_FE) $(IGMPSNOOING_RSTP) \
-		$(AQ_PHY) $(NETWORKING) $(QOS) $(NSS_EIP197_FW) $(UTILS) $(TEST_TOOLS) \
-		$(COREBSP_UTILS) qca-wifi-fw-hw5-10.4-asic $(KPI) $(NSS_USERSPACE) $(FAILSAFE) -qca-nss-fw-mp-retail
+	PACKAGES:=luci openssl-util kmod-qca-nss-dp kmod-qca-nss-drv kmod-qca-nss-gmac qca-nss-fw2-retail \
+		qca-nss-fw-hk-retail qca-nss-fw-cp-retail kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig \
+		kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-iso8859-1 kmod-fs-msdos \
+		kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs kmod-shortcut-fe kmod-shortcut-fe-cm kmod-shortcut-fe-drv \
+		rstp qca-mcs-apps kmod-qca-wifi-unified-profile qca-hostap qca-hostapd-cli qca-wpa-supplicant qca-wpa-cli \
+		qca-spectral qca-wpc sigma-dut qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui qca-lowi qca-iface-mgr-10.4 \
+		qca-icm qca-cfg80211 athdiag qca-cnss-daemon athtestcmd-lith qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
+		qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic \
+		qca-wifi-hk-fw-hw1-10.4-asic qca-wifi-cyp-fw-hw1-11.0-asic kmod-aq_phy kmod-qca_85xx_sw aq-fw-download mcproxy \
+		-dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd rp-pppoe-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
+		kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp luci-app-upnp luci-app-ddns luci-proto-ipv6 luci-app-multiwan tc kmod-sched \
+		kmod-sched-core kmod-sched-connmark kmod-ifb iptables iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra \
+		qca-nss-fw-eip-hk qca-nss-fw-eip-cp file luci-app-samba rng-tools profilerd ethtool i2c-tools tcpdump pm-utils \
+		wififw_mount_script qca-thermald-10.4 qca-qmi-framework qca-time-services qca-wlanfw-upgrade dashboard qca-wifi-fw-hw5-10.4-asic \
+		iperf-mt sysstat nlcfg kmod-bootconfig
 endef
 
 define Profile/QSDK_QBuilder/Description
