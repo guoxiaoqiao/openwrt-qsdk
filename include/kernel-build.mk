@@ -125,6 +125,12 @@ define BuildKernel
 	) > $$@
 
   $(STAMP_CONFIGURED): $(STAMP_PREPARED) $(LINUX_KCONFIG_LIST) $(TOPDIR)/.config FORCE
+	if [[ "$(CONFIG_FOSSID_SCAN)" == *'s'* ]]; then \
+		[[ -f "$(TOPDIR)/scripts/fossid.sh" ]] && \
+		$(TOPDIR)/scripts/fossid.sh --build_scan "$(BOARD)" "$(SUBTARGET)" \
+		"$(LINUX_DIR)" "$(BUILD_DIR)" "$(CONFIG_FOSSID_SCAN)" || \
+		echo "$(TOPDIR)/scripts/fossid.sh is missing"; \
+	fi
 	$(Kernel/Configure)
 	touch $$@
 
