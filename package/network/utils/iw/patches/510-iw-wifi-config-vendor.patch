@@ -1,7 +1,7 @@
 --- a/iw.h
 +++ b/iw.h
-@@ -100,6 +100,19 @@ enum qca_wlan_vendor_attr_btcoex_config
- 		QCA_WLAN_VENDOR_ATTR_BTCOEX_CONFIG_LAST - 1
+@@ -62,6 +62,19 @@ enum id_input {
+ 	II_WDEV,
  };
  
 +/* Attributes for data used by
@@ -22,18 +22,22 @@
  
 --- a/vendor.c
 +++ b/vendor.c
-@@ -83,7 +83,7 @@ static int handle_vendor(struct nl80211_
- 	int res, count = 0, i = 0;
+@@ -78,9 +78,12 @@ static int handle_vendor(struct nl80211_
+ {
+ 	unsigned int oui;
+ 	unsigned int subcmd;
++	struct nlattr *params;
+ 	char buf[2048] = {};
+ 	int res, count = 0;
  	FILE *file = NULL;
- 	char *end;
--	unsigned int coex, prio_mask, weight;
-+	unsigned int coex, prio_mask, weight, ap_ps;
- 	bool wlan_prio_config = false;
- 	struct nlattr *wlan_prio;
- 	struct nl_msg *prio_msg;
-@@ -114,6 +114,33 @@ static int handle_vendor(struct nl80211_
- 	if (subcmd == 0xb6)
- 		goto coex_config;
++	char *end;
++	unsigned int ap_ps;
+ 
+ 	if (argc < 3)
+ 		return 1;
+@@ -105,6 +108,33 @@ static int handle_vendor(struct nl80211_
+ 	NLA_PUT_U32(msg, NL80211_ATTR_VENDOR_ID, oui);
+ 	NLA_PUT_U32(msg, NL80211_ATTR_VENDOR_SUBCMD, subcmd);
  
 +	if (subcmd == 0x4a) {
 +		argc -= 2;
