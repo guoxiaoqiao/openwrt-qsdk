@@ -469,7 +469,6 @@ hostapd_set_bss_options() {
 		fi
 
 		append bss_conf "okc=$auth_cache" "$N"
-		[ "$auth_cache" = 0 ] && append bss_conf "disable_pmksa_caching=1" "$N"
 
 		# RSN -> allow management frame protection
 		json_get_var ieee80211w ieee80211w
