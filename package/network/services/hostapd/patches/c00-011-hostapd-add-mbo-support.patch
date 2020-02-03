@@ -76,7 +76,7 @@ Index: hostapd-2019-11-04/src/ap/gas_serv.c
  
  
  #ifdef CONFIG_DPP
-@@ -603,6 +604,25 @@ static void anqp_add_domain_name(struct
+@@ -603,6 +604,28 @@ static void anqp_add_domain_name(struct
  	}
  }
  
@@ -88,21 +88,24 @@ Index: hostapd-2019-11-04/src/ap/gas_serv.c
 +
 +	if (hapd->conf->radio_measurements[0] &
 +	      WLAN_RRM_CAPS_NEIGHBOR_REPORT) {
-+		u8* len;
++		u8* len, *nei_len;
 +		len = gas_anqp_add_element(buf, ANQP_NEIGHBOR_REPORT);
++		wpabuf_put_u8(buf, WLAN_EID_NEIGHBOR_REPORT);
++		nei_len = (u8 *)wpabuf_put(buf, 1);
 +
 +		if (hostapd_prepare_neighbor_buf(hapd, hapd->own_addr,
 +						 buf)) {
 +			buf->used -= 2;
 +			return;
 +		}
++		*nei_len = ((u8 *)wpabuf_put(buf, 0) - nei_len - 1);
 +		gas_anqp_set_element_len(buf, len);
 +	}
 +}
  
  #ifdef CONFIG_FILS
  static void anqp_add_fils_realm_info(struct hostapd_data *hapd,
-@@ -1028,6 +1048,8 @@ gas_serv_build_gas_resp_payload(struct h
+@@ -1028,6 +1051,8 @@ gas_serv_build_gas_resp_payload(struct h
  		anqp_add_elem(hapd, buf, ANQP_TDLS_CAPABILITY);
  	if (request & ANQP_REQ_EMERGENCY_NAI)
  		anqp_add_elem(hapd, buf, ANQP_EMERGENCY_NAI);
@@ -111,7 +114,7 @@ Index: hostapd-2019-11-04/src/ap/gas_serv.c
  
  	for (i = 0; i < num_extra_req; i++) {
  #ifdef CONFIG_FILS
-@@ -1172,6 +1194,12 @@ static void rx_anqp_query_list_id(struct
+@@ -1172,6 +1197,12 @@ static void rx_anqp_query_list_id(struct
  			     "Emergency NAI",
  			     get_anqp_elem(hapd, info_id) != NULL, qi);
  		break;
