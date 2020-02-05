@@ -217,8 +217,8 @@ Signed-off-by: Miles Hu <milehu@codeaurora.org>
 +			has_he_gi_5 = 1;
 +			parser_state = S_HE_GI;
 +		} else if (strcmp(argv[i], "he-ltf-2.4") == 0) {
-+			has_he_gi_24 = 1;
-+			parser_state = S_HE_GI;
++			has_he_ltf_24 = 1;
++			parser_state = S_HE_LTF;
 +		} else if (strcmp(argv[i], "he-ltf-5") == 0) {
 +			has_he_ltf_5 = 1;
 +			parser_state = S_HE_LTF;
@@ -340,7 +340,7 @@ Signed-off-by: Miles Hu <milehu@codeaurora.org>
  	"Not passing any arguments would clear the existing mask (if any).");
 --- a/nl80211.h
 +++ b/nl80211.h
-@@ -2972,6 +2972,18 @@ enum nl80211_he_gi {
+@@ -3029,6 +3029,18 @@ enum nl80211_he_gi {
  };
  
  /**
@@ -359,7 +359,7 @@ Signed-off-by: Miles Hu <milehu@codeaurora.org>
   * enum nl80211_he_ru_alloc - HE RU allocation values
   * @NL80211_RATE_INFO_HE_RU_ALLOC_26: 26-tone RU allocation
   * @NL80211_RATE_INFO_HE_RU_ALLOC_52: 52-tone RU allocation
-@@ -4424,6 +4436,10 @@ enum nl80211_key_attributes {
+@@ -4525,6 +4537,10 @@ enum nl80211_key_attributes {
   *	in an array of MCS numbers.
   * @NL80211_TXRATE_VHT: VHT rates allowed for TX rate selection,
   *	see &struct nl80211_txrate_vht
@@ -370,7 +370,7 @@ Signed-off-by: Miles Hu <milehu@codeaurora.org>
   * @NL80211_TXRATE_GI: configure GI, see &enum nl80211_txrate_gi
   * @__NL80211_TXRATE_AFTER_LAST: internal
   * @NL80211_TXRATE_MAX: highest TX rate attribute
-@@ -4434,6 +4450,9 @@ enum nl80211_tx_rate_attributes {
+@@ -4535,6 +4551,9 @@ enum nl80211_tx_rate_attributes {
  	NL80211_TXRATE_HT,
  	NL80211_TXRATE_VHT,
  	NL80211_TXRATE_GI,
@@ -380,7 +380,7 @@ Signed-off-by: Miles Hu <milehu@codeaurora.org>
  
  	/* keep last */
  	__NL80211_TXRATE_AFTER_LAST,
-@@ -4451,6 +4470,15 @@ struct nl80211_txrate_vht {
+@@ -4552,6 +4571,15 @@ struct nl80211_txrate_vht {
  	__u16 mcs[NL80211_VHT_NSS_MAX];
  };
  
