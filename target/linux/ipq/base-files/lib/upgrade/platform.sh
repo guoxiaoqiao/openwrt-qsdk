@@ -225,13 +225,32 @@ flash_section() {
 		version=1
 	fi
 
+	# Look for pci mhi devices
+	for device in $(cat /sys/bus/pci/devices/*/device 2> /dev/null)
+	do
+		[ "${device}" = "0x1104" ] && qcn9000="true"
+	done
+
 	case "${sec}" in
 		hlos*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "0:HLOS";;
 		rootfs*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "rootfs";;
 		wififw-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
 		wififw_ubi-*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
 		wififw_v${version}-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
-		wififw_ubi_v${version}-*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
+		wififw_ubi_v${version}-*)
+			if ! [ "${qcn9000}" = "true" ]; then
+				switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";
+			else
+				echo "Section ${sec} ignored"; return 1;
+			fi
+			;;
+		wififw_ubi_*_v${version}-*)
+			if [ "${qcn9000}" = "true" ]; then
+				switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";
+			else
+				echo "Section ${sec} ignored"; return 1;
+			fi
+			;;
 		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; image_is_nand || return && do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "0:SBL1";;
