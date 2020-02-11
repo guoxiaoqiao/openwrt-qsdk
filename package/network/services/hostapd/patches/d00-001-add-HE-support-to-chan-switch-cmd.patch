@@ -287,8 +287,8 @@
 +        int freq1;
 +
 +        if (!hapd->cs_freq_params.channel ||
-+            !hapd->cs_freq_params.vht_enabled ||
-+            !hapd->cs_freq_params.he_enabled)
++            (!hapd->cs_freq_params.vht_enabled &&
++            !hapd->cs_freq_params.he_enabled))
 +                return eid;
 +
 +        /* bandwidth: 0: 40, 1: 80, 2: 160, 3: 80+80 */
