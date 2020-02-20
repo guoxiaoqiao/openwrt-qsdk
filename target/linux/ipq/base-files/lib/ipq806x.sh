@@ -182,6 +182,9 @@ ipq806x_board_detect() {
 	*"DB.HK02")
 		name="db-hk02"
 		;;
+	*"MP-EMU")
+		name="mp-emu"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"
