@@ -266,3 +266,18 @@ ADD mhitest module.
 endef
 
 $(eval $(call KernelPackage,mhitest_mod))
+
+define KernelPackage/bt_tty
+  TITLE:= BT Inter-processor Communication
+  DEPENDS+= @TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
+  KCONFIG:= \
+	  CONFIG_QCOM_BT_TTY=y \
+	  CONFIG_QCOM_MDT_LOADER=y
+
+endef
+
+define KernelPackage/bt_tty/description
+BT Interprocessor Communication support specific to IPQ50xx
+endef
+
+$(eval $(call KernelPackage,bt_tty))
