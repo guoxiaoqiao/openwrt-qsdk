@@ -188,6 +188,24 @@ ipq806x_board_detect() {
 	*"MP-EMU")
 		name="mp-emu"
 		;;
+	*"AP-MP02.1")
+		name="ap-mp02.1"
+		;;
+	*"AP-MP03.1")
+		name="ap-mp03.1"
+		;;
+	*"AP-MP03.3")
+		name="ap-mp03.3"
+		;;
+	*"DB-MP02.1")
+		name="db-mp02.1"
+		;;
+	*"DB-MP03.1")
+		name="db-mp03.1"
+		;;
+	*"DB-MP03.3")
+		name="db-mp03.3"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"
