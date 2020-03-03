@@ -126,9 +126,18 @@ db-cp01)
 	;;
 ap-cp02-c1|\
 ap-cp03-c1|\
-db-cp02)
+db-cp02 |\
+ap-mp02.1 |\
+ap-mp03.3 |\
+db-mp02.1 |\
+db-mp03.3)
 	ucidef_add_switch "switch0"
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
+	;;
+ap-mp03.1 |\
+db-mp03.1)
+	ucidef_add_switch "switch0"
+	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3 eth4" "eth0"
 	;;
 *)
 	echo "Unsupported hardware. Network interfaces not intialized"
