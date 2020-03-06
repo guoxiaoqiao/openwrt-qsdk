@@ -75,6 +75,11 @@ WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k kmod-ath11k wpad-mesh hostapd-utils \
 		 ath10k-firmware-qca9888 ath10k-firmware-qca9984 \
 		 ath10k-firmware-qca4019 \
 		 -qca-whc-lbd -qca-whc-init -libhyficommon
+
+WIFI_OPEN_PKGS_8M:= kmod-ath11k wpad-mesh hostapd-utils \
+		wpa-cli -qca-whc-lbd -qca-whc-init -libhyficommon \
+		wififw_mount_script
+
 WIFI_10_4_PKGS:=kmod-qca-wifi-10.4-unified-profile \
     qca-hostap-10.4 qca-hostapd-cli-10.4 qca-wpa-supplicant-10.4 \
     qca-wpa-cli-10.4 qca-spectral-10.4 qca-wpc-10.4 sigma-dut-10.4 \
@@ -136,6 +141,8 @@ NETWORKING_256MB:=-dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 	kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp \
 	luci-app-upnp luci-app-ddns luci-proto-ipv6 \
 	luci-app-multiwan
+
+NETWORKING_8MB:=dnsmasq -dnsmasq-dhcpv6 kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp
 
 CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd ddns-scripts xl2tpd \
@@ -356,3 +363,18 @@ define Profile/QSDK_512/Description
 endef
 
 $(eval $(call Profile,QSDK_512))
+
+define Profile/QSDK_8M
+	NAME:=Qualcomm-Atheros SDK 8MB Flash Profile
+	PACKAGES:=$(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_OPEN_PKGS_8M) $(NETWORKING_8MB) \
+		$(IGMPSNOOING_RSTP) $(QCA_ECM_STANDARD) \
+		$(NSS_CLIENTS_256MB) qrtr
+endef
+
+define Profile/QSDK_8M/Description
+	QSDK 8M package set configuration.
+	Enables wifi open source packages
+endef
+
+$(eval $(call Profile,QSDK_8M))
