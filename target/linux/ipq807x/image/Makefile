@@ -39,6 +39,14 @@ define Image/Prepare
 	$(CP) $(LINUX_DIR)/vmlinux $(KDIR)/$(IMG_PREFIX)-vmlinux.elf
 endef
 
+define Image/BuildKernel/MultiDTBFIT
+	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
+	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
+	$(foreach dtb, $(2), gzip -9 -c $(DTS_DIR)/$(dtb).dtb > $(DTS_DIR)/$(dtb).dtb.gz;)
+	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/Image.gz,$(2),gzip,$(3),$(3),$(4),$(5))
+	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
+endef
+
 # some tree's don't have all the device tree's so we filter out
 # the ones that are not present
 # $(1) is the filter to apply
@@ -51,11 +59,17 @@ endef
 define Image/BuildKernel/ipq807x_32
 	$(foreach device, $(call FindDeviceTrees, ipq8074-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ807X_32_KERNEL_LOADADDR));)
+
+	$(call Image/BuildKernel/MultiDTBFIT,ipq8074-hkxx, \
+		$(call FindDeviceTrees, ipq8074-), $(IPQ807X_32_KERNEL_LOADADDR))
 endef
 
 define Image/BuildKernel/generic
 	$(foreach device, $(call FindDeviceTrees, ipq8074-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ807X_KERNEL_LOADADDR));)
+
+	$(call Image/BuildKernel/MultiDTBFIT,ipq8074-hkxx, \
+		$(call FindDeviceTrees, ipq8074-), $(IPQ807X_KERNEL_LOADADDR))
 endef
 
 define Image/BuildKernel
