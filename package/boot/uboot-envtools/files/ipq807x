@@ -46,7 +46,8 @@ qcom,ipq8074-ap-hk01-c1 |\
 qcom,ipq8074-ap-hk01-c2 |\
 qcom,ipq8074-ap-hk01-c3 |\
 qcom,ipq8074-ap-hk01-c4 |\
-qcom,ipq8074-ap-hk01-c5)
+qcom,ipq8074-ap-hk01-c5 |\
+qcom,ipq8074-ap-hk02)
 	ubootenv_add_uci_config $(ubootenv_mtdinfo)
 	;;
 esac
