@@ -149,8 +149,8 @@ wifi_updown() {
 }
 
 wifi_recover() {
-	_wifi_updown disable_recover
-	_wifi_updown enable_recover
+	_wifi_updown disable_recover "$1"
+	_wifi_updown enable_recover "$1"
 }
 
 wifi_reload_legacy() {
