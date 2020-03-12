@@ -24,7 +24,8 @@ ipq807x_setup_interfaces()
 	qcom,ipq8074-ap-hk08|\
 	qcom,ipq8074-ap-hk09|\
 	qcom,ipq8074-ap-hk10-c1|\
-	qcom,ipq8074-ap-hk10-c2)
+	qcom,ipq8074-ap-hk10-c2|\
+	qcom,ipq8074-ap-hk11-c1)
 		ucidef_set_interfaces_lan_wan "eth1 eth2 eth3 eth4 eth5" "eth0"
 		;;
 	qcom,ipq8074-ap-hk02)
