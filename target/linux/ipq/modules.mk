@@ -240,7 +240,8 @@ $(eval $(call KernelPackage,mhi-qrtr-mproc))
 
 define KernelPackage/qmi_sample_client
   TITLE:= Sample qmi test application.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
+
   KCONFIG:= \
 	  CONFIG_SAMPLE_QMI_CLIENT
   FILES:= \
