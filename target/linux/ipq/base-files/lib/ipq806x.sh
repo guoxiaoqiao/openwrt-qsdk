@@ -104,6 +104,9 @@ ipq806x_board_detect() {
 	*"AP-CP01-C2")
 		name="ap-cp01-c2"
 		;;
+	*"AP-CP01-C3")
+		name="ap-cp01-c3"
+		;;
 	*"AP-CP02-C1")
 		name="ap-cp02-c1"
 		;;
@@ -181,6 +184,27 @@ ipq806x_board_detect() {
 		;;
 	*"DB.HK02")
 		name="db-hk02"
+		;;
+	*"MP-EMU")
+		name="mp-emu"
+		;;
+	*"AP-MP02.1")
+		name="ap-mp02.1"
+		;;
+	*"AP-MP03.1")
+		name="ap-mp03.1"
+		;;
+	*"AP-MP03.3")
+		name="ap-mp03.3"
+		;;
+	*"DB-MP02.1")
+		name="db-mp02.1"
+		;;
+	*"DB-MP03.1")
+		name="db-mp03.1"
+		;;
+	*"DB-MP03.3")
+		name="db-mp03.3"
 		;;
 	esac
 

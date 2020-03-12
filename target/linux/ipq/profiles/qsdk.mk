@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015-2019 The Linux Foundation. All rights reserved.
+# Copyright (c) 2015-2020 The Linux Foundation. All rights reserved.
 #
 
 QCA_LITHIUM:=kmod-qvit-lithium
@@ -16,7 +16,8 @@ NSS_EIP197_FW:= \
 NSS_STANDARD:= \
 	qca-nss-fw2-retail \
 	qca-nss-fw-hk-retail \
-	qca-nss-fw-cp-retail
+	qca-nss-fw-cp-retail \
+	qca-nss-fw-mp-retail
 
 NSS_ENTERPRISE:= \
 	qca-nss-fw2-enterprise \
@@ -28,6 +29,7 @@ NSS_ENTERPRISE:= \
 	qca-nss-fw-hk-enterprise_custC \
 	qca-nss-fw-hk-enterprise_custR \
 	qca-nss-fw-cp-enterprise \
+	qca-nss-fw-mp-enterprise \
 	qca-nss-fw-cp-enterprise_custA \
 	qca-nss-fw-cp-enterprise_custC \
 	qca-nss-fw-cp-enterprise_custR
@@ -45,12 +47,14 @@ NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-igs kmod-qca-nss-
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
 	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe \
-	kmod-qca-nss-drv-ovpn-mgr kmod-qca-nss-drv-ovpn-link kmod-qca-nss-drv-vxlanmgr kmod-qca-nss-drv-netlink
+	kmod-qca-nss-drv-ovpn-mgr kmod-qca-nss-drv-ovpn-link kmod-qca-nss-drv-vxlanmgr kmod-qca-nss-drv-netlink \
+	kmod-qca-ovsmgr kmod-qca-nss-drv-match
 
 NSS_CLIENTS_256MB:= kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-pppoe
 
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile \
-	kmod- kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-netlink
+	kmod- kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-netlink kmod-qca-nss-drv-tlsmgr \
+	kmod-qca-nss-drv-match
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi-cryptoapi kmod-qca-nss-cfi-ocf kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf
 
@@ -159,6 +163,8 @@ MAP_PKGS:=map-t 464xlat tayga
 HYFI:=hyfi hyfi-ui
 PLC:=qca-plc-serv qca-plc-fw
 
+QCA_MAD:=qca-mad
+
 AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
 #These packages depend on SWITCH_SSDK_PKGS
 IGMPSNOOING_RSTP:=rstp qca-mcs-apps
@@ -222,7 +228,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(OPENVPN) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
+		$(MAP_PKGS) $(HYFI) $(QCA_MAD) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
 		$(MHI_QRTR) $(KPI) $(QRTR) $(NSS_USERSPACE) \
 		$(NSS_RMNET)
@@ -252,10 +258,21 @@ $(eval $(call Profile,QSDK_Standard))
 
 define Profile/QSDK_QBuilder
 	NAME:=Qualcomm-Atheros SDK QBuilder Profile
-	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) \
-		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(SHORTCUT_FE) $(IGMPSNOOING_RSTP) \
-		$(AQ_PHY) $(NETWORKING) $(QOS) $(NSS_EIP197_FW) $(UTILS) $(TEST_TOOLS) \
-		$(COREBSP_UTILS) qca-wifi-fw-hw5-10.4-asic $(KPI) $(NSS_USERSPACE) $(FAILSAFE)
+	PACKAGES:=luci openssl-util kmod-qca-nss-dp kmod-qca-nss-drv kmod-qca-nss-gmac qca-nss-fw2-retail \
+		qca-nss-fw-hk-retail qca-nss-fw-cp-retail kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig \
+		kmod-scsi-core kmod-usb-storage kmod-usb-uas kmod-nls-cp437 kmod-nls-iso8859-1 kmod-fs-msdos \
+		kmod-fs-vfat kmod-fs-ntfs ntfs-3g e2fsprogs kmod-shortcut-fe kmod-shortcut-fe-cm kmod-shortcut-fe-drv \
+		rstp qca-mcs-apps kmod-qca-wifi-unified-profile qca-hostap qca-hostapd-cli qca-wpa-supplicant qca-wpa-cli \
+		qca-spectral qca-wpc sigma-dut qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui qca-lowi qca-iface-mgr-10.4 \
+		qca-icm qca-cfg80211 athdiag qca-cnss-daemon athtestcmd-lith qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
+		qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic \
+		qca-wifi-hk-fw-hw1-10.4-asic qca-wifi-cyp-fw-hw1-11.0-asic kmod-aq_phy kmod-qca_85xx_sw aq-fw-download mcproxy \
+		-dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd rp-pppoe-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
+		kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp luci-app-upnp luci-app-ddns luci-proto-ipv6 luci-app-multiwan tc kmod-sched \
+		kmod-sched-core kmod-sched-connmark kmod-ifb iptables iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra \
+		qca-nss-fw-eip-hk qca-nss-fw-eip-cp file luci-app-samba rng-tools profilerd ethtool i2c-tools tcpdump pm-utils \
+		wififw_mount_script qca-thermald-10.4 qca-qmi-framework qca-time-services qca-wlanfw-upgrade dashboard qca-wifi-fw-hw5-10.4-asic \
+		iperf-mt sysstat nlcfg kmod-bootconfig
 endef
 
 define Profile/QSDK_QBuilder/Description
@@ -308,7 +325,8 @@ define Profile/QSDK_256
 		iperf-mt rng-tools $(QCA_RFS) $(IGMPSNOOING_RSTP) $(CHAR_DIAG) \
 		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
 		$(NSS_CLIENTS_256MB) $(HYFI) $(FAILSAFE) -lacpd \
-		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) qca-wifi-cyp-fw-hw1-11.0-asic
+		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) qca-wifi-cyp-fw-hw1-11.0-asic \
+		$(QRTR) $(MHI_QRTR)
 endef
 
 define Profile/QSDK_256/Description
@@ -326,7 +344,8 @@ define Profile/QSDK_512
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
 		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
-		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_USERSPACE)
+		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_USERSPACE) \
+		$(QRTR) $(MHI_QRTR)
 endef
 
 define Profile/QSDK_512/Description

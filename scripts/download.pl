@@ -244,6 +244,8 @@ if(!-f "$target/$filename") {
 	print ("The $target/$filename is not present\n");
 	#exit -1;
     }
+} else {
+    $ok = 1;
 }
 
 while (!$ok) {

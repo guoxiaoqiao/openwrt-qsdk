@@ -146,6 +146,9 @@ define KernelPackage/qrtr_mproc
 	  CONFIG_QCOM_APCS_IPC=y \
 	  CONFIG_QCOM_GLINK_SSR=y \
 	  CONFIG_QCOM_Q6V5_WCSS=y \
+	  CONFIG_MSM_RPM_RPMSG=y \
+	  CONFIG_RPMSG_QCOM_GLINK_RPM=y \
+	  CONFIG_REGULATOR_RPM_GLINK=y \
 	  CONFIG_QCOM_SYSMON=y \
 	  CONFIG_RPMSG=y \
 	  CONFIG_RPMSG_CHAR=y \
@@ -180,19 +183,34 @@ define KernelPackage/msm-mproc
   TITLE:= Default kernel configs
   DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
   KCONFIG:= \
-	  CONFIG_IPC_ROUTER=y \
-	  CONFIG_MSM_GLINK=y \
-	  CONFIG_MSM_GLINK_SMEM_NATIVE_XPRT=y \
-	  CONFIG_MSM_GLINK_PKT=y \
-	  CONFIG_MSM_IPC_ROUTER_GLINK_XPRT=y \
-	  CONFIG_MSM_QMI_INTERFACE=y \
-	  CONFIG_IPQ_SUBSYSTEM_RESTART=y \
-	  CONFIG_IPQ807X_REMOTEPROC=y \
-	  CONFIG_IPQ_REMOTEPROC_ADSP=y \
+	  CONFIG_QRTR=y \
+	  CONFIG_QCOM_APCS_IPC=y \
+	  CONFIG_QCOM_GLINK_SSR=y \
+	  CONFIG_QCOM_Q6V5_WCSS=y \
+	  CONFIG_QTI_Q6V5_ADSP=y \
+	  CONFIG_MSM_RPM_RPMSG=y \
+	  CONFIG_RPMSG_QCOM_GLINK_RPM=y \
 	  CONFIG_REGULATOR_RPM_GLINK=y \
-	  CONFIG_MSM_IPC_ROUTER_MHI_XPRT=y \
-	  CONFIG_MSM_RPM_GLINK=y \
-	  CONFIG_MAILBOX=y
+	  CONFIG_IPQ_SUBSYSTEM_RESTART=y \
+	  CONFIG_QCOM_SYSMON=y \
+	  CONFIG_RPMSG=y \
+	  CONFIG_RPMSG_CHAR=y \
+	  CONFIG_RPMSG_QCOM_GLINK_SMEM=y \
+	  CONFIG_RPMSG_QCOM_SMD=y \
+	  CONFIG_QRTR_SMD=y \
+	  CONFIG_QCOM_QMI_HELPERS=y \
+	  CONFIG_SAMPLES=y \
+	  CONFIG_SAMPLE_QMI_CLIENT=m \
+	  CONFIG_SAMPLE_TRACE_EVENTS=n \
+	  CONFIG_SAMPLE_KOBJECT=n \
+	  CONFIG_SAMPLE_KPROBES=n \
+	  CONFIG_SAMPLE_KRETPROBES=n \
+	  CONFIG_SAMPLE_HW_BREAKPOINT=n \
+	  CONFIG_SAMPLE_KFIFO=n \
+	  CONFIG_SAMPLE_CONFIGFS=n \
+	  CONFIG_SAMPLE_RPMSG_CLIENT=n \
+	  CONFIG_MAILBOX=y \
+	  CONFIG_DIAG_OVER_QRTR=y
 endef
 
 define KernelPackage/msm-mproc/description
@@ -203,7 +221,7 @@ $(eval $(call KernelPackage,msm-mproc))
 
 define KernelPackage/mhi-qrtr-mproc
   TITLE:= Default kernel configs for QCCI to work with QRTR.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QRTR_MHI=y \
@@ -235,3 +253,31 @@ Add QMI ping_pong test application
 endef
 
 $(eval $(call KernelPackage,qmi_sample_client))
+
+define KernelPackage/mhitest_mod
+  TITLE:= Mhi test module for Pine.
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
+  FILES:= \
+         $(LINUX_DIR)/drivers/bus/mhi/test/mhitest_mod.ko
+endef
+
+define KernelPackage/mhitest_mod/description
+ADD mhitest module.
+endef
+
+$(eval $(call KernelPackage,mhitest_mod))
+
+define KernelPackage/bt_tty
+  TITLE:= BT Inter-processor Communication
+  DEPENDS+= @TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
+  KCONFIG:= \
+	  CONFIG_QTI_BT_TTY=y \
+	  CONFIG_QCOM_MDT_LOADER=y
+
+endef
+
+define KernelPackage/bt_tty/description
+BT Interprocessor Communication support specific to IPQ50xx
+endef
+
+$(eval $(call KernelPackage,bt_tty))

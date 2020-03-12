@@ -71,7 +71,7 @@
 +	"Enable/disable aggregation for the TIDs ");
 --- a/nl80211.h
 +++ b/nl80211.h
-@@ -4620,17 +4620,32 @@ enum nl80211_ps_state {
+@@ -4635,17 +4635,32 @@ enum nl80211_ps_state {
   *	the max value should be advertised by the driver through
   *	max_data_retry_count. when this attribute is not present, the driver
   *	would use the default configuration.

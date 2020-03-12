@@ -25,12 +25,6 @@ perf_setup(){
 			/etc/init.d/qca-nss-ecm stop
 		fi
 
-		#set the scaling_governor for all core
-		[ -d "/sys/devices/system/cpu/cpu0" ] && echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-		[ -d "/sys/devices/system/cpu/cpu1" ] && echo "performance" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-		[ -d "/sys/devices/system/cpu/cpu2" ] && echo "performance" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-		[ -d "/sys/devices/system/cpu/cpu3" ] && echo "performance" > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-
 		#check for number of radio available
 		[ -d "/sys/class/net/wlan0" ] && echo e > /sys/class/net/wlan0/queues/rx-0/rps_cpus
 		[ -d "/sys/class/net/wlan1" ] && echo e > /sys/class/net/wlan1/queues/rx-0/rps_cpus
