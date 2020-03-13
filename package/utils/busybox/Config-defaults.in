@@ -2142,13 +2142,13 @@ config BUSYBOX_DEFAULT_FTPD
 	default y
 config BUSYBOX_DEFAULT_FEATURE_FTPD_WRITE
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_FTPD_ACCEPT_BROKEN_LIST
 	bool
 	default n
 config BUSYBOX_DEFAULT_FEATURE_FTPD_AUTHENTICATION
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FTPGET
 	bool
 	default y
