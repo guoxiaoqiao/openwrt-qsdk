@@ -197,6 +197,8 @@ QMI_SAMPLE_APP:=kmod-qmi_sample_client
 
 MHI_QRTR:=kmod-mhi-qrtr-mproc
 
+BT_IPC:=kmod-bt_tty
+
 ifneq ($(LINUX_VERSION),3.18.21)
 	EXTRA_NETWORKING:=$(NSS_COMMON) $(QCA_EDMA) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
@@ -231,7 +233,7 @@ define Profile/QSDK_Premium
 		$(MAP_PKGS) $(HYFI) $(QCA_MAD) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
 		$(MHI_QRTR) $(KPI) $(QRTR) $(NSS_USERSPACE) \
-		$(NSS_RMNET)
+		$(NSS_RMNET) $(BT_IPC)
 endef
 
 define Profile/QSDK_Premium/Description
