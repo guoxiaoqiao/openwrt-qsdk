@@ -243,7 +243,7 @@ define Profile/QSDK_Standard
 	NAME:=Qualcomm-Atheros SDK Standard Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(QCA_EDMA) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS) $(STORAGE) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
-		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
+		$(IGMPSNOOING_RSTP) $(NETWORKING) -trace-cmd $(QOS) $(UTILS) ethtool $(COREBSP_UTILS) \
 		qca-wifi-fw-hw5-10.4-asic $(KPI)
 endef
 
