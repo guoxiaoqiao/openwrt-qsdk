@@ -144,6 +144,8 @@ NETWORKING_256MB:=-dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 
 NETWORKING_8MB:=dnsmasq -dnsmasq-dhcpv6 kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp
 
+NETWORKING_16MB:=-dnsmasq dnsmasq-dhcpv6 kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp
+
 CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd ddns-scripts xl2tpd \
 	quagga quagga-ripd quagga-zebra quagga-watchquagga quagga-vtysh \
@@ -378,3 +380,18 @@ define Profile/QSDK_8M/Description
 endef
 
 $(eval $(call Profile,QSDK_8M))
+
+define Profile/QSDK_16M
+	NAME:=Qualcomm-Atheros SDK 16MB Flash Profile
+	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_PKGS_256MB) qca-wifi-hk-fw-hw1-10.4-asic $(NETWORKING_16MB) \
+		$(IGMPSNOOING_RSTP) $(QCA_ECM_STANDARD) $(NSS_CLIENTS_256MB) \
+		$(QRTR) $(MHI_QRTR)
+endef
+
+define Profile/QSDK_16M/Description
+	QSDK 16M package set configuration.
+	Enables qca-wifi 11.0 packages
+endef
+
+$(eval $(call Profile,QSDK_16M))
