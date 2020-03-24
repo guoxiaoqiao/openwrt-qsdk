@@ -9,6 +9,7 @@ UBI_OPTS = -m 2048 -p 128KiB
 E2SIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024)))
 
 IPQ807X_32_KERNEL_LOADADDR = 0x41208000
+IPQ807X_KERNEL_LOADADDR = 0x41080000
 
 ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
@@ -50,6 +51,11 @@ endef
 define Image/BuildKernel/ipq807x_32
 	$(foreach device, $(call FindDeviceTrees, ipq8074-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ807X_32_KERNEL_LOADADDR));)
+endef
+
+define Image/BuildKernel/generic
+	$(foreach device, $(call FindDeviceTrees, ipq8074-), \
+		$(call Image/BuildKernel/$(1),$(device),$(IPQ807X_KERNEL_LOADADDR));)
 endef
 
 define Image/BuildKernel

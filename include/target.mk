@@ -202,7 +202,7 @@ ifeq ($(DUMP),1)
   ifeq ($(ARCH),aarch64)
     CPU_TYPE ?= generic
     CPU_CFLAGS_generic = -mcpu=generic
-    CPU_CFLAGS_cortex-a53 = -mcpu=cortex-a53
+    CPU_CFLAGS_cortex-a53 = -march=armv8-a -mcpu=cortex-a53+crypto
   endif
   ifeq ($(ARCH),arc)
     CPU_TYPE ?= arc700
