@@ -100,6 +100,10 @@ WIFI_PKGS_256MB:=kmod-qca-wifi-lowmem-profile \
 	qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
 	athtestcmd-lith
 
+WIFI_PKGS_16M:=kmod-qca-wifi-lowmem-profile \
+	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
+	qca-wpa-cli qca-cfg80211
+
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
 	qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic \
@@ -383,10 +387,10 @@ $(eval $(call Profile,QSDK_8M))
 
 define Profile/QSDK_16M
 	NAME:=Qualcomm-Atheros SDK 16MB Flash Profile
-	PACKAGES:=$(OPENWRT_256MB) $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
-		$(WIFI_PKGS_256MB) qca-wifi-hk-fw-hw1-10.4-asic $(NETWORKING_16MB) \
+	PACKAGES:=wififw_mount_script $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
+		$(WIFI_PKGS_16M) qca-wifi-hk-fw-hw1-10.4-asic $(NETWORKING_16MB) \
 		$(IGMPSNOOING_RSTP) $(QCA_ECM_STANDARD) $(NSS_CLIENTS_256MB) \
-		$(QRTR) $(MHI_QRTR)
+		$(QRTR) $(MHI_QRTR) hyfi whc -qca-ssdk-shell
 endef
 
 define Profile/QSDK_16M/Description
