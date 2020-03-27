@@ -15,18 +15,18 @@
  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 '
 
-if [ -e /dev/$DEVICENAME ] && [ "$ACTION" = add ]; then
-        cd /dev
-        cat /dev/$DEVICENAME &
-        foo_pid=$!
-        if [ $? -eq 0 ]; then
-                printf "Sending udev events over mhi-uci" \
-                                                                > /dev/console
-        else
-                printf "Failed in sending udev events over  mhi-uci, check pci link and qrtr etc " \
-                                                                > /dev/console
-        fi
-        cd -
+DEVICE="mhi_0306_00.01.00_pipe_14"
 
+if [ "$ACTION" = add ]; then
+	if [ "$DEVICENAME" == "$DEVICE" ]; then
+		cat /dev/$DEVICENAME &
+		if [ $? -eq 0 ]; then
+			printf "Sending udev events over mhi-uci" \
+								> /dev/console
+		else
+			printf "Failed in sending udev events over  mhi-uci, check pci link and qrtr etc " \
+								> /dev/console
+		fi
+	fi
 fi
 
