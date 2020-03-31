@@ -18,6 +18,23 @@ enable_smp_affinity_wigig() {
 	[ -n "$wil6210_tx1" ] && echo 8 > /proc/irq/$wil6210_tx1/smp_affinity
 	[ -n "$wil6210_rx1" ] && echo 4 > /proc/irq/$wil6210_rx1/smp_affinity
 
+	# Adjust nss_queue handler affinity to avoid contention with wil6210_tx handler for EDMG
+	[ -n "$wil6210_tx0" ] && [ -n "$wil6210_rx0" ] && {
+		nssq0_set1=`grep -E -m1 'nss_queue0' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+		nssq3_set1=`grep -E -m1 'nss_queue3' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+		nssq0_set2=`grep -E -m2 'nss_queue0' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+
+		irq3_set1=`cat /proc/irq/$nssq3_set1/smp_affinity`
+		if [ $irq3_set1 -eq 8 ] ; then
+			echo 4 > /proc/irq/$nssq3_set1/smp_affinity
+		fi
+
+		irq0_set1=`cat /proc/irq/$nssq0_set1/smp_affinity`
+		irq0_set2=`cat /proc/irq/$nssq0_set2/smp_affinity`
+		if [ "$irq0_set1" == "f" ] && [ "$irq0_set2" == "f" ] ; then
+			echo e > /proc/irq/$nssq0_set2/smp_affinity
+		fi
+	}
 }
 
 enable_smp_affinity_wifi() {
