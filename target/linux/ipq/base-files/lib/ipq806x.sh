@@ -140,12 +140,6 @@ ipq806x_board_detect() {
 	*"AP-HK02")
 		name="ap-hk02"
 		;;
-	*"AP-HK05")
-		name="ap-hk05"
-		;;
-	*"AP-HK06")
-		name="ap-hk06"
-		;;
 	*"AP-HK07")
 		name="ap-hk07"
 		;;
