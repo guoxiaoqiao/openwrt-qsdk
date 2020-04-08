@@ -93,6 +93,13 @@ WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
 	athtestcmd-lith
 
+WIFI_PKGS_MINENT:=kmod-qca-wifi-custc-profile \
+	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
+	qca-wpa-cli qca-spectral qca-wpc sigma-dut \
+	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
+	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
+	athtestcmd-lith
+
 WIFI_PKGS_256MB:=kmod-qca-wifi-lowmem-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
 	qca-wpa-cli qca-wpc sigma-dut \
@@ -313,6 +320,23 @@ define Profile/QSDK_Enterprise/Description
 endef
 
 $(eval $(call Profile,QSDK_Enterprise))
+
+define Profile/QSDK_MinEnt
+	NAME:=Qualcomm-Atheros SDK MinEnt Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(NSS_COMMON) $(QCA_EDMA) $(NSS_ENTERPRISE) $(SWITCH_SSDK_NOHNAT_PKGS) \
+		$(WIFI_PKGS_MINENT) $(WIFI_10_4_FW_PKGS) $(STORAGE) $(HW_CRYPTO) $(QCA_RFS) \
+		$(IGMPSNOOING_RSTP) $(NETWORKING) $(QOS) $(UTILS) $(TEST_TOOLS) $(COREBSP_UTILS) \
+		$(QCA_ECM_ENTERPRISE) $(NSS_CLIENTS_ENTERPRISE) $(NSS_MACSEC) $(NSS_CRYPTO) \
+		$(IPSEC) $(NSS_EIP197_FW) $(CD_ROUTER) $(AQ_PHY) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) -lacpd \
+		$(USB_DIAG) $(MHI_QRTR) $(KPI) $(QRTR) $(FAILSAFE) $(NSS_USERSPACE)
+endef
+
+define Profile/QSDK_MinEnt/Description
+	QSDK MinEnt package set configuration.
+	Enables qca-wifi 11.0 packages
+endef
+
+$(eval $(call Profile,QSDK_MinEnt))
 
 define Profile/QSDK_Deluxe
 	NAME:=Qualcomm-Atheros SDK Deluxe Profile
