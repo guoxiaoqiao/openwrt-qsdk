@@ -44,7 +44,7 @@ do_load_ipq4019_board_bin()
                     [ -L /lib/firmware/IPQ8074/caldata.bin ] || \
                     ln -s ${apdk}/IPQ8074/caldata.bin /lib/firmware/IPQ8074/caldata.bin
             ;;
-            ap-hk10-*)
+            ap-hk10-* | ap-hk14)
                     FILESIZE=131072
                     mkdir -p ${apdk}/IPQ8074
                     dd if=${mtdblock} of=${apdk}/IPQ8074/caldata.bin bs=1 count=$FILESIZE skip=4096
