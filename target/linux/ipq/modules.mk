@@ -140,7 +140,7 @@ $(eval $(call KernelPackage,usb-phy-ipq807x))
 
 define KernelPackage/qrtr_mproc
   TITLE:= Ath11k Specific kernel configs for IPQ807x and IPQ60xx
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QCOM_APCS_IPC=y \
@@ -181,7 +181,7 @@ $(eval $(call KernelPackage,qrtr_mproc))
 
 define KernelPackage/msm-mproc
   TITLE:= Default kernel configs
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QCOM_APCS_IPC=y \
@@ -221,7 +221,7 @@ $(eval $(call KernelPackage,msm-mproc))
 
 define KernelPackage/mhi-qrtr-mproc
   TITLE:= Default kernel configs for QCCI to work with QRTR.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QRTR_MHI=y \
