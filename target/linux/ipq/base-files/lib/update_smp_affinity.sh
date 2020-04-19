@@ -149,4 +149,20 @@ enable_smp_affinity_wifi() {
 	[ -n "$irq_affinity_num" ] && echo 2 > /proc/irq/$irq_affinity_num/smp_affinity
 	irq_affinity_num=`grep -E -m1 'host2rxdma-monitor-ring3' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
 	[ -n "$irq_affinity_num" ] && echo 2 > /proc/irq/$irq_affinity_num/smp_affinity
+
+	# Enable smp affinity for PCIE attach
+	irq_affinity_num=`grep -E -m1 'WLAN_GRP_DP_0' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	[ -n "$irq_affinity_num" ] && echo 2 > /proc/irq/$irq_affinity_num/smp_affinity
+	irq_affinity_num=`grep -E -m1 'WLAN_GRP_DP_1' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	[ -n "$irq_affinity_num" ] && echo 4 > /proc/irq/$irq_affinity_num/smp_affinity
+	irq_affinity_num=`grep -E -m1 'WLAN_GRP_DP_2' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	[ -n "$irq_affinity_num" ] && echo 8 > /proc/irq/$irq_affinity_num/smp_affinity
+	irq_affinity_num=`grep -E -m1 'WLAN_GRP_DP_4' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	[ -n "$irq_affinity_num" ] && echo 0 > /proc/irq/$irq_affinity_num/smp_affinity
+	irq_affinity_num=`grep -E -m1 'WLAN_GRP_DP_5' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	[ -n "$irq_affinity_num" ] && echo 2 > /proc/irq/$irq_affinity_num/smp_affinity
+	irq_affinity_num=`grep -E -m1 'WLAN_GRP_DP_6' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	[ -n "$irq_affinity_num" ] && echo 4 > /proc/irq/$irq_affinity_num/smp_affinity
+	irq_affinity_num=`grep -E -m1 'WLAN_GRP_DP_7' /proc/interrupts | cut -d ':' -f 1 | tail -n1 | tr -d ' '`
+	[ -n "$irq_affinity_num" ] && echo 8 > /proc/irq/$irq_affinity_num/smp_affinity
 }
