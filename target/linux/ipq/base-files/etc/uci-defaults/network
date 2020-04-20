@@ -92,10 +92,7 @@ ap-hk01-c2|\
 ap-hk01-c3|\
 ap-hk01-c4|\
 ap-hk01-c5|\
-ap-hk05|\
-ap-hk06|\
 ap-hk07|\
-ap-hk08|\
 ap-hk09|\
 ap-hk10-c1|\
 ap-hk10-c2|\
@@ -115,6 +112,7 @@ ap-ac04)
 	ucidef_add_switch "switch0"
 	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3 eth4" "eth0"
 	;;
+ap-hk08|\
 ap-hk02)
 	ucidef_add_switch "switch0"
 	ucidef_set_interfaces_lan_wan "eth1 eth2" "eth0"
