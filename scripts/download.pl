@@ -80,7 +80,7 @@ sub download
 			system("mkdir", "-p", "$target/");
 		}
 
-		if (! open TMPDLS, "find $mirror -follow -name $filename 2>/dev/null |") {
+		if (! open TMPDLS, "find $mirror -not -path '*/[@.]*' -follow -name $filename 2>/dev/null |") {
 			print("Failed to search for $filename in $mirror\n");
 			return;
 		}
@@ -214,9 +214,18 @@ foreach my $mirror (@ARGV) {
 push @mirrors, 'http://mirror2.openwrt.org/sources';
 push @mirrors, 'http://downloads.openwrt.org/sources';
 
-#first check in CAF server
-my $caf = 'https://source.codeaurora.org/mirrored_source/quic/qsdk';
-download($caf);
+my @caf_mirrors;
+push @caf_mirrors, 'file:///prj/qct/openwrt/caf_mirrored_tarballs';
+push @caf_mirrors, 'https://source.codeaurora.org/mirrored_source/quic/qsdk';
+#first check in NFS and CAF server
+while (!$ok) {
+	my $mirror = shift @caf_mirrors;
+	$mirror or last;
+
+	download($mirror);
+	-f "$target/$filename" and $ok = 1;
+}
+
 if(!-f "$target/$filename") {
     my $ok = 1;
     if (index($filename, "rtl8712u.bin") != -1) {
