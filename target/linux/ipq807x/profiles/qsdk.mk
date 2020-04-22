@@ -1,4 +1,3 @@
-QCA_LITHIUM:=kmod-qvit-lithium
 QCA_EDMA:=kmod-qca-edma
 NSS_COMMON:= \
 	kmod-qca-nss-dp \
@@ -121,16 +120,16 @@ define Profile/QSDK_Premium
 	PACKAGES:=$(OPENWRT_STANDARD) $(STORAGE) \
 		$(AUDIO) $(VIDEO) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) $(SWITCH_SSDK_PKGS) \
-		$(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
+		$(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
 		$(QCA_ECM_PREMIUM)
 endef
 
-#		$(HYFI) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) kmod-art2 \
+#		$(HYFI) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(CNSS_DIAG) kmod-art2 \
 #		$(IGMPSNOOING_RSTP) \
 #		$(NSS_CRYPTO) $(NSS_USERSPACE) $(NSS_RMNET) \
 #		$(NSS_EIP197_FW) $(NSS_MACSEC) $(QCA_EDMA) \
-#		$(IPSEC) $(QCA_RFS) $(QCA_LITHIUM) $(SHORTCUT_FE) \
+#		$(IPSEC) $(QCA_RFS) $(SHORTCUT_FE) \
 #		$(MAP_PKGS) $(QCA_MAD) $(OPENVPN) $(HW_CRYPTO) $(QOS)
 
 define Profile/QSDK_Premium/Description
