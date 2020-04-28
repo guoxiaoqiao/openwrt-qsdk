@@ -42,7 +42,7 @@ ubootenv_mtdinfo () {
 }
 
 case "$board" in
-qcom,ipq8074-hk01)
+qcom,ipq8074-ap-hk01-c1)
 	ubootenv_add_uci_config $(ubootenv_mtdinfo)
 	;;
 esac
