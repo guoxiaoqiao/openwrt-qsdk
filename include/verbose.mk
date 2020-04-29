@@ -69,4 +69,5 @@ else
     printf "%s\n" "$(1)"
   endef
   ERROR_MESSAGE=$(MESSAGE)
+  SUCCESS_MESSAGE=$(MESSAGE)
 endif
