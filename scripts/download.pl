@@ -261,6 +261,30 @@ foreach my $mirror (@ARGV) {
 push @mirrors, 'https://sources.openwrt.org';
 push @mirrors, 'https://mirror2.openwrt.org/sources';
 
+#first check in CAF server
+my $caf = 'https://source.codeaurora.org/mirrored_source/quic/qsdk';
+download($caf);
+if(!-f "$target/$filename") {
+    my $ok = 1;
+    if (index($filename, "rtl8712u.bin") != -1) {
+	print ("The $target/$filename cannot be mirrored on CAF.\n");
+	$ok = 0;
+    }
+    foreach my $mirror(@mirrors)
+    {
+	if ((index($mirror, "vm-cnsswebserv") != -1) or (index($mirror, "qualcomm.com") != -1) or (index($mirror, "cdclnxeng") != -1)) {
+	    print ("The $target/$filename is not present in CAF but should be there in $mirror\n");
+	    $ok = 0;
+	    last;
+	}
+    }
+    if($ok != 0)
+    {
+	print ("The $target/$filename is not present\n");
+	#exit -1;
+    }
+}
+
 while (!-f "$target/$filename") {
 	my $mirror = shift @mirrors;
 	$mirror or die "No more mirrors to try - giving up.\n";
