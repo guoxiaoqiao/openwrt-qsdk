@@ -91,25 +91,25 @@ WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-wpa-cli qca-spectral qca-wpc sigma-dut \
 	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
 	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
-	athtestcmd-lith
+	athtestcmd-lith qca-cfg80211tool
 
 WIFI_PKGS_MINENT:=kmod-qca-wifi-custc-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
 	qca-wpa-cli qca-spectral qca-wpc sigma-dut \
 	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
 	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
-	athtestcmd-lith
+	athtestcmd-lith qca-cfg80211tool
 
 WIFI_PKGS_256MB:=kmod-qca-wifi-lowmem-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
 	qca-wpa-cli qca-wpc sigma-dut \
 	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
 	qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
-	athtestcmd-lith
+	athtestcmd-lith qca-cfg80211tool
 
 WIFI_PKGS_16M:=kmod-qca-wifi-lowmem-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
-	qca-wpa-cli qca-cfg80211
+	qca-wpa-cli qca-cfg80211 qca-cfg80211tool
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
@@ -294,7 +294,7 @@ define Profile/QSDK_QBuilder
 		kmod-sched-core kmod-sched-connmark kmod-ifb iptables iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra \
 		qca-nss-fw-eip-hk qca-nss-fw-eip-cp file luci-app-samba rng-tools profilerd ethtool i2c-tools tcpdump pm-utils \
 		wififw_mount_script qca-thermald-10.4 qca-qmi-framework qca-time-services qca-wlanfw-upgrade dashboard qca-wifi-fw-hw5-10.4-asic \
-		iperf-mt sysstat nlcfg kmod-bootconfig
+		iperf-mt sysstat nlcfg kmod-bootconfig qca-cfg80211tool
 endef
 
 define Profile/QSDK_QBuilder/Description
