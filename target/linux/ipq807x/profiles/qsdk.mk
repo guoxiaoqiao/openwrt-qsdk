@@ -69,11 +69,11 @@ COREBSP_UTILS:=pm-utils wififw_mount_script qca-thermald-10.4 qca-qmi-framework 
 
 FAILSAFE:= kmod-bootconfig
 
-NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
-	rp-pppoe-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
-	kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp \
-	luci-app-upnp luci-app-ddns luci-proto-ipv6 \
-	luci-app-multiwan
+NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd mwan3
+#	rp-pppoe-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
+#	kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp \
+#	luci-app-upnp luci-app-ddns luci-proto-ipv6 \
+#	luci-app-multiwan
 
 CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd ddns-scripts xl2tpd \
@@ -121,14 +121,14 @@ define Profile/QSDK_Premium
 		$(AUDIO) $(VIDEO) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
 		$(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
-		$(UTILS)
+		$(UTILS) $(NETWORKING)
 endef
 
 #		$(HYFI) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) kmod-art2 \
 #		$(SWITCH_SSDK_PKGS) $(NSS_CLIENTS_STANDARD) $(IGMPSNOOING_RSTP) \
 #		$(NSS_CRYPTO) $(NSS_STANDARD) $(NSS_USERSPACE) $(NSS_RMNET) \
 #		$(NSS_EIP197_FW) $(NSS_MACSEC) $(QCA_ECM_PREMIUM) $(QCA_EDMA) \
-#		$(IPSEC) $(QCA_RFS) $(QCA_LITHIUM) $(NETWORKING) $(SHORTCUT_FE) \
+#		$(IPSEC) $(QCA_RFS) $(QCA_LITHIUM) $(SHORTCUT_FE) \
 #		$(MAP_PKGS) $(QCA_MAD) $(OPENVPN) $(CD_ROUTER) \
 #		$(HW_CRYPTO) $(QOS)
 
