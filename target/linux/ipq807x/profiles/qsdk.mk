@@ -120,7 +120,8 @@ define Profile/QSDK_Premium
 	PACKAGES:=$(OPENWRT_STANDARD) $(STORAGE) \
 		$(AUDIO) $(VIDEO) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
-		$(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON)
+		$(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
+		$(UTILS)
 endef
 
 #		$(HYFI) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) kmod-art2 \
@@ -129,7 +130,7 @@ endef
 #		$(NSS_EIP197_FW) $(NSS_MACSEC) $(QCA_ECM_PREMIUM) $(QCA_EDMA) \
 #		$(IPSEC) $(QCA_RFS) $(QCA_LITHIUM) $(NETWORKING) $(SHORTCUT_FE) \
 #		$(MAP_PKGS) $(QCA_MAD) $(OPENVPN) $(CD_ROUTER) \
-#		$(UTILS) $(HW_CRYPTO) $(QOS)
+#		$(HW_CRYPTO) $(QOS)
 
 define Profile/QSDK_Premium/Description
 	QSDK Premium package set configuration.
