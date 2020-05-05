@@ -94,7 +94,6 @@ ramips_setup_interfaces()
 	ew1200|\
 	firewrt|\
 	hc5661a|\
-	hc5962|\
 	hlk-rm04|\
 	k2p|\
 	kn|\
@@ -227,7 +226,6 @@ ramips_setup_interfaces()
 	awm002-evb-4M|\
 	awm002-evb-8M|\
 	bdcom,wap2100-sk|\
-	c20i|\
 	dir-645|\
 	gl-mt300a|\
 	gl-mt300n|\
@@ -238,7 +236,6 @@ ramips_setup_interfaces()
 	jhr-n825r|\
 	jhr-n926r|\
 	mikrotik,rb750gr3|\
-	mikrotik,rbm33g|\
 	mzk-wdpr|\
 	rt-n14u|\
 	skylab,skw92a|\
@@ -263,6 +260,11 @@ ramips_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"1:lan" "2:lan" "3:lan" "4:lan" "0:wan" "6@eth0"
 		;;
+	mikrotik,rbm33g)
+		ucidef_add_switch "switch0" \
+			"1:lan" "2:lan" "0:wan" "6@eth0"
+		;;
+	c20i|\
 	c50|\
 	tplink,c20-v1)
 		ucidef_add_switch "switch0" \
@@ -340,6 +342,10 @@ ramips_setup_interfaces()
 	hc5861)
 		ucidef_add_switch "switch0" \
 			"0:lan" "1:lan" "5:wan" "6@eth0"
+		;;
+	hc5962)
+		ucidef_add_switch "switch0" \
+			"1:lan" "2:lan" "3:lan" "4:wan" "6@eth0"
 		;;
 	iodata,wn-ac1167gr|\
 	iodata,wn-ac733gr3)

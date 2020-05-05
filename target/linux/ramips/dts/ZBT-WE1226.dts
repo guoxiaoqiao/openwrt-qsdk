@@ -111,10 +111,12 @@
 
 &wmac {
 	status = "okay";
-	ralink,mtd-eeprom = <&factory 0x4>;
 };
 
 &ethernet {
 	mtd-mac-address = <&factory 0x2e>;
-	mediatek,portmap = "llllw";
+};
+
+&esw {
+	mediatek,portmap = <0x2f>;
 };
