@@ -119,6 +119,10 @@ if KERNEL_KASAN
 		default 2048
 endif
 
+config KERNEL_PAGE_OWNER
+	bool "Page Onwer Tracking"
+	default n
+
 config KERNEL_FTRACE
 	bool "Compile the kernel with tracing support"
 	depends on !TARGET_uml
@@ -133,6 +137,22 @@ config KERNEL_ENABLE_DEFAULT_TRACERS
 	bool "Trace process context switches and events"
 	depends on KERNEL_FTRACE
 	default n
+
+config KERNEL_DEBUG_KMEMLEAK
+	bool "Kernel memory leak detector"
+
+if KERNEL_DEBUG_KMEMLEAK
+	config KERNEL_HAVE_DEBUG_KMEMLEAK
+		bool
+		default y
+	config KERNEL_DEBUG_KMEMLEAK_MEM_POOL_SIZE
+		int "Kmemleak memory pool size"
+		default 16000
+	config KERNEL_DEBUG_KMEMLEAK_TEST
+		tristate "Simple test for the kernel memory leak detector"
+	config KERNEL_DEBUG_KMEMLEAK_DEFAULT_OFF
+		bool "Default kmemleak to off"
+endif
 
 config KERNEL_FUNCTION_TRACER
 	bool "Function tracer"
@@ -152,6 +172,14 @@ config KERNEL_DYNAMIC_FTRACE
 config KERNEL_FUNCTION_PROFILER
 	bool "Function profiler"
 	depends on KERNEL_FUNCTION_TRACER
+	default n
+
+config KERNEL_IRQSOFF_TRACER
+	bool "Interrupts-off Latency Tracer"
+	default n
+
+config KERNEL_PREEMPT_TRACER
+	bool "Preemption-off Latency Tracer"
 	default n
 
 config KERNEL_DEBUG_KERNEL
@@ -276,10 +304,10 @@ config KERNEL_PRINTK_TIME
 	default y
 
 config KERNEL_SLUB_DEBUG
-	bool
+	bool "Compile kernel with slub debug option"
 
 config KERNEL_SLUB_DEBUG_ON
-	bool
+	bool "Enable slub debug on"
 
 config KERNEL_SLABINFO
 	select KERNEL_SLUB_DEBUG
@@ -328,6 +356,55 @@ if KERNEL_DEVTMPFS
 		default n
 
 endif
+
+config KERNEL_SKB_DEBUG
+	bool "Enable DEBUG Object support"
+
+if KERNEL_SKB_DEBUG
+
+	config KERNEL_DEBUG_OBJECTS
+		bool "Enable DEBUG Object support to track the lifetime of various objects"
+		default y
+
+	config KERNEL_DEBUG_OBJECTS_SELFTEST
+		bool "Enable Debug objects selftest"
+
+	config KERNEL_DEBUG_OBJECTS_FREE
+		bool "Debug objects in freed memory"
+
+	config KERNEL_DEBUG_OBJECTS_TIMERS
+		bool "Debug timer objects"
+
+	config KERNEL_DEBUG_OBJECTS_RCU_HEAD
+		bool "Debug RCU callbacks objects"
+
+	config KERNEL_DEBUG_OBJECTS_PERCPU_COUNTER
+		bool "Debug percpu counter objects"
+
+	config KERNEL_DEBUG_OBJECTS_WORK
+		bool "Debug work objects"
+
+	config KERNEL_DEBUG_OBJECTS_ENABLE_DEFAULT
+		int "debug_objects bootup default value (0-1)"
+		default 1
+
+	config KERNEL_DEBUG_OBJECTS_SKBUFF
+		bool "Debug sk_buff allocations"
+		default y
+endif
+
+config KERNEL_SKB_RECYCLER_PREALLOC
+	bool "Enable preallocation of SKBs"
+	default n
+
+config KERNEL_SKB_RECYCLE_MAX_PREALLOC_SKBS
+	int "Number of SKBs to be preallocated"
+	depends on KERNEL_SKB_RECYCLER_PREALLOC
+	default 16384
+
+config KERNEL_ALLOC_SKB_PAGE_FRAG_DISABLE
+	bool "Disable alloc skb page frag"
+	default n
 
 config KERNEL_KEYS
     bool "Enable kernel access key retention support"
@@ -588,6 +665,10 @@ if KERNEL_CGROUPS
 		default y
 
 endif
+
+config KERNEL_NET_IPGRE_BROADCAST
+	bool "IP: broadcast GRE over IP"
+	default y
 
 #
 # Namespace support symbols
