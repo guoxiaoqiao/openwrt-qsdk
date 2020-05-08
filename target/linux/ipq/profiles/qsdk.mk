@@ -414,7 +414,7 @@ define Profile/QSDK_16M
 	PACKAGES:=wififw_mount_script $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS_16M) qca-wifi-hk-fw-hw1-10.4-asic $(NETWORKING_16MB) \
 		$(IGMPSNOOING_RSTP) $(QCA_ECM_STANDARD) $(NSS_CLIENTS_256MB) \
-		$(QRTR) $(MHI_QRTR) hyfi whc -qca-ssdk-shell
+		$(QRTR) $(MHI_QRTR) hyfi whc -qca-ssdk-shell xz xz-utils
 endef
 
 define Profile/QSDK_16M/Description
