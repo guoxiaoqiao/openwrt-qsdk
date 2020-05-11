@@ -99,14 +99,16 @@ sub xref_packages() {
             # It's the case for LuCI, as an example
             # (PACKAGE_luci-lib-core_source, PACKAGE_luci-lib-core_compiled...)
             next if !exists( $package{$pkg} );
-
+	    #in metadata.pm,  subdir has changed to path( in 19.07)
+	    my $subdir = $package{$pkg}->{src}->{path};
+	    $subdir =~ s/^package\///;
             $QSDKPKGS{$pkg} = {
-                src     => $package{$pkg}->{src},
+                src     => $package{$pkg}->{src}->{name},
                 name    => $package{$pkg}->{name},
                 variant => $package{$pkg}->{variant},
 
           # Feeds (subdir) is set to an empty string for packages in openwrt.git
-                subdir      => $package{$pkg}->{subdir},
+                subdir      => $subdir,
                 version     => $package{$pkg}->{version},
                 description => $package{$pkg}->{description},
                 source      => $package{$pkg}->{source},
@@ -257,7 +259,7 @@ sub WriteDataToExcel
         $worksheet->write( $row, $col++, $curpkg->{src},     $f_data );
         $worksheet->write( $row, $col++, $curpkg->{name},    $f_data );
         $worksheet->write( $row, $col++, $curpkg->{variant}, $f_data );
-        $curFeed = length( $curpkg->{subdir} ) ? basename( $curpkg->{subdir} ) : "openwrt";
+        $curFeed = length( $curpkg->{subdir} ) ? basename( dirname($curpkg->{subdir}) ) : "openwrt";
         my $cmd = "find ./package/feeds/ -name $curpkg->{src}";
         my @isFeed = `$cmd`;
         $curFeed = (scalar @isFeed == 0) ? 'base' : $curFeed;
