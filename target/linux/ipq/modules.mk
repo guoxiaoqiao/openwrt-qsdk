@@ -138,6 +138,26 @@ endef
 
 $(eval $(call KernelPackage,usb-phy-ipq807x))
 
+define KernelPackage/usb-phy-ipq5018
+  TITLE:=DWC3 USB QCOM PHY driver for IPQ5018
+  DEPENDS:=@TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
+  KCONFIG:= \
+	CONFIG_USB_QCA_M31_PHY \
+	CONFIG_PHY_IPQ_UNIPHY_USB
+  FILES:= \
+	$(LINUX_DIR)/drivers/usb/phy/phy-qca-m31.ko \
+	$(LINUX_DIR)/drivers/phy/phy-qca-uniphy.ko
+  AUTOLOAD:=$(call AutoLoad,45,phy-qca-m31 phy-qca-uniphy,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-phy-ipq5018/description
+ This driver provides support for the USB PHY drivers
+ within the IPQ5018 SoCs.
+endef
+
+$(eval $(call KernelPackage,usb-phy-ipq5018))
+
 define KernelPackage/qrtr_mproc
   TITLE:= Ath11k Specific kernel configs for IPQ807x and IPQ60xx
   DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
