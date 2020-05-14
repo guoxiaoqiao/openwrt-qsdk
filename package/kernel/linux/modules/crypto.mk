@@ -158,7 +158,8 @@ $(eval $(call KernelPackage,crypto-deflate))
 define KernelPackage/crypto-des
   TITLE:=DES/3DES cipher CryptoAPI module
   KCONFIG:=CONFIG_CRYPTO_DES
-  FILES:=$(LINUX_DIR)/crypto/des_generic.ko
+  FILES:=$(LINUX_DIR)/crypto/des_generic.ko \
+	$(LINUX_DIR)/lib/crypto/libdes.ko@ge5.4
   AUTOLOAD:=$(call AutoLoad,09,des_generic)
   $(call AddDepends/crypto)
 endef
