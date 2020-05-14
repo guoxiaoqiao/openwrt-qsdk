@@ -89,6 +89,31 @@ do_load_ipq4019_board_bin()
                     ln -s ${apdk}/qcn9000/caldata_2.bin /lib/firmware/qcn9000/caldata_2.bin
 
             ;;
+            ap-mp02.1*)
+                    MP_BD_FILENAME=/lib/firmware/IPQ5018/bdwlan.bin
+                    mkdir -p ${apdk}/IPQ5018
+                    if [ -f "$MP_BD_FILENAME" ]; then
+                        FILESIZE=$(stat -Lc%s "$MP_BD_FILENAME")
+                    else
+                        FILESIZE=131072
+                    fi
+                    dd if=${mtdblock} of=${apdk}/virtual_art.bin.lzma
+                    lzma -dv --single-stream ${apdk}/virtual_art.bin.lzma
+                    dd if=${apdk}/virtual_art.bin of=${apdk}/IPQ5018/caldata.bin bs=1 count=$FILESIZE skip=4096
+                    ln -s ${apdk}/IPQ5018/caldata.bin /lib/firmware/IPQ5018/caldata.bin
+            ;;
+            ap-mp*)
+                    MP_BD_FILENAME=/lib/firmware/IPQ5018/bdwlan.bin
+                    mkdir -p ${apdk}/IPQ5018
+                    if [ -f "$MP_BD_FILENAME" ]; then
+                        FILESIZE=$(stat -Lc%s "$MP_BD_FILENAME")
+                    else
+                        FILESIZE=131072
+                    fi
+                    dd if=${mtdblock} of=${apdk}/IPQ5018/caldata.bin bs=1 count=$FILESIZE skip=4096
+                    [ -L /lib/firmware/IPQ5018/caldata.bin ] || \
+                    ln -s ${apdk}/IPQ5018/caldata.bin /lib/firmware/IPQ5018/caldata.bin
+            ;;
             ap-cp*)
                     CP_BD_FILENAME=/lib/firmware/IPQ6018/bdwlan.bin
                     mkdir -p ${apdk}/IPQ6018
