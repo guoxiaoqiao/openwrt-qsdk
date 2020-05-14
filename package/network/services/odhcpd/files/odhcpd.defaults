@@ -27,3 +27,8 @@ set dhcp.lan.dhcpv6=$MODE
 set dhcp.lan.ra=$MODE
 commit dhcp
 EOF
+
+/etc/init.d/odhcpd enabled && {
+	/etc/init.d/odhcpd stop
+	/etc/init.d/odhcpd disable
+}
