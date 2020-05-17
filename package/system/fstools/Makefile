@@ -59,13 +59,24 @@ define Package/block-mount
   DEPENDS:=+ubox +libubox +libuci
 endef
 
+define Package/snapshot_tool
+  SECTION:=base
+  CATEGORY:=Base system
+  TITLE:=Base system snapshot_tool
+  DEPENDS:=+fstools
+endef
+
 define Package/fstools/install
 	$(INSTALL_DIR) $(1)/sbin $(1)/lib
 
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/{mount_root,jffs2reset,snapshot_tool} $(1)/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/{mount_root,jffs2reset} $(1)/sbin/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libfstools.so $(1)/lib/
-	$(INSTALL_BIN) ./files/snapshot $(1)/sbin/
 	$(LN) jffs2reset $(1)/sbin/jffs2mark
+endef
+
+define Package/snapshot_tool/install
+	$(INSTALL_DIR) $(1)/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/snapshot_tool $(1)/sbin/
 endef
 
 define Package/block-mount/install
@@ -91,3 +102,4 @@ endef
 
 $(eval $(call BuildPackage,fstools))
 $(eval $(call BuildPackage,block-mount))
+$(eval $(call BuildPackage,snapshot_tool))
