@@ -28,7 +28,7 @@ NSS_CLIENTS_STANDARD:= -kmod-qca-nss-drv-qdisc -kmod-qca-nss-drv-igs -kmod-qca-n
 	kmod-qca-nss-drv-tunipip6 -kmod-qca-nss-drv-l2tpv2 -kmod-qca-nss-drv-pptp \
 	-kmod-qca-nss-drv-map-t -kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr -kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe \
-	-kmod-qca-nss-drv-ovpn-mgr -kmod-qca-nss-drv-ovpn-link -kmod-qca-nss-drv-vxlanmgr -kmod-qca-nss-drv-netlink \
+	-kmod-qca-nss-drv-ovpn-mgr -kmod-qca-nss-drv-ovpn-link kmod-qca-nss-drv-vxlanmgr -kmod-qca-nss-drv-netlink \
 	-kmod-qca-ovsmgr -kmod-qca-nss-drv-match
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi-cryptoapi kmod-qca-nss-cfi-ocf kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf
