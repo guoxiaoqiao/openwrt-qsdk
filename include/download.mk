@@ -17,6 +17,10 @@ PKG_SOURCE_SUBDIR ?= $(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE ?= $(PKG_SOURCE_SUBDIR).tar.xz
 endif
 
+ifndef SKIP_MIRROR_DOWNLOAD
+SKIP_MIRROR_DOWNLOAD = false
+endif
+
 DOWNLOAD_RDEP=$(STAMP_PREPARED) $(HOST_STAMP_PREPARED)
 
 define dl_method_git
@@ -121,6 +125,13 @@ check_md5 = \
 hash_var = $(if $(filter-out x,$(1)),MD5SUM,HASH)
 endif
 
+define git_mirror_download
+	GIT_NAME=$$$$(echo $(URL) | sed -e s:.*/::g -e s/.git$$$$//g); \
+	[ -n "${CONFIG_GIT_MIRROR}" ] && \
+	git clone $(if $(BRANCH),-b $(BRANCH)) $(CONFIG_GIT_MIRROR)$$$$GIT_NAME $(SUBDIR) --recursive && \
+	(cd $(SUBDIR) && git remote -v && git checkout $(VERSION))
+endef
+
 define DownloadMethod/unknown
 	echo "ERROR: No download method available"; false
 endef
@@ -203,9 +214,10 @@ define DownloadMethod/rawgit
 	cd $(TMP_DIR)/dl && \
 	rm -rf $(SUBDIR) && \
 	[ \! -d $(SUBDIR) ] && \
-	git clone $(OPTS) $(URL) $(SUBDIR) && \
+	((if $(SKIP_MIRROR_DOWNLOAD) ; then 0; else $(call git_mirror_download); fi ) || \
+	(rm -rf $(SUBDIR) && git clone $(OPTS) $(URL) $(SUBDIR) && \
 	(cd $(SUBDIR) && git checkout $(VERSION) && \
-	git submodule update --init --recursive) && \
+	git submodule update --init --recursive))) && \
 	echo "Packing checkout..." && \
 	export TAR_TIMESTAMP=`cd $(SUBDIR) && git log -1 --format='@%ct'` && \
 	rm -rf $(SUBDIR)/.git && \
@@ -276,6 +288,7 @@ define Download/Defaults
   FILE:=
   URL_FILE:=
   PROTO:=
+  BRANCH:=
   HASH=$$(MD5SUM)
   MD5SUM:=x
   SUBDIR:=
@@ -290,6 +303,7 @@ define Download/default
   FILE:=$(PKG_SOURCE)
   URL:=$(PKG_SOURCE_URL)
   URL_FILE:=$(PKG_SOURCE_URL_FILE)
+  BRANCH:=$(PKG_SOURCE_BRANCH)
   SUBDIR:=$(PKG_SOURCE_SUBDIR)
   PROTO:=$(PKG_SOURCE_PROTO)
   $(if $(PKG_SOURCE_MIRROR),MIRROR:=$(filter 1,$(PKG_MIRROR)))
