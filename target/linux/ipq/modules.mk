@@ -138,9 +138,29 @@ endef
 
 $(eval $(call KernelPackage,usb-phy-ipq807x))
 
+define KernelPackage/usb-phy-ipq5018
+  TITLE:=DWC3 USB QCOM PHY driver for IPQ5018
+  DEPENDS:=@TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
+  KCONFIG:= \
+	CONFIG_USB_QCA_M31_PHY \
+	CONFIG_PHY_IPQ_UNIPHY_USB
+  FILES:= \
+	$(LINUX_DIR)/drivers/usb/phy/phy-qca-m31.ko \
+	$(LINUX_DIR)/drivers/phy/phy-qca-uniphy.ko
+  AUTOLOAD:=$(call AutoLoad,45,phy-qca-m31 phy-qca-uniphy,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-phy-ipq5018/description
+ This driver provides support for the USB PHY drivers
+ within the IPQ5018 SoCs.
+endef
+
+$(eval $(call KernelPackage,usb-phy-ipq5018))
+
 define KernelPackage/qrtr_mproc
   TITLE:= Ath11k Specific kernel configs for IPQ807x and IPQ60xx
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QCOM_APCS_IPC=y \
@@ -181,7 +201,7 @@ $(eval $(call KernelPackage,qrtr_mproc))
 
 define KernelPackage/msm-mproc
   TITLE:= Default kernel configs
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QCOM_APCS_IPC=y \
@@ -221,7 +241,7 @@ $(eval $(call KernelPackage,msm-mproc))
 
 define KernelPackage/mhi-qrtr-mproc
   TITLE:= Default kernel configs for QCCI to work with QRTR.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QRTR_MHI=y \
@@ -274,7 +294,8 @@ define KernelPackage/bt_tty
   KCONFIG:= \
 	  CONFIG_QTI_BT_TTY=y \
 	  CONFIG_QCOM_MDT_LOADER=y
-
+  FILES:= $(LINUX_DIR)/drivers/soc/qcom/bt/bt_rproc.ko
+  AUTOLOAD:=$(call AutoLoad,53,bt_rproc,1)
 endef
 
 define KernelPackage/bt_tty/description
