@@ -9,11 +9,13 @@ NSS_EIP197_FW:= \
 	qca-nss-fw-eip-hk \
 	qca-nss-fw-eip-cp
 
+#NSS_STANDARD:= \
+#	qca-nss-fw2-retail \
+#	qca-nss-fw-hk-retail \
+#	qca-nss-fw-cp-retail \
+#	qca-nss-fw-mp-retail
 NSS_STANDARD:= \
-	qca-nss-fw2-retail \
-	qca-nss-fw-hk-retail \
-	qca-nss-fw-cp-retail \
-	qca-nss-fw-mp-retail
+	qca-nss-fw-hk-retail
 
 NSS_MACSEC:= \
 	kmod-qca-nss-macsec \
@@ -121,16 +123,15 @@ define Profile/QSDK_Premium
 		$(AUDIO) $(VIDEO) $(TEST_TOOLS) $(COREBSP_UTILS) \
 		$(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
 		$(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
-		$(UTILS) $(NETWORKING)
+		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER)
 endef
 
 #		$(HYFI) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) kmod-art2 \
 #		$(SWITCH_SSDK_PKGS) $(NSS_CLIENTS_STANDARD) $(IGMPSNOOING_RSTP) \
-#		$(NSS_CRYPTO) $(NSS_STANDARD) $(NSS_USERSPACE) $(NSS_RMNET) \
+#		$(NSS_CRYPTO) $(NSS_USERSPACE) $(NSS_RMNET) \
 #		$(NSS_EIP197_FW) $(NSS_MACSEC) $(QCA_ECM_PREMIUM) $(QCA_EDMA) \
 #		$(IPSEC) $(QCA_RFS) $(QCA_LITHIUM) $(SHORTCUT_FE) \
-#		$(MAP_PKGS) $(QCA_MAD) $(OPENVPN) $(CD_ROUTER) \
-#		$(HW_CRYPTO) $(QOS)
+#		$(MAP_PKGS) $(QCA_MAD) $(OPENVPN) $(HW_CRYPTO) $(QOS)
 
 define Profile/QSDK_Premium/Description
 	QSDK Premium package set configuration.
