@@ -4,9 +4,6 @@
 # Copyright (C) 2011-2012 OpenWrt.org
 #
 
-[ -e /etc/config/ubootenv ] && exit 0
-
-touch /etc/config/ubootenv
 
 . /lib/uboot-envtools.sh
 . /lib/functions.sh
@@ -40,6 +37,23 @@ ubootenv_mtdinfo () {
 
 	echo /dev/$mtd_dev 0x0 $ubootenv_size $mtd_erase $sectors
 }
+
+validate_device_node() {
+	config_get dev $1 dev
+	if [ "$dev" != "$2" ] || [ ! -e /etc/fw_env.config ]; then
+		rm /etc/config/ubootenv /etc/fw_env.config
+		return;
+	fi
+
+	exit 0
+}
+
+[ -e /etc/config/ubootenv ] && {
+	config_load ubootenv
+	config_foreach validate_device_node ubootenv $(default_uboot_env)
+}
+
+touch /etc/config/ubootenv
 
 case "$board" in
 qcom,ipq8074-ap-hk01-c1 |\

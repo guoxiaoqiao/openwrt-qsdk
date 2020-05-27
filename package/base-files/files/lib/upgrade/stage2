@@ -113,7 +113,8 @@ kill_remaining() { # [ <signal> [ <loop> ] ]
 
 indicate_upgrade
 
-killall -9 telnetd
+# telnetd is no more supported from 19.07 onwards
+# killall -9 telnetd
 killall -9 dropbear
 killall -9 ash
 
