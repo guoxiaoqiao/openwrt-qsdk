@@ -385,6 +385,7 @@ platform_do_upgrade() {
 	qcom,ipq8074-ap-hk01-c4 |\
 	qcom,ipq8074-ap-hk01-c5 |\
 	qcom,ipq8074-ap-hk02 |\
+	qcom,ipq8074-ap-hk06 |\
 	qcom,ipq8074-ap-hk07 |\
 	qcom,ipq8074-ap-hk08 |\
 	qcom,ipq8074-ap-hk09 |\
