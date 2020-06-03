@@ -139,7 +139,7 @@ endef
 $(eval $(call KernelPackage,usb-phy-ipq807x))
 
 define KernelPackage/usb-phy-ipq5018
-  TITLE:=DWC3 USB QCOM PHY driver for IPQ5018
+  TITLE:=DWC3 USB PHY driver for IPQ5018
   DEPENDS:=@TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
   KCONFIG:= \
 	CONFIG_USB_QCA_M31_PHY \
