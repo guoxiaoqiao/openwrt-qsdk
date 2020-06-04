@@ -107,7 +107,8 @@ define DownloadMethod/git
 		cd $(TMP_DIR)/dl && \
 		rm -rf $(SUBDIR) && \
 		[ \! -d $(SUBDIR) ] && \
-		(if $(SKIP_MIRROR_DOWNLOAD) ; then 0; else $(call git_mirror_download); fi ) || \
+		echo "Try to download from mirror server" && $(call DownloadMethod/default) || \
+		((if $(SKIP_MIRROR_DOWNLOAD) ; then 0; else $(call git_mirror_download); fi ) || \
 		(rm -rf $(SUBDIR) &&  git clone $(URL) $(SUBDIR) --recursive && \
 		(cd $(SUBDIR) && git remote -v && git checkout $(VERSION) || \
 			(git fetch origin $(VERSION) && git checkout FETCH_HEAD && git submodule update))) && \
@@ -115,7 +116,7 @@ define DownloadMethod/git
 		rm -rf $(SUBDIR)/.git && \
 		$(call dl_pack,$(TMP_DIR)/dl/$(FILE),$(SUBDIR)) && \
 		mv $(TMP_DIR)/dl/$(FILE) $(DL_DIR)/ && \
-		rm -rf $(SUBDIR); \
+		rm -rf $(SUBDIR)); \
 	)
 endef
 
