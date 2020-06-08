@@ -59,7 +59,7 @@
 	],
 	[ "if",
                 [ "eq", "SUBSYSTEM",
-                        [ "dump_q6v5" ]
+                        [ "dump_q6v5", "devcoredump" ]
                 ],
                 [ "exec", "/sbin/hotplug-call", "%SUBSYSTEM%" ]
         ],
