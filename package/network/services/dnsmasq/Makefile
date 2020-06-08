@@ -39,6 +39,7 @@ define Package/dnsmasq/Default
   CATEGORY:=Base system
   TITLE:=DNS and DHCP server
   URL:=http://www.thekelleys.org.uk/dnsmasq/
+  DEPENDS:=+libubus
   USERID:=dnsmasq=453:dnsmasq=453
 endef
 
@@ -52,6 +53,7 @@ $(call Package/dnsmasq/Default)
   TITLE += (with DHCPv6 support)
   DEPENDS:=@IPV6 +kmod-ipv6
   VARIANT:=dhcpv6
+  DEPENDS:=+libubox +libubus
   PROVIDES:=dnsmasq
 endef
 
