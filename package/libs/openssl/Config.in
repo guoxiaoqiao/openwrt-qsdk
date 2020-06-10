@@ -248,6 +248,7 @@ config OPENSSL_ENGINE
 config OPENSSL_ENGINE_BUILTIN
 	bool "Build chosen engines into libcrypto"
 	depends on OPENSSL_ENGINE
+	default y if TARGET_ipq_ipq40xx
 	help
 		This builds all chosen engines into libcrypto.so, instead of building
 		them as dynamic engines in separate packages.
@@ -268,6 +269,7 @@ config OPENSSL_ENGINE_BUILTIN_DEVCRYPTO
 	prompt "Acceleration support through /dev/crypto"
 	depends on OPENSSL_ENGINE_BUILTIN
 	select PACKAGE_libopenssl-conf
+	default y if TARGET_ipq_ipq40xx
 	help
 		This enables use of hardware acceleration through OpenBSD
 		Cryptodev API (/dev/crypto) interface.
