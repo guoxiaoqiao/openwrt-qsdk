@@ -5,8 +5,8 @@ NSS_COMMON:= \
 #	kmod-qca-nss-gmac
 
 NSS_EIP197_FW:= \
-	qca-nss-fw-eip-hk \
-	qca-nss-fw-eip-cp
+	qca-nss-fw-eip-hk
+#	qca-nss-fw-eip-cp
 
 #NSS_STANDARD:= \
 #	qca-nss-fw2-retail \
@@ -122,13 +122,13 @@ define Profile/QSDK_Premium
 		$(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) $(SWITCH_SSDK_PKGS) \
 		$(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
-		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO)
+		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW)
 endef
 
 #		$(HYFI) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(CNSS_DIAG) kmod-art2 \
 #		$(IGMPSNOOING_RSTP) \
-#		$(NSS_CRYPTO) $(NSS_USERSPACE) $(NSS_RMNET) \
-#		$(NSS_EIP197_FW) $(NSS_MACSEC) $(QCA_EDMA) \
+#		$(NSS_USERSPACE) $(NSS_RMNET) \
+#		$(NSS_MACSEC) $(QCA_EDMA) \
 #		$(IPSEC) $(QCA_RFS) $(SHORTCUT_FE) \
 #		$(MAP_PKGS) $(QCA_MAD) $(OPENVPN) $(HW_CRYPTO) $(QOS)
 
