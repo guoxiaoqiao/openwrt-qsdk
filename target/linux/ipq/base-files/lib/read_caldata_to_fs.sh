@@ -89,7 +89,7 @@ do_load_ipq4019_board_bin()
                     ln -s ${apdk}/qcn9000/caldata_2.bin /lib/firmware/qcn9000/caldata_2.bin
 
             ;;
-            ap-mp02.1*)
+            ap-mp03.1* | db-mp03.1*)
                     MP_BD_FILENAME=/lib/firmware/IPQ5018/bdwlan.bin
                     mkdir -p ${apdk}/IPQ5018
                     if [ -f "$MP_BD_FILENAME" ]; then
@@ -97,10 +97,31 @@ do_load_ipq4019_board_bin()
                     else
                         FILESIZE=131072
                     fi
-                    dd if=${mtdblock} of=${apdk}/virtual_art.bin.lzma
-                    lzma -dv --single-stream ${apdk}/virtual_art.bin.lzma
-                    dd if=${apdk}/virtual_art.bin of=${apdk}/IPQ5018/caldata.bin bs=1 count=$FILESIZE skip=4096
+                    dd if=${mtdblock} of=${apdk}/IPQ5018/caldata.bin bs=1 count=$FILESIZE skip=4096
                     ln -s ${apdk}/IPQ5018/caldata.bin /lib/firmware/IPQ5018/caldata.bin
+
+                    mkdir -p ${apdk}/qcn9000
+                    dd if=${mtdblock} of=${apdk}/qcn9000/caldata_1.bin bs=1 count=$FILESIZE skip=157696
+                    ln -s ${apdk}/qcn9000/caldata_1.bin /lib/firmware/qcn9000/caldata_1.bin
+            ;;
+            ap-mp03.3* | db-mp03.3*)
+                    MP_BD_FILENAME=/lib/firmware/IPQ5018/bdwlan.bin
+                    mkdir -p ${apdk}/IPQ5018
+                    if [ -f "$MP_BD_FILENAME" ]; then
+                        FILESIZE=$(stat -Lc%s "$MP_BD_FILENAME")
+                    else
+                        FILESIZE=131072
+                    fi
+                    dd if=${mtdblock} of=${apdk}/IPQ5018/caldata.bin bs=1 count=$FILESIZE skip=4096
+                    ln -s ${apdk}/IPQ5018/caldata.bin /lib/firmware/IPQ5018/caldata.bin
+
+                    mkdir -p ${apdk}/qcn9100
+                    dd if=${mtdblock} of=${apdk}/qcn9100/caldata_1.bin bs=1 count=$FILESIZE skip=157696
+                    ln -s ${apdk}/qcn9100/caldata_1.bin /lib/firmware/qcn9100/caldata_1.bin
+
+                    mkdir -p ${apdk}/qcn9000
+                    dd if=${mtdblock} of=${apdk}/qcn9000/caldata_1.bin bs=1 count=$FILESIZE skip=311296
+                    ln -s ${apdk}/qcn9000/caldata_1.bin /lib/firmware/qcn9000/caldata_1.bin
             ;;
             ap-mp*)
                     MP_BD_FILENAME=/lib/firmware/IPQ5018/bdwlan.bin
