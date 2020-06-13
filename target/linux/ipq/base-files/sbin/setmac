@@ -13,9 +13,11 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+. /lib/ipq806x.sh
 . /lib/functions.sh
 
 BT_OFFSET=64
+board=$(ipq806x_board_name)
 # parse cmdline
 while [ -n "$1" ]; do
 	case "$1" in
@@ -103,6 +105,26 @@ else
 	[ -n "${DELETE}" ] && mtd erase  $(echo $art_partition | sed 's,block,,')
 fi
 
+case "$board" in
+	ap-mp02.1* | db-mp02.1* | ap-mp03.1)
+	mtdblock=${art_partition}
+	mtddev=$(echo $mtdblock | sed 's,block,,')
+	dd if=${mtddev} of=/tmp/virt_art.bin.lzma
+	lzma -dvf --single-stream /tmp/virt_art.bin.lzma || {
+	dd if=${mtddev} of=/tmp/virt_art.bin
+	}
+	art_partition=/tmp/virt_art.bin
+	;;
+esac
+
 # Find the partition and set the MAC addresses in the flash
 dd if=/tmp/macaddr of=$art_partition bs=64 conv=sync 2>/dev/null
 rm -f /tmp/macaddr
+
+case "$board" in
+	ap-mp02.1* | db-mp02.1* | ap-mp03.1)
+	lzma -zvfk /tmp/virt_art.bin
+	mtd erase ${mtddev}
+	mtd write /tmp/virt_art.bin.lzma ${mtddev}
+	rm /tmp/virt_art.bin*
+esac
