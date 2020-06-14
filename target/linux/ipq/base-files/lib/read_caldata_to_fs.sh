@@ -89,6 +89,29 @@ do_load_ipq4019_board_bin()
                     ln -s ${apdk}/qcn9000/caldata_2.bin /lib/firmware/qcn9000/caldata_2.bin
 
             ;;
+            ap-mp02.1* | db-mp02.1*)
+                    mkdir -p ${apdk}/IPQ5018
+                    FILESIZE=131072
+
+                    #FTM Daemon compresses the caldata and writes the lzma file in ART Partition
+                    dd if=${mtdblock} of=${apdk}/virtual_art.bin.lzma
+                    lzma -fdv --single-stream ${apdk}/virtual_art.bin.lzma || {
+                    # Create dummy virtual_art.bin file of size 512K
+                    dd if=/dev/zero of=${apdk}/virtual_art.bin bs=1024 count=512
+                    }
+
+                    dd if=${apdk}/virtual_art.bin of=${apdk}/IPQ5018/caldata.bin bs=1 count=$FILESIZE skip=4096
+
+                    mkdir -p ${apdk}/qcn9100
+                    # Read after 154KB
+                    dd if=${apdk}/virtual_art.bin of=${apdk}/qcn9100/caldata_1.bin bs=1 count=$FILESIZE skip=157696
+                    # Read after 304KB
+                    dd if=${apdk}/virtual_art.bin of=${apdk}/qcn9100/caldata_2.bin bs=1 count=$FILESIZE skip=311296
+
+                    ln -s ${apdk}/IPQ5018/caldata.bin /lib/firmware/IPQ5018/caldata.bin
+                    ln -s ${apdk}/qcn9100/caldata_1.bin /lib/firmware/qcn9100/caldata_1.bin
+                    ln -s ${apdk}/qcn9100/caldata_2.bin /lib/firmware/qcn9100/caldata_2.bin
+            ;;
             ap-mp03.1* | db-mp03.1*)
                     MP_BD_FILENAME=/lib/firmware/IPQ5018/bdwlan.bin
                     mkdir -p ${apdk}/IPQ5018
