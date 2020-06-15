@@ -118,28 +118,8 @@ endef
 
 $(eval $(call KernelPackage,usb-phy-dwc3-ipq4019))
 
-define KernelPackage/usb-phy-ipq807x
-  TITLE:=DWC3 USB QCOM PHY driver for IPQ807x
-  DEPENDS:=@TARGET_ipq||TARGET_ipq806x
-  KCONFIG:= \
-	CONFIG_USB_QCOM_QUSB_PHY \
-	CONFIG_USB_QCOM_QMP_PHY
-  FILES:= \
-	$(LINUX_DIR)/drivers/usb/phy/phy-msm-qusb.ko \
-	$(LINUX_DIR)/drivers/usb/phy/phy-msm-ssusb-qmp.ko
-  AUTOLOAD:=$(call AutoLoad,45,phy-msm-qusb phy-msm-ssusb-qmp,1)
-  $(call AddDepends/usb)
-endef
-
-define KernelPackage/usb-phy-ipq807x/description
- This driver provides support for the USB PHY drivers
- within the IPQ807x SoCs.
-endef
-
-$(eval $(call KernelPackage,usb-phy-ipq807x))
-
 define KernelPackage/usb-phy-ipq5018
-  TITLE:=DWC3 USB QCOM PHY driver for IPQ5018
+  TITLE:=DWC3 USB PHY driver for IPQ5018
   DEPENDS:=@TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
   KCONFIG:= \
 	CONFIG_USB_QCA_M31_PHY \
@@ -237,7 +217,8 @@ $(eval $(call KernelPackage,qmi_sample_client))
 
 define KernelPackage/mhitest_mod
   TITLE:= Mhi test module for Pine.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
+
   FILES:= \
          $(LINUX_DIR)/drivers/bus/mhi/test/mhitest_mod.ko
 endef

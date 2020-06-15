@@ -8,19 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=busybox
-PKG_VERSION:=1.28.3
-PKG_RELEASE:=1
+PKG_VERSION:=1.30.1
+PKG_RELEASE:=5
 PKG_FLAGS:=essential
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://www.busybox.net/downloads \
 		http://sources.buildroot.net
-PKG_HASH:=ad0d22033f23e696f9a71a4c2f9210194dda39b024a79151f4ac278995332a6e
+PKG_HASH:=3d1d04a4dbd34048f4794815a5c48ebb9eb53c5277e09ffffc060323b95dfbdc
 
 PKG_BUILD_DEPENDS:=BUSYBOX_USE_LIBRPC:librpc BUSYBOX_CONFIG_PAM:libpam opkg/host
 PKG_BUILD_PARALLEL:=1
 PKG_CHECK_FORMAT_SECURITY:=0
-PKG_INSTALL:=1
 
 #Busybox use it's own PIE config flag and LDFLAGS are used with ld, not gcc.
 PKG_ASLR_PIE:=0
@@ -38,6 +37,8 @@ endif
 BUSYBOX_SYM=$(if $(CONFIG_BUSYBOX_CUSTOM),CONFIG,DEFAULT)
 BUSYBOX_IF_ENABLED=$(if $(CONFIG_BUSYBOX_$(BUSYBOX_SYM)_$(1)),$(2))
 
+# All files provided by busybox will serve as fallback alternatives by opkg.
+# There should be no need to enumerate ALTERNATIVES entries here
 define Package/busybox
   SECTION:=base
   CATEGORY:=Base system
@@ -46,19 +47,6 @@ define Package/busybox
   URL:=http://busybox.net/
   DEPENDS:=+BUSYBOX_USE_LIBRPC:librpc +BUSYBOX_CONFIG_PAM:libpam +BUSYBOX_CONFIG_NTPD:jsonfilter
   MENU:=1
-  ALTERNATIVES:=\
-    $(call BUSYBOX_IF_ENABLED,KILL,	100:/bin/kill:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,PS,	100:/bin/ps:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,WATCH,	100:/bin/watch:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,IP,	100:/sbin/ip:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,FREE,	100:/usr/bin/free:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,PGREP,	100:/usr/bin/pgrep:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,PKILL,	100:/usr/bin/pkill:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,PMAP,	100:/usr/bin/pmap:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,PWDX,	100:/usr/bin/pwdx:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,TOP,	100:/usr/bin/top:/bin/busybox) \
-    $(call BUSYBOX_IF_ENABLED,UPTIME,	100:/usr/bin/uptime:/bin/busybox) \
-
 endef
 
 define Package/busybox/description
@@ -70,11 +58,20 @@ define Package/busybox/config
 	source "$(SOURCE)/Config.in"
 endef
 
+ifdef CONFIG_BUSYBOX_CONFIG_FEATURE_SYSLOG
+define Package/busybox/conffiles
+/etc/syslog.conf
+endef
+endif
+
 # don't create a version string containing the actual timestamp
 export KCONFIG_NOTIMESTAMP=1
 
 
+ifndef CONFIG_USE_MUSL
 LDLIBS:=m crypt
+endif
+
 LDLIBS += $(call BUSYBOX_IF_ENABLED,PAM,pam pam_misc pthread)
 ifdef CONFIG_BUSYBOX_USE_LIBRPC
   LDLIBS += rpc
@@ -83,26 +80,35 @@ ifeq ($(CONFIG_USE_GLIBC),y)
   LDLIBS += $(call BUSYBOX_IF_ENABLED,NSLOOKUP_OPENWRT,resolv)
 endif
 
+TARGET_CFLAGS += -flto
+TARGET_LDFLAGS += -flto=jobserver -fuse-linker-plugin
+
 MAKE_VARS :=
 MAKE_FLAGS += \
 	EXTRA_CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
 	EXTRA_LDFLAGS="$(TARGET_LDFLAGS)" \
 	LDLIBS="$(LDLIBS)" \
+	LD="$(TARGET_CC)" \
 	SKIP_STRIP=y
 ifneq ($(findstring c,$(OPENWRT_VERBOSE)),)
   MAKE_FLAGS += V=1
 endif
-
-MAKE_INSTALL_FLAGS += CONFIG_PREFIX="$(PKG_INSTALL_DIR)"
-
 
 define Build/Configure
 	grep 'CONFIG_BUSYBOX_$(BUSYBOX_SYM)' $(TOPDIR)/.config | sed -e "s,\\(# \)\\?CONFIG_BUSYBOX_$(BUSYBOX_SYM)_\\(.*\\),\\1CONFIG_\\2,g" > $(PKG_BUILD_DIR)/.config
 	yes 'n' | $(MAKE) -C $(PKG_BUILD_DIR) $(MAKE_FLAGS) oldconfig
 endef
 
+define Build/Compile
+	$(call Build/Compile/Default, \
+		CONFIG_PREFIX="$(PKG_INSTALL_DIR)" \
+		all install \
+	)
+endef
+
 define Package/busybox/install
 	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/usr/sbin
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
 	$(INSTALL_BIN) ./files/telnet $(1)/etc/init.d/telnet
 	$(INSTALL_BIN) ./files/inetd $(1)/etc/init.d/inetd
@@ -114,6 +120,11 @@ ifneq ($(CONFIG_BUSYBOX_$(BUSYBOX_SYM)_NTPD),)
 	$(INSTALL_BIN) ./files/ntpd-hotplug $(1)/usr/sbin/ntpd-hotplug
 endif
 	-rm -rf $(1)/lib64
+ifneq ($(CONFIG_BUSYBOX_CONFIG_FEATURE_USE_INITTAB),)
+	mkdir -p $(1)/etc/init.d
+	$(CP) ./files/etc/inittab $(1)/etc/inittab
+	$(CP) ./files/etc/init.d/rcS $(1)/etc/init.d/rcS
+endif
 endef
 
 $(eval $(call BuildPackage,busybox))
