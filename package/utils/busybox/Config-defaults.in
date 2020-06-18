@@ -48,7 +48,7 @@ config BUSYBOX_DEFAULT_PID_FILE_PATH
 	default "/var/run"
 config BUSYBOX_DEFAULT_BUSYBOX
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_FEATURE_SHOW_SCRIPT
 	bool
 	default n
