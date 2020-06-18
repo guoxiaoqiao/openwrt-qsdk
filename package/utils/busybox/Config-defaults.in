@@ -48,7 +48,10 @@ config BUSYBOX_DEFAULT_PID_FILE_PATH
 	default "/var/run"
 config BUSYBOX_DEFAULT_BUSYBOX
 	bool
-	default y
+	default n
+config BUSYBOX_DEFAULT_FEATURE_SHOW_SCRIPT
+	bool
+	default n
 config BUSYBOX_DEFAULT_FEATURE_INSTALLER
 	bool
 	default n
@@ -178,7 +181,13 @@ config BUSYBOX_DEFAULT_EFENCE
 config BUSYBOX_DEFAULT_FEATURE_USE_BSS_TAIL
 	bool
 	default n
+config BUSYBOX_DEFAULT_FLOAT_DURATION
+	bool
+	default n
 config BUSYBOX_DEFAULT_FEATURE_RTMINMAX
+	bool
+	default n
+config BUSYBOX_DEFAULT_FEATURE_RTMINMAX_USE_LIBC_DEFINITIONS
 	bool
 	default n
 config BUSYBOX_DEFAULT_FEATURE_BUFFERS_USE_MALLOC
@@ -511,6 +520,9 @@ config BUSYBOX_DEFAULT_CP
 config BUSYBOX_DEFAULT_FEATURE_CP_LONG_OPTIONS
 	bool
 	default n
+config BUSYBOX_DEFAULT_FEATURE_CP_REFLINK
+	bool
+	default n
 config BUSYBOX_DEFAULT_CUT
 	bool
 	default y
@@ -745,9 +757,6 @@ config BUSYBOX_DEFAULT_SLEEP
 config BUSYBOX_DEFAULT_FEATURE_FANCY_SLEEP
 	bool
 	default y
-config BUSYBOX_DEFAULT_FEATURE_FLOAT_SLEEP
-	bool
-	default n
 config BUSYBOX_DEFAULT_SORT
 	bool
 	default y
@@ -1102,6 +1111,9 @@ config BUSYBOX_DEFAULT_FEATURE_FIND_PERM
 config BUSYBOX_DEFAULT_FEATURE_FIND_TYPE
 	bool
 	default y
+config BUSYBOX_DEFAULT_FEATURE_FIND_EXECUTABLE
+	bool
+	default n
 config BUSYBOX_DEFAULT_FEATURE_FIND_XDEV
 	bool
 	default y
@@ -1141,6 +1153,9 @@ config BUSYBOX_DEFAULT_FEATURE_FIND_SIZE
 config BUSYBOX_DEFAULT_FEATURE_FIND_PRUNE
 	bool
 	default y
+config BUSYBOX_DEFAULT_FEATURE_FIND_QUIT
+	bool
+	default n
 config BUSYBOX_DEFAULT_FEATURE_FIND_DELETE
 	bool
 	default n
@@ -1681,6 +1696,12 @@ config BUSYBOX_DEFAULT_FEATURE_MOUNT_OTHERTAB
 config BUSYBOX_DEFAULT_MOUNTPOINT
 	bool
 	default n
+config BUSYBOX_DEFAULT_NOLOGIN
+	bool
+	default n
+config BUSYBOX_DEFAULT_NOLOGIN_DEPENDENCIES
+	bool
+	default n
 config BUSYBOX_DEFAULT_NSENTER
 	bool
 	default n
@@ -1870,6 +1891,24 @@ config BUSYBOX_DEFAULT_BBCONFIG
 config BUSYBOX_DEFAULT_FEATURE_COMPRESS_BBCONFIG
 	bool
 	default n
+config BUSYBOX_DEFAULT_BC
+	bool
+	default n
+config BUSYBOX_DEFAULT_DC
+	bool
+	default n
+config BUSYBOX_DEFAULT_FEATURE_DC_BIG
+	bool
+	default n
+config BUSYBOX_DEFAULT_FEATURE_DC_LIBM
+	bool
+	default n
+config BUSYBOX_DEFAULT_FEATURE_BC_INTERACTIVE
+	bool
+	default n
+config BUSYBOX_DEFAULT_FEATURE_BC_LONG_OPTIONS
+	bool
+	default n
 config BUSYBOX_DEFAULT_BEEP
 	bool
 	default n
@@ -1924,12 +1963,6 @@ config BUSYBOX_DEFAULT_FEATURE_CROND_DIR
 config BUSYBOX_DEFAULT_CRONTAB
 	bool
 	default y
-config BUSYBOX_DEFAULT_DC
-	bool
-	default n
-config BUSYBOX_DEFAULT_FEATURE_DC_LIBM
-	bool
-	default n
 config BUSYBOX_DEFAULT_DEVFSD
 	bool
 	default n
@@ -2133,7 +2166,8 @@ config BUSYBOX_DEFAULT_WATCHDOG
 	default n
 config BUSYBOX_DEFAULT_FEATURE_IPV6
 	bool
-	default y
+	default y if IPV6
+	default n
 config BUSYBOX_DEFAULT_FEATURE_UNIX_LOCAL
 	bool
 	default n
@@ -2143,6 +2177,9 @@ config BUSYBOX_DEFAULT_FEATURE_PREFER_IPV4_ADDRESS
 config BUSYBOX_DEFAULT_VERBOSE_RESOLUTION_ERRORS
 	bool
 	default y
+config BUSYBOX_DEFAULT_FEATURE_TLS_SHA1
+	bool
+	default n
 config BUSYBOX_DEFAULT_ARP
 	bool
 	default n
@@ -2411,6 +2448,9 @@ config BUSYBOX_DEFAULT_FEATURE_NTPD_SERVER
 	bool
 	default y
 config BUSYBOX_DEFAULT_FEATURE_NTPD_CONF
+	bool
+	default n
+config BUSYBOX_DEFAULT_FEATURE_NTP_AUTH
 	bool
 	default n
 config BUSYBOX_DEFAULT_PING
@@ -3029,6 +3069,9 @@ config BUSYBOX_DEFAULT_FEATURE_SH_READ_FRAC
 	bool
 	default n
 config BUSYBOX_DEFAULT_FEATURE_SH_HISTFILESIZE
+	bool
+	default n
+config BUSYBOX_DEFAULT_FEATURE_SH_EMBEDDED_SCRIPTS
 	bool
 	default n
 config BUSYBOX_DEFAULT_KLOGD
