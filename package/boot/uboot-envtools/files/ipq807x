@@ -69,6 +69,7 @@ qcom,ipq8074-ap-hk09 |\
 qcom,ipq8074-ap-hk10-c1 |\
 qcom,ipq8074-ap-hk10-c2 |\
 qcom,ipq8074-ap-hk11-c1 |\
+qcom,ipq8074-ap-hk12 |\
 qcom,ipq8074-ap-hk14 |\
 qcom,ipq8074-db-hk01 |\
 qcom,ipq8074-db-hk02)
