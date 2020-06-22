@@ -391,7 +391,9 @@ endef
 define Package/openssl-util/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/openssl $(1)/usr/bin/
+ifneq ($(CONFIG_LOWMEM_FLASH), y)
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/c_rehash $(1)/usr/bin/
+endif
 endef
 
 define Package/libopenssl-afalg/install
