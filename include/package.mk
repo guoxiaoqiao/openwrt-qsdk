@@ -256,8 +256,13 @@ define Build/IncludeOverlay
   endef
 endef
 
+define Build/qsdk-package
+  $(eval -include $(wildcard $(call FindPackage,$(basename $(notdir $(CURDIR))))/$(PKG_NAME).mk))
+endef
+
 define BuildPackage
   $(Build/IncludeOverlay)
+  $(Build/qsdk-package)
   $(eval $(Package/Default))
   $(eval $(Package/$(1)))
 
