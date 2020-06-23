@@ -675,7 +675,7 @@ dnsmasq_start()
 	config_get_bool ADD_LOCAL_HOSTNAME "$cfg" add_local_hostname 1
 
 	config_get user_dhcpscript $cfg dhcpscript
-	if has_handler || [ -n "$user_dhcpscript" ]; then
+	if [ -n "$user_dhcpscript" ]; then
 		xappend "--dhcp-script=$DHCPSCRIPT"
 		xappend "--script-arp"
 	fi
