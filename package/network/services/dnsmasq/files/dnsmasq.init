@@ -652,10 +652,8 @@ dnsmasq_start()
 	config_list_foreach "$cfg" "server" append_server
 	config_list_foreach "$cfg" "address" append_address
 	config_list_foreach "$cfg" "ipset" append_ipset
-	[ -n "$BOOT" ] || {
-		config_list_foreach "$cfg" "interface" append_interface
-		config_list_foreach "$cfg" "notinterface" append_notinterface
-	}
+	config_list_foreach "$cfg" "interface" append_interface
+	config_list_foreach "$cfg" "notinterface" append_notinterface
 	config_list_foreach "$cfg" "addnhosts" append_addnhosts
 	config_list_foreach "$cfg" "bogusnxdomain" append_bogusnxdomain
 	append_parm "$cfg" "leasefile" "--dhcp-leasefile" "/tmp/dhcp.leases"
@@ -777,7 +775,7 @@ dnsmasq_start()
 	config_foreach filter_dnsmasq match dhcp_match_add "$cfg"
 	config_foreach filter_dnsmasq domain dhcp_domain_add "$cfg"
 	config_foreach filter_dnsmasq hostrecord dhcp_hostrecord_add "$cfg"
-	[ -n "$BOOT" ] || config_foreach filter_dnsmasq relay dhcp_relay_add "$cfg"
+	config_foreach filter_dnsmasq relay dhcp_relay_add "$cfg"
 
 	# add own hostname
 	[ $ADD_LOCAL_HOSTNAME -eq 1 ] && {
@@ -805,23 +803,12 @@ dnsmasq_start()
 	config_foreach filter_dnsmasq mxhost dhcp_mx_add "$cfg"
 	echo >> $CONFIGFILE_TMP
 
-	config_get_bool boguspriv "$cfg" boguspriv 1
-	[ "$boguspriv" -gt 0 ] && {
-		xappend "--bogus-priv"
-		[ -r "$RFC6761FILE" ] && xappend "--conf-file=$RFC6761FILE"
-	}
+	xappend "--dhcp-ignore-names"
+	echo >> $CONFIGFILE_TMP
 
-	if [ "$DNSMASQ_DHCP_VER" -gt 4 ] ; then
-		# Enable RA feature for when/if it is constructed,
-		# and RA is selected per interface pool (RA, DHCP, or both),
-		# but no one (should) want RA broadcast in syslog
-		[ -n "$BOOT" ] || config_foreach filter_dnsmasq dhcp dhcp_add "$cfg"
-		xappend "--enable-ra"
-		xappend "--quiet-ra"
-		append_bool "$cfg" quietdhcp "--quiet-dhcp6"
-
-	elif [ "$DNSMASQ_DHCP_VER" -gt 0 ] ; then
-		[ -n "$BOOT" ] || config_foreach filter_dnsmasq dhcp dhcp_add "$cfg"
+	config_get odhcpd_is_active odhcpd maindhcp
+	if [ "$odhcpd_is_active" != "1" ]; then
+		config_foreach filter_dnsmasq dhcp dhcp_add "$cfg"
 	fi
 
 	echo >> $CONFIGFILE_TMP
@@ -890,13 +877,6 @@ service_triggers()
 
 	config_load dhcp
 	config_foreach add_interface_trigger dhcp
-	config_foreach add_interface_trigger relay
-}
-
-boot()
-{
-	BOOT=1
-	start "$@"
 }
 
 start_service() {
