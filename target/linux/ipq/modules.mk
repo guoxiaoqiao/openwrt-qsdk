@@ -118,25 +118,25 @@ endef
 
 $(eval $(call KernelPackage,usb-phy-dwc3-ipq4019))
 
-define KernelPackage/usb-phy-ipq807x
-  TITLE:=DWC3 USB QCOM PHY driver for IPQ807x
-  DEPENDS:=@TARGET_ipq||TARGET_ipq806x
+define KernelPackage/usb-phy-ipq5018
+  TITLE:=DWC3 USB PHY driver for IPQ5018
+  DEPENDS:=@TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
   KCONFIG:= \
-	CONFIG_USB_QCOM_QUSB_PHY \
-	CONFIG_USB_QCOM_QMP_PHY
+	CONFIG_USB_QCA_M31_PHY \
+	CONFIG_PHY_IPQ_UNIPHY_USB
   FILES:= \
-	$(LINUX_DIR)/drivers/usb/phy/phy-msm-qusb.ko \
-	$(LINUX_DIR)/drivers/usb/phy/phy-msm-ssusb-qmp.ko
-  AUTOLOAD:=$(call AutoLoad,45,phy-msm-qusb phy-msm-ssusb-qmp,1)
+	$(LINUX_DIR)/drivers/usb/phy/phy-qca-m31.ko \
+	$(LINUX_DIR)/drivers/phy/phy-qca-uniphy.ko
+  AUTOLOAD:=$(call AutoLoad,45,phy-qca-m31 phy-qca-uniphy,1)
   $(call AddDepends/usb)
 endef
 
-define KernelPackage/usb-phy-ipq807x/description
+define KernelPackage/usb-phy-ipq5018/description
  This driver provides support for the USB PHY drivers
- within the IPQ807x SoCs.
+ within the IPQ5018 SoCs.
 endef
 
-$(eval $(call KernelPackage,usb-phy-ipq807x))
+$(eval $(call KernelPackage,usb-phy-ipq5018))
 
 define KernelPackage/qrtr_mproc
   TITLE:= Ath11k Specific kernel configs for IPQ807x and IPQ60xx
@@ -179,46 +179,6 @@ endef
 
 $(eval $(call KernelPackage,qrtr_mproc))
 
-define KernelPackage/msm-mproc
-  TITLE:= Default kernel configs
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
-  KCONFIG:= \
-	  CONFIG_QRTR=y \
-	  CONFIG_QCOM_APCS_IPC=y \
-	  CONFIG_QCOM_GLINK_SSR=y \
-	  CONFIG_QCOM_Q6V5_WCSS=y \
-	  CONFIG_QTI_Q6V5_ADSP=y \
-	  CONFIG_MSM_RPM_RPMSG=y \
-	  CONFIG_RPMSG_QCOM_GLINK_RPM=y \
-	  CONFIG_REGULATOR_RPM_GLINK=y \
-	  CONFIG_IPQ_SUBSYSTEM_RESTART=y \
-	  CONFIG_QCOM_SYSMON=y \
-	  CONFIG_RPMSG=y \
-	  CONFIG_RPMSG_CHAR=y \
-	  CONFIG_RPMSG_QCOM_GLINK_SMEM=y \
-	  CONFIG_RPMSG_QCOM_SMD=y \
-	  CONFIG_QRTR_SMD=y \
-	  CONFIG_QCOM_QMI_HELPERS=y \
-	  CONFIG_SAMPLES=y \
-	  CONFIG_SAMPLE_QMI_CLIENT=m \
-	  CONFIG_SAMPLE_TRACE_EVENTS=n \
-	  CONFIG_SAMPLE_KOBJECT=n \
-	  CONFIG_SAMPLE_KPROBES=n \
-	  CONFIG_SAMPLE_KRETPROBES=n \
-	  CONFIG_SAMPLE_HW_BREAKPOINT=n \
-	  CONFIG_SAMPLE_KFIFO=n \
-	  CONFIG_SAMPLE_CONFIGFS=n \
-	  CONFIG_SAMPLE_RPMSG_CLIENT=n \
-	  CONFIG_MAILBOX=y \
-	  CONFIG_DIAG_OVER_QRTR=y
-endef
-
-define KernelPackage/msm-mproc/description
-Default kernel configs.
-endef
-
-$(eval $(call KernelPackage,msm-mproc))
-
 define KernelPackage/mhi-qrtr-mproc
   TITLE:= Default kernel configs for QCCI to work with QRTR.
   DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
@@ -254,19 +214,6 @@ Add QMI ping_pong test application
 endef
 
 $(eval $(call KernelPackage,qmi_sample_client))
-
-define KernelPackage/mhitest_mod
-  TITLE:= Mhi test module for Pine.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
-  FILES:= \
-         $(LINUX_DIR)/drivers/bus/mhi/test/mhitest_mod.ko
-endef
-
-define KernelPackage/mhitest_mod/description
-ADD mhitest module.
-endef
-
-$(eval $(call KernelPackage,mhitest_mod))
 
 define KernelPackage/bt_tty
   TITLE:= BT Inter-processor Communication

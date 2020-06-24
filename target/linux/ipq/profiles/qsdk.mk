@@ -48,13 +48,13 @@ NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-igs kmod-qca-nss-
 	kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe \
 	kmod-qca-nss-drv-ovpn-mgr kmod-qca-nss-drv-ovpn-link kmod-qca-nss-drv-vxlanmgr kmod-qca-nss-drv-netlink \
-	kmod-qca-ovsmgr kmod-qca-nss-drv-match
+	kmod-qca-ovsmgr kmod-qca-nss-drv-match kmod-qca-nss-drv-mirror
 
 NSS_CLIENTS_256MB:= kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-pppoe
 
 NSS_CLIENTS_ENTERPRISE:= kmod-qca-nss-drv-qdisc kmod-qca-nss-drv-profile \
 	kmod- kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-netlink kmod-qca-nss-drv-tlsmgr \
-	kmod-qca-nss-drv-match
+	kmod-qca-nss-drv-match kmod-qca-nss-drv-mirror
 
 NSS_CRYPTO:= kmod-qca-nss-crypto kmod-qca-nss-cfi-cryptoapi kmod-qca-nss-cfi-ocf kmod-qca-nss-drv-ipsecmgr kmod-crypto-ocf
 
@@ -217,8 +217,6 @@ QMI_SAMPLE_APP:=kmod-qmi_sample_client
 
 MHI_QRTR:=kmod-mhi-qrtr-mproc
 
-BT_IPC:=kmod-bt_tty
-
 ifneq ($(LINUX_VERSION),3.18.21)
 	EXTRA_NETWORKING:=$(NSS_COMMON) $(QCA_EDMA) $(NSS_STANDARD) $(CD_ROUTER) -lacpd \
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) -rstp \
@@ -253,7 +251,7 @@ define Profile/QSDK_Premium
 		$(MAP_PKGS) $(HYFI) $(QCA_MAD) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
 		$(MHI_QRTR) $(KPI) $(QRTR) $(NSS_USERSPACE) \
-		$(NSS_RMNET) $(BT_IPC)
+		$(NSS_RMNET)
 endef
 
 define Profile/QSDK_Premium/Description
@@ -414,7 +412,7 @@ define Profile/QSDK_16M
 	PACKAGES:=wififw_mount_script $(NSS_COMMON) $(NSS_STANDARD) $(SWITCH_SSDK_PKGS) \
 		$(WIFI_PKGS_16M) qca-wifi-hk-fw-hw1-10.4-asic $(NETWORKING_16MB) \
 		$(IGMPSNOOING_RSTP) $(QCA_ECM_STANDARD) $(NSS_CLIENTS_256MB) \
-		$(QRTR) $(MHI_QRTR) hyfi whc -qca-ssdk-shell
+		$(QRTR) $(MHI_QRTR) hyfi whc -qca-ssdk-shell xz xz-utils
 endef
 
 define Profile/QSDK_16M/Description

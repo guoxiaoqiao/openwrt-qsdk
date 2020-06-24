@@ -251,6 +251,7 @@ flash_section() {
 				echo "Section ${sec} ignored"; return 1;
 			fi
 			;;
+		btfw-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:BTFW";;
 		fs*) switch_layout linux; do_flash_failsafe_partition ${sec} "rootfs";;
 		ubi*) switch_layout linux; image_is_nand || return && do_flash_ubi ${sec} "rootfs";;
 		sbl1*) switch_layout boot; do_flash_partition ${sec} "0:SBL1";;
@@ -259,7 +260,7 @@ flash_section() {
 		dtb-$(to_upper $board)*) switch_layout boot; do_flash_partition ${sec} "0:DTB";;
 		u-boot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
 		lkboot*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:APPSBL";;
-		ddr-$(to_upper $board)*) switch_layout boot; do_flash_ddr ${sec};;
+		ddr-$(to_upper $board)_*) switch_layout boot; do_flash_ddr ${sec};;
 		ddr-${board}-*) switch_layout boot; do_flash_failsafe_partition ${sec} "0:DDRCONFIG";;
 		ssd*) switch_layout boot; do_flash_partition ${sec} "0:SSD";;
 		tz*) switch_layout boot; do_flash_tz ${sec};;
@@ -381,7 +382,7 @@ platform_do_upgrade() {
 	done
 
 	case "$board" in
-	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3 | ap-dk07.1-c4 | ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk01-c4 | ap-hk01-c5 | ap-hk02 | ap-hk07 | ap-hk08 | ap-hk09 | ap-hk10-c1 | ap-hk10-c2 | ap-hk11-c1 | ap-hk14 | ap-ac01 | ap-ac02 | ap-ac03 | ap-ac04 | ap-oak02 | ap-oak03 | db-hk01 | db-hk02 | ap-cp01-c1 | ap-cp01-c2 | ap-cp01-c3 | ap-cp01-c4 | ap-cp02-c1 | ap-cp03-c1 | db-cp01 | db-cp02 | mp-emu | ap-mp02.1 | ap-mp03.1 | ap-mp03.1-c2 | ap-mp03.3 | ap-mp03.3-c2 | db-mp02.1 | db-mp03.1 | db-mp03.1-c2 | db-mp03.3 | db-mp03.3-c2)
+	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3 | ap-dk07.1-c4 | ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk01-c4 | ap-hk01-c5 | ap-hk01-c6 | ap-hk02 | ap-hk07 | ap-hk08 | ap-hk09 | ap-hk10-c1 | ap-hk10-c2 | ap-hk11-c1 | ap-hk12 | ap-hk14 | ap-ac01 | ap-ac02 | ap-ac03 | ap-ac04 | ap-oak02 | ap-oak03 | db-hk01 | db-hk02 | ap-cp01-c1 | ap-cp01-c2 | ap-cp01-c3 | ap-cp01-c4 | ap-cp02-c1 | ap-cp03-c1 | db-cp01 | db-cp02 | mp-emu | ap-mp02.1 | ap-mp03.1 | ap-mp03.1-c2 | ap-mp03.3 | ap-mp03.3-c2 | db-mp02.1 | db-mp03.1 | db-mp03.1-c2 | db-mp03.3 | db-mp03.3-c2)
 		for sec in $(print_sections $1); do
 			flash_section ${sec}
 		done
