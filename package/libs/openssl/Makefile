@@ -94,7 +94,8 @@ $(call Package/openssl/Default)
   DEPENDS:=+OPENSSL_WITH_COMPRESSION:zlib \
 	   +OPENSSL_ENGINE_BUILTIN_AFALG:kmod-crypto-user \
 	   +OPENSSL_ENGINE_BUILTIN_DEVCRYPTO:kmod-cryptodev \
-	   +OPENSSL_ENGINE_BUILTIN_PADLOCK:kmod-crypto-hw-padlock
+	   +OPENSSL_ENGINE_BUILTIN_PADLOCK:kmod-crypto-hw-padlock \
+	   +TARGET_x86:libpthread
   TITLE+= (libraries)
   ABI_VERSION:=1.1
   MENU:=1
