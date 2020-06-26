@@ -103,7 +103,7 @@ VIDEO:=kmod-qpic_panel_ertft
 
 NSS_USERSPACE:=nlcfg
 
-KPI:=iperf-mt sysstat
+KPI:=iperf sysstat
 
 USB_DIAG:=kmod-diag-char kmod-usb-f-diag qca-diag kmod-usb-gdiag
 
