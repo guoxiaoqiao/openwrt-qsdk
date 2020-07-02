@@ -43,10 +43,11 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat kmod-qca-ssdk-nohnat qca-ssdk-shell swconf
 
 WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
-	qca-wpa-cli qca-spectral qca-wpc sigma-dut \
-	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
-	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
-	athtestcmd-lith
+	qca-wpa-cli qca-cfg80211tool qca-wifi-scripts
+#	qca-spectral qca-wpc sigma-dut \
+#	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
+#	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
+#	athtestcmd-lith
 
 WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
 	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
@@ -125,10 +126,11 @@ define Profile/QSDK_Premium
 		$(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) $(SWITCH_SSDK_PKGS) \
 		$(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
-		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP)
+		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP) \
+		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS)
 endef
 
-#		$(HYFI) $(WIFI_PKGS) $(WIFI_10_4_FW_PKGS) $(CNSS_DIAG) kmod-art2 \
+#		$(HYFI) $(CNSS_DIAG) kmod-art2 \
 #		$(NSS_USERSPACE) $(NSS_RMNET) \
 #		$(NSS_MACSEC) $(QCA_EDMA) \
 #		$(IPSEC) $(QCA_RFS) $(SHORTCUT_FE) \
