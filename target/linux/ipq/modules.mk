@@ -139,8 +139,8 @@ endef
 $(eval $(call KernelPackage,usb-phy-ipq5018))
 
 define KernelPackage/qrtr_mproc
-  TITLE:= Ath11k Specific kernel configs for IPQ807x and IPQ60xx
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64
+  TITLE:= Ath11k Specific kernel configs for IPQ807x, IPQ60xx and IPQ50xx
+  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
   KCONFIG:= \
 	  CONFIG_QRTR=y \
 	  CONFIG_QCOM_APCS_IPC=y \
@@ -174,7 +174,7 @@ define KernelPackage/qrtr_mproc
 endef
 
 define KernelPackage/qrtr_mproc/description
-Kernel configs for ath11k support specific to ipq807x and IPQ60xx
+Kernel configs for ath11k support specific to ipq807x, IPQ60xx and IPQ50xx
 endef
 
 $(eval $(call KernelPackage,qrtr_mproc))
