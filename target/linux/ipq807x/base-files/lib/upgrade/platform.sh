@@ -416,9 +416,29 @@ platform_do_upgrade() {
 	return 1;
 }
 
+get_magic_long_at() {
+        dd if="$1" skip=$(( 65536 / 4 * $2 )) bs=4 count=1 2>/dev/null | hexdump -v -n 4 -e '1/1 "%02x"'
+}
+
+# find rootfs_data start magic
+platform_get_offset() {
+        offsetcount=0
+        magiclong="x"
+
+        while magiclong=$( get_magic_long_at "$1" "$offsetcount" ) && [ -n "$magiclong" ]; do
+                case "$magiclong" in
+                        "deadc0de"|"19852003")
+                                echo $(( $offsetcount * 65536 ))
+                                return
+                        ;;
+                esac
+                offsetcount=$(( $offsetcount + 1 ))
+        done
+}
+
 platform_copy_config() {
 	local nand_part="$(find_mtd_part "ubi_rootfs")"
-	local emmcblock="$(find_mmc_part "rootfs_data")"
+	local emmcblock="$(find_mmc_part "rootfs")"
 	mkdir -p /tmp/overlay
 
 	if [ -e "$nand_part" ]; then
@@ -436,7 +456,19 @@ platform_copy_config() {
 		sync
 		umount /tmp/overlay
 	elif [ -e "$emmcblock" ]; then
-		mount -t ext4 "$emmcblock" /tmp/overlay
+		losetup --detach-all
+		local data_blockoffset="$(platform_get_offset $emmcblock)"
+		[ -z "$data_blockoffset" ] && {
+			emmcblock="$(find_mmc_part "rootfs_1")"
+			data_blockoffset="$(platform_get_offset $emmcblock)"
+		}
+		local loopdev="$(losetup -f)"
+		losetup -o $data_blockoffset $loopdev $emmcblock || {
+			echo "Failed to mount looped rootfs_data."
+			reboot
+		}
+		echo y | mkfs.ext4 -F -L rootfs_data $loopdev
+		mount -t ext4 "$loopdev" /tmp/overlay
 		cp /tmp/sysupgrade.tgz /tmp/overlay/
 		sync
 		umount /tmp/overlay
