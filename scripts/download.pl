@@ -21,6 +21,7 @@ $url_filename = shift @ARGV unless $ARGV[0] =~ /:\/\//;
 my $scriptdir = dirname($0);
 my @mirrors;
 my $ok;
+my $is_network_down = $ENV{'IS_NETWORK_DOWN'};
 
 $url_filename or $url_filename = $filename;
 
@@ -150,7 +151,9 @@ sub cleanup
 	unlink "$target/$filename.md5sum";
 }
 
-@mirrors = localmirrors();
+if (!$is_network_down) {
+	@mirrors = localmirrors();
+}
 
 foreach my $mirror (@ARGV) {
 	if ($mirror =~ /^\@SF\/(.+)$/) {
@@ -216,7 +219,9 @@ push @mirrors, 'http://downloads.openwrt.org/sources';
 
 my @caf_mirrors;
 push @caf_mirrors, 'file:///prj/qct/openwrt/caf_mirrored_tarballs';
-push @caf_mirrors, 'https://source.codeaurora.org/mirrored_source/quic/qsdk';
+if (!$is_network_down) {
+	push @caf_mirrors, 'https://source.codeaurora.org/mirrored_source/quic/qsdk';
+}
 #first check in NFS and CAF server
 while (!$ok) {
 	my $mirror = shift @caf_mirrors;
