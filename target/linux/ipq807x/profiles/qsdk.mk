@@ -49,10 +49,7 @@ WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 #	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
 #	athtestcmd-lith
 
-WIFI_10_4_FW_PKGS:=qca-wifi-fw-hw2-10.4-asic qca-wifi-fw-hw4-10.4-asic \
-	qca-wifi-fw-hw3-10.4-asic qca-wifi-fw-hw6-10.4-asic \
-	qca-wifi-fw-hw5-10.4-asic qca-wifi-fw-hw11-10.4-asic \
-	qca-wifi-hk-fw-hw1-10.4-asic qca-wifi-cyp-fw-hw1-11.0-asic
+WIFI_FW_PKGS:=qca-wifi-hk-fw-hw1-10.4-asic
 
 OPENWRT_STANDARD:= \
 	luci openssl-util
@@ -127,7 +124,7 @@ define Profile/QSDK_Premium
 		$(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
 		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP) \
-		$(WIFI_PKGS) $(WIFI_10_4_FW_PKGS)
+		$(WIFI_PKGS) $(WIFI_FW_PKGS)
 endef
 
 #		$(HYFI) $(CNSS_DIAG) kmod-art2 \
