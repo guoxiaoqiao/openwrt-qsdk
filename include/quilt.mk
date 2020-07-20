@@ -10,7 +10,6 @@ __quilt_inc:=1
 ifeq ($(TARGET_BUILD),1)
   PKG_BUILD_DIR:=$(LINUX_DIR)
 endif
-FindPackage?=$(strip $(shell find $(TOPDIR)/qsdk-package -name $(1) 2>/dev/null))
 PATCH_DIR?=./patches
 FILES_DIR?=./files
 HOST_PATCH_DIR?=$(PATCH_DIR)
@@ -40,7 +39,6 @@ define PatchDir/Quilt
 endef
 
 define PatchDir/Default
-	$(info PatchDir $(1) $(2))
 	@if [ -d "$(2)" ] && [ "$$$$(ls $(2) | wc -l)" -gt 0 ]; then \
 		export PATCH="$(PATCH)"; \
 		if [ -s "$(2)/series" ]; then \
@@ -86,7 +84,7 @@ endef
 
 define Build/Patch/Default
 	$(if $(QUILT),rm -rf $(PKG_BUILD_DIR)/patches; mkdir -p $(PKG_BUILD_DIR)/patches)
-	$(foreach pdir, $(PATCH_DIR) $(call FindPackage, $(basename $(notdir $(CURDIR))))/patches, $(call PatchDir, $(PKG_BUILD_DIR), $(pdir),))
+	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR),)
 	$(if $(QUILT),touch $(PKG_BUILD_DIR)/.quilt_used)
 endef
 
