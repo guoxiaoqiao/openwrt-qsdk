@@ -198,23 +198,6 @@ endef
 
 $(eval $(call KernelPackage,mhi-qrtr-mproc))
 
-define KernelPackage/qmi_sample_client
-  TITLE:= Sample qmi test application.
-  DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
-
-  KCONFIG:= \
-	  CONFIG_SAMPLE_QMI_CLIENT
-  FILES:= \
-	  $(LINUX_DIR)/samples/qmi/qmi_sample_client.ko
-  AUTOLOAD:=$(call AutoLoad,53,qmi_sample_client,1)
-endef
-
-define KernelPackage/qmi_sample_client/description
-Add QMI ping_pong test application
-endef
-
-$(eval $(call KernelPackage,qmi_sample_client))
-
 define KernelPackage/bt_tty
   TITLE:= BT Inter-processor Communication
   DEPENDS+= @TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
