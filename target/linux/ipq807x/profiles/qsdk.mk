@@ -36,6 +36,10 @@ QCA_RFS:= kmod-qca-rfs
 
 SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
 
+WIFI_OPEN_PKGS:= kmod-ath11k wpad-mesh hostapd-utils \
+		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
+		 athtestcmd -qca-whc-lbd -qca-whc-init -libhyficommon
+
 WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
 	qca-wpa-cli qca-cfg80211tool qca-wifi-scripts \
@@ -109,6 +113,29 @@ QMSCT_CLIENT:=qmsct_client
 OPENVPN:= openvpn-easy-rsa openvpn-openssl luci-app-openvpn
 
 MINIDUMP:= minidump
+
+SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
+
+SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
+
+QMI_SAMPLE_APP:=kmod-qmi_sample_client
+
+define Profile/QSDK_Open
+	NAME:=Qualcomm-Atheros SDK Open Profile
+	PACKAGES:=$(OPENWRT_STANDARD) $(SWITCH_SSDK_NOHNAT_PKGS) $(NSS_COMMON) \
+	$(WIFI_OPEN_PKGS) $(STORAGE) $(USB_ETHERNET) $(UTILS) $(NETWORKING) \
+	$(TEST_TOOLS) $(COREBSP_UTILS) $(KPI) \
+	$(USB_DIAG) $(FTM) qca-cnss-daemon qca-wifi-hk-fw-hw1-10.4-asic \
+	qrtr $(QMI_SAMPLE_APP) $(FAILSAFE) ath11k-fwtest ath11k-qdss
+endef
+#	$(QCA_EDMA) $(SHORTCUT_FE) $(CNSS_DIAG)\
+
+define Profile/QSDK_Open/Description
+	QSDK Open package set configuration.
+	Enables wifi open source packages
+endef
+
+$(eval $(call Profile,QSDK_Open))
 
 define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
