@@ -2,6 +2,7 @@
 EXTRA_FILES:= \
 	/etc/config/network \
 	/sbin/firstboot \
+	/sbin/sysupgrade \
 	/cron \
 	/sbin/led.sh \
 	/sbin/sysdebug \
@@ -9,6 +10,7 @@ EXTRA_FILES:= \
 	/powerctl \
 	/lib/functions/leds.sh \
 	/lib/debug/system \
+	/lib/upgrade \
 	/etc/init.d/led \
 	/etc/init.d/powerctl \
 	/etc/rc.button/rfkill \
