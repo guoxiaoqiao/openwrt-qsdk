@@ -18,13 +18,15 @@ PKG_SOURCE_URL:=\
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_HASH:=a42f53570f669eaf10af68e98d65b531015ff9e12be7a62d9269ea684652f648
 
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
 PKG_BUILD_PARALLEL:=1
 PKG_LICENSE:=GPL-2.0
-PKG_CPE_ID:=cpe:/a:openvpn:openvpn
+
+PKG_BUILD_DEPENDS:=qca-nss-clients
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -69,7 +71,7 @@ endif
 CONFIGURE_VARS += \
 	IFCONFIG=/sbin/ifconfig \
 	ROUTE=/sbin/route \
-	IPROUTE=/sbin/ip \
+	IPROUTE=/usr/sbin/ip \
 	NETSTAT=/sbin/netstat
 
 TARGET_CFLAGS += -ffunction-sections -fdata-sections
@@ -93,6 +95,7 @@ define Build/Configure
 		$(if $(CONFIG_OPENVPN_$(BUILD_VARIANT)_ENABLE_IPROUTE2),--enable,--disable)-iproute2 \
 		$(if $(CONFIG_OPENVPN_$(BUILD_VARIANT)_ENABLE_DEF_AUTH),--enable,--disable)-def-auth \
 		$(if $(CONFIG_OPENVPN_$(BUILD_VARIANT)_ENABLE_PF),--enable,--disable)-pf \
+		$(if $(CONFIG_OPENVPN_$(BUILD_VARIANT)_ENABLE_DCA),--enable,--disable)-dca \
 		$(if $(CONFIG_OPENVPN_$(BUILD_VARIANT)_ENABLE_PORT_SHARE),--enable,--disable)-port-share \
 		$(if $(CONFIG_OPENVPN_NOSSL),--disable-crypto,--enable-crypto) \
 		$(if $(CONFIG_OPENVPN_OPENSSL),--with-crypto-library=openssl) \
