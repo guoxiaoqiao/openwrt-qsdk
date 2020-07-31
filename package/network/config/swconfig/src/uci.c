@@ -286,12 +286,11 @@ found:
 
 				if (!strcmp(os->name, "device")) {
 					devn = o->v.string;
-					if (!swlib_match_name(dev, devn))
-						devn = NULL;
 				}
 			}
-			if(!devn)
+			if (devn && !swlib_match_name(dev, devn)) {
 				continue;
+			}
 
 			swlib_map_ext_attr_settings(dev, SWLIB_ATTR_GROUP_GLOBAL, 0, s);
 		}
