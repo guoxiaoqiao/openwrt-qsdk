@@ -146,7 +146,7 @@ proto_map_setup() {
 	  else
 	    network_get_device ifname "lan"
 	    for portset in $(eval "echo \$RULE_${k}_PORTSETS"); do
-              for proto in icmp tcp udp; do
+              for proto in icmp tcp udp gre; do
 	        json_add_object ""
 	          json_add_string type nat
 	          json_add_string target SNAT
