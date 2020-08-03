@@ -124,14 +124,14 @@ define Profile/QSDK_Premium
 		$(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
 		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP) \
-		$(WIFI_PKGS) $(WIFI_FW_PKGS)
+		$(WIFI_PKGS) $(WIFI_FW_PKGS) $(HW_CRYPTO) $(IPSEC)
 endef
 
 #		$(HYFI) $(CNSS_DIAG) kmod-art2 \
 #		$(NSS_USERSPACE) $(NSS_RMNET) \
 #		$(NSS_MACSEC) $(QCA_EDMA) \
-#		$(IPSEC) $(QCA_RFS) $(SHORTCUT_FE) \
-#		$(MAP_PKGS) $(QCA_MAD) $(OPENVPN) $(HW_CRYPTO) $(QOS)
+#		$(QCA_RFS) $(SHORTCUT_FE) \
+#		$(MAP_PKGS) $(QCA_MAD) $(OPENVPN) $(QOS)
 
 define Profile/QSDK_Premium/Description
 	QSDK Premium package set configuration.
