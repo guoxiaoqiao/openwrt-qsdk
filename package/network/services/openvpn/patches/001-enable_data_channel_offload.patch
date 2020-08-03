@@ -113,7 +113,7 @@
  
      if (comp_frag)
      {
-@@ -787,6 +803,22 @@ process_incoming_link_part1(struct conte
+@@ -787,6 +803,27 @@ process_incoming_link_part1(struct conte
  
      if (c->c2.buf.len > 0)
      {
@@ -123,20 +123,25 @@
 +        {
 +            int ret;
 +
++	    /*
++	     * This function returns success only when packets forwarded are
++	     * data packets and tunnel is offloaded.  If the packets are control
++	     * packets it will return DCA_PKT_OFFLOAD_RETURN_CTRL_PKT, else it
++	     * will return DCA_PKT_OFFLOAD_RETURN_FAILURE.
++	     */
 +            ret = dca_pkt_offload(c, DCA_PKT_OFFLOAD_DECAP);
 +            if (ret == DCA_PKT_OFFLOAD_RETURN_SUCCESS)
 +            {
 +                dmsg(D_DCA_INFO, "DCA: Packet (Decap) offloaded.");
++                c->c2.buf.len = 0;
++                return decrypt_status;
 +            }
-+
-+            c->c2.buf.len = 0;
-+            return decrypt_status;
 +        }
 +#endif
          c->c2.link_read_bytes += c->c2.buf.len;
          link_read_bytes_global += c->c2.buf.len;
  #ifdef ENABLE_MEMSTATS
-@@ -1015,8 +1047,10 @@ process_incoming_link(struct context *c)
+@@ -1015,8 +1052,10 @@ process_incoming_link(struct context *c)
      struct link_socket_info *lsi = get_link_socket_info(c);
      const uint8_t *orig_buf = c->c2.buf.data;
  
@@ -149,7 +154,7 @@
  
      perf_pop();
  }
-@@ -1598,6 +1632,13 @@ pre_select(struct context *c)
+@@ -1598,6 +1637,13 @@ pre_select(struct context *c)
      check_send_occ_msg(c);
  #endif
  
@@ -163,7 +168,7 @@
  #ifdef ENABLE_FRAGMENT
      /* Should we deliver a datagram fragment to remote? */
      check_fragment(c);
-@@ -1630,6 +1671,9 @@ io_wait_dowork(struct context *c, const
+@@ -1630,6 +1676,9 @@ io_wait_dowork(struct context *c, const
  #ifdef ENABLE_ASYNC_PUSH
      static int file_shift = 8;     /* listening inotify events */
  #endif
@@ -173,7 +178,7 @@
  
      /*
       * Decide what kind of events we want to wait for.
-@@ -1746,6 +1790,10 @@ io_wait_dowork(struct context *c, const
+@@ -1746,6 +1795,10 @@ io_wait_dowork(struct context *c, const
      }
  #endif
  
@@ -184,7 +189,7 @@
      /*
       * Possible scenarios:
       *  (1) tcp/udp port has data available to read
-@@ -1824,6 +1872,13 @@ process_io(struct context *c)
+@@ -1824,6 +1877,13 @@ process_io(struct context *c)
      }
  #endif
  
