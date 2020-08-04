@@ -1,19 +1,14 @@
 QCA_EDMA:=kmod-qca-edma
 NSS_COMMON:= \
 	kmod-qca-nss-dp \
-	kmod-qca-nss-drv
-#	kmod-qca-nss-gmac
+	kmod-qca-nss-drv \
+	-kmod-qca-nss-gmac
 
 NSS_EIP197_FW:= \
 	qca-nss-fw-eip-hk
-#	qca-nss-fw-eip-cp
 
-#NSS_STANDARD:= \
-#	qca-nss-fw2-retail \
-#	qca-nss-fw-hk-retail \
-#	qca-nss-fw-cp-retail \
-#	qca-nss-fw-mp-retail
 NSS_STANDARD:= \
+	-qca-nss-fw2-retail \
 	qca-nss-fw-hk-retail
 
 NSS_MACSEC:= \
@@ -28,9 +23,9 @@ NSS_CLIENTS_STANDARD:= -kmod-qca-nss-drv-qdisc -kmod-qca-nss-drv-igs kmod-qca-ns
 	-kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe \
 	-kmod-qca-nss-drv-ovpn-mgr -kmod-qca-nss-drv-ovpn-link kmod-qca-nss-drv-vxlanmgr -kmod-qca-nss-drv-netlink \
-	-kmod-qca-ovsmgr -kmod-qca-nss-drv-match
+	-kmod-qca-ovsmgr -kmod-qca-nss-drv-match -kmod-qca-nss-drv-mirror
 
-NSS_CRYPTO:= kmod-qca-nss-crypto -kmod-qca-nss-cfi-cryptoapi -kmod-qca-nss-cfi-ocf -kmod-qca-nss-drv-ipsecmgr -kmod-crypto-ocf
+NSS_CRYPTO:= kmod-qca-nss-crypto -kmod-qca-nss-cfi-cryptoapi -kmod-qca-nss-cfi-ocf -kmod-qca-nss-drv-ipsecmgr -kmod-crypto-ocf -kmod-qca-nss-drv-ipsecmgr-klips
 
 NSS_RMNET:= kmod-rmnet-nss
 
@@ -61,18 +56,16 @@ TEST_TOOLS:=ethtool i2c-tools tcpdump
 
 UTILS:=file luci-app-samba rng-tools profilerd
 
-#COREBSP_UTILS:=pm-utils wififw_mount_script qca-thermald-10.4 qca-qmi-framework qca-time-services \
-#	qca-wlanfw-upgrade dashboard
 COREBSP_UTILS:=pm-utils wififw_mount_script qca-thermald-10.4 qca-qmi-framework qca-time-services \
-	dashboard
+	-qca-wlanfw-upgrade dashboard
 
 FAILSAFE:= kmod-bootconfig
 
 NETWORKING:=mcproxy -dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd mwan3 \
 	rp-pppoe-relay iptables-mod-extra iputils-tracepath iputils-tracepath6 \
 	luci-app-upnp luci-app-ddns luci-proto-ipv6 \
-	kmod-nf-nathelper-extra kmod-nf-nathelper
-#	kmod-ipt-nathelper-rtsp \
+	kmod-nf-nathelper-extra kmod-nf-nathelper \
+	-kmod-ipt-nathelper-rtsp
 
 CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd ddns-scripts xl2tpd \
@@ -92,11 +85,9 @@ QCA_MAD:=qca-mad
 AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
 
 #These packages depend on SWITCH_SSDK_PKGS
-IGMPSNOOPING_RSTP:=rstp
-#qca-mcs-apps
+IGMPSNOOPING_RSTP:=rstp -qca-mcs-apps
 
-#IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6
-IPSEC:=kmod-ipsec kmod-ipsec4 kmod-ipsec6
+IPSEC:=-openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6
 
 AUDIO:=kmod-sound-soc-ipq alsa
 
