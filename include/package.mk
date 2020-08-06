@@ -200,6 +200,12 @@ define Build/CoreTargets
 	$(Build/Prepare)
 	$(foreach hook,$(Hooks/Prepare/Post),$(call $(hook))$(sep))
 	touch $$@
+	if [[ "$(CONFIG_FOSSID_SCAN)" == *'s'* ]]; then \
+		[[ -f "$(TOPDIR)/scripts/fossid.sh" ]] && \
+		$(TOPDIR)/scripts/fossid.sh --build_scan "$(BOARD)" "$(SUBTARGET)" \
+		"$(PKG_BUILD_DIR)" "$(BUILD_DIR)" "$(CONFIG_FOSSID_SCAN)" || \
+		echo "$(TOPDIR)/scripts/fossid.sh is missing"; \
+	fi
 
   $(call Build/Exports,$(STAMP_CONFIGURED))
   $(STAMP_CONFIGURED): $(STAMP_PREPARED) $(STAMP_CONFIGURED_DEPENDS)
