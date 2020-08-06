@@ -275,6 +275,11 @@ sub parse_package_metadata($) {
 			$pkg->{category} = $1;
 			defined $category{$1} or $category{$1} = {};
 			defined $category{$1}{$src->{name}} or $category{$1}{$src->{name}} = [];
+			if (index($pkg->{category}, "QTI software") != -1){
+				$pkg->{isIntTarball} = "True";
+			} else {
+				$pkg->{isIntTarball} = "False";
+			}
 			push @{$category{$1}{$src->{name}}}, $pkg;
 		};
 		/^Description: \s*(.*)\s*$/ and $pkg->{description} = "\t\t $1\n". get_multiline(*FILE, "\t\t ");
