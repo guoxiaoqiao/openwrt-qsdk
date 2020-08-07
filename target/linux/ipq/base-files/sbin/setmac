@@ -105,8 +105,12 @@ else
 	[ -n "${DELETE}" ] && mtd erase  $(echo $art_partition | sed 's,block,,')
 fi
 
+if $(which lzma) &> /dev/null; then
+	MP03="ap-mp03.1"
+fi
+
 case "$board" in
-	ap-mp02.1* | db-mp02.1* | ap-mp03.1)
+	ap-mp02.1* | db-mp02.1* | $MP03)
 	mtdblock=${art_partition}
 	mtddev=$(echo $mtdblock | sed 's,block,,')
 	dd if=${mtddev} of=/tmp/virt_art.bin.lzma
@@ -122,7 +126,7 @@ dd if=/tmp/macaddr of=$art_partition bs=64 conv=sync 2>/dev/null
 rm -f /tmp/macaddr
 
 case "$board" in
-	ap-mp02.1* | db-mp02.1* | ap-mp03.1)
+	ap-mp02.1* | db-mp02.1* | $MP03)
 	lzma -zvfk /tmp/virt_art.bin
 	mtd erase ${mtddev}
 	mtd write /tmp/virt_art.bin.lzma ${mtddev}
