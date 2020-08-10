@@ -74,7 +74,7 @@ WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k kmod-ath11k wpad-mesh hostapd-utils \
 		 athtestcmd ath10k-firmware-qca988x ath10k-firmware-qca9887 \
 		 ath10k-firmware-qca9888 ath10k-firmware-qca9984 \
 		 ath10k-firmware-qca4019 \
-		 -qca-whc-lbd -qca-whc-init -libhyficommon
+		 -qca-whc-lbd -qca-whc-init -libhyficommon -qca-thermald-10.4
 
 WIFI_OPEN_PKGS_8M:= kmod-ath11k wpad-mesh hostapd-utils \
 		wpa-cli -qca-whc-lbd -qca-whc-init -libhyficommon \
