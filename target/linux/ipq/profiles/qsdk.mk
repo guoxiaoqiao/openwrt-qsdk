@@ -416,7 +416,8 @@ define Profile/QSDK_16M
 		-kmod-leds-gpio -kmod-usb-f-qdss -kmod-bt_tty -kmod-clk-test \
 		-kmod-testssr -kmod-ata-core -kmod-ata-ahci -kmod-ata-ahci-platform \
 		-kmod-usb2 -kmod-usb3 -kmod-usb-phy-ipq5018 -kmod-usb-dwc3-qcom \
-		-kmod-bt_tty -kmod-clk-test -uboot-envtools -mtd -opkg -sysupgrade-helper
+		-kmod-bt_tty -kmod-clk-test -uboot-envtools -mtd -opkg -sysupgrade-helper \
+		-fwupgrade-tools
 endef
 
 define Profile/QSDK_16M/Description
