@@ -222,9 +222,11 @@ define Image/Build/ubifs
 	$(call Image/mkfs/ubifs_fit,-$(SUBTARGET))
 endef
 
+ifeq ($(CONFIG_LOWMEM_FLASH),)
 define Image/Build/squashfs
 	$(call prepare_generic_squashfs,$(KDIR)/root.squashfs)
 endef
+endif
 
 define Image/Build
 	$(call Image/Build/$(1),$(1))
