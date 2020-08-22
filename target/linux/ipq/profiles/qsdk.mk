@@ -413,7 +413,7 @@ define Profile/QSDK_16M
 		$(WIFI_PKGS_16M) qca-wifi-hk-fw-hw1-10.4-asic $(NETWORKING_16MB) \
 		$(IGMPSNOOING_RSTP) $(QCA_ECM_STANDARD) $(NSS_CLIENTS_256MB) \
 		$(QRTR) $(MHI_QRTR) hyfi whc -qca-ssdk-shell xz xz-utils \
-		-kmod-leds-gpio -kmod-usb-f-qdss -kmod-bt_tty -kmod-clk-test \
+		-kmod-usb-f-qdss -kmod-bt_tty -kmod-clk-test \
 		-kmod-testssr -kmod-ata-core -kmod-ata-ahci -kmod-ata-ahci-platform \
 		-kmod-usb2 -kmod-usb3 -kmod-usb-phy-ipq5018 -kmod-usb-dwc3-qcom \
 		-kmod-bt_tty -kmod-clk-test -uboot-envtools -mtd -opkg -sysupgrade-helper \
