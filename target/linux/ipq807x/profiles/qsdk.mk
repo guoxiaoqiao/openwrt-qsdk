@@ -39,10 +39,10 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat kmod-qca-ssdk-nohnat qca-ssdk-shell swconf
 WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
 	qca-wpa-cli qca-cfg80211tool qca-wifi-scripts \
-	qca-acfg qca-wrapd athtestcmd-lith
+	qca-acfg qca-wrapd athtestcmd-lith qca-iface-mgr-10.4
 #	qca-spectral qca-wpc sigma-dut \
 #	qcmbr-10.4 qca-wapid whc whc-ui \
-#	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
+#	qca-lowi qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
 
 WIFI_FW_PKGS:=qca-wifi-hk-fw-hw1-10.4-asic
 
