@@ -77,7 +77,7 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
-MAP_PKGS:=map-t 464xlat tayga
+MAP_PKGS:=-map-t -464xlat tayga
 
 HYFI:=hyfi hyfi-ui
 
@@ -116,7 +116,7 @@ define Profile/QSDK_Premium
 		$(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
 		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP) \
-		$(WIFI_PKGS) $(WIFI_FW_PKGS) $(HW_CRYPTO) $(IPSEC)
+		$(WIFI_PKGS) $(WIFI_FW_PKGS) $(HW_CRYPTO) $(IPSEC) $(MAP_PKGS)
 endef
 
 #		$(HYFI) $(CNSS_DIAG) kmod-art2 \
