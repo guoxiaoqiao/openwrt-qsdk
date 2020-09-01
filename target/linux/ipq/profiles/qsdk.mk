@@ -175,6 +175,8 @@ BLUETOPIA:=bluetopia
 
 ZIGBEE:=zigbee_efr32
 
+MINIDUMP:=minidump
+
 QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
@@ -251,7 +253,7 @@ define Profile/QSDK_Premium
 		$(MAP_PKGS) $(HYFI) $(QCA_MAD) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
 		$(MHI_QRTR) $(KPI) $(QRTR) $(NSS_USERSPACE) \
-		$(NSS_RMNET)
+		$(NSS_RMNET) $(MINIDUMP)
 endef
 
 define Profile/QSDK_Premium/Description
