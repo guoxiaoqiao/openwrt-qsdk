@@ -108,6 +108,8 @@ QMSCT_CLIENT:=qmsct_client
 
 OPENVPN:= openvpn-easy-rsa openvpn-openssl luci-app-openvpn
 
+MINIDUMP:= minidump
+
 define Profile/QSDK_Premium
 	NAME:=Qualcomm-Atheros SDK Premium Profile
 	PACKAGES:=$(OPENWRT_STANDARD) $(STORAGE) \
@@ -116,7 +118,7 @@ define Profile/QSDK_Premium
 		$(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_COMMON) \
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
 		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP) \
-		$(WIFI_PKGS) $(WIFI_FW_PKGS) $(HW_CRYPTO) $(IPSEC) $(MAP_PKGS)
+		$(WIFI_PKGS) $(WIFI_FW_PKGS) $(HW_CRYPTO) $(IPSEC) $(MAP_PKGS) $(MINIDUMP)
 endef
 
 #		$(HYFI) $(CNSS_DIAG) kmod-art2 \
