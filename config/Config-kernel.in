@@ -196,6 +196,14 @@ config KERNEL_DYNAMIC_DEBUG
 	  implicitly compiles in all pr_debug() and dev_dbg() calls, which
 	  enlarges the kernel text size by about 2%.
 
+config KERNEL_DEVMEM
+        bool "/dev/mem virtual device support"
+        default y
+        help
+          Say Y here if you want to support the /dev/mem device.
+          The /dev/mem device is used to access areas of physical
+          memory.
+
 config KERNEL_EARLY_PRINTK
 	bool "Compile the kernel with early printk"
 	default y if TARGET_bcm53xx
