@@ -77,7 +77,7 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
-MAP_PKGS:=-map-t -464xlat tayga
+MAP_PKGS:=-map-t 464xlat tayga
 
 HYFI:=hyfi hyfi-ui
 
