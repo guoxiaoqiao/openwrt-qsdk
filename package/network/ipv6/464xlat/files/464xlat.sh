@@ -27,7 +27,7 @@ proto_464xlat_setup() {
 	local ip6addr ip6prefix tunlink zone
 	json_get_vars ip6addr ip6prefix tunlink zone
 
-	[ "$zone" = "-" ] && zone=""
+	[ -z "$zone" ] && zone="wan"
 
 	( proto_add_host_dependency "$cfg" "::" "$tunlink" )
 
@@ -40,6 +40,7 @@ proto_464xlat_setup() {
 	ip6addr=$(464xlatcfg "$link" "$tundev" "$ip6prefix" 192.0.0.1 $ip6addr)
 	if [ -z "$ip6addr" ]; then
 		proto_notify_error "$cfg" "CLAT_CONFIG_FAILED"
+		proto_block_restart "$cfg"
 		return
 	fi
 
