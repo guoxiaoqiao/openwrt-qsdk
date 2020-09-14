@@ -38,7 +38,6 @@ define Package/libncurses
   CATEGORY:=Libraries
   TITLE:=Terminal handling library (Unicode)
   URL:=http://www.gnu.org/software/ncurses/
-  PROVIDES:=libncursesw
   DEPENDS:= +terminfo
   ABI_VERSION:=$(PKG_VERSION)
 endef
