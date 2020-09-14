@@ -31,7 +31,7 @@ define Package/libreadline
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=Command lines edition library
-  DEPENDS:=+libncursesw
+  DEPENDS:=+libncurses
   URL:=http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html
   ABI_VERSION:=8
 endef
