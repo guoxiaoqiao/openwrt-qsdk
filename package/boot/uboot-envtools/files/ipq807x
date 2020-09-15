@@ -29,10 +29,12 @@ ubootenv_mtdinfo () {
 	elif [ -n "$nor_flash" ]; then
 		ubootenv_size=$mtd_size
 		sectors=$(( $ubootenv_size / $mtd_erase ))
+		sectors=0x`printf "%x" $sectors`
 	else
 		# size is fixed to 0x40000 in u-boot
 		ubootenv_size=0x40000
 		sectors=$(( $ubootenv_size / $mtd_erase ))
+		sectors=0x`printf "%x" $sectors`
 	fi
 
 	echo /dev/$mtd_dev 0x0 $ubootenv_size $mtd_erase $sectors
