@@ -48,7 +48,7 @@ config BUSYBOX_DEFAULT_PID_FILE_PATH
 	default "/var/run"
 config BUSYBOX_DEFAULT_BUSYBOX
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_SHOW_SCRIPT
 	bool
 	default n
@@ -90,7 +90,7 @@ config BUSYBOX_DEFAULT_STATIC
 	default n
 config BUSYBOX_DEFAULT_PIE
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_NOMMU
 	bool
 	default n
@@ -612,7 +612,7 @@ config BUSYBOX_DEFAULT_FEATURE_FANCY_HEAD
 	default y
 config BUSYBOX_DEFAULT_HOSTID
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_ID
 	bool
 	default y
@@ -1972,7 +1972,7 @@ config BUSYBOX_DEFAULT_FEATURE_DEVFS
 	default n
 config BUSYBOX_DEFAULT_DEVMEM
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FBSPLASH
 	bool
 	default n
@@ -2177,7 +2177,7 @@ config BUSYBOX_DEFAULT_ARP
 	default n
 config BUSYBOX_DEFAULT_ARPING
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_BRCTL
 	bool
 	default y
@@ -2306,25 +2306,25 @@ config BUSYBOX_DEFAULT_FEATURE_IFUPDOWN_EXTERNAL_DHCP
 	default n
 config BUSYBOX_DEFAULT_INETD
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_ECHO
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_DISCARD
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_TIME
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_DAYTIME
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_CHARGEN
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_INETD_RPC
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_IP
 	bool
 	default y
@@ -2543,19 +2543,19 @@ config BUSYBOX_DEFAULT_FEATURE_TUNCTL_UG
 	default n
 config BUSYBOX_DEFAULT_VCONFIG
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_WGET
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_WGET_LONG_OPTIONS
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_WGET_STATUSBAR
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_WGET_AUTHENTICATION
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_WGET_TIMEOUT
 	bool
 	default n
