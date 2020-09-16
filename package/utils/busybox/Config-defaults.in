@@ -219,7 +219,7 @@ config BUSYBOX_DEFAULT_FEATURE_EDITING
 	default y
 config BUSYBOX_DEFAULT_FEATURE_EDITING_MAX_LEN
 	int
-	default 1024
+	default 512
 config BUSYBOX_DEFAULT_FEATURE_EDITING_VI
 	bool
 	default n
@@ -228,13 +228,13 @@ config BUSYBOX_DEFAULT_FEATURE_EDITING_HISTORY
 	default 256
 config BUSYBOX_DEFAULT_FEATURE_EDITING_SAVEHISTORY
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_EDITING_SAVE_ON_EXIT
 	bool
 	default n
 config BUSYBOX_DEFAULT_FEATURE_REVERSE_SEARCH
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_TAB_COMPLETION
 	bool
 	default y
@@ -543,7 +543,7 @@ config BUSYBOX_DEFAULT_FEATURE_DD_SIGNAL_HANDLING
 	default y
 config BUSYBOX_DEFAULT_FEATURE_DD_THIRD_STATUS_LINE
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_DD_IBS_OBS
 	bool
 	default y
@@ -771,10 +771,10 @@ config BUSYBOX_DEFAULT_FEATURE_SPLIT_FANCY
 	default n
 config BUSYBOX_DEFAULT_STAT
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_STAT_FORMAT
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_STAT_FILESYSTEM
 	bool
 	default n
@@ -865,7 +865,7 @@ config BUSYBOX_DEFAULT_UNLINK
 	default n
 config BUSYBOX_DEFAULT_USLEEP
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_UUDECODE
 	bool
 	default n
@@ -976,7 +976,7 @@ config BUSYBOX_DEFAULT_PIPE_PROGRESS
 	default n
 config BUSYBOX_DEFAULT_RUN_PARTS
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_RUN_PARTS_LONG_OPTIONS
 	bool
 	default n
@@ -1585,7 +1585,7 @@ config BUSYBOX_DEFAULT_IPCRM
 	default n
 config BUSYBOX_DEFAULT_IPCS
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_LAST
 	bool
 	default n
@@ -1768,7 +1768,7 @@ config BUSYBOX_DEFAULT_SWITCH_ROOT
 	default y
 config BUSYBOX_DEFAULT_TASKSET
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_TASKSET_FANCY
 	bool
 	default n
@@ -2195,25 +2195,25 @@ config BUSYBOX_DEFAULT_ETHER_WAKE
 	default n
 config BUSYBOX_DEFAULT_FTPD
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_FTPD_WRITE
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_FTPD_ACCEPT_BROKEN_LIST
 	bool
 	default n
 config BUSYBOX_DEFAULT_FEATURE_FTPD_AUTHENTICATION
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FTPGET
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FTPPUT
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_FTPGETPUT_LONG_OPTIONS
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_HOSTNAME
 	bool
 	default n
@@ -2501,19 +2501,19 @@ config BUSYBOX_DEFAULT_FEATURE_TELNETD_INETD_WAIT
 	default n
 config BUSYBOX_DEFAULT_TFTP
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_TFTP_PROGRESS_BAR
 	bool
 	default n
 config BUSYBOX_DEFAULT_TFTPD
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_TFTP_GET
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_TFTP_PUT
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_TFTP_BLOCKSIZE
 	bool
 	default n
