@@ -2324,7 +2324,7 @@ config BUSYBOX_DEFAULT_FEATURE_INETD_SUPPORT_BUILTIN_CHARGEN
 	default y
 config BUSYBOX_DEFAULT_FEATURE_INETD_RPC
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_IP
 	bool
 	default y
