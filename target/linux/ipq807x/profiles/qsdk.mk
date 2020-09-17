@@ -40,9 +40,9 @@ WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
 	qca-wpa-cli qca-cfg80211tool qca-wifi-scripts \
 	qca-acfg qca-wrapd athtestcmd-lith qca-iface-mgr-10.4 \
-	qca-wapid qca-lowi athdiag
+	qca-wapid qca-lowi athdiag whc whc-ui
 #	qca-spectral qca-wpc sigma-dut \
-#	qcmbr-10.4 whc whc-ui \
+#	qcmbr-10.4 \
 #	qca-icm qca-cfg80211 qca-cnss-daemon \
 
 WIFI_FW_PKGS:=qca-wifi-hk-fw-hw1-10.4-asic
@@ -119,10 +119,10 @@ define Profile/QSDK_Premium
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
 		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP) \
 		$(WIFI_PKGS) $(WIFI_FW_PKGS) $(HW_CRYPTO) $(IPSEC) $(MAP_PKGS) $(MINIDUMP) \
-		$(OPENVPN) $(QOS)
+		$(OPENVPN) $(QOS) $(HYFI)
 endef
 
-#		$(HYFI) $(CNSS_DIAG) kmod-art2 \
+#		$(CNSS_DIAG) kmod-art2 \
 #		$(NSS_USERSPACE) $(NSS_RMNET) \
 #		$(NSS_MACSEC) $(QCA_EDMA) \
 #		$(QCA_RFS) $(SHORTCUT_FE) \
