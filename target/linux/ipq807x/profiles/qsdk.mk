@@ -18,7 +18,7 @@ NSS_MACSEC:= \
 
 QCA_ECM_PREMIUM:= kmod-qca-nss-ecm-premium
 
-NSS_CLIENTS_STANDARD:= -kmod-qca-nss-drv-qdisc -kmod-qca-nss-drv-igs kmod-qca-nss-drv-tun6rd \
+NSS_CLIENTS_STANDARD:= kmod-qca-nss-drv-qdisc -kmod-qca-nss-drv-igs kmod-qca-nss-drv-tun6rd \
 	kmod-qca-nss-drv-tunipip6 kmod-qca-nss-drv-l2tpv2 kmod-qca-nss-drv-pptp \
 	-kmod-qca-nss-drv-map-t kmod-qca-nss-drv-lag-mgr \
 	kmod-qca-nss-drv-bridge-mgr kmod-qca-nss-drv-gre kmod-qca-nss-drv-pppoe \
@@ -74,7 +74,7 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
 	isc-dhcp-relay-ipv6 rp-pppoe-server ppp-mod-pptp iptables-mod-physdev
 
-QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
+QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark -kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
 MAP_PKGS:=-map-t 464xlat tayga
@@ -119,14 +119,14 @@ define Profile/QSDK_Premium
 		$(NSS_STANDARD) $(UTILS) $(NETWORKING) $(CD_ROUTER) $(NSS_CLIENTS_STANDARD) \
 		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP) \
 		$(WIFI_PKGS) $(WIFI_FW_PKGS) $(HW_CRYPTO) $(IPSEC) $(MAP_PKGS) $(MINIDUMP) \
-		$(OPENVPN)
+		$(OPENVPN) $(QOS)
 endef
 
 #		$(HYFI) $(CNSS_DIAG) kmod-art2 \
 #		$(NSS_USERSPACE) $(NSS_RMNET) \
 #		$(NSS_MACSEC) $(QCA_EDMA) \
 #		$(QCA_RFS) $(SHORTCUT_FE) \
-#		$(QCA_MAD) $(QOS)
+#		$(QCA_MAD)
 
 define Profile/QSDK_Premium/Description
 	QSDK Premium package set configuration.
