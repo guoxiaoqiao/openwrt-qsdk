@@ -325,7 +325,8 @@ else
     export CROSS="$(TARGET_CROSS)" \
 		$(if $(PKG_BUILD_ID),KEEP_BUILD_ID=1) \
 		$(if $(CONFIG_KERNEL_KALLSYMS),NO_RENAME=1) \
-		$(if $(CONFIG_KERNEL_PROFILING),KEEP_SYMBOLS=1); \
+		$(if $(CONFIG_KERNEL_PROFILING),KEEP_SYMBOLS=1) \
+		$(if $(CONFIG_KERNEL_MODULE_SIG),MOD_SIGN_CMD="$(LINUX_DIR)/scripts/sign-file $(call qstrip, $(CONFIG_KERNEL_MODULE_SIG_HASH)) $(LINUX_DIR)/$(call qstrip, $(CONFIG_KERNEL_MODULE_SIG_KEY)) $(LINUX_DIR)/certs/signing_key.x509"); \
     NM="$(TARGET_CROSS)nm" \
     STRIP="$(STRIP)" \
     STRIP_KMOD="$(SCRIPT_DIR)/strip-kmod.sh" \

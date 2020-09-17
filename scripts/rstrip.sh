@@ -28,6 +28,7 @@ find $TARGETS -type f -a -exec file {} \; | \
     echo "$SELF: $F: $S"
 	[ "${S}" = "relocatable" ] && {
 		eval "$STRIP_KMOD $F"
+		eval "${MOD_SIGN_CMD} $F"
 	} || {
 		b=$(stat -c '%a' $F)
 		[ -z "$PATCHELF" ] || [ -z "$TOPDIR" ] || {
