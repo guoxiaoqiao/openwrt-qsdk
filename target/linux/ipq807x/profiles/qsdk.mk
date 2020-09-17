@@ -88,7 +88,7 @@ AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
 #These packages depend on SWITCH_SSDK_PKGS
 IGMPSNOOPING_RSTP:=rstp qca-mcs-apps
 
-IPSEC:=-openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6
+IPSEC:=openswan kmod-ipsec kmod-ipsec4 kmod-ipsec6
 
 AUDIO:=kmod-sound-soc-ipq alsa
 
