@@ -36,6 +36,7 @@ default_uboot_env () {
 		sectors=$(( $uboot_env_size / $mtd_erase ))
 	fi
 
+	sectors=0x`printf "%x" $sectors`
 	echo /dev/$mtd_dev 0x0 $uboot_env_size $mtd_erase $sectors
 }
 
