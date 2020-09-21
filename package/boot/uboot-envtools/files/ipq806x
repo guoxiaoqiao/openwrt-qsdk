@@ -30,10 +30,12 @@ default_uboot_env () {
 	elif [ -n "$nor_flash" ]; then
 		uboot_env_size=$mtd_size
 		sectors=$(( $uboot_env_size / $mtd_erase ))
+		sectors=0x`printf "%x" $sectors`
 	else
 		# size is hardcoded to 0x40000 in u-boot
 		uboot_env_size=0x40000
 		sectors=$(( $uboot_env_size / $mtd_erase ))
+		sectors=0x`printf "%x" $sectors`
 	fi
 
 	sectors=0x`printf "%x" $sectors`
