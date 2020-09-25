@@ -188,6 +188,7 @@ tls_server
 up_delay
 up_restart
 username_as_common_name
+enable_dca
 '
 
 OPENVPN_LIST='
