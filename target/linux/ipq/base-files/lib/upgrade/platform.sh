@@ -11,7 +11,7 @@ RAMFS_COPY_DATA=/lib/ipq806x.sh
 RAMFS_COPY_BIN="/usr/bin/dumpimage /bin/mktemp /usr/sbin/mkfs.ubifs
 	/usr/sbin/ubiattach /usr/sbin/ubidetach /usr/sbin/ubiformat /usr/sbin/ubimkvol
 	/usr/sbin/ubiupdatevol /usr/bin/basename /bin/rm /usr/bin/find
-	/usr/sbin/mkfs.ext4 /usr/sbin/losetup /usr/bin/yes /usr/bin/strings"
+	/usr/sbin/mkfs.ext4 /usr/sbin/losetup /usr/bin/yes /usr/bin/strings /usr/sbin/partprobe"
 
 get_full_section_name() {
 	local img=$1
@@ -206,6 +206,18 @@ do_flash_ddr() {
 	fi
 }
 
+do_flash_gpt() {
+	local emmcblock="$(find_mmc_part rootfs)"
+	[ -e "$emmcblock" ] && {
+		if strings /tmp/hlos-*|grep 'OpenWrt Linux-5.4' > /dev/null 2>&1; then
+			dd if=$(ls /tmp/gpt-*.bin) of=$(echo $emmcblock | cut -c1-12) bs=1K count=17
+			total_size=$(cat /proc/partitions |grep -w $(echo $emmcblock | cut -c6-12) | awk '{print $3}')
+			dd if=$(ls /tmp/gptbackup-*.bin) of=$(echo $emmcblock | cut -c1-12) oflag=seek_bytes seek=$(( $total_size * 1024 - 16896))  count=16896 conv=fsync
+			partprobe $(echo $emmcblock | cut -c1-12)
+		fi
+	}
+}
+
 to_upper ()
 {
 	echo $1 | awk '{print toupper($0)}'
@@ -384,6 +396,8 @@ platform_do_upgrade() {
 
 	case "$board" in
 	db149 | ap148 | ap145 | ap148_1xx | db149_1xx | db149_2xx | ap145_1xx | ap160 | ap160_2xx | ap161 | ak01_1xx | ap-dk01.1-c1 | ap-dk01.1-c2 | ap-dk04.1-c1 | ap-dk04.1-c2 | ap-dk04.1-c3 | ap-dk04.1-c4 | ap-dk04.1-c5 | ap-dk04.1-c6 | ap-dk05.1-c1 |  ap-dk06.1-c1 | ap-dk07.1-c1 | ap-dk07.1-c2 | ap-dk07.1-c3 | ap-dk07.1-c4 | ap-hk01-c1 | ap-hk01-c2 | ap-hk01-c3 | ap-hk01-c4 | ap-hk01-c5 | ap-hk01-c6 | ap-hk02 | ap-hk06 | ap-hk07 | ap-hk08 | ap-hk09 | ap-hk10-c1 | ap-hk10-c2 | ap-hk11-c1 | ap-hk12 | ap-hk14 | ap-ac01 | ap-ac02 | ap-ac03 | ap-ac04 | ap-oak02 | ap-oak03 | db-hk01 | db-hk02 | ap-cp01-c1 | ap-cp01-c2 | ap-cp01-c3 | ap-cp01-c4 | ap-cp02-c1 | ap-cp03-c1 | db-cp01 | db-cp02 | mp-emu | ap-mp02.1 | ap-mp03.1 | ap-mp03.1-c2 | ap-mp03.1-c3 | ap-mp03.3 | ap-mp03.3-c2 | ap-mp03.6-c1 | ap-mp03.6-c2 | db-mp02.1 | db-mp03.1 | db-mp03.1-c2 | db-mp03.3 | db-mp03.3-c2)
+		# uncomment below function call to have support for sysupgrade from Linux v4.4 to v5.4 with removal of rootfs_data partition
+		# do_flash_gpt
 		for sec in $(print_sections $1); do
 			flash_section ${sec}
 		done
@@ -426,6 +440,7 @@ platform_get_offset() {
 platform_copy_config() {
 	local nand_part="$(find_mtd_part "ubi_rootfs")"
 	local emmcblock="$(find_mmc_part "rootfs_data")"
+	[ -e "$emmcblock" ] || emmcblock="$(find_mmc_part "rootfs")"
 	mkdir -p /tmp/overlay
 
 	if [ -e "$nand_part" ]; then
@@ -452,13 +467,14 @@ platform_copy_config() {
 		fi
 		emmcblock="$(find_mmc_part rootfs)"
 		losetup --detach-all
-		local data_blockoffset="$(platform_get_offset $emmcblock)"
-		[ -z "$data_blockoffset" ] && {
+		local data_offset_part="$(platform_get_offset $emmcblock)"
+		local data_offset_img="$(platform_get_offset $(ls /tmp/rootfs-*))"
+		[ "$data_offset_part" != "$data_offset_img" ] && {
 			emmcblock="$(find_mmc_part "rootfs_1")"
-			data_blockoffset="$(platform_get_offset $emmcblock)"
+			data_offset_part="$(platform_get_offset $emmcblock)"
 		}
 		local loopdev="$(losetup -f)"
-		losetup -o $data_blockoffset $loopdev $emmcblock || {
+		losetup -o $data_offset_part $loopdev $emmcblock || {
 			echo "Failed to mount looped rootfs_data."
 			reboot
 		}

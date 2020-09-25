@@ -2106,7 +2106,7 @@ config BUSYBOX_DEFAULT_NANDDUMP
 	default n
 config BUSYBOX_DEFAULT_PARTPROBE
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_RAIDAUTORUN
 	bool
 	default n
