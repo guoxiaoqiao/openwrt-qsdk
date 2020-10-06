@@ -396,7 +396,13 @@ platform_do_upgrade() {
 	qcom,ipq8074-ap-hk12 |\
 	qcom,ipq8074-ap-hk14 |\
 	qcom,ipq8074-db-hk01 |\
-	qcom,ipq8074-db-hk02)
+	qcom,ipq8074-db-hk02 |\
+	qcom,ipq8074-ap-ac01 |\
+	qcom,ipq8074-ap-ac02 |\
+	qcom,ipq8074-ap-ac03 |\
+	qcom,ipq8074-ap-ac04 |\
+	qcom,ipq8074-ap-oak02 |\
+	qcom,ipq8074-ap-oak03)
 		for sec in $(print_sections $1); do
 			flash_section ${sec}
 		done
