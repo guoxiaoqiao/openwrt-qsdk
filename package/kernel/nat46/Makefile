@@ -33,4 +33,9 @@ define Build/Compile
 		cp $(PKG_BUILD_DIR)/nat46/modules/Module.symvers $(PKG_BUILD_DIR)/Module.symvers
 endef
 
+define Build/InstallDev
+	mkdir -p -m 0777 $(STAGING_DIR)/usr/include/nat46
+	$(CP) $(PKG_BUILD_DIR)/nat46/modules/*.h  $(STAGING_DIR)/usr/include/nat46/
+endef
+
 $(eval $(call KernelPackage,nat46))
