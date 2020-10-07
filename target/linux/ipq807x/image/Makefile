@@ -6,6 +6,8 @@ include $(INCLUDE_DIR)/image.mk
 UBIFS_OPTS = -m 2048 -e 124KiB -c 4096 -U -F
 UBI_OPTS = -m 2048 -p 128KiB
 
+IPQ807X_KERNEL_SIZE=6044k
+IPQ807X_ROOTFS_SIZE=40036k
 IPQ807X_32_KERNEL_LOADADDR = 0x41208000
 IPQ807X_KERNEL_LOADADDR = 0x41080000
 
@@ -19,6 +21,13 @@ endif
 
 define CompressLzma
 	$(STAGING_DIR_HOST)/bin/lzma e $(1) -lc1 -lp2 -pb2 $(2)
+endef
+
+define sizecheck
+	@[ $$(($(subst k,* 1024,$(subst m, * 1024k,$(1))))) -ge "$$(stat -c%s $(2))" ] || { \
+		echo "WARNING: Image file $(2) is too big, size is $$(stat -c%s $(2)) compare to max allowed $(1)" >&2; \
+		rm -f $(2); \
+	}
 endef
 
 define Image/BuildKernel/FIT
@@ -49,6 +58,7 @@ define Image/BuildKernel/MultiDTBFIT
 	$(foreach dtb, $(2), gzip -9 -c $(DTS_DIR)/$(dtb).dtb > $(DTS_DIR)/$(dtb).dtb.gz;)
 	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.lzma)
 	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/Image.lzma,$(2),lzma,$(3),$(3),$(4),$(5))
+	$$(call sizecheck, $(IPQ807X_KERNEL_SIZE), $(KDIR)/fit-$(1).itb)
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 endef
 
@@ -94,6 +104,7 @@ endef
 
 define Image/Build/squashfs
 	$(call prepare_generic_squashfs,$(KDIR)/root.squashfs)
+	$$(call sizecheck, $(IPQ807X_ROOTFS_SIZE), $(KDIR)/root.squashfs)
 endef
 
 define Image/Build
