@@ -365,7 +365,7 @@ dhcp_this_host_add() {
 
 	if [ "$mode" -gt 0 ] ; then
 		ifdashname="${ifname//./-}"
-		routerstub="$( md5sum /etc/os-release )"
+		routerstub="$( md5sum /etc/openwrt_version )"
 		routerstub="router-${routerstub// */}"
 		routername="$( uci_get system @system[0] hostname $routerstub )"
 
