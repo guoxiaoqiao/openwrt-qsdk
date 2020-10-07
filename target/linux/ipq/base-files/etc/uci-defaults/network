@@ -135,6 +135,8 @@ ap-mp02.1 |\
 db-mp02.1 |\
 ap-mp03.3 |\
 ap-mp03.3-c2 |\
+ap-mp03.6-c1 |\
+ap-mp03.6-c2 |\
 db-mp03.3 |\
 db-mp03.3-c2)
 	ucidef_add_switch "switch0"
