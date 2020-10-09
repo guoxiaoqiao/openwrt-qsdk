@@ -22,6 +22,7 @@ my $scriptdir = dirname($0);
 my @mirrors;
 my $ok;
 my $is_network_down = $ENV{'IS_NETWORK_DOWN'};
+my $nfs_server = $ENV{'NFS_MIRROR_SERVER'};
 
 $url_filename or $url_filename = $filename;
 
@@ -218,7 +219,12 @@ push @mirrors, 'http://mirror2.openwrt.org/sources';
 push @mirrors, 'http://downloads.openwrt.org/sources';
 
 my @caf_mirrors;
-push @caf_mirrors, 'file:///prj/qct/openwrt/caf_mirrored_tarballs';
+if ($nfs_server) {
+	push @caf_mirrors, "file://${nfs_server}";
+} else {
+	push @caf_mirrors, 'file:///prj/qct/openwrt/caf_mirrored_tarballs';
+}
+
 if (!$is_network_down) {
 	push @caf_mirrors, 'https://source.codeaurora.org/mirrored_source/quic/qsdk';
 }
