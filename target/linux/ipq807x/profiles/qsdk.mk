@@ -41,9 +41,9 @@ WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-wpa-cli qca-cfg80211tool qca-wifi-scripts \
 	qca-acfg qca-wrapd athtestcmd-lith qca-iface-mgr-10.4 \
 	qca-wapid qca-lowi athdiag whc whc-ui \
-	qca-spectral qca-icm qcmbr-10.4 sigma-dut
-#	qca-wpc \
-#	qca-cfg80211 qca-cnss-daemon \
+	qca-spectral qca-icm qcmbr-10.4 sigma-dut \
+	qca-wpc qca-cfg80211
+#	qca-cnss-daemon \
 
 WIFI_FW_PKGS:=qca-wifi-hk-fw-hw1-10.4-asic
 
