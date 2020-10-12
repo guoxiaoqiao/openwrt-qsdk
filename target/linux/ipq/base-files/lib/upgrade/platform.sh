@@ -277,6 +277,7 @@ erase_emmc_config() {
 	local mtdpart=$(cat /proc/mtd | grep rootfs)
 	local emmcblock="$(find_mmc_part "rootfs_data")"
 	if [ -z "$mtdpart" -a -e "$emmcblock" ]; then
+		dd if=/dev/zero of=$emmcblock bs=1K count=256
 		yes | mkfs.ext4 "$emmcblock"
 	fi
 }
