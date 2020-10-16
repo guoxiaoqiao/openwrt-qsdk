@@ -74,7 +74,7 @@ CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	kmod-ipv6 ip6tables iptables-mod-ipsec iptables-mod-filter \
 	isc-dhcp-relay-ipv6 rp-pppoe-server ppp-mod-pptp iptables-mod-physdev
 
-QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark -kmod-ifb iptables \
+QOS:=tc kmod-sched kmod-sched-core kmod-sched-connmark kmod-ifb iptables \
 	iptables-mod-filter iptables-mod-ipopt iptables-mod-conntrack-extra
 
 MAP_PKGS:=-map-t 464xlat tayga
