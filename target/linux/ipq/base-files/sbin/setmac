@@ -119,7 +119,7 @@ dd if=/tmp/macaddr of=$art_partition bs=64 conv=sync 2>/dev/null
 rm -f /tmp/macaddr
 
 [ -e /sys/firmware/devicetree/base/compressed_art ] && {
-	lzma -zvfk /tmp/virt_art.bin
+	lzma -zvfk -4 /tmp/virt_art.bin
 	dd if=/tmp/virt_art.bin.lzma of=${mtdblock}
 	rm /tmp/virt_art.bin*
 }
