@@ -138,6 +138,22 @@ endef
 
 $(eval $(call KernelPackage,usb-phy-ipq5018))
 
+define KernelPackage/usb-ks-bridge
+  TITLE:=DWC3 USB KS BRIDGE driver for ipq807x
+  DEPENDS:=@TARGET_ipq_ipq807x_64||TARGET_ipq_ipq807x
+  KCONFIG:= CONFIG_USB_QCOM_KS_BRIDGE
+  FILES:=$(LINUX_DIR)/drivers/usb/misc/ks_bridge.ko
+  AUTOLOAD:=$(call autoload,45,ks_bridge,1)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-ks-bridge/description
+ This driver provides support for the USB KS bridge
+ within the IPQ807x SoC
+endef
+
+$(eval $(call KernelPackage,usb-ks-bridge))
+
 define KernelPackage/qrtr_mproc
   TITLE:= Ath11k Specific kernel configs for IPQ807x, IPQ60xx and IPQ50xx
   DEPENDS+= @TARGET_ipq_ipq807x||TARGET_ipq_ipq807x_64||TARGET_ipq_ipq60xx||TARGET_ipq_ipq60xx_64||TARGET_ipq_ipq50xx||TARGET_ipq_ipq50xx_64
