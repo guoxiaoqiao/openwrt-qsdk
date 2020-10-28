@@ -350,9 +350,10 @@ int main(int argc, char *argv[])
 			continue;
 		} else if (pdlen >= 0) {
 			size_t v4offset = (legacy) ? 9 : 10;
+			size_t totsize = (ealen + prefix6len);
 			memcpy(&ipv6addr.s6_addr[v4offset], &ipv4addr, 4);
 			memcpy(&ipv6addr.s6_addr[v4offset + 4], &psid16, 2);
-			bmemcpy(&ipv6addr, &pd, pdlen);
+			bmemcpy(&ipv6addr, &pd, (totsize >= pdlen) ? pdlen : totsize);
 		}
 
 		++rulecnt;
