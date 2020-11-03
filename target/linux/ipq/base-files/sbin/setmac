@@ -109,7 +109,7 @@ fi
 	mtdblock=${art_partition}
 	dd if=${mtdblock} of=/tmp/virt_art.bin.lzma
 	lzma -dvf --single-stream /tmp/virt_art.bin.lzma || {
-	dd if=${mtdblock} of=/tmp/virt_art.bin
+	dd if=/dev/zero of=/tmp/virt_art.bin bs=1024 count=512
 	}
 	art_partition=/tmp/virt_art.bin
 }
