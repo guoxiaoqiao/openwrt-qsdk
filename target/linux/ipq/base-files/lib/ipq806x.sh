@@ -206,6 +206,9 @@ ipq806x_board_detect() {
 	*"AP-MP03.1-C2")
 		name="ap-mp03.1-c2"
 		;;
+	*"AP-MP03.1-C3")
+		name="ap-mp03.1-c3"
+		;;
 	*"AP-MP03.3")
 		name="ap-mp03.3"
 		;;
