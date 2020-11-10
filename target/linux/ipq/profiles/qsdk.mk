@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015-2020 The Linux Foundation. All rights reserved.
+# Copyright (c) 2015-2021 The Linux Foundation. All rights reserved.
 #
 
 QCA_LITHIUM:=kmod-qvit-lithium
@@ -157,7 +157,8 @@ NETWORKING_256MB:=-dnsmasq dnsmasq-dhcpv6 bridge ip-full trace-cmd \
 
 NETWORKING_8MB:=dnsmasq -dnsmasq-dhcpv6 kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp
 
-NETWORKING_16MB:=-dnsmasq dnsmasq-dhcpv6 kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp ip
+NETWORKING_16MB:=-dnsmasq dnsmasq-dhcpv6 kmod-nf-nathelper-extra kmod-ipt-nathelper-rtsp ip \
+		rp-pppoe-relay
 
 CD_ROUTER:=kmod-ipt-ipopt kmod-bonding kmod-nat-sctp lacpd \
 	arptables ds-lite 6rd ddns-scripts xl2tpd \
