@@ -248,6 +248,9 @@ ipq806x_board_detect() {
 	*"DB-MP03.3-C2")
 		name="db-mp03.3-c2"
 		;;
+	*"TB-MP04")
+		name="tb-mp04"
+		;;
 	esac
 
 	[ -z "$name" ] && name="unknown"

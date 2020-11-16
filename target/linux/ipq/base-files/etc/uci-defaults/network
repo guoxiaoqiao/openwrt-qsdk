@@ -142,7 +142,8 @@ ap-mp03.5-c2 |\
 ap-mp03.6-c1 |\
 ap-mp03.6-c2 |\
 db-mp03.3 |\
-db-mp03.3-c2)
+db-mp03.3-c2 |\
+tb-mp04)
 	ucidef_add_switch "switch0"
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	;;
