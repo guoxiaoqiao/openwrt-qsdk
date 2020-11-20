@@ -141,6 +141,7 @@ define BuildKernel
   clean: FORCE
 ifdef CONFIG_EXTERNAL_KERNEL_TREE
 	$(if $(wildcard $(LINUX_DIR)), \
+	find $(LINUX_DIR)/ -name '*.dtb' -type f -print | xargs rm -f; \
 	make -C $(LINUX_DIR) clean)
 else
 	rm -rf $(KERNEL_BUILD_DIR)
