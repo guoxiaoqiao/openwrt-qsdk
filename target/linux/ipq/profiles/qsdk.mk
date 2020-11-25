@@ -69,8 +69,6 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat kmod-qca-ssdk-nohnat qca-ssdk-shell swconf
 SWITCH_SSDK_NOHNAT_PKGS:= kmod-qca-ssdk-nohnat qca-ssdk-shell swconfig
 SWITCH_OPEN_PKGS:= kmod-switch-ar8216 swconfig
 
-MACSEC_OPEN_PKGS:= wpa-supplicant-macsec hostapd-macsec
-
 WIFI_OPEN_PKGS:= kmod-ath9k kmod-ath10k kmod-ath11k wpad-mesh hostapd-utils \
 		 kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
 		 athtestcmd-lith-nl ath10k-firmware-qca988x ath10k-firmware-qca9887 \
@@ -228,7 +226,7 @@ ifneq ($(LINUX_VERSION),3.18.21)
 	$(HW_CRYPTO) $(QCA_RFS) $(AUDIO) $(VIDEO) \
 	$(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) kmod-qca-nss-macsec \
 	$(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(NSS_EIP197_FW) $(MAP_PKGS) $(AQ_PHY) $(FAILSAFE) \
-	$(SWITCH_OPEN_PKGS) rdk-v-wifi-ath10k $(MACSEC_OPEN_PKGS)
+	$(SWITCH_OPEN_PKGS) rdk-v-wifi-ath10k
 endif
 
 define Profile/QSDK_Open
