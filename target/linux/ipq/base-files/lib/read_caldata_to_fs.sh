@@ -109,15 +109,19 @@ do_load_ipq4019_board_bin()
 
                     dd if=${apdk}/virtual_art.bin of=${apdk}/IPQ5018/caldata.bin bs=1 count=$FILESIZE skip=4096
 
-                    mkdir -p ${apdk}/qcn9100
+                    mkdir -p ${apdk}/qcn6122
                     # Read after 154KB
-                    dd if=${apdk}/virtual_art.bin of=${apdk}/qcn9100/caldata_1.bin bs=1 count=$FILESIZE skip=157696
+                    dd if=${apdk}/virtual_art.bin of=${apdk}/qcn6122/caldata_1.bin bs=1 count=$FILESIZE skip=157696
                     # Read after 304KB
-                    dd if=${apdk}/virtual_art.bin of=${apdk}/qcn9100/caldata_2.bin bs=1 count=$FILESIZE skip=311296
+                    dd if=${apdk}/virtual_art.bin of=${apdk}/qcn6122/caldata_2.bin bs=1 count=$FILESIZE skip=311296
 
                     ln -s ${apdk}/IPQ5018/caldata.bin /lib/firmware/IPQ5018/caldata.bin
-                    ln -s ${apdk}/qcn9100/caldata_1.bin /lib/firmware/qcn9100/caldata_1.bin
-                    ln -s ${apdk}/qcn9100/caldata_2.bin /lib/firmware/qcn9100/caldata_2.bin
+                    # To Remove later
+                    ln -s ${apdk}/qcn6122/caldata_1.bin /lib/firmware/qcn9100/caldata_1.bin
+                    ln -s ${apdk}/qcn6122/caldata_2.bin /lib/firmware/qcn9100/caldata_2.bin
+
+                    ln -s ${apdk}/qcn6122/caldata_1.bin /lib/firmware/qcn6122/caldata_1.bin
+                    ln -s ${apdk}/qcn6122/caldata_2.bin /lib/firmware/qcn6122/caldata_2.bin
             ;;
             ap-mp03.1)
                     mkdir -p ${apdk}/IPQ5018
@@ -173,9 +177,12 @@ do_load_ipq4019_board_bin()
                     dd if=${mtdblock} of=${apdk}/IPQ5018/caldata.bin bs=1 count=$FILESIZE skip=4096
                     ln -s ${apdk}/IPQ5018/caldata.bin /lib/firmware/IPQ5018/caldata.bin
 
-                    mkdir -p ${apdk}/qcn9100
-                    dd if=${mtdblock} of=${apdk}/qcn9100/caldata_1.bin bs=1 count=$FILESIZE skip=157696
-                    ln -s ${apdk}/qcn9100/caldata_1.bin /lib/firmware/qcn9100/caldata_1.bin
+                    mkdir -p ${apdk}/qcn6122
+                    dd if=${mtdblock} of=${apdk}/qcn6122/caldata_1.bin bs=1 count=$FILESIZE skip=157696
+                    # To remove later
+                    ln -s ${apdk}/qcn6122/caldata_1.bin /lib/firmware/qcn9100/caldata_1.bin
+
+                    ln -s ${apdk}/qcn6122/caldata_1.bin /lib/firmware/qcn6122/caldata_1.bin
 
                     mkdir -p ${apdk}/qcn9000
                     dd if=${mtdblock} of=${apdk}/qcn9000/caldata_2.bin bs=1 count=$FILESIZE skip=311296
