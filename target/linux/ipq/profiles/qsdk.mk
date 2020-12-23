@@ -187,6 +187,8 @@ MAP_PKGS:=map-t 464xlat tayga
 HYFI:=hyfi-mesh hyfi-ui
 PLC:=qca-plc-serv qca-plc-fw
 
+QCA_EZMESH:=qca-ezmesh
+
 QCA_MAD:=qca-mad
 
 AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
@@ -255,7 +257,7 @@ define Profile/QSDK_Premium
 		$(NETWORKING) $(OPENVPN) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(QCA_MAD) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
+		$(MAP_PKGS) $(HYFI) $(QCA_MAD) $(QCA_EZMESH) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
 		$(MHI_QRTR) $(KPI) $(QRTR) $(NSS_USERSPACE) \
 		$(NSS_RMNET) $(MINIDUMP) $(EMESH_SP) kmod-macvlan
@@ -350,7 +352,7 @@ define Profile/QSDK_Deluxe
 		$(NETWORKING) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
+		$(MAP_PKGS) $(HYFI) $(QCA_EZMESH) $(AQ_PHY) $(FAILSAFE) kmod-art2 -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) \
 		qca-wifi-npr-fw-hw1-10.4-asic $(KPI)
 endef
@@ -368,7 +370,7 @@ define Profile/QSDK_256
 		$(WIFI_PKGS_256MB) qca-wifi-hk-fw-hw1-10.4-asic $(CD_ROUTER_256MB) $(NETWORKING_256MB) \
 		iperf-mt rng-tools $(QCA_RFS) $(IGMPSNOOING_RSTP) $(CHAR_DIAG) \
 		$(QCA_ECM_STANDARD) $(NSS_MACSEC) \
-		$(NSS_CLIENTS_256MB) $(HYFI) $(FAILSAFE) -lacpd \
+		$(NSS_CLIENTS_256MB) $(HYFI) $(QCA_EZMESH) $(FAILSAFE) -lacpd \
 		$(QCA_LITHIUM) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) qca-wifi-cyp-fw-hw1-11.0-asic \
 		$(QRTR) $(MHI_QRTR) kmod-macvlan
 endef
@@ -387,7 +389,7 @@ define Profile/QSDK_512
 		$(NETWORKING) $(OPENVPN) $(UTILS) $(SHORTCUT_FE) $(HW_CRYPTO) $(QCA_RFS) \
 		$(AUDIO) $(VIDEO) $(IGMPSNOOING_RSTP) $(IPSEC) $(QOS) $(QCA_ECM_PREMIUM) \
 		$(NSS_MACSEC) $(TEST_TOOLS) $(NSS_CRYPTO) $(NSS_CLIENTS_STANDARD) $(COREBSP_UTILS) \
-		$(MAP_PKGS) $(HYFI) $(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
+		$(MAP_PKGS) $(HYFI) $(QCA_EZMESH) $(AQ_PHY) $(FAILSAFE) -lacpd $(USB_DIAG) \
 		$(QCA_LITHIUM) $(NSS_EIP197_FW) $(CNSS_DIAG) $(FTM) $(QMSCT_CLIENT) $(KPI) $(NSS_USERSPACE) \
 		$(QRTR) $(MHI_QRTR) $(NSS_RMNET) kmod-macvlan
 endef
