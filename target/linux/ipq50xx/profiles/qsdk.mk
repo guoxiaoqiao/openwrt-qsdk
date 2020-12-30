@@ -44,7 +44,7 @@ SWITCH_SSDK_PKGS:= kmod-qca-ssdk-hnat kmod-qca-ssdk-nohnat qca-ssdk-shell swconf
 
 WIFI_OPEN_PKGS:= kmod-ath11k wpad-mesh hostapd-utils \
 	-kmod-art2-netlink sigma-dut-open wpa-cli qcmbr-10.4-netlink \
-	athtestcmd -qca-whc-lbd -qca-whc-init -libhyficommon
+	athtestcmd -qca-whc-lbd -qca-whc-init -libhyficommon qca-wifi-scripts
 
 WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
