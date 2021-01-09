@@ -228,6 +228,29 @@ image_is_nand()
 	[ -e "$nand_part" ] || return 1
 
 }
+
+get_fw_name() {
+	cat /proc/device-tree/model | grep -q 5018 && img="ipq5018"
+	cat /proc/device-tree/model | grep -q 6018 && img="ipq6018"
+	cat /proc/device-tree/model | grep -q 8074 && img="ipq8074"
+
+	wifi_ipq=""
+	prev=""
+	for device in $(cat /sys/bus/pci/devices/*/device 2> /dev/null)
+	do
+		if [ "$prev" == "$device" ]; then
+			wifi_ipq=$img"cs"
+		else
+			[ "$device" == "0x1004" ] && wifi_ipq=$img"_qcn9000"
+			[ "$device" == "0x1104" ] && wifi_ipq=$img"_qcn6122"
+		fi
+		prev=$device
+		img=$wifi_ipq
+	done
+
+	echo $wifi_ipq
+}
+
 flash_section() {
 	local sec=$1
 	local board=$(ipq806x_board_name)
@@ -246,6 +269,7 @@ flash_section() {
 	case "${sec}" in
 		hlos*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "0:HLOS";;
 		rootfs*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "rootfs";;
+		wifi_fw_$(get_fw_name)*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
 		wififw-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
 		wififw_ubi-*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
 		wififw_v${version}-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
