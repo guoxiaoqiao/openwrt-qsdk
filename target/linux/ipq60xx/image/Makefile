@@ -5,6 +5,7 @@ UBIFS_OPTS = -m 2048 -e 124KiB -c 4096 -U -F
 UBI_OPTS = -m 2048 -p 128KiB
 
 IPQ60XX_32_KERNEL_LOADADDR = 0x41008000
+IPQ60XX_KERNEL_LOADADDR = 0x41080000
 
 ifneq ($(CONFIG_TARGET_ROOTFS_UBIFS),)
 define Image/mkfs/ubifs_fit
@@ -47,6 +48,11 @@ endef
 define Image/BuildKernel/ipq60xx_32
 	$(foreach device, $(call FindDeviceTrees, ipq6018-), \
 		$(call Image/BuildKernel/$(1),$(device),$(IPQ60XX_32_KERNEL_LOADADDR));)
+endef
+
+define Image/BuildKernel/generic
+	$(foreach device, $(call FindDeviceTrees, ipq6018-), \
+		$(call Image/BuildKernel/$(1),$(device),$(IPQ60XX_KERNEL_LOADADDR));)
 endef
 
 define Image/BuildKernel
