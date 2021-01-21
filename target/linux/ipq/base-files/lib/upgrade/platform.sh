@@ -389,6 +389,10 @@ platform_check_image() {
 		}
 	done
 
+	# sync and flush kernel cache memory
+	sync
+	echo 3 > /proc/sys/vm/drop_caches
+
 	image_demux $1 || {\
 		echo "Error: \"$1\" couldn't be extracted. Abort..."
 		return 1
