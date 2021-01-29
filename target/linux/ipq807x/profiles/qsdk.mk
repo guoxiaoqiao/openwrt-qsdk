@@ -87,6 +87,8 @@ HYFI:=hyfi hyfi-ui
 
 QCA_MAD:=qca-mad
 
+QCA_EZMESH:=qca-ezmesh qca-ezmesh-ctrl qca-ezmesh-agent
+
 AQ_PHY:=kmod-aq_phy kmod-qca_85xx_sw aq-fw-download
 
 #These packages depend on SWITCH_SSDK_PKGS
@@ -149,7 +151,7 @@ define Profile/QSDK_Premium
 		$(QCA_ECM_PREMIUM) $(NSS_CRYPTO) $(NSS_EIP197_FW) $(IGMPSNOOPING_RSTP) \
 		$(WIFI_PKGS) $(WIFI_FW_PKGS) $(HW_CRYPTO) $(IPSEC) $(MAP_PKGS) $(MINIDUMP) \
 		$(OPENVPN) $(QOS) $(HYFI) $(NSS_MACSEC) $(NSS_USERSPACE) $(NSS_RMNET) $(SHORTCUT_FE) \
-		$(QCA_MAD) $(EMESH_SP)
+		$(QCA_MAD) $(EMESH_SP) $(QCA_EZMESH)
 endef
 
 #		$(CNSS_DIAG) kmod-art2 \
