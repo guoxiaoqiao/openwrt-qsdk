@@ -183,6 +183,29 @@ do_flash_ubi() {
 	ubiformat /dev/${mtdpart} -y -f /tmp/${bin}.bin
 }
 
+do_flash_failsafe_ubi_volume() {
+	local bin=$1
+	local mtdname=$2
+	local vol_name=$3
+	local tmpfile="${bin}.bin"
+	local mtdpart
+
+	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
+		mtdname=$(cat /proc/boot_info/$mtdname/upgradepartition)
+	}
+	mtdpart=$(grep "\"${mtdname}\"" /proc/mtd | awk -F: '{print $1}')
+
+	ubiattach -p /dev/${mtdpart}
+
+	volumes=$(ls /sys/class/ubi/ubi0/ | grep ubi._.*)
+
+	for vol in ${volumes}
+	do
+		[ -f /sys/class/ubi/${vol}/name ] && name=$(cat /sys/class/ubi/${vol}/name)
+		[ ${name} == ${vol_name} ] && ubiupdatevol /dev/${vol} /tmp/${tmpfile} && break
+	done
+}
+
 do_flash_tz() {
 	local sec=$1
 	local mtdpart=$(grep "\"0:QSEE\"" /proc/mtd | awk -F: '{print $1}')
@@ -286,7 +309,7 @@ flash_section() {
 	case "${sec}" in
 		hlos*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "0:HLOS";;
 		rootfs*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "rootfs";;
-		wifi_fw_$(get_fw_name)-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW" ;;
+		wifi_fw_$(get_fw_name)-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW"; do_flash_failsafe_ubi_volume ${sec} "rootfs" "wifi_fw" ;;
 		wififw-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
 		wififw_ubi-*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
 		wififw_v${version}-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
