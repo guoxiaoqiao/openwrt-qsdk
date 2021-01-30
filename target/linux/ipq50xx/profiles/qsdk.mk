@@ -48,11 +48,11 @@ WIFI_OPEN_PKGS:= kmod-ath11k wpad-mesh hostapd-utils \
 
 WIFI_PKGS:=kmod-qca-wifi-unified-profile \
 	qca-hostap qca-hostapd-cli qca-wpa-supplicant \
-	qca-wpa-cli qca-cfg80211tool qca-wifi-scripts
-#	qca-spectral qca-wpc sigma-dut \
-#	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
-#	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
-#	athtestcmd-lith
+	qca-wpa-cli qca-cfg80211tool qca-wifi-scripts \
+	qca-spectral qca-wpc sigma-dut \
+	qcmbr-10.4 qca-wrapd qca-wapid qca-acfg whc whc-ui \
+	qca-lowi qca-iface-mgr-10.4 qca-icm qca-cfg80211 athdiag qca-cnss-daemon \
+	athtestcmd-lith
 
 WIFI_FW_PKGS:=qca-wifi-hk-fw-hw1-10.4-asic
 
