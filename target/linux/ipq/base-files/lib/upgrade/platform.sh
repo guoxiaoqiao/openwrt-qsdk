@@ -11,7 +11,8 @@ RAMFS_COPY_DATA=/lib/ipq806x.sh
 RAMFS_COPY_BIN="/usr/bin/dumpimage /bin/mktemp /usr/sbin/mkfs.ubifs
 	/usr/sbin/ubiattach /usr/sbin/ubidetach /usr/sbin/ubiformat /usr/sbin/ubimkvol
 	/usr/sbin/ubiupdatevol /usr/bin/basename /bin/rm /usr/bin/find
-	/usr/sbin/mkfs.ext4 /usr/sbin/losetup /usr/bin/yes /usr/bin/strings /usr/sbin/partprobe"
+	/usr/sbin/mkfs.ext4 /usr/sbin/losetup /usr/bin/yes /usr/bin/strings /usr/sbin/partprobe
+	/usr/sbin/fw_printenv /etc/fw_env.config /var/lock/fw_printenv.lock"
 
 get_full_section_name() {
 	local img=$1
@@ -228,6 +229,45 @@ image_is_nand()
 	[ -e "$nand_part" ] || return 1
 
 }
+
+get_fw_name() {
+	cat /proc/device-tree/model | grep -q 5018 && img="ipq5018"
+	cat /proc/device-tree/model | grep -q 6018 && img="ipq6018"
+	cat /proc/device-tree/model | grep -q 8074 && img="ipq8074"
+
+	wifi_ipq="ignored"
+	machineid=$(fw_printenv  | grep machid | cut -d '=' -f 2)
+
+	case "${machineid}" in
+		"8040000"|\
+		"8040004"|\
+		"8040104"|\
+		"1040003")
+			wifi_ipq=$img"_qcn6122cs"
+			;;
+		"8040001"|\
+		"8040101"|\
+		"8040201"|\
+		"8040005"|\
+		"8040105"|\
+		"8040003"|\
+		"8040103"|\
+		"1040004"|\
+		"1040104")
+			wifi_ipq=$img"_qcn9000"
+			;;
+		"8040002"|\
+		"8040102"|\
+		"1040005"|\
+		"1040105"|\
+		"1040006")
+			wifi_ipq=$img"_qcn9000_qcn6122"
+			;;
+	esac
+
+	echo $wifi_ipq
+}
+
 flash_section() {
 	local sec=$1
 	local board=$(ipq806x_board_name)
@@ -246,6 +286,7 @@ flash_section() {
 	case "${sec}" in
 		hlos*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "0:HLOS";;
 		rootfs*) switch_layout linux; image_is_nand && return || do_flash_failsafe_partition ${sec} "rootfs";;
+		wifi_fw_$(get_fw_name)-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW" ;;
 		wififw-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
 		wififw_ubi-*) switch_layout linux; do_flash_ubi ${sec} "0:WIFIFW";;
 		wififw_v${version}-*) switch_layout linux; do_flash_failsafe_partition ${sec} "0:WIFIFW";;
@@ -347,6 +388,10 @@ platform_check_image() {
 			echo "Warning: section \"${sec}\" will be ignored from \"$1\". Continue..."
 		}
 	done
+
+	# sync and flush kernel cache memory
+	sync
+	echo 3 > /proc/sys/vm/drop_caches
 
 	image_demux $1 || {\
 		echo "Error: \"$1\" couldn't be extracted. Abort..."
