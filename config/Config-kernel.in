@@ -760,3 +760,7 @@ config HAS_IOMEM
 config KERNEL_IPQ_FLASH_16M_PROFILE_DEBUG
 	bool "Enable 16M debug profile"
 	default n
+
+config KERNEL_STACKTRACE
+	bool "stack-trace"
+	default n
