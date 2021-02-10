@@ -157,6 +157,10 @@ config KERNEL_DEBUG_KERNEL
 	bool
 	default n
 
+config KERNEL_DEBUG_MEM_USAGE
+	bool "Compile the kernel with memory allocation tracking"
+	default n
+
 config KERNEL_DEBUG_INFO
 	bool "Compile the kernel with debug information"
 	default y
