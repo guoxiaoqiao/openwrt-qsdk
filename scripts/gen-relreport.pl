@@ -18,6 +18,12 @@ no warnings "uninitialized";
 # Hash of all the options provided through command line
 my %OPTS;
 
+#Array of all the configs provided through command line
+my @INPUT_CONFIGS;
+
+#output target folder in the ../out/ folder.
+my $targetOutFolder;
+
 # @CONFIGS
 # Each element in CONFIGS contains a hash storing a config file content
 my @CONFIGS;
@@ -60,37 +66,104 @@ my %Subsystem = (
     "whc" => "SON"
 );
 
-sub load_config($) {
-    my $defconfig = shift;
-    my $dotconfig = tmpnam();
-
-    return if($defconfig =~ m/.*_debug/ or $defconfig =~ m/.*_ioe_.*/ or $defconfig =~ m/.*ar71xx_open\..*/
-      or $defconfig =~ m/.*ar71xx_premium\..*/ or $defconfig =~ m/.*_upstream\..*/ or $defconfig =~ m/.*ar71xx_wireless\..*/ or $defconfig =~ m/.*_caf.*/);
-
-    # Create a temporary file and extrapolate it with default values
-    copy( $defconfig, $dotconfig ) or die "Error when copying $defconfig: $!";
-    system( "./scripts/config/conf "
-          . "--defconfig=$dotconfig "
-          . "-w $dotconfig "
-          . "Config.in " );
-
-    # Load the content in a config hash
-    my %config;
-    open FILE, "<$dotconfig" or return;
-    while (<FILE>) {
-        /^CONFIG_DEFAULT_(.+?)=y$/ and $config{$1} = { default => 1 };
-        /^CONFIG_PACKAGE_(.+?)=m$/ and $config{$1} = { loadable => 1};
-        /^CONFIG_PACKAGE_(.+?)=y$/ and $config{$1} = {};
+sub get_profile_info($) {
+    my $filename = shift;
+    open(FILE, "<$filename") || die "File not found";
+    my @lines = <FILE>;
+    close(FILE);
+    foreach my $line (@lines) {
+        if ($line =~ m/^.*_target_(ipq.*)_QSDK_(.*)=y/i) {
+            print "Generating for Profile: $2\n";
+            return $2;
+        }
     }
-    close FILE;
-    $config{name} = basename( $defconfig, ".config" );
+    print "Unable to find profile information from config file, exiting";
+    return "";
+}
 
-    # Store the config hash in @CONFIGS and clean-up the FS
-    push( @CONFIGS, \%config );
-    unlink $dotconfig;
+sub get_target_info($) {
+    my $filename = shift;
+    print $filename;
+    my ($target, $subtarget) = ("","");
+    if($filename =~ m/^.*_ipq_(ipq.*)_QSDK_(.*)\.xlsx/i) {
+        $target = 'ipq';
+        $subtarget = lc $1;
+        $targetOutFolder = $subtarget;
+    }
+    elsif($filename =~ m/^.*_(ipq.*)_(ipq.*)_QSDK_(.*)\.xlsx/i) {
+        $target = lc $1;
+        $subtarget = lc $2;
+        $targetOutFolder = $subtarget;
+    }
+    elsif($filename =~ m/^.*_(ipq.*)_generic_QSDK_(.*)\.xlsx/i ){
+        $target = lc $1;
+        $subtarget = "generic";
+        $targetOutFolder = $target."_64";
+    }
+    else {
+        print "Unknown format passed as input";
+        exit();
+    }
+    return ($target, $subtarget);
+}
+
+sub replace_target {
+    my ($target, $subtarget, $profile, $file ) = @_;
+    my $cmd = "echo \"CONFIG_TARGET_$target=y\" >> $file";
+    print $cmd;
+    system($cmd);
+    $cmd = "echo \"CONFIG_TARGET_$target"."_$subtarget=y\" >> $file";
+    print $cmd;
+    system($cmd);
+    $cmd = "echo \"CONFIG_TARGET_$target"."_$subtarget"."_QSDK_"."$profile=y\" >> $file";
+    print $cmd;
+    system($cmd);
+}
+
+sub load_config() {
+    my $target;
+    my $subtarget;
+    my $profile;
+    for ( @{ $OPTS{o} } ) {
+        if (/^.*\.xlsx$/) { ($target, $subtarget) = get_target_info($_); next; }
+    }
+
+    foreach my $defconfig (@INPUT_CONFIGS) {
+        my $dotconfig = tmpnam();
+        next if($defconfig =~ m/.*_debug/ or $defconfig =~ m/.*_ioe_.*/ or $defconfig =~ m/.*ar71xx_open\..*/  or $defconfig =~ m/x86_basic\.*/
+          or $defconfig =~ m/.*ar71xx_premium\..*/ or $defconfig =~ m/.*_upstream\..*/ or $defconfig =~ m/.*ar71xx_wireless\..*/ or $defconfig =~ m/.*_caf.*/);
+
+            # Create a temporary file and extrapolate it with default values
+            copy( $defconfig, $dotconfig ) or die "Error when copying $defconfig: $!";
+
+            #In the dotconfig, replace the target with required target before doing make defconfig
+            $profile = get_profile_info($dotconfig);
+            next if( $profile eq "");
+            replace_target($target, $subtarget, $profile, $dotconfig);
+            system( "./scripts/config/conf "
+                  . "--defconfig=$dotconfig "
+                  . "-w $dotconfig "
+                  . "Config.in " );
+
+            # Load the content in a config hash
+            my %config;
+            open FILE, "<$dotconfig" or return;
+            while (<FILE>) {
+                /^CONFIG_DEFAULT_(.+?)=y$/ and $config{$1} = { default => 1 };
+                /^CONFIG_PACKAGE_(.+?)=m$/ and $config{$1} = { loadable => 1};
+                /^CONFIG_PACKAGE_(.+?)=y$/ and $config{$1} = {};
+            }
+            close FILE;
+            $config{name} = basename( $defconfig, ".config" );
+
+            # Store the config hash in @CONFIGS and clean-up the FS
+            push( @CONFIGS, \%config );
+            unlink $dotconfig;
+    }
 }
 
 sub xref_packages() {
+    load_config();
     foreach my $config (@CONFIGS) {
         foreach my $pkg ( keys %{$config} ) {
 
@@ -122,13 +195,13 @@ sub xref_packages() {
             $QSDKPKGS{$pkg}->{version} =~ s/<LINUX_VERSION>[\+-](.+)/$1/;
 
             if ( exists( $config->{$pkg}->{default} ) ) {
-                push( @{ $QSDKPKGS{$pkg}->{defconfigs} }, $config->{name} );
+                push( @{ $QSDKPKGS{$pkg}->{DefaultConfigs} }, $config->{name} );
             }
             elsif( exists( $config->{$pkg}->{loadable} ) ) {
-                push( @{ $QSDKPKGS{$pkg}->{loadconfigs} }, $config->{name} );
+                push( @{ $QSDKPKGS{$pkg}->{LoadConfigs} }, $config->{name} );
             }
             else {
-                push( @{ $QSDKPKGS{$pkg}->{configs} }, $config->{name} );
+                push( @{ $QSDKPKGS{$pkg}->{EnabledConfigs} }, $config->{name} );
             }
         }
     }
@@ -137,8 +210,6 @@ sub xref_packages() {
 sub write_output_xlsx($) {
 
     my $filename = shift;
-    my $SOC;
-
     # Create a new workbook and add a worksheet
     my $workbook  = Excel::Writer::XLSX->new($filename);
 
@@ -154,33 +225,18 @@ sub write_output_xlsx($) {
     }
     # PREM : END
 
-    if($filename =~ m/^.*_ipq_(ipq.*)_QSDK_(.*)\.xlsx/i) {
-        $SOC = lc $1 . '_' . lc $2;
-        foreach my $file (@out) {
-            if($file eq $SOC) {
-                $SOC = $file;
-                last;
-            }
-        }
-    }
-    else {
-        $SOC = lc((split(/\_/, $filename))[-1]);
-        $SOC =~ s/\.xlsx//g;
-        $SOC = "ipq_$SOC";
-    }
-
-    &WriteDataToExcel($workbook, $SOC, 0);
-    &WriteDataToExcel($workbook, 'LoadConfigs', 1);
+    &WriteDataToExcel($workbook, 0);
+    &WriteDataToExcel($workbook, 1);
     WriteDownloadedFilesToExcel($workbook);
     $workbook->close();
 }
 
 sub WriteDataToExcel
 {
-    my($workbook, $SOC, $loadConfigMode) = @_;
-    my $configMode = ($loadConfigMode == 1) ? 'loadconfigs' : 'configs';
+    my($workbook, $loadConfigMode) = @_;
+    my $configMode = ($loadConfigMode == 1) ? 'LoadConfigs' : 'EnabledConfigs';
 
-    my $worksheet = $workbook->add_worksheet($SOC);
+    my $worksheet = $workbook->add_worksheet($configMode);
 
     # Init the worksheet (set columns width, create colors & formats)
     $worksheet->set_column( 0, 1, 28 );    # Column A,B width set to 28
@@ -285,7 +341,7 @@ sub WriteDataToExcel
 
             my ($fileSize, @findFile, $fcolor);
             $curpkg->{name} = 'kmod-fs-configfs' if($curpkg->{name} eq 'kmod-usb-configfs');
-            $cmd = "find ../out/$SOC/packages/ -name $curpkg->{name}_*.ipk -ls 2> /dev/null";
+            $cmd = "find ../out/$targetOutFolder/packages/ -name $curpkg->{name}_*.ipk -ls 2> /dev/null";
             @findFile = `$cmd`;
             @findFile = grep /\S/, @findFile;
             if($#findFile != -1) {
@@ -491,7 +547,7 @@ sub parse_command() {
         elsif ( $opt =~ /^-.*$/ ) {
             show_help_and_exit("\"$opt\" option not supported");
         }
-        else { load_config($opt); }
+        else { push( @INPUT_CONFIGS, $opt); }
     }
 
     if ( !defined( $OPTS{o} ) ) {
