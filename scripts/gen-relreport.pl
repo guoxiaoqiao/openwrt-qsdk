@@ -529,14 +529,19 @@ sub write_output() {
 
 sub show_help() {
     print <<EOF
-$0 [options] config1 config2 config3 ...
+Usage: $0 [options] config1 config2 config3 ...
 Available Options:
-    -o filename        Output file name (default: openwrt.xlsx)
+    -o Output_filename (format: <prefix>_<target>_<subtarget>_QSDK_<Profile>.xlsx)
+    -h (for help on usage)
+Examples:
+$0 -o custom_ipq50xx_generic_QSDK_Open.xlsx qca/configs/qsdk/ipq_premium.config
+$0 -o custom_ipq807x_ipq807x_32_QSDK_Premium.xlsx qca/configs/qsdk/*.config
 EOF
 }
 
 sub show_help_and_exit($) {
-    print "Error: $_[0]\n" if defined $_[0];
+    my $opt = shift;
+    print "Error: -$opt not defined\n" if $opt ne "h";
     show_help();
     exit 1;
 }
@@ -544,8 +549,8 @@ sub show_help_and_exit($) {
 sub parse_command() {
     while ( my $opt = shift @ARGV ) {
         if ( $opt =~ /^-o$/ ) { push( @{ $OPTS{o} }, shift(@ARGV) ) }
-        elsif ( $opt =~ /^-.*$/ ) {
-            show_help_and_exit("\"$opt\" option not supported");
+        elsif ( $opt =~ /^-(.*)$/ ) {
+            show_help_and_exit($1);
         }
         else { push( @INPUT_CONFIGS, $opt); }
     }
