@@ -135,6 +135,12 @@ do_flash_failsafe_partition() {
 	local emmcblock
 	local primaryboot
 
+	local mtd_part=$(cat /proc/mtd | grep $mtdname)
+	[ -z "$mtd_part" ] && {
+		mtd_part=$(echo $(find_mmc_part "$mtdname"))
+		[ -z "$mtd_part" ] && return 1
+	}
+
 	# Fail safe upgrade
 	[ -f /proc/boot_info/$mtdname/upgradepartition ] && {
 		default_mtd=$mtdname
