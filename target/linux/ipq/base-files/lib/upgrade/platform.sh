@@ -377,7 +377,7 @@ platform_check_image() {
 	local mandatory_nor="hlos"
 	local mandatory_section_found=0
 	local ddr_section="ddr"
-	local optional="sb11 sbl2 u-boot lkboot ddr-${board} ssd tz rpm"
+	local optional="sbl1 sbl2 u-boot lkboot ddr-${board} ssd tz rpm"
 	local ignored="mibib bootconfig"
 
 	image_is_FIT $1 || return 1
