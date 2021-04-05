@@ -188,7 +188,7 @@ MAP_PKGS:=map-t 464xlat tayga
 HYFI:=hyfi-mesh hyfi-ui
 PLC:=qca-plc-serv qca-plc-fw
 
-QCA_EZMESH:=qca-ezmesh qca-ezmesh-ctrl qca-ezmesh-agent
+QCA_EZMESH:=qca-ezmesh qca-ezmesh-ctrl qca-ezmesh-agent qca-ezmesh-alg qca-ezmesh-agentalg
 
 QCA_MAD:=qca-mad
 
