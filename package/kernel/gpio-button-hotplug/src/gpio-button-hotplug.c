@@ -34,7 +34,7 @@
 
 #define PFX	DRV_NAME ": "
 
-#undef BH_DEBUG
+#define BH_DEBUG
 
 #ifdef BH_DEBUG
 #define BH_DBG(fmt, args...) printk(KERN_DEBUG "%s: " fmt, DRV_NAME, ##args )
