@@ -96,6 +96,25 @@ do_load_ipq4019_board_bin()
                     dd if=${mtdblock} of=${apdk}/qcn9000/caldata_1.bin bs=1 count=$FILESIZE skip=157696
                     ln -s ${apdk}/qcn9000/caldata_1.bin /lib/firmware/qcn9000/caldata_1.bin
             ;;
+            ap-cp01-c5*)
+                    CP_BD_FILENAME=/lib/firmware/IPQ6018/bdwlan.bin
+                    mkdir -p ${apdk}/IPQ6018
+                    if [ -f "$CP_BD_FILENAME" ]; then
+                        FILESIZE=$(stat -Lc%s "$CP_BD_FILENAME")
+                    else
+                        FILESIZE=65536
+                    fi
+                    dd if=${mtdblock} of=${apdk}/IPQ6018/caldata.bin bs=1 count=$FILESIZE skip=4096
+                    [ -L /lib/firmware/IPQ6018/caldata.bin ] || \
+                    ln -s ${apdk}/IPQ6018/caldata.bin /lib/firmware/IPQ6018/caldata.bin
+
+                    mkdir -p ${apdk}/qcn9000
+                    FILESIZE=131072
+                    dd if=${mtdblock} of=${apdk}/qcn9000/caldata_1.bin bs=1 count=$FILESIZE skip=157696
+                    dd if=${mtdblock} of=${apdk}/qcn9000/caldata_2.bin bs=1 count=$FILESIZE skip=311296
+                    ln -s ${apdk}/qcn9000/caldata_1.bin /lib/firmware/qcn9000/caldata_1.bin
+                    ln -s ${apdk}/qcn9000/caldata_2.bin /lib/firmware/qcn9000/caldata_2.bin
+            ;;
             ap-mp02.1* | db-mp02.1*)
                     mkdir -p ${apdk}/IPQ5018
                     FILESIZE=131072
