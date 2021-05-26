@@ -124,6 +124,7 @@ ap-cp01-c1|\
 ap-cp01-c2|\
 ap-cp01-c3|\
 ap-cp01-c4|\
+ap-cp01-c5|\
 db-cp01)
 	ucidef_add_switch "switch0"
 	ucidef_set_interfaces_lan_wan "eth1 eth2 eth3 eth4" "eth0"
