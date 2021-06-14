@@ -764,3 +764,7 @@ config KERNEL_IPQ_FLASH_16M_PROFILE_DEBUG
 config KERNEL_STACKTRACE
 	bool "stack-trace"
 	default n
+
+config KERNEL_SRD_TRACE
+	bool "Enable SRD TRACE"
+	default n
