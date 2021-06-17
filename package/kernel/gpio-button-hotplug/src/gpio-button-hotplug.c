@@ -348,8 +348,7 @@ static void gpio_keys_gpio_work_func(struct work_struct *work_irq)
 		BH_DBG("first key event detected - seen '%lu'\n", priv->seen);
 	}
 
-	bdata->last_state = gpio_button_get_value(bdata);
-	button_hotplug_event(bdata, bdata->b->type ?: EV_KEY, bdata->last_state);
+	button_hotplug_event(bdata, bdata->b->type ?: EV_KEY, gpio_button_get_value(bdata));
 }
 
 static void gpio_keys_gpio_timer(unsigned long _data)
