@@ -65,8 +65,6 @@ struct bh_map {
 
 struct gpio_keys_button_data {
 	struct delayed_work work;
-	struct timer_list timer;
-	struct work_struct work_irq;
 	struct bh_priv bh;
 	int last_state;
 	int count;
@@ -337,27 +335,11 @@ static void gpio_keys_polled_close(struct gpio_keys_button_dev *bdev)
 		pdata->disable(bdev->dev);
 }
 
-static void gpio_keys_gpio_work_func(struct work_struct *work_irq)
-{
-	struct gpio_keys_button_data *bdata =
-		container_of(work_irq, struct gpio_keys_button_data, work_irq);
-
-	button_hotplug_event(bdata, bdata->b->type ?: EV_KEY, gpio_button_get_value(bdata));
-}
-
-static void gpio_keys_gpio_timer(unsigned long _data)
-{
-	struct gpio_keys_button_data *bdata = (struct gpio_keys_button_data *)_data;
-
-	schedule_work(&bdata->work_irq);
-}
-
 static irqreturn_t button_handle_irq(int irq, void *_bdata)
 {
 	struct gpio_keys_button_data *bdata = (struct gpio_keys_button_data *) _bdata;
 
-	mod_timer(&bdata->timer,
-			jiffies + msecs_to_jiffies(bdata->b->debounce_interval));
+	button_hotplug_event(bdata, bdata->b->type ?: EV_KEY, gpio_button_get_value(bdata));
 
 	return IRQ_HANDLED;
 }
@@ -535,12 +517,8 @@ static int gpio_keys_button_probe(struct platform_device *pdev,
 		if (bdev->polled)
 			bdata->threshold = DIV_ROUND_UP(button->debounce_interval,
 						pdata->poll_interval);
-		else {
+		else
 			bdata->threshold = 1;
-			INIT_WORK(&bdata->work_irq, gpio_keys_gpio_work_func);
-			setup_timer(&bdata->timer, gpio_keys_gpio_timer,
-						(unsigned long)bdata);
-		}
 
 		bdata->b = &pdata->buttons[i];
 	}
@@ -623,20 +601,9 @@ static int gpio_keys_polled_probe(struct platform_device *pdev)
 	return ret;
 }
 
-static void gpio_remove_key(struct gpio_keys_button_data *bdata)
-{
-	del_timer_sync(&bdata->timer);
-	cancel_work_sync(&bdata->work_irq);
-}
-
 static int gpio_keys_remove(struct platform_device *pdev)
 {
 	struct gpio_keys_button_dev *bdev = platform_get_drvdata(pdev);
-	int i;
-
-	for (i = 0; i < bdev->pdata->nbuttons; i++)
-		if (!bdev->polled)
-			gpio_remove_key(&bdev->data[i]);
 
 	platform_set_drvdata(pdev, NULL);
 
