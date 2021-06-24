@@ -37,7 +37,7 @@
 #define BH_DEBUG
 
 #ifdef BH_DEBUG
-#define BH_DBG(fmt, args...) printk(KERN_DEBUG "%s: " fmt, DRV_NAME, ##args )
+#define BH_DBG(fmt, args...) printk(KERN_ERR "%s: " fmt, DRV_NAME, ##args )
 #else
 #define BH_DBG(fmt, args...) do {} while (0)
 #endif

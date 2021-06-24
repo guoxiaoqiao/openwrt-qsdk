@@ -17,8 +17,14 @@ endif
 
 KIMAGE = Image.gz
 COMP_TYPE=gzip
+
+ifneq ($(CONFIG_KERNEL_IPQ_FLASH_16M_PROFILE_DEBUG),)
+IPQ50XX_16M_KERNEL_SIZE=2624k
+IPQ50XX_16M_ROOTFS_SIZE=7296k
+else
 IPQ50XX_16M_KERNEL_SIZE=2624k
 IPQ50XX_16M_ROOTFS_SIZE=5376k
+endif
 
 IPQ807X_KERNEL_LOADADDR = 0x41208000
 IPQ807X_64_KERNEL_LOADADDR = 0x41080000
@@ -83,6 +89,7 @@ define Image/BuildKernel/MultiDTBFIT
 	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.lzma)
 	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/$(KIMAGE),$(2),$(COMP_TYPE),$(3),$(3),$(4),$(5))
 	$$(if $$(CONFIG_PACKAGE_opkg), ,$$(call sizecheck, $(IPQ50XX_16M_KERNEL_SIZE), $(KDIR)/fit-$(1).itb))
+	$$(if $$(CONFIG_KERNEL_IPQ_FLASH_16M_PROFILE_DEBUG),$$(call sizecheck, $(IPQ50XX_16M_KERNEL_SIZE), $(KDIR)/fit-$(1).itb))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 endef
 
@@ -241,6 +248,7 @@ endif
 define Image/Build
 	$(call Image/Build/$(1),$(1))
 	$$(if $(CONFIG_PACKAGE_opkg), ,$$(call sizecheck, $(IPQ50XX_16M_ROOTFS_SIZE), $(KDIR)/root$(2).$(1)))
+	$$(if $(CONFIG_KERNEL_IPQ_FLASH_16M_PROFILE_DEBUG),$$(call sizecheck, $(IPQ50XX_16M_ROOTFS_SIZE), $(KDIR)/root$(2).$(1)))
 	dd if=$(KDIR)/root$(2).$(1) of=$(BIN_DIR)/$(IMG_PREFIX)-$(1)-root$(3).img bs=2k conv=sync
 endef
 
