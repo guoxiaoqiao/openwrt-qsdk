@@ -408,6 +408,7 @@ platform_do_upgrade() {
 	qcom,ipq5018-db-mp03.1-c2 |\
 	qcom,ipq5018-db-mp03.3 |\
 	qcom,ipq5018-db-mp03.3-c2 |\
+	qcom,ipq5018-mp-emu |\
 	qcom,ipq5018-tb-mp04)
 		for sec in $(print_sections $1); do
 			flash_section ${sec}
