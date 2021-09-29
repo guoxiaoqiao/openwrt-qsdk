@@ -1,0 +1,10 @@
+--- make-ext4fs-2015-05-01.orig/contents.c	2021-03-18 19:54:41.377588331 +0800
++++ make-ext4fs-2015-05-01/contents.c	2021-03-18 19:55:18.362187018 +0800
+@@ -17,6 +17,7 @@
+ #include <sys/stat.h>
+ #include <string.h>
+ #include <stdio.h>
++#include <sys/sysmacros.h>
+ 
+ #include <private/android_filesystem_capability.h>
+ 

@@ -1,0 +1,11 @@
+diff -ur e2fsprogs-1.42.8.orig/lib/blkid/devname.c e2fsprogs-1.42.8/lib/blkid/devname.c
+--- e2fsprogs-1.42.8.orig/lib/blkid/devname.c	2021-03-18 20:50:32.677532334 +0800
++++ e2fsprogs-1.42.8/lib/blkid/devname.c	2021-03-18 20:49:42.736699595 +0800
+@@ -37,6 +37,7 @@
+ #include <sys/mkdev.h>
+ #endif
+ #include <time.h>
++#include <sys/sysmacros.h>
+ 
+ #include "blkidP.h"
+ 

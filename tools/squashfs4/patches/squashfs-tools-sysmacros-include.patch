@@ -1,0 +1,22 @@
+diff -ur squashfs4.2.orig/squashfs-tools/mksquashfs.c squashfs4.2/squashfs-tools/mksquashfs.c
+--- squashfs4.2.orig/squashfs-tools/mksquashfs.c	2021-03-18 20:34:25.219703585 +0800
++++ squashfs4.2/squashfs-tools/mksquashfs.c	2021-03-18 20:31:44.289499499 +0800
+@@ -52,6 +52,7 @@
+ #include <regex.h>
+ #include <fnmatch.h>
+ #include <sys/wait.h>
++#include <sys/sysmacros.h>
+ 
+ #ifndef linux
+ #ifndef __CYGWIN__
+diff -ur squashfs4.2.orig/squashfs-tools/unsquashfs.c squashfs4.2/squashfs-tools/unsquashfs.c
+--- squashfs4.2.orig/squashfs-tools/unsquashfs.c	2021-03-18 20:34:36.211853897 +0800
++++ squashfs4.2/squashfs-tools/unsquashfs.c	2021-03-18 20:33:25.714889423 +0800
+@@ -30,6 +30,7 @@
+ #include "xattr.h"
+ 
+ #include <sys/types.h>
++#include <sys/sysmacros.h>
+ 
+ struct cache *fragment_cache, *data_cache;
+ struct queue *to_reader, *to_deflate, *to_writer, *from_writer;
